@@ -11,6 +11,7 @@ from src.settings import get_settings, Settings
 
 TModel = TypeVar("TModel", bound=Base)
 TModelIDType = TypeVar("TModelIDType", int, str, UUID)
+TModelSchema = TypeVar("TModelSchema", bound=BaseModel)
 TModelSearchSchema = TypeVar("TModelSearchSchema", bound=BaseModel)
 TModelCreateSchema = TypeVar("TModelCreateSchema", bound=BaseModel)
 TModelUpdateSchema = TypeVar("TModelUpdateSchema", bound=BaseModel)
@@ -18,7 +19,7 @@ TModelUpdateSchema = TypeVar("TModelUpdateSchema", bound=BaseModel)
 
 class GenericModelCrud(
     Generic[
-        TModel, TModelIDType, TModelSearchSchema, TModelCreateSchema, TModelUpdateSchema
+        TModel, TModelIDType, TModelSchema, TModelSearchSchema, TModelCreateSchema, TModelUpdateSchema
     ]
 ):
     def __init__(
@@ -123,29 +124,23 @@ class GenericModelCrud(
         app: FastAPI,
         tags: List[str],
         prefix: str,
-        search_schema: Type[TModelSearchSchema],
-        create_schema: Type[TModelCreateSchema],
-        update_schema: Type[TModelUpdateSchema],
     ):
         """
         Generate CRUD router.
         :param app: FastAPI app
         :param tags: Tags
         :param prefix: Prefix
-        :param search_schema: Search schema
-        :param create_schema: Create schema
-        :param update_schema: Update schema
         """
         @app.post(
             f"/{prefix}/search",
             tags=tags,
-            response_model=List[self.model],
+            response_model=List[TModelSchema],
             summary=f"Search {prefix}",
         )
         async def search(
             page: int = 1,
             page_size: Optional[int] = None,
-            filters: Optional[search_schema] = None,
+            filters: Optional[TModelSearchSchema] = None,
             db: Session = Depends(get_db),
             settings: Settings = Depends(get_settings),
         ):
@@ -168,11 +163,11 @@ class GenericModelCrud(
         @app.post(
             f"/{prefix}",
             tags=tags,
-            response_model=self.model,
+            response_model=TModelSchema,
             summary=f"Create {prefix}",
         )
         async def create(
-            data: create_schema, db: Session = Depends(get_db)
+            data: TModelCreateSchema, db: Session = Depends(get_db)
         ):
             """
             Create item
@@ -187,7 +182,7 @@ class GenericModelCrud(
         @app.get(
             f"/{prefix}/{{id_}}",
             tags=tags,
-            response_model=self.model,
+            response_model=TModelSchema,
             summary=f"Get {prefix} by ID",
         )
         async def get_by_id(id_: UUID, db: Session = Depends(get_db)):
@@ -205,12 +200,12 @@ class GenericModelCrud(
         @app.put(
             f"/{prefix}/{{id_}}",
             tags=tags,
-            response_model=self.model,
+            response_model=TModelSchema,
             summary=f"Update {prefix}",
         )
         async def update(
             id_: UUID,
-            data: update_schema,
+            data: TModelUpdateSchema,
             db: Session = Depends(get_db),
         ):
             """

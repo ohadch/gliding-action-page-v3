@@ -1,7 +1,12 @@
 from uuid import UUID
 
 from ..models import Role
-from ..schemas.role import RoleCreateSchema, RoleUpdateSchema, RoleSearchSchema
+from ..schemas import (
+    RoleSchema,
+    RoleSearchSchema,
+    RoleCreateSchema,
+    RoleUpdateSchema,
+)
 from ..utils.crud import GenericModelCrud
 
 
@@ -9,6 +14,7 @@ class RoleCrud(
     GenericModelCrud[
         Role,
         UUID,
+        RoleSchema,
         RoleSearchSchema,
         RoleCreateSchema,
         RoleUpdateSchema,

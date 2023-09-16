@@ -1,7 +1,12 @@
 from uuid import UUID
 
 from ..models import PaymentMethod
-from ..schemas.payment_method import PaymentMethodCreateSchema, PaymentMethodUpdateSchema, PaymentMethodSearchSchema
+from ..schemas import (
+    PaymentMethodSchema,
+    PaymentMethodSearchSchema,
+    PaymentMethodCreateSchema,
+    PaymentMethodUpdateSchema,
+)
 from ..utils.crud import GenericModelCrud
 
 
@@ -9,6 +14,7 @@ class PaymentMethodCrud(
     GenericModelCrud[
         PaymentMethod,
         UUID,
+        PaymentMethodSchema,
         PaymentMethodSearchSchema,
         PaymentMethodCreateSchema,
         PaymentMethodUpdateSchema,

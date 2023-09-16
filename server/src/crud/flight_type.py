@@ -1,7 +1,12 @@
 from uuid import UUID
 
 from ..models import FlightType
-from ..schemas.flight_type import FlightTypeCreateSchema, FlightTypeUpdateSchema, FlightTypeSearchSchema
+from ..schemas import (
+    FlightTypeSchema,
+    FlightTypeSearchSchema,
+    FlightTypeCreateSchema,
+    FlightTypeUpdateSchema,
+)
 from ..utils.crud import GenericModelCrud
 
 
@@ -9,6 +14,7 @@ class FlightTypeCrud(
     GenericModelCrud[
         FlightType,
         UUID,
+        FlightTypeSchema,
         FlightTypeSearchSchema,
         FlightTypeCreateSchema,
         FlightTypeUpdateSchema,

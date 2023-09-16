@@ -1,7 +1,12 @@
 from uuid import UUID
 
 from ..models import ActiveTowAirplane
-from ..schemas.active_tow_airplane import ActiveTowAirplaneCreateSchema, ActiveTowAirplaneUpdateSchema, ActiveTowAirplaneSearchSchema
+from ..schemas import (
+    ActiveTowAirplaneSchema,
+    ActiveTowAirplaneSearchSchema,
+    ActiveTowAirplaneCreateSchema,
+    ActiveTowAirplaneUpdateSchema,
+)
 from ..utils.crud import GenericModelCrud
 
 
@@ -9,6 +14,7 @@ class ActiveTowAirplaneCrud(
     GenericModelCrud[
         ActiveTowAirplane,
         UUID,
+        ActiveTowAirplaneSchema,
         ActiveTowAirplaneSearchSchema,
         ActiveTowAirplaneCreateSchema,
         ActiveTowAirplaneUpdateSchema,

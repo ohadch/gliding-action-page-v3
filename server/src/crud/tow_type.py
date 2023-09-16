@@ -1,7 +1,12 @@
 from uuid import UUID
 
 from ..models import TowType
-from ..schemas.tow_type import TowTypeCreateSchema, TowTypeUpdateSchema, TowTypeSearchSchema
+from ..schemas import (
+    TowTypeSchema,
+    TowTypeSearchSchema,
+    TowTypeCreateSchema,
+    TowTypeUpdateSchema,
+)
 from ..utils.crud import GenericModelCrud
 
 
@@ -9,6 +14,7 @@ class TowTypeCrud(
     GenericModelCrud[
         TowType,
         UUID,
+        TowTypeSchema,
         TowTypeSearchSchema,
         TowTypeCreateSchema,
         TowTypeUpdateSchema,

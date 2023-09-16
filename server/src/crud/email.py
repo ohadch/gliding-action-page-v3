@@ -1,18 +1,24 @@
 from uuid import UUID
 
-from ..models import SentEmail
-from ..schemas.sent_email import SentEmailCreateSchema, SentEmailUpdateSchema, SentEmailSearchSchema
+from ..models import Email
+from ..schemas import (
+    EmailSchema,
+    EmailSearchSchema,
+    EmailCreateSchema,
+    EmailUpdateSchema,
+)
 from ..utils.crud import GenericModelCrud
 
 
-class SentEmailCrud(
+class EmailCrud(
     GenericModelCrud[
-        SentEmail,
+        Email,
         UUID,
-        SentEmailSearchSchema,
-        SentEmailCreateSchema,
-        SentEmailUpdateSchema,
+        EmailSchema,
+        EmailSearchSchema,
+        EmailCreateSchema,
+        EmailUpdateSchema,
     ]
 ):
     def __init__(self):
-        super().__init__(model=SentEmail)
+        super().__init__(model=Email)

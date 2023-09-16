@@ -1,7 +1,12 @@
 from uuid import UUID
 
 from ..models import Member
-from ..schemas.member import MemberCreateSchema, MemberUpdateSchema, MemberSearchSchema
+from ..schemas import (
+    MemberSchema,
+    MemberSearchSchema,
+    MemberCreateSchema,
+    MemberUpdateSchema,
+)
 from ..utils.crud import GenericModelCrud
 
 
@@ -9,6 +14,7 @@ class MemberCrud(
     GenericModelCrud[
         Member,
         UUID,
+        MemberSchema,
         MemberSearchSchema,
         MemberCreateSchema,
         MemberUpdateSchema,
