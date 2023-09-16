@@ -1,0 +1,12 @@
+**/.idea
+**/node_modules
+**/data
+**/dist
+**/.env
+logs/*
+!**/.gitkeep
+**/db.sqlite
+**/db.sqlite-journal
+**/registry/
+*.tgz
+venv/
