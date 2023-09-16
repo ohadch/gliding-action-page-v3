@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class TowAirplaneSchema(BaseModel):
@@ -8,8 +8,7 @@ class TowAirplaneSchema(BaseModel):
     call_sign: str
     type: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TowAirplaneCreateSchema(BaseModel):
@@ -18,8 +17,8 @@ class TowAirplaneCreateSchema(BaseModel):
 
 
 class TowAirplaneUpdateSchema(BaseModel):
-    call_sign: Optional[str]
-    type: Optional[int]
+    call_sign: Optional[str] = None
+    type: Optional[int] = None
 
 
 class TowAirplaneSearchSchema(TowAirplaneUpdateSchema):

@@ -1,14 +1,13 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class RoleSchema(BaseModel):
     id: int
     name: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class RoleCreateSchema(BaseModel):
@@ -16,7 +15,7 @@ class RoleCreateSchema(BaseModel):
 
 
 class RoleUpdateSchema(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
 
 
 class RoleSearchSchema(RoleUpdateSchema):

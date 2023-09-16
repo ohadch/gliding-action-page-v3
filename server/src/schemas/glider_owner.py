@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class GliderOwnerSchema(BaseModel):
@@ -8,8 +8,7 @@ class GliderOwnerSchema(BaseModel):
     glider_id: int
     member_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class GliderOwnerCreateSchema(BaseModel):
@@ -18,8 +17,8 @@ class GliderOwnerCreateSchema(BaseModel):
 
 
 class GliderOwnerUpdateSchema(BaseModel):
-    glider_id: Optional[int]
-    member_id: Optional[int]
+    glider_id: Optional[int] = None
+    member_id: Optional[int] = None
 
 
 class GliderOwnerSearchSchema(GliderOwnerUpdateSchema):

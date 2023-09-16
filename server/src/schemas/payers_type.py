@@ -1,14 +1,13 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class PayersTypeSchema(BaseModel):
     id: int
     name: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PayersTypeCreateSchema(BaseModel):
@@ -16,7 +15,7 @@ class PayersTypeCreateSchema(BaseModel):
 
 
 class PayersTypeUpdateSchema(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
 
 
 class PayersTypeSearchSchema(PayersTypeUpdateSchema):

@@ -1,15 +1,14 @@
 import datetime
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class FlightTypeSchema(BaseModel):
     id: int
     name: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class FlightTypeCreateSchema(BaseModel):
@@ -17,7 +16,7 @@ class FlightTypeCreateSchema(BaseModel):
 
 
 class FlightTypeUpdateSchema(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
 
 
 class FlightTypeSearchSchema(FlightTypeUpdateSchema):

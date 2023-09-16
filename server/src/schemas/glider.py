@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class GliderSchema(BaseModel):
@@ -9,8 +9,7 @@ class GliderSchema(BaseModel):
     num_seats: int
     type: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class GliderCreateSchema(BaseModel):
@@ -20,9 +19,9 @@ class GliderCreateSchema(BaseModel):
 
 
 class GliderUpdateSchema(BaseModel):
-    call_sign: Optional[str]
-    num_seats: Optional[int]
-    type: Optional[int]
+    call_sign: Optional[str] = None
+    num_seats: Optional[int] = None
+    type: Optional[int] = None
 
 
 class GliderSearchSchema(GliderUpdateSchema):

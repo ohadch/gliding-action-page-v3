@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ActiveTowAirplaneSchema(BaseModel):
@@ -9,8 +9,7 @@ class ActiveTowAirplaneSchema(BaseModel):
     tow_pilot_id: int
     airplane_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ActiveTowAirplaneCreateSchema(BaseModel):
@@ -20,9 +19,9 @@ class ActiveTowAirplaneCreateSchema(BaseModel):
 
 
 class ActiveTowAirplaneUpdateSchema(BaseModel):
-    action_id: Optional[int]
-    tow_pilot_id: Optional[int]
-    airplane_id: Optional[int]
+    action_id: Optional[int] = None
+    tow_pilot_id: Optional[int] = None
+    airplane_id: Optional[int] = None
 
 
 class ActiveTowAirplaneSearchSchema(ActiveTowAirplaneUpdateSchema):

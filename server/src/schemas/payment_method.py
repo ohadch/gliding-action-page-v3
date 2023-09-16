@@ -1,14 +1,13 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class PaymentMethodSchema(BaseModel):
     id: int
     name: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PaymentMethodCreateSchema(BaseModel):
@@ -16,7 +15,7 @@ class PaymentMethodCreateSchema(BaseModel):
 
 
 class PaymentMethodUpdateSchema(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
 
 
 class PaymentMethodSearchSchema(PaymentMethodUpdateSchema):
