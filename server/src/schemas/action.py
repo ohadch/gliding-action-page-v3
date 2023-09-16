@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ActionSchema(BaseModel):
@@ -12,8 +12,7 @@ class ActionSchema(BaseModel):
     responsible_cfi_id: int
     instruction_glider_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ActionCreateSchema(BaseModel):

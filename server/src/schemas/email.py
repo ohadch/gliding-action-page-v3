@@ -1,7 +1,7 @@
 import datetime
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class EmailSchema(BaseModel):
@@ -10,8 +10,7 @@ class EmailSchema(BaseModel):
     recipient_member_id: int
     flight_id: Optional[int]
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class EmailCreateSchema(BaseModel):

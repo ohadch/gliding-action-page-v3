@@ -1,7 +1,7 @@
 import datetime
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class FlightSchema(BaseModel):
@@ -22,8 +22,7 @@ class FlightSchema(BaseModel):
     paying_member_id: Optional[int]
     status: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class FlightCreateSchema(BaseModel):

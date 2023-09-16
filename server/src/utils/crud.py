@@ -2,7 +2,7 @@ from typing import Optional, Any, Type, Dict, Union, TypeVar, Generic, List
 from uuid import UUID
 
 from fastapi import FastAPI, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from sqlalchemy.orm import Session, Query
 from sqlalchemy_pagination import paginate
 
