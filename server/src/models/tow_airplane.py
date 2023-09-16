@@ -4,9 +4,9 @@ from src.config.database import Base
 from src.utils.enums import AircraftTypeId
 
 
-class Aircraft(Base):
+class TowAirplane(Base):
 
-    __tablename__ = "aircraft"
+    __tablename__ = "tow_airplanes"
 
     id = Column(Integer, primary_key=True, index=True)
     call_sign = Column(String, nullable=False)

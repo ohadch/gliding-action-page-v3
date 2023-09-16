@@ -1,5 +1,5 @@
 makemigrations:
-	alembic revision --autogenerate -m "$(message)"
+	alembic revision --autogenerate -m "$(name)"
 
 migrate:
 	alembic upgrade head
