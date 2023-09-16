@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from .. import Action
-from ..schemas.action import ActionCreateSchema, ActionUpdateSchema
+from ..models import Action
+from ..schemas.action import ActionCreateSchema, ActionUpdateSchema, ActionSearchSchema
 from ..utils.crud import GenericModelCrud
 
 
@@ -15,4 +15,4 @@ class ActionCrud(
     ]
 ):
     def __init__(self):
-        super().__init__(model=model.Action)
+        super().__init__(model=Action)
