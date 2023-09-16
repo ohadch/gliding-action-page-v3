@@ -1,0 +1,6 @@
+export * from "./coursesApi.service.ts"
+export * from "./documentTypesApi.service.ts"
+export * from "./enrollmentsApi.service.ts"
+export * from "./memberDocumentsApi.service.ts"
+export * from "./membersApi.service.ts"
+export * from "./syllabusesApi.service.ts"
