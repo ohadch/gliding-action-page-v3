@@ -118,7 +118,7 @@ class GenericModelCrud(
 
         return query
 
-    def generate_crud_router(
+    def add_crud_routes_to_app(
         self,
         app: FastAPI,
         tags: List[str],
