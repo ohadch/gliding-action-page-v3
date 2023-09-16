@@ -11,7 +11,7 @@ from src.models.enrollment import EnrollmentStatus
 from src.models.member import MemberStatus
 
 
-from src.config.database import Base, engine
+from src.database import Base, engine
 from src.models import (
     Course,
     Syllabus,
@@ -37,7 +37,7 @@ def hello_world():
 def create_seed_data():
     Base.metadata.create_all(bind=engine)
 
-    from src.config.database import SessionLocal
+    from src.database import SessionLocal
 
     db = SessionLocal()
 

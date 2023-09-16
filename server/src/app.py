@@ -1,45 +1,53 @@
-import os
+import logging
+import time
 
-import dotenv
-from starlette.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Request
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi_route_logger_middleware import RouteLoggerMiddleware
 
-dotenv.load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
-from fastapi import FastAPI
 
-from src.routers import (
-    members,
-    member_documents,
-    courses,
-    syllabuses,
-    document_types,
-    enrollments,
-    syllabus_items,
-)
+from src.database import SessionLocal
 
-app = FastAPI()
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+app = FastAPI(
+    title="Gliding Action Page API",
+    description=("Gliding Action Page API is a REST API for the Gliding Action Page platform. "),
 )
 
 
-@app.get("/")
-async def root():
-    return {"message": "Welcome to Ohad's gliding course management system"}
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
-@app.get("/health")
-async def health():
-    return {"message": "OK"}
+logger = logging.getLogger("app")
+
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*"])
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+app.add_middleware(RouteLoggerMiddleware)
 
 
-app.include_router(members.router)
-app.include_router(member_documents.router)
-app.include_router(courses.router)
-app.include_router(syllabuses.router)
-app.include_router(document_types.router)
-app.include_router(enrollments.router)
-app.include_router(syllabus_items.router)
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    return response
+
+
+@app.on_event("startup")
+async def startup():
+    # hook startup event to connect to database for example
+    # await database.connect()
+    logger.debug("Application startup", extra={})
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    # hook startup event to disconnect from database for example
+    # await database.disconnect()
+    logger.debug("Application shutdown", extra={})

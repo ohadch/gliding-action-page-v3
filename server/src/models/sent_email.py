@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, DateTime
 from sqlalchemy.orm import relationship
 
-from src.config.database import Base
+from src.database import Base
 
 
 class SentEmail(Base):

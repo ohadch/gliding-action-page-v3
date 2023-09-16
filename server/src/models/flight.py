@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, DateTime, String
 from sqlalchemy.orm import relationship
 
-from src.config.database import Base
+from src.database import Base
 
 
 class Flight(Base):

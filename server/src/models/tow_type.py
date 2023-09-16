@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 
-from src.config.database import Base
+from src.database import Base
 
 
 class TowType(Base):

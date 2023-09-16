@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from src.config.dependencies import get_db
+from src.database import get_db
 from src.models import Syllabus, SyllabusItem
 from src.schemas.syllabus_item import (
     SyllabusItemSchema,

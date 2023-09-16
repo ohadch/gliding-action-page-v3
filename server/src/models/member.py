@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
-from src.config.database import Base
+from src.database import Base
 from src.utils.enums import RoleId
 
 

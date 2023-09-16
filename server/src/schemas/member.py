@@ -1,24 +1,28 @@
-from pydantic import BaseModel, Field
+from typing import Optional
 
-from src.models.member import MemberStatus
-
-MIN_LENGTH_NAME = 3
+from pydantic import BaseModel
 
 
 class MemberSchema(BaseModel):
     id: int
-    name: str = Field(..., min_length=MIN_LENGTH_NAME)
-    status: MemberStatus
+    first_name: str
+    last_name: str
+    email: str
+    phone_number: Optional[str]
 
     class Config:
         orm_mode = True
 
 
 class MemberCreateSchema(BaseModel):
-    name: str = Field(..., min_length=MIN_LENGTH_NAME)
-    status: MemberStatus
+    first_name: str
+    last_name: str
+    email: str
+    phone_number: Optional[str]
 
 
 class MemberUpdateSchema(BaseModel):
-    name: str = Field(..., min_length=MIN_LENGTH_NAME)
-    status: MemberStatus
+    first_name: Optional[str]
+    last_name: Optional[str]
+    email: Optional[str]
+    phone_number: Optional[str]
