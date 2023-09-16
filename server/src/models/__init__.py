@@ -9,6 +9,6 @@ from .member_role import MemberRole
 from .payers_type import PayersType
 from .payment_method import PaymentMethod
 from .role import Role
-from .sent_email import SentEmail
+from .email import Email
 from .tow_airplane import TowAirplane
 from .tow_type import TowType
