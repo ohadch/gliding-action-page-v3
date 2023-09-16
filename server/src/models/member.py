@@ -15,9 +15,6 @@ class Member(Base):
     email = Column(String, unique=True, nullable=False)
     phone_number = Column(String, nullable=True)
 
-    roles = relationship("Role", back_populates="member")
-    owned_gliders = relationship("GliderOwner", back_populates="member")
-
     def has_role(self, role_id: RoleId) -> bool:
         return any(role.role_id == role_id for role in self.roles)
 

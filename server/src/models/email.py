@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, DateTime
+from sqlalchemy import Column, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
 from src.database import Base
@@ -10,10 +10,10 @@ class Email(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     sent_at = Column(DateTime, nullable=False)
-    recipient_member_id = Column(Integer, nullable=False)
-    flight_id = Column(Integer, nullable=True)
+    recipient_member_id = Column(Integer, ForeignKey("members.id"), nullable=False)
+    flight_id = Column(Integer, ForeignKey("flights.id"), nullable=False)
     
-    flight = relationship("Flight", back_populates="sent_emails")
-    recipient_member = relationship("Member", back_populates="sent_emails")
+    flight = relationship("Flight")
+    recipient_member = relationship("Member")
     
     

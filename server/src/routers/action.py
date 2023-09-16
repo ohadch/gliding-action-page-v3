@@ -1,6 +1,6 @@
 from src.app import app
 
-from src.crud.action import ActionCrud
+from src.crud import ActionCrud
 
 
 crud = ActionCrud()
