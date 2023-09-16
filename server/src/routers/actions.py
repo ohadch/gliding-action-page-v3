@@ -4,10 +4,10 @@ from uuid import UUID
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app import app, crud
-from lynx_api_client import schema
-from app.app import get_db
-from app.settings import get_settings, Settings
+from src.app import get_db
+from src.settings import get_settings, Settings
+
+from src.crud.action import ActionCrud
 
 
 @app.post(
@@ -32,7 +32,7 @@ async def search_actions(
     :param settings: Settings
     :return: List of actions
     """
-    return await crud.ActionCrud().search(
+    return await ActionCrud().search(
         db=db,
         filters=filters,
         page=page,
@@ -54,7 +54,7 @@ async def create_action(
     :param action: Action data
     :param db: Database session
     """
-    return await crud.ActionCrud().create(
+    return await ActionCrud().create(
         db=db,
         data=action,
     )
@@ -73,7 +73,7 @@ async def get_action_by_id(action_id: UUID, db: Session = Depends(get_db)):
     :param db: Database session
     :return: Action
     """
-    action = await crud.ActionCrud().get_by_id(db=db, id_=action_id)
+    action = await ActionCrud().get_by_id(db=db, id_=action_id)
     if not action:
         raise HTTPException(status_code=404, detail="Action not found")
     return action
@@ -97,7 +97,7 @@ async def update_action(
     :param db: Database session
     :return: Updated action
     """
-    return await crud.ActionCrud().update(
+    return await ActionCrud().update(
         db=db,
         id_=action_id,
         data=action,
@@ -115,4 +115,4 @@ async def delete_action(action_id: UUID, db: Session = Depends(get_db)):
     :param action_id: Action ID
     :param db: Database session
     """
-    await crud.ActionCrud().delete(db=db, id_=action_id)
+    await ActionCrud().delete(db=db, id_=action_id)
