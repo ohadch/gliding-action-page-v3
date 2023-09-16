@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class SentEmailSchema(BaseModel):
+class EmailSchema(BaseModel):
     id: int
     sent_at: datetime.datetime
     recipient_member_id: int
@@ -14,17 +14,17 @@ class SentEmailSchema(BaseModel):
         orm_mode = True
 
 
-class SentEmailCreateSchema(BaseModel):
+class EmailCreateSchema(BaseModel):
     sent_at: datetime.datetime
     recipient_member_id: int
     flight_id: Optional[int]
 
 
-class SentEmailUpdateSchema(BaseModel):
+class EmailUpdateSchema(BaseModel):
     sent_at: Optional[datetime.datetime]
     recipient_member_id: Optional[int]
     flight_id: Optional[Optional[int]]
 
 
-class SentEmailSearchSchema(SentEmailUpdateSchema):
+class EmailSearchSchema(EmailUpdateSchema):
     pass

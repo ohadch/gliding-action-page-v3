@@ -4,9 +4,9 @@ from sqlalchemy.orm import relationship
 from src.database import Base
 
 
-class SentEmail(Base):
+class Email(Base):
 
-    __tablename__ = "sent_emails"
+    __tablename__ = "emails"
 
     id = Column(Integer, primary_key=True, index=True)
     sent_at = Column(DateTime, nullable=False)
