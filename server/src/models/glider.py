@@ -14,7 +14,7 @@ class Glider(Base):
     num_seats = Column(Integer, nullable=False)
     type = Column(Integer, nullable=False)
 
-    owners = relationship("User", secondary="aircraft_owners", back_populates="aircraft")
+    owners = relationship("Member", secondary="aircraft_owners", back_populates="aircraft")
 
     @property
     def is_self_launch_only(self):

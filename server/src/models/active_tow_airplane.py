@@ -14,5 +14,5 @@ class ActiveTowAirplane(Base):
     airplane_id = Column(Integer, nullable=False)
 
     action = relationship("Action", back_populates="active_tow_airplanes")
-    tow_pilot = relationship("User", foreign_keys=[tow_pilot_id])
+    tow_pilot = relationship("Member", foreign_keys=[tow_pilot_id])
     airplane = relationship("Airplane", foreign_keys=[airplane_id])

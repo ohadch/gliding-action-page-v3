@@ -15,8 +15,8 @@ class Action(Base):
     responsible_cfi_id = Column(Integer, nullable=False)
     instruction_glider_id = Column(Integer, nullable=False)
 
-    field_responsible = relationship("User", foreign_keys=[field_responsible_id])
-    responsible_cfi = relationship("User", foreign_keys=[responsible_cfi_id])
+    field_responsible = relationship("Member", foreign_keys=[field_responsible_id])
+    responsible_cfi = relationship("Member", foreign_keys=[responsible_cfi_id])
     instruction_glider = relationship("Glider", foreign_keys=[instruction_glider_id])
     flights = relationship("Flight", back_populates="action")
     active_tow_airplanes = relationship("ActiveTowAirplane", back_populates="action")

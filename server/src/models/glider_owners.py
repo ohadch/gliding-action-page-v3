@@ -14,4 +14,4 @@ class GliderOwner(Base):
     member_id = Column(Integer, nullable=False)
 
     glider = relationship("Glider", back_populates="glider_owners")
-    member = relationship("User", back_populates="owned_gliders")
+    member = relationship("Member", back_populates="owned_gliders")
