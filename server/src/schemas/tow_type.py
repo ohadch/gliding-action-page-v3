@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class PaymentMethodSchema(BaseModel):
+class TowTypeSchema(BaseModel):
     id: int
     name: str
 
@@ -11,9 +11,9 @@ class PaymentMethodSchema(BaseModel):
         orm_mode = True
 
 
-class PaymentMethodCreateSchema(BaseModel):
+class TowTypeCreateSchema(BaseModel):
     name: str
 
 
-class PaymentMethodUpdateSchema(BaseModel):
+class TowTypeUpdateSchema(BaseModel):
     name: Optional[str]
