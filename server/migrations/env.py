@@ -19,7 +19,7 @@ config = context.config
 # Set the SQLALCHEMY_DATABASE_URI to the value of the environment variable
 # DATABASE_URL, which is defined in the .env file.
 # This is the database connection string.
-config.set_main_option("sqlalchemy.url", os.environ.get("DATABASE_URL"))
+config.set_main_option("sqlalchemy.url", os.environ.get("SQLALCHEMY_DB_URI"))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

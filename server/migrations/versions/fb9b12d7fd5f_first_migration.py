@@ -1,8 +1,8 @@
 """first_migration
 
-Revision ID: c182fe395988
+Revision ID: fb9b12d7fd5f
 Revises: 
-Create Date: 2023-09-16 08:40:32.631136
+Create Date: 2023-09-16 17:00:27.701805
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c182fe395988'
+revision = 'fb9b12d7fd5f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -123,6 +123,7 @@ def upgrade() -> None:
     op.create_table('tow_airplanes',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('call_sign', sa.String(), nullable=False),
+    sa.Column('type', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_tow_airplanes_id'), 'tow_airplanes', ['id'], unique=False)
