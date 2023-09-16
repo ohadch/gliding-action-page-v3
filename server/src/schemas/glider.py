@@ -19,9 +19,9 @@ class GliderCreateSchema(BaseModel):
 
 
 class GliderUpdateSchema(BaseModel):
-    call_sign: Optional[str]
-    num_seats: Optional[int]
-    type: Optional[int]
+    call_sign: Optional[str] = None
+    num_seats: Optional[int] = None
+    type: Optional[int] = None
 
 
 class GliderSearchSchema(GliderUpdateSchema):

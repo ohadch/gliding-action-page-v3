@@ -15,7 +15,7 @@ class PaymentMethodCreateSchema(BaseModel):
 
 
 class PaymentMethodUpdateSchema(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
 
 
 class PaymentMethodSearchSchema(PaymentMethodUpdateSchema):

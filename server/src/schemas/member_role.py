@@ -17,8 +17,8 @@ class MemberRoleCreateSchema(BaseModel):
 
 
 class MemberRoleUpdateSchema(BaseModel):
-    member_id: Optional[int]
-    role_id: Optional[int]
+    member_id: Optional[int] = None
+    role_id: Optional[int] = None
 
 
 class MemberRoleSearchSchema(MemberRoleUpdateSchema):

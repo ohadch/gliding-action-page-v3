@@ -19,9 +19,9 @@ class ActiveTowAirplaneCreateSchema(BaseModel):
 
 
 class ActiveTowAirplaneUpdateSchema(BaseModel):
-    action_id: Optional[int]
-    tow_pilot_id: Optional[int]
-    airplane_id: Optional[int]
+    action_id: Optional[int] = None
+    tow_pilot_id: Optional[int] = None
+    airplane_id: Optional[int] = None
 
 
 class ActiveTowAirplaneSearchSchema(ActiveTowAirplaneUpdateSchema):

@@ -17,8 +17,8 @@ class GliderOwnerCreateSchema(BaseModel):
 
 
 class GliderOwnerUpdateSchema(BaseModel):
-    glider_id: Optional[int]
-    member_id: Optional[int]
+    glider_id: Optional[int] = None
+    member_id: Optional[int] = None
 
 
 class GliderOwnerSearchSchema(GliderOwnerUpdateSchema):

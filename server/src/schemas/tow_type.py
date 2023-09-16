@@ -15,7 +15,7 @@ class TowTypeCreateSchema(BaseModel):
 
 
 class TowTypeUpdateSchema(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
 
 
 class TowTypeSearchSchema(TowTypeUpdateSchema):

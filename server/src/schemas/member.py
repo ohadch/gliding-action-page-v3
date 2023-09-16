@@ -8,7 +8,7 @@ class MemberSchema(BaseModel):
     first_name: str
     last_name: str
     email: str
-    phone_number: Optional[str]
+    phone_number: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -17,14 +17,14 @@ class MemberCreateSchema(BaseModel):
     first_name: str
     last_name: str
     email: str
-    phone_number: Optional[str]
+    phone_number: Optional[str] = None
 
 
 class MemberUpdateSchema(BaseModel):
-    first_name: Optional[str]
-    last_name: Optional[str]
-    email: Optional[str]
-    phone_number: Optional[str]
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[str] = None
+    phone_number: Optional[str] = None
 
 
 class MemberSearchSchema(MemberUpdateSchema):

@@ -7,10 +7,10 @@ from pydantic import BaseModel, ConfigDict
 class ActionSchema(BaseModel):
     id: int
     date: datetime
-    closed_at: datetime
-    field_responsible_id: int
-    responsible_cfi_id: int
-    instruction_glider_id: int
+    closed_at: Optional[datetime] = None
+    field_responsible_id: Optional[int] = None
+    responsible_cfi_id: Optional[int] = None
+    instruction_glider_id: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -18,17 +18,17 @@ class ActionSchema(BaseModel):
 class ActionCreateSchema(BaseModel):
     date: datetime
     closed_at: Optional[datetime]
-    field_responsible_id: Optional[int]
-    responsible_cfi_id: Optional[int]
-    instruction_glider_id: Optional[int]
+    field_responsible_id: Optional[int] = None
+    responsible_cfi_id: Optional[int] = None
+    instruction_glider_id: Optional[int] = None
 
 
 class ActionUpdateSchema(BaseModel):
-    date: Optional[datetime]
-    closed_at: Optional[datetime]
-    field_responsible_id: Optional[int]
-    responsible_cfi_id: Optional[int]
-    instruction_glider_id: Optional[int]
+    date: Optional[datetime] = None
+    closed_at: Optional[datetime] = None
+    field_responsible_id: Optional[int] = None
+    responsible_cfi_id: Optional[int] = None
+    instruction_glider_id: Optional[int] = None
 
 
 class ActionSearchSchema(ActionUpdateSchema):

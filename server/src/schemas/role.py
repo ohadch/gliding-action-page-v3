@@ -15,7 +15,7 @@ class RoleCreateSchema(BaseModel):
 
 
 class RoleUpdateSchema(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
 
 
 class RoleSearchSchema(RoleUpdateSchema):

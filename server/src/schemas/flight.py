@@ -9,17 +9,17 @@ class FlightSchema(BaseModel):
     action_id: int
     take_off_at: Optional[datetime.datetime]
     landing_at: Optional[datetime.datetime]
-    glider_id: Optional[int]
-    pilot_1_id: Optional[int]
-    pilot_2_id: Optional[int]
-    tow_airplane_id: Optional[int]
-    tow_pilot_id: Optional[int]
-    tow_type_id: Optional[int]
-    flight_type_id: Optional[int]
-    payers_type_id: Optional[int]
-    payment_method_id: Optional[int]
-    payment_receiver_id: Optional[int]
-    paying_member_id: Optional[int]
+    glider_id: Optional[int] = None
+    pilot_1_id: Optional[int] = None
+    pilot_2_id: Optional[int] = None
+    tow_airplane_id: Optional[int] = None
+    tow_pilot_id: Optional[int] = None
+    tow_type_id: Optional[int] = None
+    flight_type_id: Optional[int] = None
+    payers_type_id: Optional[int] = None
+    payment_method_id: Optional[int] = None
+    payment_receiver_id: Optional[int] = None
+    paying_member_id: Optional[int] = None
     status: str
 
     model_config = ConfigDict(from_attributes=True)
@@ -27,38 +27,38 @@ class FlightSchema(BaseModel):
 
 class FlightCreateSchema(BaseModel):
     action_id: int
-    take_off_at: Optional[datetime.datetime]
-    landing_at: Optional[datetime.datetime]
-    glider_id: Optional[int]
-    pilot_1_id: Optional[int]
-    pilot_2_id: Optional[int]
-    tow_airplane_id: Optional[int]
-    tow_pilot_id: Optional[int]
-    tow_type_id: Optional[int]
-    flight_type_id: Optional[int]
-    payers_type_id: Optional[int]
-    payment_method_id: Optional[int]
-    payment_receiver_id: Optional[int]
-    paying_member_id: Optional[int]
+    take_off_at: Optional[datetime.datetime] = None
+    landing_at: Optional[datetime.datetime] = None
+    glider_id: Optional[int] = None
+    pilot_1_id: Optional[int] = None
+    pilot_2_id: Optional[int] = None
+    tow_airplane_id: Optional[int] = None
+    tow_pilot_id: Optional[int] = None
+    tow_type_id: Optional[int] = None
+    flight_type_id: Optional[int] = None
+    payers_type_id: Optional[int] = None
+    payment_method_id: Optional[int] = None
+    payment_receiver_id: Optional[int] = None
+    paying_member_id: Optional[int] = None
     status: str
 
 
 class FlightUpdateSchema(BaseModel):
-    action_id: Optional[int]
-    take_off_at: Optional[datetime.datetime]
-    landing_at: Optional[datetime.datetime]
-    glider_id: Optional[int]
-    pilot_1_id: Optional[int]
-    pilot_2_id: Optional[int]
-    tow_airplane_id: Optional[int]
-    tow_pilot_id: Optional[int]
-    tow_type_id: Optional[int]
-    flight_type_id: Optional[int]
-    payers_type_id: Optional[int]
-    payment_method_id: Optional[int]
-    payment_receiver_id: Optional[int]
-    paying_member_id: Optional[int]
-    status: Optional[str]
+    action_id: Optional[int] = None
+    take_off_at: Optional[datetime.datetime] = None
+    landing_at: Optional[datetime.datetime] = None
+    glider_id: Optional[int] = None
+    pilot_1_id: Optional[int] = None
+    pilot_2_id: Optional[int] = None
+    tow_airplane_id: Optional[int] = None
+    tow_pilot_id: Optional[int] = None
+    tow_type_id: Optional[int] = None
+    flight_type_id: Optional[int] = None
+    payers_type_id: Optional[int] = None
+    payment_method_id: Optional[int] = None
+    payment_receiver_id: Optional[int] = None
+    paying_member_id: Optional[int] = None
+    status: Optional[str] = None
 
 
 class FlightSearchSchema(FlightUpdateSchema):

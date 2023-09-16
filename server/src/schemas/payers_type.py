@@ -15,7 +15,7 @@ class PayersTypeCreateSchema(BaseModel):
 
 
 class PayersTypeUpdateSchema(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
 
 
 class PayersTypeSearchSchema(PayersTypeUpdateSchema):

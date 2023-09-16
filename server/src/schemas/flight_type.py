@@ -16,7 +16,7 @@ class FlightTypeCreateSchema(BaseModel):
 
 
 class FlightTypeUpdateSchema(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
 
 
 class FlightTypeSearchSchema(FlightTypeUpdateSchema):
