@@ -7,7 +7,7 @@ from src.utils.enums import AircraftTypeId
 
 class GliderOwner(Base):
 
-    __tablename__ = "glider_owners"
+    __tablename__ = "gliders_owners"
 
     id = Column(Integer, primary_key=True, index=True)
     glider_id = Column(Integer, nullable=False)
