@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     sqlalchemy_db_uri: str
     port: int
     default_page_size: int
+    create_seed_data: bool = True
 
 
 @lru_cache()
