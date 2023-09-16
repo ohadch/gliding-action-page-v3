@@ -17,3 +17,7 @@ class PaymentMethodCreateSchema(BaseModel):
 
 class PaymentMethodUpdateSchema(BaseModel):
     name: Optional[str]
+
+
+class PaymentMethodSearchSchema(PaymentMethodUpdateSchema):
+    pass

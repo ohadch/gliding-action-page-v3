@@ -20,3 +20,7 @@ class TowAirplaneCreateSchema(BaseModel):
 class TowAirplaneUpdateSchema(BaseModel):
     call_sign: Optional[str]
     type: Optional[int]
+
+
+class TowAirplaneSearchSchema(TowAirplaneUpdateSchema):
+    pass

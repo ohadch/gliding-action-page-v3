@@ -23,3 +23,7 @@ class GliderUpdateSchema(BaseModel):
     call_sign: Optional[str]
     num_seats: Optional[int]
     type: Optional[int]
+
+
+class GliderSearchSchema(GliderUpdateSchema):
+    pass

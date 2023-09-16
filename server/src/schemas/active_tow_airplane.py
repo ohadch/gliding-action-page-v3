@@ -23,3 +23,7 @@ class ActiveTowAirplaneUpdateSchema(BaseModel):
     action_id: Optional[int]
     tow_pilot_id: Optional[int]
     airplane_id: Optional[int]
+
+
+class ActiveTowAirplaneSearchSchema(ActiveTowAirplaneUpdateSchema):
+    pass

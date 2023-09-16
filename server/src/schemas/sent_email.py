@@ -24,3 +24,7 @@ class SentEmailUpdateSchema(BaseModel):
     sent_at: Optional[datetime.datetime]
     recipient_member_id: Optional[int]
     flight_id: Optional[Optional[int]]
+
+
+class SentEmailSearchSchema(SentEmailUpdateSchema):
+    pass

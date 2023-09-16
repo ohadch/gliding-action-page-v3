@@ -1,53 +1,118 @@
-from fastapi import APIRouter, Depends
+from typing import List, Optional
+from uuid import UUID
+
+from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from src.database import get_db
-from src.models import Member
-from src.schemas.member import MemberSchema, MemberCreateSchema, MemberUpdateSchema
+from app import app, crud
+from lynx_api_client import schema
+from app.app import get_db
+from app.settings import get_settings, Settings
 
-router = APIRouter(
-    prefix="/members",
-    tags=["members"],
-    responses={404: {"description": "Not found"}},
+
+@app.post(
+    "/actions/search",
+    tags=["actions"],
+    response_model=List[schema.ActionSchema],
+    summary="Search actions",
 )
-
-
-@router.get("/", response_model=list[MemberSchema])
-async def read_members(db: Session = Depends(get_db)):
-    return db.query(Member).all()
-
-
-@router.get("/{member_id}", response_model=MemberSchema)
-async def read_member(member_id: int, db: Session = Depends(get_db)):
-    return db.query(Member).get(member_id)
-
-
-@router.post("/", response_model=MemberSchema)
-async def create_member(
-    member_schema: MemberCreateSchema, db: Session = Depends(get_db)
+async def search_actions(
+    page: int = 1,
+    page_size: Optional[int] = None,
+    filters: Optional[schema.ActionSchemaSearch] = None,
+    db: Session = Depends(get_db),
+    settings: Settings = Depends(get_settings),
 ):
-    member = Member(**member_schema.__dict__)
-    db.add(member)
-    db.commit()
-    db.refresh(member)
-    return member
+    """
+    Search actions
+    :param page: Page number
+    :param page_size: Page size
+    :param filters: Filters
+    :param db: Database session
+    :param settings: Settings
+    :return: List of actions
+    """
+    return await crud.ActionCrud().search(
+        db=db,
+        filters=filters,
+        page=page,
+        page_size=page_size or settings.default_page_size,
+    )
 
 
-@router.put("/{member_id}", response_model=MemberSchema)
-async def update_member(
-    member_id: int, member_schema: MemberUpdateSchema, db: Session = Depends(get_db)
+@app.post(
+    "/actions",
+    tags=["actions"],
+    response_model=schema.ActionSchema,
+    summary="Create action",
+)
+async def create_action(
+    action: schema.ActionSchemaCreate, db: Session = Depends(get_db)
 ):
-    member = db.query(Member).get(member_id)
-    for key, value in member_schema.__dict__.items():
-        setattr(member, key, value)
-    db.commit()
-    db.refresh(member)
-    return member
+    """
+    Create action
+    :param action: Action data
+    :param db: Database session
+    """
+    return await crud.ActionCrud().create(
+        db=db,
+        data=action,
+    )
 
 
-@router.delete("/{member_id}")
-async def delete_member(member_id: int, db: Session = Depends(get_db)):
-    member = db.query(Member).get(member_id)
-    db.delete(member)
-    db.commit()
-    return {"message": "Member deleted successfully."}
+@app.get(
+    "/actions/{action_id}",
+    tags=["actions"],
+    response_model=schema.ActionSchema,
+    summary="Get action by ID",
+)
+async def get_action_by_id(action_id: UUID, db: Session = Depends(get_db)):
+    """
+    Read action by ID
+    :param action_id: Action ID
+    :param db: Database session
+    :return: Action
+    """
+    action = await crud.ActionCrud().get_by_id(db=db, id_=action_id)
+    if not action:
+        raise HTTPException(status_code=404, detail="Action not found")
+    return action
+
+
+@app.put(
+    "/actions/{action_id}",
+    tags=["actions"],
+    response_model=schema.ActionSchema,
+    summary="Update action",
+)
+async def update_action(
+    action_id: UUID,
+    action: schema.ActionSchemaUpdate,
+    db: Session = Depends(get_db),
+):
+    """
+    Update action
+    :param action_id: Action ID
+    :param action: Action data to update
+    :param db: Database session
+    :return: Updated action
+    """
+    return await crud.ActionCrud().update(
+        db=db,
+        id_=action_id,
+        data=action,
+    )
+
+
+@app.delete(
+    "/actions/{action_id}",
+    tags=["actions"],
+    summary="Delete action",
+)
+async def delete_action(action_id: UUID, db: Session = Depends(get_db)):
+    """
+    Delete action
+    :param action_id: Action ID
+    :param db: Database session
+    """
+    await crud.ActionCrud().delete(db=db, id_=action_id)

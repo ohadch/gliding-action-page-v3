@@ -60,3 +60,7 @@ class FlightUpdateSchema(BaseModel):
     payment_receiver_id: Optional[int]
     paying_member_id: Optional[int]
     status: Optional[str]
+
+
+class FlightSearchSchema(FlightUpdateSchema):
+    pass

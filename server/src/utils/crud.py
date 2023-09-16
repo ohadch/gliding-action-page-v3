@@ -10,14 +10,14 @@ from src.settings import get_settings
 
 TModel = TypeVar("TModel", bound=Base)
 TModelIDType = TypeVar("TModelIDType", int, str, UUID)
-TModelSchemaSearch = TypeVar("TModelSchemaSearch", bound=BaseModel)
-TModelSchemaCreate = TypeVar("TModelSchemaCreate", bound=BaseModel)
-TModelSchemaUpdate = TypeVar("TModelSchemaUpdate", bound=BaseModel)
+TModelSearchSchema = TypeVar("TModelSearchSchema", bound=BaseModel)
+TModelCreateSchema = TypeVar("TModelCreateSchema", bound=BaseModel)
+TModelUpdateSchema = TypeVar("TModelUpdateSchema", bound=BaseModel)
 
 
 class GenericModelCrud(
     Generic[
-        TModel, TModelIDType, TModelSchemaSearch, TModelSchemaCreate, TModelSchemaUpdate
+        TModel, TModelIDType, TModelSearchSchema, TModelCreateSchema, TModelUpdateSchema
     ]
 ):
     def __init__(
@@ -29,7 +29,7 @@ class GenericModelCrud(
     async def search(
         self,
         db: Session,
-        filters: Optional[TModelSchemaSearch] = None,
+        filters: Optional[TModelSearchSchema] = None,
         page: int = 1,
         page_size: Optional[int] = None,
     ) -> List[TModel]:
@@ -49,7 +49,7 @@ class GenericModelCrud(
         )
         return response.items
 
-    async def create(self, db: Session, data: TModelSchemaCreate) -> TModel:
+    async def create(self, db: Session, data: TModelCreateSchema) -> TModel:
         """
         Create a new item.
         :param db: Database session

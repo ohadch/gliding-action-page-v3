@@ -30,3 +30,7 @@ class ActionUpdateSchema(BaseModel):
     field_responsible_id: Optional[int]
     responsible_cfi_id: Optional[int]
     instruction_glider_id: Optional[int]
+
+
+class ActionSearchSchema(ActionUpdateSchema):
+    pass

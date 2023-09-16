@@ -17,3 +17,7 @@ class TowTypeCreateSchema(BaseModel):
 
 class TowTypeUpdateSchema(BaseModel):
     name: Optional[str]
+
+
+class TowTypeSearchSchema(TowTypeUpdateSchema):
+    pass

@@ -17,3 +17,7 @@ class RoleCreateSchema(BaseModel):
 
 class RoleUpdateSchema(BaseModel):
     name: Optional[str]
+
+
+class RoleSearchSchema(RoleUpdateSchema):
+    pass

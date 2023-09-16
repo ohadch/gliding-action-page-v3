@@ -20,3 +20,7 @@ class MemberRoleCreateSchema(BaseModel):
 class MemberRoleUpdateSchema(BaseModel):
     member_id: Optional[int]
     role_id: Optional[int]
+
+
+class MemberRoleSearchSchema(MemberRoleUpdateSchema):
+    pass

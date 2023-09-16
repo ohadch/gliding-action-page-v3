@@ -26,3 +26,7 @@ class MemberUpdateSchema(BaseModel):
     last_name: Optional[str]
     email: Optional[str]
     phone_number: Optional[str]
+
+
+class MemberSearchSchema(MemberUpdateSchema):
+    pass
