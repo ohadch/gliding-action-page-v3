@@ -10,11 +10,13 @@ class Aircraft(Base):
     __tablename__ = "aircraft"
 
     id = Column(Integer, primary_key=True, index=True)
-    call_sign = Column(String, nullable=False)
-    num_seats = Column(Integer, nullable=False)
-    type = Column(Integer, nullable=False)
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=False)
+    phone_number = Column(String, nullable=True)
 
-    owners = relationship("User", secondary="aircraft_owners", back_populates="aircraft")
+    roles = relationship("Role", back_populates="member")
+    owned_aircraft = relationship("Aircraft", secondary="aircraft_owners", back_populates="owners")
 
     @property
     def is_secondary_tow_airplane(self):
