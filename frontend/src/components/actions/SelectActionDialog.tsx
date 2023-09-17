@@ -7,12 +7,13 @@ import {
     FormGroup,
     FormControl, Select, InputLabel, MenuItem
 } from "@mui/material";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {ActionSchema} from "../../lib/types.ts";
 import createClient from "openapi-fetch";
 import {paths} from "../../lib/api.ts";
 import {API_HOST} from "../../utils/consts.ts";
 import {useTranslation} from "react-i18next";
+import {ActionContext} from "../../context.ts";
 
 export interface SelectActionDialogProps {
     open: boolean
@@ -23,8 +24,11 @@ export interface SelectActionDialogProps {
 const {POST} = createClient<paths>({baseUrl: API_HOST});
 
 export default function SelectActionDialog({open, onClose, onActionSelected}: SelectActionDialogProps) {
+    const {
+        action: contextAction
+    } = useContext(ActionContext)
     const [actions, setActions] = useState<ActionSchema[]>([]);
-    const [action, setAction] = useState<ActionSchema | undefined>(undefined);
+    const [action, setAction] = useState<ActionSchema | undefined>(contextAction || undefined);
     const {
         t
     } = useTranslation()
