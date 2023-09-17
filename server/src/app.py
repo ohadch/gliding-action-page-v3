@@ -1,4 +1,6 @@
 from dotenv import load_dotenv
+from starlette.middleware.cors import CORSMiddleware
+
 load_dotenv()
 
 import logging
@@ -15,6 +17,13 @@ from src.database import SessionLocal
 app = FastAPI(
     title="Gliding Action Page API",
     description=("Gliding Action Page API is a REST API for the Gliding Action Page platform. "),
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
