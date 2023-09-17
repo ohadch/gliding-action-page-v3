@@ -2,29 +2,32 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    TextField,
     DialogActions,
     Button,
     FormGroup,
-    FormControl
+    FormControl, Select, InputLabel, MenuItem
 } from "@mui/material";
 import {useEffect, useState} from "react";
 import {ActionSchema} from "../../lib/types.ts";
 import createClient from "openapi-fetch";
 import {paths} from "../../lib/api.ts";
 import {API_HOST} from "../../utils/consts.ts";
+import {useTranslation} from "react-i18next";
 
 export interface SelectActionDialogProps {
     open: boolean
     onClose: () => void
-    onActionSelected: (data: ActionSchema) => void
+    onActionSelected: (action: ActionSchema) => void
 }
 
 const {POST} = createClient<paths>({baseUrl: API_HOST});
 
 export default function SelectActionDialog({open, onClose, onActionSelected}: SelectActionDialogProps) {
     const [actions, setActions] = useState<ActionSchema[]>([]);
-    const [actionId, setActionId] = useState<number>(1);
+    const [action, setAction] = useState<ActionSchema | undefined>(undefined);
+    const {
+        t
+    } = useTranslation()
 
     useEffect(() => {
         (async () => {
@@ -52,7 +55,9 @@ export default function SelectActionDialog({open, onClose, onActionSelected}: Se
 
     return (
         <Dialog open={open}>
-            <DialogTitle>Create Syllabus</DialogTitle>
+            <DialogTitle>
+                {t("SELECT_ACTION")}
+            </DialogTitle>
             <DialogContent
                 sx={{
                     display: "flex",
@@ -61,31 +66,48 @@ export default function SelectActionDialog({open, onClose, onActionSelected}: Se
                     width: 400,
                 }}
             >
-                <FormGroup>
+                <FormGroup
+                    style={{
+                        paddingTop: 5,
+                    }}
+                >
                     <FormControl>
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="name"
-                            label="Name"
-                            type="text"
-                            fullWidth
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
+                        <InputLabel id="action-label">
+                            {t("ACTION")}
+                        </InputLabel>
+                        <Select
+                            labelId="action-label"
+                            id="action"
+                            value={action?.id || ""}
+                            label={t("ACTION")}
+                            onChange={(e) => {
+                                const action = actions.find((action) => action.id === e.target.value);
+                                setAction(action);
+                            }}
+                        >
+                            {actions.map((action) => (
+                                <MenuItem key={action.id} value={action.id}>{action.date.split("T")[0]}</MenuItem>
+                            ))}
+                        </Select>
                     </FormControl>
                 </FormGroup>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
+                <Button onClick={onClose}>
+                    {t("CANCEL")}
+                </Button>
                 <Button onClick={
                     () => {
-                        onActionSelected({
-                            name,
-                        });
+                        if (!action) {
+                            console.warn("No action selected")
+                            return;
+                        }
+                        onActionSelected(action);
                         onClose();
                     }
-                }>Create</Button>
+                }>
+                    {t("SELECT")}
+                </Button>
             </DialogActions>
         </Dialog>
     )

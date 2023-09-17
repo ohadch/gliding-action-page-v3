@@ -1,5 +1,5 @@
 import {Grid} from "@mui/material";
-import FlightsTable from "../../components/flightsTable/FlightsTable.tsx";
+import FlightsTable from "../../components/flights/FlightsTable.tsx";
 import {useEffect, useState} from "react";
 import createClient from "openapi-fetch";
 import {paths} from "../../lib/api.ts";
