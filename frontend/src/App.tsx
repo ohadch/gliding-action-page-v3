@@ -18,6 +18,8 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import BadgeIcon from '@mui/icons-material/Badge';
 import i18n from "i18next";
 import {initReactI18next, useTranslation} from "react-i18next";
+import {ActionContext} from "./context.ts";
+import {ActionSchema} from "./lib/types.ts";
 
 const DRAWER_WIDTH = 240;
 
@@ -108,6 +110,7 @@ i18n
 export default function App() {
     const [open, setOpen] = React.useState(true);
     const [theme, setTheme] = React.useState(lightTheme);
+    const [action, setAction] = React.useState<ActionSchema | null>(null);
     const {t} = useTranslation()
     const {pathname} = useLocation();
     document.body.dir = i18n.dir();
@@ -126,7 +129,11 @@ export default function App() {
     ]
 
     return (
-        <ThemeProvider theme={theme}>
+        <ActionContext.Provider value={{
+            action,
+            setAction,
+        }}>
+            <ThemeProvider theme={theme}>
             <Box sx={{display: 'flex'}}>
                 <CssBaseline/>
                 <AppBar position="absolute" open={open}>
@@ -235,5 +242,6 @@ export default function App() {
                 </Box>
             </Box>
         </ThemeProvider>
+        </ActionContext.Provider>
     );
 }
