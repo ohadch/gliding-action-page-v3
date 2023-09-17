@@ -10,13 +10,12 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Container from '@mui/material/Container';
 import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronLeft';
 import List from '@mui/material/List';
 import {ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import {Route, Routes, useLocation} from "react-router-dom";
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import BadgeIcon from '@mui/icons-material/Badge';
-import LanguageIcon from '@mui/icons-material/Language';
 import i18n from "i18next";
 import {initReactI18next, useTranslation} from "react-i18next";
 
@@ -45,7 +44,7 @@ const AppBar = styled(MuiAppBar, {
         duration: theme.transitions.duration.leavingScreen,
     }),
     ...(open && {
-        marginLeft: DRAWER_WIDTH,
+        marginRight: DRAWER_WIDTH,
         width: `calc(100% - ${DRAWER_WIDTH}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
@@ -99,19 +98,14 @@ i18n
         // (tip move them in a JSON file and import them,
         // or even better, manage them via a UI: https://react.i18next.com/guides/multiple-translation-files#manage-your-translations-with-a-management-gui)
         resources: {
-            en: {
-                translation: {
-                    APP_NAME: "Gliding Action Management",
-                }
-            },
             he: {
                 translation: {
                     APP_NAME: "ניהול פעולת הדאיה",
                 }
             }
         },
-        lng: "he", // if you're using a language detector, do not define the lng option
-        fallbackLng: "en",
+        lng: "he",
+        fallbackLng: "he",
 
         interpolation: {
             escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
@@ -121,15 +115,10 @@ i18n
 export default function App() {
     const [open, setOpen] = React.useState(true);
     const [theme, setTheme] = React.useState(lightTheme);
-    const [language, setLanguage] = React.useState("he" as "en" | "he");
     const {t} = useTranslation()
-
-    function changeLanguage (lng: string) {
-        const newLanguage = language === "en" ? "he" : "en";
-        i18n.changeLanguage(lng, () => setLanguage(newLanguage)).then();
-    }
-
     const {pathname} = useLocation();
+    document.body.dir = i18n.dir();
+
     const toggleDrawer = () => {
         setOpen(!open);
     };
@@ -141,7 +130,7 @@ export default function App() {
                 <AppBar position="absolute" open={open}>
                     <Toolbar
                         sx={{
-                            pr: '24px', // keep right padding when drawer closed
+                            pl: '24px', // keep padding when drawer closed
                         }}
                     >
                         <IconButton
@@ -150,7 +139,7 @@ export default function App() {
                             aria-label="open drawer"
                             onClick={toggleDrawer}
                             sx={{
-                                marginRight: '36px',
+                                marginLeft: '36px',
                                 ...(open && {display: 'none'}),
                             }}
                         >
@@ -177,7 +166,7 @@ export default function App() {
                         }}
                     >
                         <IconButton onClick={toggleDrawer}>
-                            <ChevronLeftIcon/>
+                            <ChevronRightIcon/>
                         </IconButton>
                     </Toolbar>
                     <Divider/>
@@ -205,12 +194,6 @@ export default function App() {
                                     <Brightness4Icon/>
                                 </ListItemIcon>
                                 <ListItemText primary="Toggle Theme"/>
-                            </ListItemButton>
-                            <ListItemButton onClick={() => changeLanguage(language === "en" ? "he" : "en")}>
-                                <ListItemIcon>
-                                    <LanguageIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary={language === "en" ? "עברית" : "English"}/>
                             </ListItemButton>
                         </React.Fragment>
                     </List>
