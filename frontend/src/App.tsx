@@ -21,6 +21,8 @@ import {initReactI18next, useTranslation} from "react-i18next";
 import {ActionContext} from "./context.ts";
 import {ActionSchema} from "./lib/types.ts";
 import SelectActionDialog from "./components/actions/SelectActionDialog.tsx";
+import {CacheService} from "./utils/cache.ts";
+import {CACHE_KEY_ACTION} from "./utils/consts.ts";
 
 const DRAWER_WIDTH = 240;
 
@@ -116,7 +118,9 @@ i18n
 export default function App() {
     const [drawerOpen, setDrawerDrawerOpen] = React.useState(false);
     const [theme, setTheme] = React.useState(lightTheme);
-    const [action, setAction] = React.useState<ActionSchema | null>(null);
+    const [action, setAction] = React.useState<ActionSchema | null>(
+        CacheService.get(CACHE_KEY_ACTION) ? JSON.parse(CacheService.get(CACHE_KEY_ACTION) as never) : null
+    );
     const [selectActionDialogOpen, setSelectActionDialogOpen] = React.useState(false);
     const {t} = useTranslation()
     const {pathname} = useLocation();
@@ -144,7 +148,10 @@ export default function App() {
                 <SelectActionDialog
                     open={selectActionDialogOpen}
                     onClose={() => setSelectActionDialogOpen(false)}
-                    onActionSelected={(action) => setAction(action)}
+                    onActionSelected={(action) => {
+                        setAction(action);
+                        CacheService.set(CACHE_KEY_ACTION, JSON.stringify(action));
+                    }}
                 />
                 <Box sx={{display: 'flex'}}>
                     <CssBaseline/>
