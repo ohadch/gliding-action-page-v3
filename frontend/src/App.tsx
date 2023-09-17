@@ -16,6 +16,9 @@ import {ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import {Route, Routes, useLocation} from "react-router-dom";
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import BadgeIcon from '@mui/icons-material/Badge';
+import LanguageIcon from '@mui/icons-material/Language';
+import i18n from "i18next";
+import {initReactI18next, useTranslation} from "react-i18next";
 
 const DRAWER_WIDTH = 240;
 
@@ -89,9 +92,43 @@ const lightTheme = createTheme({
     }
 })
 
+i18n
+    .use(initReactI18next) // passes i18n down to react-i18next
+    .init({
+        // the translations
+        // (tip move them in a JSON file and import them,
+        // or even better, manage them via a UI: https://react.i18next.com/guides/multiple-translation-files#manage-your-translations-with-a-management-gui)
+        resources: {
+            en: {
+                translation: {
+                    APP_NAME: "Gliding Action Management",
+                }
+            },
+            he: {
+                translation: {
+                    APP_NAME: "ניהול פעולת הדאיה",
+                }
+            }
+        },
+        lng: "he", // if you're using a language detector, do not define the lng option
+        fallbackLng: "en",
+
+        interpolation: {
+            escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
+        }
+    });
+
 export default function App() {
     const [open, setOpen] = React.useState(true);
     const [theme, setTheme] = React.useState(lightTheme);
+    const [language, setLanguage] = React.useState("he" as "en" | "he");
+    const {t} = useTranslation()
+
+    function changeLanguage (lng: string) {
+        const newLanguage = language === "en" ? "he" : "en";
+        i18n.changeLanguage(lng, () => setLanguage(newLanguage)).then();
+    }
+
     const {pathname} = useLocation();
     const toggleDrawer = () => {
         setOpen(!open);
@@ -126,7 +163,7 @@ export default function App() {
                             noWrap
                             sx={{flexGrow: 1}}
                         >
-                            Gliding Action Management
+                            {t("APP_NAME")}
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -149,24 +186,31 @@ export default function App() {
                             {ROUTES
                                 .filter((route) => route.icon)
                                 .map((route) => (
-                                <ListItemButton
-                                    key={route.path}
-                                    component="a"
-                                    href={route.path}
-                                    selected={pathname === route.path}
-                                >
-                                    <ListItemIcon>
-                                        {route.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={route.name}/>
-                                </ListItemButton>
-                            ))}
+                                    <ListItemButton
+                                        key={route.path}
+                                        component="a"
+                                        href={route.path}
+                                        selected={pathname === route.path}
+                                    >
+                                        <ListItemIcon>
+                                            {route.icon}
+                                        </ListItemIcon>
+                                        <ListItemText primary={route.name}/>
+                                    </ListItemButton>
+                                ))}
                             <Divider/>
-                            <ListItemButton onClick={() => setTheme(theme.palette.mode === 'light' ? darkTheme : lightTheme)}>
+                            <ListItemButton
+                                onClick={() => setTheme(theme.palette.mode === 'light' ? darkTheme : lightTheme)}>
                                 <ListItemIcon>
                                     <Brightness4Icon/>
                                 </ListItemIcon>
                                 <ListItemText primary="Toggle Theme"/>
+                            </ListItemButton>
+                            <ListItemButton onClick={() => changeLanguage(language === "en" ? "he" : "en")}>
+                                <ListItemIcon>
+                                    <LanguageIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary={language === "en" ? "עברית" : "English"}/>
                             </ListItemButton>
                         </React.Fragment>
                     </List>
@@ -191,9 +235,9 @@ export default function App() {
                                     key={route.path}
                                     path={route.path}
                                     element={
-                                    <React.Suspense fallback={<div></div>}>
-                                        <route.element />
-                                    </React.Suspense>
+                                        <React.Suspense fallback={<div></div>}>
+                                            <route.element/>
+                                        </React.Suspense>
                                     }
                                 />
                             ))}
