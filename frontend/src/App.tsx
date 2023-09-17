@@ -91,7 +91,7 @@ const lightTheme = createTheme({
 
 export default function App() {
     const [open, setOpen] = React.useState(true);
-    const [theme, setTheme] = React.useState(darkTheme);
+    const [theme, setTheme] = React.useState(lightTheme);
     const {pathname} = useLocation();
     const toggleDrawer = () => {
         setOpen(!open);
