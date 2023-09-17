@@ -12,7 +12,7 @@ import Container from '@mui/material/Container';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronRightIcon from '@mui/icons-material/ChevronLeft';
 import List from '@mui/material/List';
-import {ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
+import {Button, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
 import {Route, Routes, useLocation} from "react-router-dom";
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import BadgeIcon from '@mui/icons-material/Badge';
@@ -92,7 +92,8 @@ i18n
                 translation: {
                     APP_NAME: "ניהול פעולת הדאיה",
                     DASHBOARD: "לוח הטיסות",
-                    TOGGLE_THEME: "שנה צבע"
+                    TOGGLE_THEME: "שנה צבע",
+                    CURRENT_ACTION: "הפעולה הנוכחית",
                 }
             }
         },
@@ -155,6 +156,10 @@ export default function App() {
                         >
                             {t("APP_NAME")}
                         </Typography>
+                        <Button color="inherit">
+                            {t("CURRENT_ACTION")}:
+                            TBD
+                        </Button>
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
