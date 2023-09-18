@@ -7,7 +7,12 @@ from src.app import app
 
 from src.crud import GliderCrud
 from src.database import get_db
-from src.schemas import GliderSchema, GliderSearchSchema, GliderCreateSchema, GliderUpdateSchema
+from src.schemas import (
+    GliderSchema,
+    GliderSearchSchema,
+    GliderCreateSchema,
+    GliderUpdateSchema,
+)
 from src.settings import Settings, get_settings
 
 crud = GliderCrud()
@@ -22,11 +27,11 @@ tags = [prefix]
     summary=f"Search {prefix}",
 )
 async def search(
-        page: int = 1,
-        page_size: Optional[int] = None,
-        filters: Optional[GliderSearchSchema] = None,
-        db: Session = Depends(get_db),
-        settings: Settings = Depends(get_settings),
+    page: int = 1,
+    page_size: Optional[int] = None,
+    filters: Optional[GliderSearchSchema] = None,
+    db: Session = Depends(get_db),
+    settings: Settings = Depends(get_settings),
 ):
     """
     Search gliders
@@ -51,9 +56,7 @@ async def search(
     response_model=GliderSchema,
     summary=f"Create {prefix}",
 )
-async def create(
-        data: GliderCreateSchema, db: Session = Depends(get_db)
-):
+async def create(data: GliderCreateSchema, db: Session = Depends(get_db)):
     """
     Create glider
     :param data: Data
@@ -91,9 +94,9 @@ async def get_by_id(id_: int, db: Session = Depends(get_db)):
     summary=f"Update {prefix}",
 )
 async def update(
-        id_: int,
-        data: GliderUpdateSchema,
-        db: Session = Depends(get_db),
+    id_: int,
+    data: GliderUpdateSchema,
+    db: Session = Depends(get_db),
 ):
     """
     Update glider

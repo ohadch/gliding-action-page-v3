@@ -12,8 +12,6 @@ class Email(Base):
     sent_at = Column(DateTime, nullable=False)
     recipient_member_id = Column(Integer, ForeignKey("members.id"), nullable=False)
     flight_id = Column(Integer, ForeignKey("flights.id"), nullable=False)
-    
+
     flight = relationship("Flight")
     recipient_member = relationship("Member")
-    
-    

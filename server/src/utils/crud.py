@@ -18,7 +18,12 @@ TModelUpdateSchema = TypeVar("TModelUpdateSchema", bound=BaseModel)
 
 class GenericModelCrud(
     Generic[
-        TModel, TModelIDType, TModelSchema, TModelSearchSchema, TModelCreateSchema, TModelUpdateSchema
+        TModel,
+        TModelIDType,
+        TModelSchema,
+        TModelSearchSchema,
+        TModelCreateSchema,
+        TModelUpdateSchema,
     ]
 ):
     def __init__(

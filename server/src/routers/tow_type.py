@@ -7,7 +7,12 @@ from src.app import app
 
 from src.crud import TowTypeCrud
 from src.database import get_db
-from src.schemas import TowTypeSchema, TowTypeSearchSchema, TowTypeCreateSchema, TowTypeUpdateSchema
+from src.schemas import (
+    TowTypeSchema,
+    TowTypeSearchSchema,
+    TowTypeCreateSchema,
+    TowTypeUpdateSchema,
+)
 from src.settings import Settings, get_settings
 
 crud = TowTypeCrud()
@@ -22,11 +27,11 @@ tags = [prefix]
     summary=f"Search {prefix}",
 )
 async def search(
-        page: int = 1,
-        page_size: Optional[int] = None,
-        filters: Optional[TowTypeSearchSchema] = None,
-        db: Session = Depends(get_db),
-        settings: Settings = Depends(get_settings),
+    page: int = 1,
+    page_size: Optional[int] = None,
+    filters: Optional[TowTypeSearchSchema] = None,
+    db: Session = Depends(get_db),
+    settings: Settings = Depends(get_settings),
 ):
     """
     Search tow_types
@@ -51,9 +56,7 @@ async def search(
     response_model=TowTypeSchema,
     summary=f"Create {prefix}",
 )
-async def create(
-        data: TowTypeCreateSchema, db: Session = Depends(get_db)
-):
+async def create(data: TowTypeCreateSchema, db: Session = Depends(get_db)):
     """
     Create tow_type
     :param data: Data
@@ -91,9 +94,9 @@ async def get_by_id(id_: int, db: Session = Depends(get_db)):
     summary=f"Update {prefix}",
 )
 async def update(
-        id_: int,
-        data: TowTypeUpdateSchema,
-        db: Session = Depends(get_db),
+    id_: int,
+    data: TowTypeUpdateSchema,
+    db: Session = Depends(get_db),
 ):
     """
     Update tow_type

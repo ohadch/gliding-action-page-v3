@@ -7,7 +7,12 @@ from src.app import app
 
 from src.crud import ActionCrud
 from src.database import get_db
-from src.schemas import ActionSchema, ActionSearchSchema, ActionCreateSchema, ActionUpdateSchema
+from src.schemas import (
+    ActionSchema,
+    ActionSearchSchema,
+    ActionCreateSchema,
+    ActionUpdateSchema,
+)
 from src.settings import Settings, get_settings
 
 crud = ActionCrud()
@@ -22,11 +27,11 @@ tags = [prefix]
     summary=f"Search {prefix}",
 )
 async def search(
-        page: int = 1,
-        page_size: Optional[int] = None,
-        filters: Optional[ActionSearchSchema] = None,
-        db: Session = Depends(get_db),
-        settings: Settings = Depends(get_settings),
+    page: int = 1,
+    page_size: Optional[int] = None,
+    filters: Optional[ActionSearchSchema] = None,
+    db: Session = Depends(get_db),
+    settings: Settings = Depends(get_settings),
 ):
     """
     Search actions
@@ -52,9 +57,7 @@ async def search(
     response_model=ActionSchema,
     summary=f"Create {prefix}",
 )
-async def create(
-        data: ActionCreateSchema, db: Session = Depends(get_db)
-):
+async def create(data: ActionCreateSchema, db: Session = Depends(get_db)):
     """
     Create action
     :param data: Data
@@ -92,9 +95,9 @@ async def get_by_id(id_: int, db: Session = Depends(get_db)):
     summary=f"Update {prefix}",
 )
 async def update(
-        id_: int,
-        data: ActionUpdateSchema,
-        db: Session = Depends(get_db),
+    id_: int,
+    data: ActionUpdateSchema,
+    db: Session = Depends(get_db),
 ):
     """
     Update action
