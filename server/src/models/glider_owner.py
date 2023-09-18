@@ -2,7 +2,6 @@ from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from src.database import Base
-from src.utils.enums import AircraftTypeId
 
 
 class GliderOwner(Base):

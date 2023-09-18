@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
 
 from src.database import Base
 from src.utils.enums import RoleId
@@ -17,4 +16,3 @@ class Member(Base):
 
     def has_role(self, role_id: RoleId) -> bool:
         return any(role.role_id == role_id for role in self.roles)
-

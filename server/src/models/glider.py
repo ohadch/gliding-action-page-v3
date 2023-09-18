@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
 
 from src.database import Base
 from src.utils.enums import AircraftTypeId
@@ -20,9 +19,11 @@ class Glider(Base):
 
     @property
     def is_self_launch_possible(self):
-        return self.is_self_launch_only or AircraftTypeId(self.type) is AircraftTypeId.SelfLaunch
+        return (
+            self.is_self_launch_only
+            or AircraftTypeId(self.type) is AircraftTypeId.SelfLaunch
+        )
 
     @property
     def is_glider(self):
         return not self.is_tow_airplane
-

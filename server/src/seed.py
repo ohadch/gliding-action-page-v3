@@ -4,15 +4,31 @@ from typing import Optional
 from sqlalchemy.orm import Session
 import logging
 
-from src import MemberRole, Role, TowAirplane, Glider, Member, Action, FlightType, PayersType, PaymentMethod, TowType, \
-    GliderOwner
-from src.utils.enums import RoleId, ImportantMemberIds, AircraftTypeId, FlightTypeId, PayersTypeId
+from src import (
+    MemberRole,
+    Role,
+    TowAirplane,
+    Glider,
+    Member,
+    Action,
+    FlightType,
+    PayersType,
+    PaymentMethod,
+    TowType,
+    GliderOwner,
+)
+from src.utils.enums import (
+    RoleId,
+    ImportantMemberIds,
+    AircraftTypeId,
+    FlightTypeId,
+    PayersTypeId,
+)
 
 logger = logging.getLogger(__name__)
 
 
 class SeedDataGenerator:
-
     def __init__(self, session: Session):
         self.session = session
 
@@ -29,12 +45,12 @@ class SeedDataGenerator:
         return tow_airplane
 
     def _create_glider(
-            self,
-            call_sign: str,
-            num_seats: int,
-            type_: AircraftTypeId,
-            owners: list[Member],
-            id_: Optional[int] = None,
+        self,
+        call_sign: str,
+        num_seats: int,
+        type_: AircraftTypeId,
+        owners: list[Member],
+        id_: Optional[int] = None,
     ):
         creation_data = {
             k: v
@@ -62,13 +78,13 @@ class SeedDataGenerator:
         return glider
 
     def _create_member(
-            self,
-            first_name: str,
-            last_name: str,
-            email: str,
-            phone_number: str,
-            roles: list[Role],
-            id_: Optional[int] = None,
+        self,
+        first_name: str,
+        last_name: str,
+        email: str,
+        phone_number: str,
+        roles: list[Role],
+        id_: Optional[int] = None,
     ):
         creation_data = {
             k: v
@@ -81,9 +97,7 @@ class SeedDataGenerator:
             ).items()
             if v is not None
         }
-        member = Member(
-            **creation_data
-        )
+        member = Member(**creation_data)
 
         for role in roles:
             self.session.add(
@@ -135,16 +149,24 @@ class SeedDataGenerator:
 
         # Create Roles
         tow_pilot_role = self._create_role(id=RoleId.TowPilot.value, name="טייס גורר")
-        field_responsible_role = self._create_role(id=RoleId.FieldResponsible.value, name="אחראי בשדה")
-        responsible_cfi_role = self._create_role(id=RoleId.ResponsibleCFI.value, name="מדריך אחראי")
+        field_responsible_role = self._create_role(
+            id=RoleId.FieldResponsible.value, name="אחראי בשדה"
+        )
+        responsible_cfi_role = self._create_role(
+            id=RoleId.ResponsibleCFI.value, name="מדריך אחראי"
+        )
         maintenance_role = self._create_role(id=RoleId.Maintenance.value, name="אחזקה")
-        private_pilot_license_role = self._create_role(id=RoleId.PrivatePilotLicense.value, name="טייס פרטי")
+        private_pilot_license_role = self._create_role(
+            id=RoleId.PrivatePilotLicense.value, name="טייס פרטי"
+        )
         cfi_role = self._create_role(id=RoleId.CFI.value, name="מדריך")
         not_certified_for_solo_paying_student_role = self._create_role(
             id=RoleId.NotCertifiedForSoloPayingStudent.value,
             name="סטודנט משלם לא מורשה סולו",
         )
-        solo_student_role = self._create_role(id=RoleId.SoloStudent.value, name="סטודנט מורשה סולו")
+        solo_student_role = self._create_role(
+            id=RoleId.SoloStudent.value, name="סטודנט מורשה סולו"
+        )
         contact_role = self._create_role(id=RoleId.Contact.value, name="איש קשר")
         not_certified_for_solo_not_paying_student_role = self._create_role(
             id=RoleId.NotCertifiedForSoloNotPayingStudent.value,
@@ -339,7 +361,9 @@ class SeedDataGenerator:
         self._create_flight_type(id=FlightTypeId.Solo.value, name="סולו")
         self._create_flight_type(id=FlightTypeId.Instruction.value, name="הדרכה")
         self._create_flight_type(id=FlightTypeId.Members.value, name="חברים")
-        self._create_flight_type(id=FlightTypeId.InstructorsCourse.value, name="קורס מדריכים")
+        self._create_flight_type(
+            id=FlightTypeId.InstructorsCourse.value, name="קורס מדריכים"
+        )
 
         # PayersType
         self._create_payers_type(id=PayersTypeId.FirstPilot.value, name="טייס ראשון")

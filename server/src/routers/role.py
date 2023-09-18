@@ -22,11 +22,11 @@ tags = [prefix]
     summary=f"Search {prefix}",
 )
 async def search(
-        page: int = 1,
-        page_size: Optional[int] = None,
-        filters: Optional[RoleSearchSchema] = None,
-        db: Session = Depends(get_db),
-        settings: Settings = Depends(get_settings),
+    page: int = 1,
+    page_size: Optional[int] = None,
+    filters: Optional[RoleSearchSchema] = None,
+    db: Session = Depends(get_db),
+    settings: Settings = Depends(get_settings),
 ):
     """
     Search roles
@@ -51,9 +51,7 @@ async def search(
     response_model=RoleSchema,
     summary=f"Create {prefix}",
 )
-async def create(
-        data: RoleCreateSchema, db: Session = Depends(get_db)
-):
+async def create(data: RoleCreateSchema, db: Session = Depends(get_db)):
     """
     Create role
     :param data: Data
@@ -91,9 +89,9 @@ async def get_by_id(id_: int, db: Session = Depends(get_db)):
     summary=f"Update {prefix}",
 )
 async def update(
-        id_: int,
-        data: RoleUpdateSchema,
-        db: Session = Depends(get_db),
+    id_: int,
+    data: RoleUpdateSchema,
+    db: Session = Depends(get_db),
 ):
     """
     Update role
