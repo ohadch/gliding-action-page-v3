@@ -6,3 +6,5 @@ export const TEXTS = {
         SELECT_ACTION: 'Select action',
     }
 }
+
+export const CACHE_KEY_ACTION = 'action';

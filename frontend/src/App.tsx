@@ -12,12 +12,16 @@ import Container from '@mui/material/Container';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronRightIcon from '@mui/icons-material/ChevronLeft';
 import List from '@mui/material/List';
-import {Button, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
+import {Button, ListItemButton, ListItemIcon, ListItemText, Tooltip} from "@mui/material";
 import {Route, Routes, useLocation} from "react-router-dom";
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import BadgeIcon from '@mui/icons-material/Badge';
 import i18n from "i18next";
 import {initReactI18next, useTranslation} from "react-i18next";
+import SelectActionDialog from "./components/actions/SelectActionDialog.tsx";
+import {useSelector} from "react-redux";
+import {RootState, useAppDispatch} from "./store";
+import {setCurrentAction} from "./store/reducers/actionSlice.ts";
 
 const DRAWER_WIDTH = 240;
 
@@ -94,6 +98,11 @@ i18n
                     DASHBOARD: "לוח הטיסות",
                     TOGGLE_THEME: "שנה צבע",
                     CURRENT_ACTION: "הפעולה הנוכחית",
+                    SELECT_ACTION: "בחר פעולה",
+                    SELECT: "בחר",
+                    CANCEL: "ביטול",
+                    ACTION: "פעולה",
+                    CLICK_TO_SELECT: "לחץ לבחירה",
                 }
             }
         },
@@ -106,14 +115,17 @@ i18n
     });
 
 export default function App() {
-    const [open, setOpen] = React.useState(true);
+    const dispatch = useAppDispatch();
+    const [drawerOpen, setDrawerDrawerOpen] = React.useState(false);
     const [theme, setTheme] = React.useState(lightTheme);
+    const { currentAction } = useSelector((state: RootState) => state.actions)
+    const [selectActionDialogOpen, setSelectActionDialogOpen] = React.useState(false);
     const {t} = useTranslation()
     const {pathname} = useLocation();
     document.body.dir = i18n.dir();
 
     const toggleDrawer = () => {
-        setOpen(!open);
+        setDrawerDrawerOpen(!drawerOpen);
     };
 
     const ROUTES = [
@@ -127,9 +139,14 @@ export default function App() {
 
     return (
         <ThemeProvider theme={theme}>
+            <SelectActionDialog
+                open={selectActionDialogOpen}
+                onClose={() => setSelectActionDialogOpen(false)}
+                onActionSelected={(action) => dispatch(setCurrentAction(action))}
+            />
             <Box sx={{display: 'flex'}}>
                 <CssBaseline/>
-                <AppBar position="absolute" open={open}>
+                <AppBar position="absolute" open={drawerOpen}>
                     <Toolbar
                         sx={{
                             pl: '24px', // keep padding when drawer closed
@@ -142,7 +159,7 @@ export default function App() {
                             onClick={toggleDrawer}
                             sx={{
                                 marginLeft: '36px',
-                                ...(open && {display: 'none'}),
+                                ...(drawerOpen && {display: 'none'}),
                             }}
                         >
                             <MenuIcon/>
@@ -156,13 +173,15 @@ export default function App() {
                         >
                             {t("APP_NAME")}
                         </Typography>
-                        <Button color="inherit">
-                            {t("CURRENT_ACTION")}:
-                            TBD
-                        </Button>
+                        <Tooltip title={t("CLICK_TO_SELECT")}>
+                            <Button color="inherit" onClick={() => setSelectActionDialogOpen(true)}>
+                                {t("CURRENT_ACTION")}: {" "}
+                                {currentAction?.date.split("T")[0]}
+                            </Button>
+                        </Tooltip>
                     </Toolbar>
                 </AppBar>
-                <Drawer variant="permanent" open={open}>
+                <Drawer variant="permanent" open={drawerOpen}>
                     <Toolbar
                         sx={{
                             display: 'flex',
