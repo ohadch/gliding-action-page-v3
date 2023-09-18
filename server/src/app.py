@@ -16,7 +16,7 @@ from src.database import SessionLocal
 
 app = FastAPI(
     title="Gliding Action Page API",
-    description=("Gliding Action Page API is a REST API for the Gliding Action Page platform. "),
+    description="Gliding Action Page API is a REST API for the Gliding Action Page.",
 )
 app.add_middleware(
     CORSMiddleware,
