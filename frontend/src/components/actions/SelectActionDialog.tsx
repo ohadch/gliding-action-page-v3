@@ -7,13 +7,12 @@ import {
     FormGroup,
     FormControl, Select, InputLabel, MenuItem
 } from "@mui/material";
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {ActionSchema} from "../../lib/types.ts";
-import createClient from "openapi-fetch";
-import {paths} from "../../lib/api.ts";
-import {API_HOST} from "../../utils/consts.ts";
 import {useTranslation} from "react-i18next";
-import {ActionContext} from "../../context.ts";
+import {useSelector} from "react-redux";
+import {RootState, useAppDispatch} from "../../store";
+import {fetchActions} from "../../store/actions/action.ts";
 
 export interface SelectActionDialogProps {
     open: boolean
@@ -21,40 +20,22 @@ export interface SelectActionDialogProps {
     onActionSelected: (action: ActionSchema) => void
 }
 
-const {POST} = createClient<paths>({baseUrl: API_HOST});
-
 export default function SelectActionDialog({open, onClose, onActionSelected}: SelectActionDialogProps) {
-    const {
-        action: contextAction
-    } = useContext(ActionContext)
-    const [actions, setActions] = useState<ActionSchema[]>([]);
-    const [action, setAction] = useState<ActionSchema | undefined>(contextAction || undefined);
+    const dispatch = useAppDispatch();
+    const { fetchInProgress, actions, currentAction } = useSelector((state: RootState) => state.actions)
     const {
         t
     } = useTranslation()
 
     useEffect(() => {
-        (async () => {
-            {
-                const {data, error} = await POST("/actions/search", {
-                    params: {
-                        query: {
-                            page: 1,
-                            page_size: 20,
-                        },
-                    },
-                });
+        if (!actions && !fetchInProgress) {
+            dispatch(fetchActions());
+        }
+    });
 
-                if (error) {
-                    console.error(error);
-                }
-
-                if (data) {
-                    setActions(data);
-                }
-            }
-        })();
-    }, []);
+    const [action, setAction] = useState<ActionSchema | undefined>(
+        currentAction
+    );
 
 
     return (
@@ -85,11 +66,11 @@ export default function SelectActionDialog({open, onClose, onActionSelected}: Se
                             value={action?.id || ""}
                             label={t("ACTION")}
                             onChange={(e) => {
-                                const action = actions.find((action) => action.id === e.target.value);
+                                const action = actions?.find((action) => action.id === e.target.value);
                                 setAction(action);
                             }}
                         >
-                            {actions.map((action) => (
+                            {actions?.map((action) => (
                                 <MenuItem key={action.id} value={action.id}>{action.date.split("T")[0]}</MenuItem>
                             ))}
                         </Select>

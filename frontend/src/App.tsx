@@ -18,11 +18,10 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import BadgeIcon from '@mui/icons-material/Badge';
 import i18n from "i18next";
 import {initReactI18next, useTranslation} from "react-i18next";
-import {ActionContext} from "./context.ts";
-import {ActionSchema} from "./lib/types.ts";
 import SelectActionDialog from "./components/actions/SelectActionDialog.tsx";
-import {CacheService} from "./utils/cache.ts";
-import {CACHE_KEY_ACTION} from "./utils/consts.ts";
+import {useSelector} from "react-redux";
+import {RootState, useAppDispatch} from "./store";
+import {setCurrentAction} from "./store/reducers/actionSlice.ts";
 
 const DRAWER_WIDTH = 240;
 
@@ -116,11 +115,10 @@ i18n
     });
 
 export default function App() {
+    const dispatch = useAppDispatch();
     const [drawerOpen, setDrawerDrawerOpen] = React.useState(false);
     const [theme, setTheme] = React.useState(lightTheme);
-    const [action, setAction] = React.useState<ActionSchema | null>(
-        CacheService.get(CACHE_KEY_ACTION) ? JSON.parse(CacheService.get(CACHE_KEY_ACTION) as never) : null
-    );
+    const { currentAction } = useSelector((state: RootState) => state.actions)
     const [selectActionDialogOpen, setSelectActionDialogOpen] = React.useState(false);
     const {t} = useTranslation()
     const {pathname} = useLocation();
@@ -140,129 +138,121 @@ export default function App() {
     ]
 
     return (
-        <ActionContext.Provider value={{
-            action,
-            setAction,
-        }}>
-            <ThemeProvider theme={theme}>
-                <SelectActionDialog
-                    open={selectActionDialogOpen}
-                    onClose={() => setSelectActionDialogOpen(false)}
-                    onActionSelected={(action) => {
-                        setAction(action);
-                        CacheService.set(CACHE_KEY_ACTION, JSON.stringify(action));
-                    }}
-                />
-                <Box sx={{display: 'flex'}}>
-                    <CssBaseline/>
-                    <AppBar position="absolute" open={drawerOpen}>
-                        <Toolbar
-                            sx={{
-                                pl: '24px', // keep padding when drawer closed
-                            }}
-                        >
-                            <IconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="open drawer"
-                                onClick={toggleDrawer}
-                                sx={{
-                                    marginLeft: '36px',
-                                    ...(drawerOpen && {display: 'none'}),
-                                }}
-                            >
-                                <MenuIcon/>
-                            </IconButton>
-                            <Typography
-                                component="h1"
-                                variant="h6"
-                                color="inherit"
-                                noWrap
-                                sx={{flexGrow: 1}}
-                            >
-                                {t("APP_NAME")}
-                            </Typography>
-                            <Tooltip title={t("CLICK_TO_SELECT")}>
-                                <Button color="inherit" onClick={() => setSelectActionDialogOpen(true)}>
-                                    {t("CURRENT_ACTION")}: {" "}
-                                    {action?.date.split("T")[0]}
-                                </Button>
-                            </Tooltip>
-                        </Toolbar>
-                    </AppBar>
-                    <Drawer variant="permanent" open={drawerOpen}>
-                        <Toolbar
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'flex-end',
-                                px: [1],
-                            }}
-                        >
-                            <IconButton onClick={toggleDrawer}>
-                                <ChevronRightIcon/>
-                            </IconButton>
-                        </Toolbar>
-                        <Divider/>
-                        <List component="nav">
-                            <React.Fragment>
-                                {ROUTES
-                                    .filter((route) => route.icon)
-                                    .map((route) => (
-                                        <ListItemButton
-                                            key={route.path}
-                                            component="a"
-                                            href={route.path}
-                                            selected={pathname === route.path}
-                                        >
-                                            <ListItemIcon>
-                                                {route.icon}
-                                            </ListItemIcon>
-                                            <ListItemText primary={route.name}/>
-                                        </ListItemButton>
-                                    ))}
-                                <Divider/>
-                                <ListItemButton
-                                    onClick={() => setTheme(theme.palette.mode === 'light' ? darkTheme : lightTheme)}>
-                                    <ListItemIcon>
-                                        <Brightness4Icon/>
-                                    </ListItemIcon>
-                                    <ListItemText primary={t("TOGGLE_THEME")}/>
-                                </ListItemButton>
-                            </React.Fragment>
-                        </List>
-                    </Drawer>
-                    <Box
-                        component="main"
+        <ThemeProvider theme={theme}>
+            <SelectActionDialog
+                open={selectActionDialogOpen}
+                onClose={() => setSelectActionDialogOpen(false)}
+                onActionSelected={(action) => dispatch(setCurrentAction(action))}
+            />
+            <Box sx={{display: 'flex'}}>
+                <CssBaseline/>
+                <AppBar position="absolute" open={drawerOpen}>
+                    <Toolbar
                         sx={{
-                            backgroundColor: (theme) =>
-                                theme.palette.mode === 'light'
-                                    ? theme.palette.grey[100]
-                                    : theme.palette.grey[900],
-                            flexGrow: 1,
-                            height: '100vh',
-                            overflow: 'auto',
+                            pl: '24px', // keep padding when drawer closed
                         }}
                     >
-                        <Toolbar/>
-                        <Container maxWidth="lg" sx={{mt: 4, mb: 4}}>
-                            <Routes>
-                                {ROUTES.map((route) => (
-                                    <Route
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={toggleDrawer}
+                            sx={{
+                                marginLeft: '36px',
+                                ...(drawerOpen && {display: 'none'}),
+                            }}
+                        >
+                            <MenuIcon/>
+                        </IconButton>
+                        <Typography
+                            component="h1"
+                            variant="h6"
+                            color="inherit"
+                            noWrap
+                            sx={{flexGrow: 1}}
+                        >
+                            {t("APP_NAME")}
+                        </Typography>
+                        <Tooltip title={t("CLICK_TO_SELECT")}>
+                            <Button color="inherit" onClick={() => setSelectActionDialogOpen(true)}>
+                                {t("CURRENT_ACTION")}: {" "}
+                                {currentAction?.date.split("T")[0]}
+                            </Button>
+                        </Tooltip>
+                    </Toolbar>
+                </AppBar>
+                <Drawer variant="permanent" open={drawerOpen}>
+                    <Toolbar
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'flex-end',
+                            px: [1],
+                        }}
+                    >
+                        <IconButton onClick={toggleDrawer}>
+                            <ChevronRightIcon/>
+                        </IconButton>
+                    </Toolbar>
+                    <Divider/>
+                    <List component="nav">
+                        <React.Fragment>
+                            {ROUTES
+                                .filter((route) => route.icon)
+                                .map((route) => (
+                                    <ListItemButton
                                         key={route.path}
-                                        path={route.path}
-                                        element={
-                                            <React.Suspense fallback={<div></div>}>
-                                                <route.element/>
-                                            </React.Suspense>
-                                        }
-                                    />
+                                        component="a"
+                                        href={route.path}
+                                        selected={pathname === route.path}
+                                    >
+                                        <ListItemIcon>
+                                            {route.icon}
+                                        </ListItemIcon>
+                                        <ListItemText primary={route.name}/>
+                                    </ListItemButton>
                                 ))}
-                            </Routes>
-                        </Container>
-                    </Box>
+                            <Divider/>
+                            <ListItemButton
+                                onClick={() => setTheme(theme.palette.mode === 'light' ? darkTheme : lightTheme)}>
+                                <ListItemIcon>
+                                    <Brightness4Icon/>
+                                </ListItemIcon>
+                                <ListItemText primary={t("TOGGLE_THEME")}/>
+                            </ListItemButton>
+                        </React.Fragment>
+                    </List>
+                </Drawer>
+                <Box
+                    component="main"
+                    sx={{
+                        backgroundColor: (theme) =>
+                            theme.palette.mode === 'light'
+                                ? theme.palette.grey[100]
+                                : theme.palette.grey[900],
+                        flexGrow: 1,
+                        height: '100vh',
+                        overflow: 'auto',
+                    }}
+                >
+                    <Toolbar/>
+                    <Container maxWidth="lg" sx={{mt: 4, mb: 4}}>
+                        <Routes>
+                            {ROUTES.map((route) => (
+                                <Route
+                                    key={route.path}
+                                    path={route.path}
+                                    element={
+                                        <React.Suspense fallback={<div></div>}>
+                                            <route.element/>
+                                        </React.Suspense>
+                                    }
+                                />
+                            ))}
+                        </Routes>
+                    </Container>
                 </Box>
-            </ThemeProvider>
-        </ActionContext.Provider>
+            </Box>
+        </ThemeProvider>
     );
 }
