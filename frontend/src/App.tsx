@@ -103,6 +103,7 @@ i18n
                     CANCEL: "ביטול",
                     ACTION: "פעולה",
                     CLICK_TO_SELECT: "לחץ לבחירה",
+                    FIELD_RESPONSIBLE: "אחראי בשדה"
                 }
             }
         },
@@ -236,7 +237,7 @@ export default function App() {
                     }}
                 >
                     <Toolbar/>
-                    <Container maxWidth="lg" sx={{mt: 4, mb: 4}}>
+                    <Container maxWidth="xl" sx={{mt: 4, mb: 4}}>
                         <Routes>
                             {ROUTES.map((route) => (
                                 <Route

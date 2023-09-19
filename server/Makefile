@@ -9,3 +9,7 @@ rollback:
 
 create-seed-data:
 	python cli.py create-seed-data
+
+
+db-up:
+	cd .. && docker-compose up -d db

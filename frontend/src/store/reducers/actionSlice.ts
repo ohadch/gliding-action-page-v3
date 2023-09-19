@@ -9,7 +9,8 @@ const initialState: ActionsStoreState = {
     actions: undefined,
     currentAction: CacheService.get(CACHE_KEY_ACTION) ? JSON.parse(CacheService.get(CACHE_KEY_ACTION) as never) : undefined,
     fetchInProgress: false,
-    initialWorkspaceStore: false,
+    initialState: false,
+    fieldResponsibleId: undefined,
 }
 
 export const actionsReducer = createSlice({
@@ -19,6 +20,9 @@ export const actionsReducer = createSlice({
         setCurrentAction: (state, action: PayloadAction<ActionSchema>) => {
             state.currentAction = action.payload
             CacheService.set(CACHE_KEY_ACTION, JSON.stringify(action.payload))
+        },
+        setFieldResponsibleId: (state, action: PayloadAction<number>) => {
+            state.fieldResponsibleId = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -37,4 +41,4 @@ export const actionsReducer = createSlice({
     }
 })
 
-export const {setCurrentAction} = actionsReducer.actions;
+export const {setCurrentAction, setFieldResponsibleId} = actionsReducer.actions;
