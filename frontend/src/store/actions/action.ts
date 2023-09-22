@@ -2,7 +2,7 @@ import {createAsyncThunk} from "@reduxjs/toolkit";
 import createClient from "openapi-fetch";
 import {paths} from "../../lib/api.ts";
 import {API_HOST} from "../../utils/consts.ts";
-import {ActionSchema, ActiveTowAirplaneSchema, FlightSchema} from "../../lib/types.ts";
+import {ActionSchema, ActiveTowAirplaneSchema, FlightCreateSchema, FlightSchema} from "../../lib/types.ts";
 
 
 const {POST} = createClient<paths>({baseUrl: API_HOST});
@@ -72,6 +72,24 @@ export const fetchFlights = createAsyncThunk<FlightSchema[], number, { rejectVal
 
         if (error) {
             return thunkAPI.rejectWithValue("Error fetching flights");
+        }
+
+        return data;
+    }
+)
+
+export const createFlight = createAsyncThunk<FlightSchema, { actionId: number, createPayload: FlightCreateSchema }, { rejectValue: string }
+>(
+    'actions/createFlight',
+    async ({ createPayload}, thunkAPI) => {
+        const {data, error} = await POST("/flights", {
+            body: {
+                ...createPayload,
+            },
+        });
+
+        if (error) {
+            return thunkAPI.rejectWithValue("Error creating flight");
         }
 
         return data;

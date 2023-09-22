@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {ActionsStoreState} from "../@types/InitialData.ts";
-import {fetchActions, fetchActiveTowAirplanes, fetchFlights} from "../actions/action.ts";
+import {createFlight, fetchActions, fetchActiveTowAirplanes, fetchFlights} from "../actions/action.ts";
 import {CacheService} from "../../utils/cache.ts";
 import {CACHE_KEY_ACTION} from "../../utils/consts.ts";
 
@@ -65,7 +65,17 @@ export const actionsSlice = createSlice({
                 state.fetchingFlightsInProgress = false
                 state.error = action.error.message
             })
-
+            .addCase(createFlight.pending, (state) => {
+                state.fetchingFlightsInProgress = true
+            })
+            .addCase(createFlight.fulfilled, (state, action) => {
+                state.fetchingFlightsInProgress = false
+                state.flights = [...(state.flights || []), action.payload]
+            })
+            .addCase(createFlight.rejected, (state, action) => {
+                state.fetchingFlightsInProgress = false
+                state.error = action.error.message
+            })
     }
 })
 
