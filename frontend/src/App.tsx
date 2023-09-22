@@ -24,6 +24,7 @@ import {RootState, useAppDispatch} from "./store";
 import {setCurrentAction} from "./store/reducers/actionSlice.ts";
 import {fetchActiveTowAirplanes} from "./store/actions/action.ts";
 import {TEXTS_HEBREW} from "./utils/consts.ts";
+import {CacheService} from "./utils/cache.ts";
 
 const DRAWER_WIDTH = 240;
 
@@ -109,7 +110,7 @@ i18n
 export default function App() {
     const dispatch = useAppDispatch();
     const [drawerOpen, setDrawerDrawerOpen] = React.useState(false);
-    const [theme, setTheme] = React.useState(lightTheme);
+    const [theme, setTheme] = React.useState(CacheService.get("CACHE_KEY_THEME") === "dark" ? darkTheme : lightTheme);
     const { currentAction } = useSelector((state: RootState) => state.actions)
     const [selectActionDialogOpen, setSelectActionDialogOpen] = React.useState(false);
     const {t} = useTranslation()
@@ -209,7 +210,10 @@ export default function App() {
                                 ))}
                             <Divider/>
                             <ListItemButton
-                                onClick={() => setTheme(theme.palette.mode === 'light' ? darkTheme : lightTheme)}>
+                                onClick={() => {
+                                    setTheme(theme.palette.mode === 'light' ? darkTheme : lightTheme)
+                                    CacheService.set("CACHE_KEY_THEME", theme.palette.mode === 'light' ? "dark" : "light")
+                                }}>
                                 <ListItemIcon>
                                     <Brightness4Icon/>
                                 </ListItemIcon>
