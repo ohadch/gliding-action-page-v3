@@ -27,13 +27,26 @@ import {fetchFlightTypes} from "../../store/actions/flightType.ts";
 import {fetchPayersTypes} from "../../store/actions/payersType.ts";
 import {fetchPaymentMethods} from "../../store/actions/paymentMethod.ts";
 
-export interface CreateFlightDialogProps {
+export interface CreateOrUpdateFlightDialogProps {
+    flight?: FlightSchema
     open: boolean
     onCancel: () => void
-    onSubmit: (flight: Partial<FlightSchema>) => void
+    onSubmit: (flight: CreateOrUpdateFlightDialogSubmitPayload) => void
 }
 
-export default function CreateFlightDialog({open, onCancel, onSubmit}: CreateFlightDialogProps) {
+export interface CreateOrUpdateFlightDialogSubmitPayload {
+    gliderId?: number | null,
+    pilot1Id?: number | null,
+    pilot2Id?: number | null,
+    towAirplaneId?: number | null,
+    towPilotId?: number | null,
+    towTypeId?: number | null,
+    flightTypeId?: number | null,
+    payersTypeId?: number | null,
+    paymentMethodId?: number | null,
+}
+
+export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSubmit}: CreateOrUpdateFlightDialogProps) {
     const dispatch = useAppDispatch();
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
@@ -98,18 +111,19 @@ export default function CreateFlightDialog({open, onCancel, onSubmit}: CreateFli
     const getPaymentMethodById = (id: number) => paymentMethodsStoreState.paymentMethods?.find((paymentMethod) => paymentMethod.id === id);
 
 
-    const [gliderId, setGliderId] = useState<number | undefined>();
-    const [pilot1Id, setPilot1Id] = useState<number | undefined>();
-    const [pilot2Id, setPilot2Id] = useState<number | undefined>();
-    const [towAirplaneId, setTowAirplaneId] = useState<number | undefined>();
-    const [towPilotId, setTowPilotId] = useState<number | undefined>();
-    const [towTypeId, setTowTypeId] = useState<number | undefined>();
-    const [flightTypeId, setFlightTypeId] = useState<number | undefined>();
-    const [payersTypeId, setPayersTypeId] = useState<number | undefined>();
-    const [paymentMethodId, setPaymentMethodId] = useState<number | undefined>();
+    const [gliderId, setGliderId] = useState<number | null | undefined>(flight?.glider_id);
+    const [pilot1Id, setPilot1Id] = useState<number | null | undefined>(flight?.pilot_1_id);
+    const [pilot2Id, setPilot2Id] = useState<number | null | undefined>(flight?.pilot_2_id);
+    const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>(flight?.tow_airplane_id);
+    const [towPilotId, setTowPilotId] = useState<number | null | undefined>(flight?.tow_pilot_id);
+    const [towTypeId, setTowTypeId] = useState<number | null | undefined>(flight?.tow_type_id);
+    const [flightTypeId, setFlightTypeId] = useState<number | null | undefined>(flight?.flight_type_id);
+    const [payersTypeId, setPayersTypeId] = useState<number | null | undefined>(flight?.payers_type_id)
+    const [paymentMethodId, setPaymentMethodId] = useState<number | null | undefined>(flight?.payment_method_id);
 
 
     return (
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         <Dialog open={open} maxWidth={true}>
             <DialogTitle>
@@ -332,11 +346,15 @@ export default function CreateFlightDialog({open, onCancel, onSubmit}: CreateFli
                     {t("CANCEL")}
                 </Button>
                 <Button onClick={() => onSubmit({
-                    glider_id: gliderId || null,
-                    pilot_1_id: pilot1Id || null,
-                    // pilot_2_id: pilot2Id || null,
-                    // tow_airplane_id: towAirplaneId || null,
-                    // tow_pilot_id: towPilotId || null,
+                    gliderId,
+                    pilot1Id,
+                    pilot2Id,
+                    towAirplaneId,
+                    towPilotId,
+                    towTypeId,
+                    flightTypeId,
+                    payersTypeId,
+                    paymentMethodId,
                 })}>
                     {t("SELECT")}
                 </Button>

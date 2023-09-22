@@ -7,7 +7,7 @@ import {FlightSchema} from "../../lib/types.ts";
 import {API_HOST} from "../../utils/consts.ts";
 import Box from "@mui/material/Box";
 import {useTranslation} from "react-i18next";
-import CreateFlightDialog from "../../components/flights/CreateFlightDialog.tsx";
+import CreateOrUpdateFlightDialog from "../../components/flights/CreateOrUpdateFlightDialog.tsx";
 
 const {POST} = createClient<paths>({baseUrl: API_HOST});
 
@@ -48,7 +48,7 @@ export default function DashboardPage() {
 
     return (
         <>
-            <CreateFlightDialog
+            <CreateOrUpdateFlightDialog
                 open={createFlightDialogOpen}
                 onCancel={() => setCreateFlightDialogOpen(false)}
                 onSubmit={() => alert("TODO")}
