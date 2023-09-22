@@ -6,6 +6,8 @@ import {glidersSlice} from "./reducers/gliderSlice.ts";
 import {towAirplanesSlice} from "./reducers/towAirplaneSlice.ts";
 import {towTypesSlice} from "./reducers/towTypeSlice.ts";
 import {flightTypesSlice} from "./reducers/flightTypeSlice.ts";
+import {payersTypesSlice} from "./reducers/payersTypeSlice.ts";
+import {paymentMethodsSlice} from "./reducers/paymentMethod.ts";
 
 export const store = configureStore({
     reducer: {
@@ -15,6 +17,8 @@ export const store = configureStore({
         towAirplanes: towAirplanesSlice.reducer,
         towTypes: towTypesSlice.reducer,
         flightTypes: flightTypesSlice.reducer,
+        payersTypes: payersTypesSlice.reducer,
+        paymentMethods: paymentMethodsSlice.reducer,
     },
 })
 

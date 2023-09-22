@@ -32,4 +32,6 @@ export const TEXTS_HEBREW = {
     NEW_FLIGHT: "טיסה חדשה",
     CREATE_NEW_FLIGHT: "צור טיסה חדשה",
     FLIGHT_TYPE: "סוג טיסה",
+    PAYERS_TYPE: "סוג משלם",
+    PAYMENT_METHOD: "אמצעי תשלום",
 }

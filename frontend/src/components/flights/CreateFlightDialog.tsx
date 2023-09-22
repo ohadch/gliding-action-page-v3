@@ -12,7 +12,7 @@ import {
     FlightSchema,
     FlightTypeSchema,
     GliderSchema,
-    MemberSchema,
+    MemberSchema, PayersTypeSchema, PaymentMethodSchema,
     TowAirplaneSchema,
     TowTypeSchema
 } from "../../lib/types.ts";
@@ -24,6 +24,8 @@ import {fetchGliders} from "../../store/actions/glider.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import {fetchTowTypes} from "../../store/actions/towType.ts";
 import {fetchFlightTypes} from "../../store/actions/flightType.ts";
+import {fetchPayersTypes} from "../../store/actions/payersType.ts";
+import {fetchPaymentMethods} from "../../store/actions/paymentMethod.ts";
 
 export interface CreateFlightDialogProps {
     open: boolean
@@ -38,6 +40,8 @@ export default function CreateFlightDialog({open, onCancel, onSubmit}: CreateFli
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
     const towTypesStoreState = useSelector((state: RootState) => state.towTypes)
     const flightTypesStoreState = useSelector((state: RootState) => state.flightTypes)
+    const payersTypesStoreState = useSelector((state: RootState) => state.payersTypes)
+    const paymentMethodsStoreState = useSelector((state: RootState) => state.paymentMethods)
 
     const {
         t
@@ -73,11 +77,25 @@ export default function CreateFlightDialog({open, onCancel, onSubmit}: CreateFli
         }
     })
 
+    useEffect(() => {
+        if (!payersTypesStoreState.payersTypes && !payersTypesStoreState.fetchInProgress) {
+            dispatch(fetchPayersTypes());
+        }
+    })
+
+    useEffect(() => {
+        if (!paymentMethodsStoreState.paymentMethods && !paymentMethodsStoreState.fetchInProgress) {
+            dispatch(fetchPaymentMethods());
+        }
+    })
+
     const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
     const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
     const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
     const getTowTypeById = (id: number) => towTypesStoreState.towTypes?.find((towType) => towType.id === id);
     const getFlightTypeById = (id: number) => flightTypesStoreState.flightTypes?.find((flightType) => flightType.id === id);
+    const getPayersTypeById = (id: number) => payersTypesStoreState.payersTypes?.find((payersType) => payersType.id === id);
+    const getPaymentMethodById = (id: number) => paymentMethodsStoreState.paymentMethods?.find((paymentMethod) => paymentMethod.id === id);
 
 
     const [gliderId, setGliderId] = useState<number | undefined>();
@@ -87,10 +105,13 @@ export default function CreateFlightDialog({open, onCancel, onSubmit}: CreateFli
     const [towPilotId, setTowPilotId] = useState<number | undefined>();
     const [towTypeId, setTowTypeId] = useState<number | undefined>();
     const [flightTypeId, setFlightTypeId] = useState<number | undefined>();
+    const [payersTypeId, setPayersTypeId] = useState<number | undefined>();
+    const [paymentMethodId, setPaymentMethodId] = useState<number | undefined>();
 
 
     return (
-        <Dialog open={open}>
+        // @ts-ignore
+        <Dialog open={open} maxWidth={true}>
             <DialogTitle>
                 {t("CREATE_NEW_FLIGHT")}
             </DialogTitle>
@@ -250,6 +271,53 @@ export default function CreateFlightDialog({open, onCancel, onSubmit}: CreateFli
                                             <TextField
                                                 {...params}
                                                 label={t("TOW_TYPE")}
+                                            />
+                                        )
+                                    }}
+                                />
+                            </FormControl>
+                        </FormGroup>
+                    </Grid>
+                    <Grid
+                        sx={{
+                            width: 400,
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 1,
+                        }}
+                    >
+                        <FormGroup>
+                            <FormControl>
+                                <Autocomplete
+                                    id="payers-type"
+                                    options={payersTypesStoreState.payersTypes || []}
+                                    value={payersTypeId ? getPayersTypeById(payersTypeId) : null}
+                                    onChange={(_, newValue) => setPayersTypeId(newValue?.id)}
+                                    getOptionLabel={(option: PayersTypeSchema) => option.name}
+                                    renderInput={(params) => {
+                                        return (
+                                            <TextField
+                                                {...params}
+                                                label={t("PAYERS_TYPE")}
+                                            />
+                                        )
+                                    }}
+                                />
+                            </FormControl>
+                        </FormGroup>
+                        <FormGroup>
+                            <FormControl>
+                                <Autocomplete
+                                    id="payment-method"
+                                    options={paymentMethodsStoreState.paymentMethods || []}
+                                    value={paymentMethodId ? getPaymentMethodById(paymentMethodId) : null}
+                                    onChange={(_, newValue) => setPaymentMethodId(newValue?.id)}
+                                    getOptionLabel={(option: PaymentMethodSchema) => option.name}
+                                    renderInput={(params) => {
+                                        return (
+                                            <TextField
+                                                {...params}
+                                                label={t("PAYMENT_METHOD")}
                                             />
                                         )
                                     }}
