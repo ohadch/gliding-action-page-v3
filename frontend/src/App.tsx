@@ -22,7 +22,7 @@ import SelectActionDialog from "./components/actions/SelectActionDialog.tsx";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "./store";
 import {setCurrentAction} from "./store/reducers/actionSlice.ts";
-import {fetchActiveTowAirplanes} from "./store/actions/action.ts";
+import {fetchActiveTowAirplanes, fetchFlights} from "./store/actions/action.ts";
 import {TEXTS_HEBREW} from "./utils/consts.ts";
 import {CacheService} from "./utils/cache.ts";
 
@@ -138,6 +138,7 @@ export default function App() {
                 onActionSelected={(action) => {
                     dispatch(setCurrentAction(action))
                     dispatch(fetchActiveTowAirplanes(action.id))
+                    dispatch(fetchFlights(action.id))
                 }}
             />
             <Box sx={{display: 'flex'}}>

@@ -78,7 +78,7 @@ export const fetchFlights = createAsyncThunk<FlightSchema[], number, { rejectVal
     }
 )
 
-export const createFlight = createAsyncThunk<FlightSchema, { actionId: number, createPayload: FlightCreateSchema }, { rejectValue: string }
+export const createFlight = createAsyncThunk<FlightSchema, { createPayload: FlightCreateSchema }, { rejectValue: string }
 >(
     'actions/createFlight',
     async ({ createPayload}, thunkAPI) => {
