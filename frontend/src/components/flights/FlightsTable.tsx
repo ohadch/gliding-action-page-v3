@@ -6,6 +6,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {FlightSchema} from "../../lib/types.ts";
+import {useTranslation} from "react-i18next";
 
 export interface FlightsTableProps {
     flights: FlightSchema[];
@@ -13,19 +14,20 @@ export interface FlightsTableProps {
 
 export default function FlightsTable(props: FlightsTableProps) {
   const {flights} = props;
+  const {t} = useTranslation();
 
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Status</TableCell>
-            <TableCell align="right">Glider</TableCell>
-            <TableCell align="right">Pilot 1</TableCell>
-            <TableCell align="right">Pilot 2</TableCell>
-            <TableCell align="right">Tow Airplane</TableCell>
-            <TableCell align="right">Tow Pilot</TableCell>
-            <TableCell align="right">Tow Type</TableCell>
+            <TableCell>{t("STATUS")}</TableCell>
+            <TableCell align="right">{t("GLIDER")}</TableCell>
+            <TableCell align="right">{t("PILOT_1")}</TableCell>
+            <TableCell align="right">{t("PILOT_2")}</TableCell>
+            <TableCell align="right">{t("TOW_AIRPLANE")}</TableCell>
+            <TableCell align="right">{t("TOW_PILOT")}</TableCell>
+            <TableCell align="right">{t("TOW_TYPE")}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

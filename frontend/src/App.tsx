@@ -23,6 +23,7 @@ import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "./store";
 import {setCurrentAction} from "./store/reducers/actionSlice.ts";
 import {fetchActiveTowAirplanes} from "./store/actions/action.ts";
+import {TEXTS_HEBREW} from "./utils/consts.ts";
 
 const DRAWER_WIDTH = 240;
 
@@ -94,19 +95,7 @@ i18n
         // or even better, manage them via a UI: https://react.i18next.com/guides/multiple-translation-files#manage-your-translations-with-a-management-gui)
         resources: {
             he: {
-                translation: {
-                    APP_NAME: "ניהול פעולת הדאיה",
-                    DASHBOARD: "לוח הטיסות",
-                    TOGGLE_THEME: "שנה צבע",
-                    CURRENT_ACTION: "הפעולה הנוכחית",
-                    SELECT_ACTION: "בחר פעולה",
-                    SELECT: "בחר",
-                    CANCEL: "ביטול",
-                    ACTION: "פעולה",
-                    CLICK_TO_SELECT: "לחץ לבחירה",
-                    FIELD_RESPONSIBLE: "אחראי בשדה",
-                    RESPONSIBLE_CFI: "מדריך אחראי",
-                }
+                translation: TEXTS_HEBREW
             }
         },
         lng: "he",
