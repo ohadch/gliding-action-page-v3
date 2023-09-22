@@ -10,7 +10,7 @@ const {POST} = createClient<paths>({baseUrl: API_HOST});
 
 export default function DashboardPage() {
     const [flights, setFlights] = useState<FlightSchema[]>([]);
-    const [actionId, setActionId] = useState<number>(1);
+    const [actionId] = useState<number>(1);
 
     useEffect(() => {
         (async () => {

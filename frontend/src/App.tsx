@@ -22,6 +22,7 @@ import SelectActionDialog from "./components/actions/SelectActionDialog.tsx";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "./store";
 import {setCurrentAction} from "./store/reducers/actionSlice.ts";
+import {fetchActiveTowAirplanes} from "./store/actions/action.ts";
 
 const DRAWER_WIDTH = 240;
 
@@ -103,6 +104,8 @@ i18n
                     CANCEL: "ביטול",
                     ACTION: "פעולה",
                     CLICK_TO_SELECT: "לחץ לבחירה",
+                    FIELD_RESPONSIBLE: "אחראי בשדה",
+                    RESPONSIBLE_CFI: "מדריך אחראי",
                 }
             }
         },
@@ -142,7 +145,10 @@ export default function App() {
             <SelectActionDialog
                 open={selectActionDialogOpen}
                 onClose={() => setSelectActionDialogOpen(false)}
-                onActionSelected={(action) => dispatch(setCurrentAction(action))}
+                onActionSelected={(action) => {
+                    dispatch(setCurrentAction(action))
+                    dispatch(fetchActiveTowAirplanes(action.id))
+                }}
             />
             <Box sx={{display: 'flex'}}>
                 <CssBaseline/>
@@ -236,7 +242,7 @@ export default function App() {
                     }}
                 >
                     <Toolbar/>
-                    <Container maxWidth="lg" sx={{mt: 4, mb: 4}}>
+                    <Container maxWidth="xl" sx={{mt: 4, mb: 4}}>
                         <Routes>
                             {ROUTES.map((route) => (
                                 <Route

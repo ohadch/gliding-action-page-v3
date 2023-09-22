@@ -1,4 +1,4 @@
-import {ActionSchema} from "../../lib/types.ts";
+import {ActionSchema, ActiveTowAirplaneSchema, MemberSchema} from "../../lib/types.ts";
 
 export interface BaseInitialState {
     fetchInProgress: boolean;
@@ -9,5 +9,14 @@ export interface BaseInitialState {
 export interface ActionsStoreState extends BaseInitialState {
     currentAction?: ActionSchema;
     actions: ActionSchema[] | undefined;
-    initialWorkspaceStore: boolean;
+    initialState: boolean;
+    fieldResponsibleId?: number;
+    responsibleCfiId?: number;
+    fetchingActiveTowAirplanesInProgress: boolean;
+    activeTowAirplanes?: ActiveTowAirplaneSchema[];
+}
+
+export interface MembersStoreState extends BaseInitialState {
+    members: MemberSchema[] | undefined;
+    initialState: boolean;
 }

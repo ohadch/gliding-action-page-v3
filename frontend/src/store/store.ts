@@ -1,10 +1,12 @@
 import {configureStore} from '@reduxjs/toolkit'
 import {useDispatch} from "react-redux";
 import {actionsReducer} from "./reducers/actionSlice.ts";
+import {membersReducer} from "./reducers/memberSlice.ts";
 
 export const store = configureStore({
     reducer: {
-        actions: actionsReducer.reducer
+        actions: actionsReducer.reducer,
+        members: membersReducer.reducer,
     },
 })
 

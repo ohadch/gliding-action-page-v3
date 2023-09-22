@@ -1,7 +1,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {ActionSchema} from "../../lib/types.ts";
+import {ActionSchema, ActiveTowAirplaneSchema} from "../../lib/types.ts";
 import {ActionsStoreState} from "../@types/InitialData.ts";
-import {fetchActions} from "../actions/action.ts";
+import {fetchActions, fetchActiveTowAirplanes} from "../actions/action.ts";
 import {CacheService} from "../../utils/cache.ts";
 import {CACHE_KEY_ACTION} from "../../utils/consts.ts";
 
@@ -9,7 +9,10 @@ const initialState: ActionsStoreState = {
     actions: undefined,
     currentAction: CacheService.get(CACHE_KEY_ACTION) ? JSON.parse(CacheService.get(CACHE_KEY_ACTION) as never) : undefined,
     fetchInProgress: false,
-    initialWorkspaceStore: false,
+    fetchingActiveTowAirplanesInProgress: false,
+    initialState: false,
+    fieldResponsibleId: undefined,
+    responsibleCfiId: undefined,
 }
 
 export const actionsReducer = createSlice({
@@ -19,6 +22,12 @@ export const actionsReducer = createSlice({
         setCurrentAction: (state, action: PayloadAction<ActionSchema>) => {
             state.currentAction = action.payload
             CacheService.set(CACHE_KEY_ACTION, JSON.stringify(action.payload))
+        },
+        setFieldResponsibleId: (state, action: PayloadAction<number | undefined>) => {
+            state.fieldResponsibleId = action.payload
+        },
+        setResponsibleCfiId: (state, action: PayloadAction<number | undefined>) => {
+            state.responsibleCfiId = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -34,7 +43,19 @@ export const actionsReducer = createSlice({
                 state.fetchInProgress = false
                 state.error = action.error.message
             })
+            .addCase(fetchActiveTowAirplanes.pending, (state) => {
+                state.fetchingActiveTowAirplanesInProgress = true
+            })
+            .addCase(fetchActiveTowAirplanes.fulfilled, (state, action: PayloadAction<ActiveTowAirplaneSchema[]>) => {
+                state.fetchingActiveTowAirplanesInProgress = false
+                state.activeTowAirplanes = action.payload
+            })
+            .addCase(fetchActiveTowAirplanes.rejected, (state, action) => {
+                state.fetchingActiveTowAirplanesInProgress = false
+                state.error = action.error.message
+            })
+
     }
 })
 
-export const {setCurrentAction} = actionsReducer.actions;
+export const {setResponsibleCfiId, setCurrentAction, setFieldResponsibleId} = actionsReducer.actions;
