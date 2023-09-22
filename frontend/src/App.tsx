@@ -22,6 +22,7 @@ import SelectActionDialog from "./components/actions/SelectActionDialog.tsx";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "./store";
 import {setCurrentAction} from "./store/reducers/actionSlice.ts";
+import {fetchActiveTowAirplanes} from "./store/actions/action.ts";
 
 const DRAWER_WIDTH = 240;
 
@@ -144,7 +145,10 @@ export default function App() {
             <SelectActionDialog
                 open={selectActionDialogOpen}
                 onClose={() => setSelectActionDialogOpen(false)}
-                onActionSelected={(action) => dispatch(setCurrentAction(action))}
+                onActionSelected={(action) => {
+                    dispatch(setCurrentAction(action))
+                    dispatch(fetchActiveTowAirplanes(action.id))
+                }}
             />
             <Box sx={{display: 'flex'}}>
                 <CssBaseline/>

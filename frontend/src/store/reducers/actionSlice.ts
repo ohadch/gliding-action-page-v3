@@ -1,7 +1,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {ActionSchema} from "../../lib/types.ts";
+import {ActionSchema, ActiveTowAirplaneSchema} from "../../lib/types.ts";
 import {ActionsStoreState} from "../@types/InitialData.ts";
-import {fetchActions} from "../actions/action.ts";
+import {fetchActions, fetchActiveTowAirplanes} from "../actions/action.ts";
 import {CacheService} from "../../utils/cache.ts";
 import {CACHE_KEY_ACTION} from "../../utils/consts.ts";
 
@@ -9,6 +9,7 @@ const initialState: ActionsStoreState = {
     actions: undefined,
     currentAction: CacheService.get(CACHE_KEY_ACTION) ? JSON.parse(CacheService.get(CACHE_KEY_ACTION) as never) : undefined,
     fetchInProgress: false,
+    fetchingActiveTowAirplanesInProgress: false,
     initialState: false,
     fieldResponsibleId: undefined,
     responsibleCfiId: undefined,
@@ -42,6 +43,18 @@ export const actionsReducer = createSlice({
                 state.fetchInProgress = false
                 state.error = action.error.message
             })
+            .addCase(fetchActiveTowAirplanes.pending, (state) => {
+                state.fetchingActiveTowAirplanesInProgress = true
+            })
+            .addCase(fetchActiveTowAirplanes.fulfilled, (state, action: PayloadAction<ActiveTowAirplaneSchema[]>) => {
+                state.fetchingActiveTowAirplanesInProgress = false
+                state.activeTowAirplanes = action.payload
+            })
+            .addCase(fetchActiveTowAirplanes.rejected, (state, action) => {
+                state.fetchingActiveTowAirplanesInProgress = false
+                state.error = action.error.message
+            })
+
     }
 })
 

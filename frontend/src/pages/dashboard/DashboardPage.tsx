@@ -5,13 +5,12 @@ import createClient from "openapi-fetch";
 import {paths} from "../../lib/api.ts";
 import {FlightSchema} from "../../lib/types.ts";
 import {API_HOST} from "../../utils/consts.ts";
-import ActionConfigurationComponent from "../../components/actions/ActionConfigurationComponent.tsx";
 
 const {POST} = createClient<paths>({baseUrl: API_HOST});
 
 export default function DashboardPage() {
     const [flights, setFlights] = useState<FlightSchema[]>([]);
-    const [actionId, setActionId] = useState<number>(1);
+    const [actionId] = useState<number>(1);
 
     useEffect(() => {
         (async () => {
@@ -44,11 +43,8 @@ export default function DashboardPage() {
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={10}>
+            <Grid item xs={12}>
                 <FlightsTable flights={flights} />
-            </Grid>
-            <Grid item xs={2}>
-                <ActionConfigurationComponent />
             </Grid>
         </Grid>
     )
