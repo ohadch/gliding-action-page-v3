@@ -27,7 +27,6 @@ export default function FlightsTable(props: FlightsTableProps) {
             <TableCell align="right">{t("PILOT_2")}</TableCell>
             <TableCell align="right">{t("TOW_AIRPLANE")}</TableCell>
             <TableCell align="right">{t("TOW_PILOT")}</TableCell>
-            <TableCell align="right">{t("TOW_TYPE")}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -44,7 +43,6 @@ export default function FlightsTable(props: FlightsTableProps) {
               <TableCell align="right">{flight.pilot_2_id}</TableCell>
               <TableCell align="right">{flight.tow_airplane_id}</TableCell>
               <TableCell align="right">{flight.tow_pilot_id}</TableCell>
-              <TableCell align="right">{flight.tow_type_id}</TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -15,7 +15,7 @@ const initialState: ActionsStoreState = {
     responsibleCfiId: undefined,
 }
 
-export const actionsReducer = createSlice({
+export const actionsSlice = createSlice({
     name: 'actions',
     initialState,
     reducers: {
@@ -58,4 +58,4 @@ export const actionsReducer = createSlice({
     }
 })
 
-export const {setResponsibleCfiId, setCurrentAction, setFieldResponsibleId} = actionsReducer.actions;
+export const {setResponsibleCfiId, setCurrentAction, setFieldResponsibleId} = actionsSlice.actions;

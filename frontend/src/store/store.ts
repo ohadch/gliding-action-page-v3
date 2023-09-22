@@ -1,18 +1,23 @@
 import {configureStore} from '@reduxjs/toolkit'
 import {useDispatch} from "react-redux";
-import {actionsReducer} from "./reducers/actionSlice.ts";
-import {membersReducer} from "./reducers/memberSlice.ts";
+import {actionsSlice} from "./reducers/actionSlice.ts";
+import {membersSlice} from "./reducers/memberSlice.ts";
+import {glidersSlice} from "./reducers/gliderSlice.ts";
+import {towAirplanesSlice} from "./reducers/towAirplaneSlice.ts";
+import {towTypesSlice} from "./reducers/towTypeSlice.ts";
+import {flightTypesSlice} from "./reducers/flightTypeSlice.ts";
 
 export const store = configureStore({
     reducer: {
-        actions: actionsReducer.reducer,
-        members: membersReducer.reducer,
+        actions: actionsSlice.reducer,
+        members: membersSlice.reducer,
+        gliders: glidersSlice.reducer,
+        towAirplanes: towAirplanesSlice.reducer,
+        towTypes: towTypesSlice.reducer,
+        flightTypes: flightTypesSlice.reducer,
     },
 })
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch
-// Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>()

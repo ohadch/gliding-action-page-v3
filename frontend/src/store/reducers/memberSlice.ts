@@ -9,7 +9,7 @@ const initialState: MembersStoreState = {
     initialState: false,
 }
 
-export const membersReducer = createSlice({
+export const membersSlice = createSlice({
     name: 'members',
     initialState,
     reducers: {},

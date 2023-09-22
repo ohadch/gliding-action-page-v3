@@ -1,4 +1,11 @@
-import {ActionSchema, ActiveTowAirplaneSchema, MemberSchema} from "../../lib/types.ts";
+import {
+    ActionSchema,
+    ActiveTowAirplaneSchema, FlightTypeSchema,
+    GliderSchema,
+    MemberSchema,
+    TowAirplaneSchema,
+    TowTypeSchema
+} from "../../lib/types.ts";
 
 export interface BaseInitialState {
     fetchInProgress: boolean;
@@ -18,5 +25,27 @@ export interface ActionsStoreState extends BaseInitialState {
 
 export interface MembersStoreState extends BaseInitialState {
     members: MemberSchema[] | undefined;
+    initialState: boolean;
+}
+
+
+export interface GlidersStoreState extends BaseInitialState {
+    gliders: GliderSchema[] | undefined;
+    initialState: boolean;
+}
+
+
+export interface TowAirplanesStoreState extends BaseInitialState {
+    towAirplanes: TowAirplaneSchema[] | undefined;
+    initialState: boolean;
+}
+
+export interface TowTypesStoreState extends BaseInitialState {
+    towTypes: TowTypeSchema[] | undefined;
+    initialState: boolean;
+}
+
+export interface FlightTypesStoreState extends BaseInitialState {
+    flightTypes: FlightTypeSchema[] | undefined;
     initialState: boolean;
 }
