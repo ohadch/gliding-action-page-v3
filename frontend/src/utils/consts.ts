@@ -29,4 +29,5 @@ export const TEXTS_HEBREW = {
     TOW_AIRPLANE: "מטוס גורר",
     TOW_PILOT: "טייס גורר",
     TOW_TYPE: "סוג גרירה",
+    NEW_FLIGHT: "טיסה חדשה",
 }
