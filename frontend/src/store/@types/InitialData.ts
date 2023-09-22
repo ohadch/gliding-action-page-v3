@@ -1,6 +1,6 @@
 import {
     ActionSchema,
-    ActiveTowAirplaneSchema, FlightTypeSchema,
+    ActiveTowAirplaneSchema, FlightSchema, FlightTypeSchema,
     GliderSchema,
     MemberSchema, PayersTypeSchema, PaymentMethodSchema,
     TowAirplaneSchema,
@@ -20,7 +20,9 @@ export interface ActionsStoreState extends BaseInitialState {
     fieldResponsibleId?: number;
     responsibleCfiId?: number;
     fetchingActiveTowAirplanesInProgress: boolean;
+    fetchingFlightsInProgress: boolean;
     activeTowAirplanes?: ActiveTowAirplaneSchema[];
+    flights?: FlightSchema[];
 }
 
 export interface MembersStoreState extends BaseInitialState {
