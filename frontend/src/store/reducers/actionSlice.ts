@@ -11,6 +11,7 @@ const initialState: ActionsStoreState = {
     fetchInProgress: false,
     initialState: false,
     fieldResponsibleId: undefined,
+    responsibleCfiId: undefined,
 }
 
 export const actionsReducer = createSlice({
@@ -21,8 +22,11 @@ export const actionsReducer = createSlice({
             state.currentAction = action.payload
             CacheService.set(CACHE_KEY_ACTION, JSON.stringify(action.payload))
         },
-        setFieldResponsibleId: (state, action: PayloadAction<number>) => {
+        setFieldResponsibleId: (state, action: PayloadAction<number | undefined>) => {
             state.fieldResponsibleId = action.payload
+        },
+        setResponsibleCfiId: (state, action: PayloadAction<number | undefined>) => {
+            state.responsibleCfiId = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -41,4 +45,4 @@ export const actionsReducer = createSlice({
     }
 })
 
-export const {setCurrentAction, setFieldResponsibleId} = actionsReducer.actions;
+export const {setResponsibleCfiId, setCurrentAction, setFieldResponsibleId} = actionsReducer.actions;

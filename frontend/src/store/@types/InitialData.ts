@@ -11,6 +11,7 @@ export interface ActionsStoreState extends BaseInitialState {
     actions: ActionSchema[] | undefined;
     initialState: boolean;
     fieldResponsibleId?: number;
+    responsibleCfiId?: number;
 }
 
 export interface MembersStoreState extends BaseInitialState {

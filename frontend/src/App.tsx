@@ -103,7 +103,8 @@ i18n
                     CANCEL: "ביטול",
                     ACTION: "פעולה",
                     CLICK_TO_SELECT: "לחץ לבחירה",
-                    FIELD_RESPONSIBLE: "אחראי בשדה"
+                    FIELD_RESPONSIBLE: "אחראי בשדה",
+                    RESPONSIBLE_CFI: "מדריך אחראי",
                 }
             }
         },
