@@ -23,7 +23,7 @@ import {
     getMemberDisplayValue,
     getPayersTypeDisplayValue
 } from "../../utils/display.ts";
-import {hasRole, isCertifiedForSinglePilotOperation} from "../../utils/members.ts";
+import {hasRole, isCertifiedForSinglePilotOperation, isCfi} from "../../utils/members.ts";
 import {SUPPORTED_FLIGHT_TYPES} from "../../utils/consts.ts";
 
 enum RenderedInputName {
@@ -264,6 +264,35 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
         return initialOptions;
     }
 
+    const getPilot2Options = () => {
+        const initialOptions = membersStoreState.members || [];
+
+        if (!gliderId) {
+            return initialOptions;
+        }
+
+        const glider = getGliderById(gliderId);
+
+        if (!glider) {
+            return initialOptions;
+        }
+
+        if (isGliderPrivate(glider.id)) {
+            const gliderOwners = getGliderOwnersById(glider.id);
+            return initialOptions.filter((member) => gliderOwners.some((ownership) => ownership.member_id === member.id));
+        }
+
+        if ((glider.num_seats === 1) || (flightType && flightType === "Solo")) {
+            return [];
+        }
+
+        if (flightType && flightType === "Instruction") {
+            return initialOptions.filter((member) => isCfi(member, membersStoreState.membersRoles || []));
+        }
+
+        return initialOptions;
+    }
+
     function renderInput(inputName: RenderedInputName) {
         switch (inputName) {
             case RenderedInputName.GLIDER:
@@ -352,7 +381,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                         <FormControl>
                             <Autocomplete
                                 id="pilot2"
-                                options={membersStoreState.members || []}
+                                options={getPilot2Options()}
                                 value={pilot2Id ? getMemberById(pilot2Id) : null}
                                 onChange={(_, newValue) => setPilot2Id(newValue?.id)}
                                 getOptionLabel={(option) => getMemberDisplayValue(
