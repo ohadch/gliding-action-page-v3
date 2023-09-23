@@ -11,18 +11,12 @@ from src import (
     Glider,
     Member,
     Action,
-    FlightType,
-    PayersType,
-    PaymentMethod,
-    TowType,
     GliderOwner,
 )
 from src.utils.enums import (
     RoleId,
     ImportantMemberIds,
     AircraftTypeId,
-    FlightTypeId,
-    PayersTypeId,
 )
 
 logger = logging.getLogger(__name__)
@@ -116,30 +110,6 @@ class SeedDataGenerator:
         self.session.add(action)
         self.session.commit()
         return action
-
-    def _create_flight_type(self, **kwargs):
-        flight_type = FlightType(**kwargs)
-        self.session.add(flight_type)
-        self.session.commit()
-        return flight_type
-
-    def _create_payers_type(self, **kwargs):
-        payers_type = PayersType(**kwargs)
-        self.session.add(payers_type)
-        self.session.commit()
-        return payers_type
-
-    def _create_payment_method(self, **kwargs):
-        payment_method = PaymentMethod(**kwargs)
-        self.session.add(payment_method)
-        self.session.commit()
-        return payment_method
-
-    def _create_tow_type(self, **kwargs):
-        tow_type = TowType(**kwargs)
-        self.session.add(tow_type)
-        self.session.commit()
-        return tow_type
 
     def create_seed_data(self):
         # If there is something in the database, don't create seed data
@@ -354,30 +324,3 @@ class SeedDataGenerator:
         self._create_action(date=datetime.date(2021, 1, 1))
 
         self._create_action(date=datetime.date(2021, 1, 2))
-
-        # Flight Types
-        self._create_flight_type(id=FlightTypeId.ClubGuest.value, name="אורח מועדון")
-        self._create_flight_type(id=FlightTypeId.MembersGuest.value, name="אורח חבר")
-        self._create_flight_type(id=FlightTypeId.Solo.value, name="סולו")
-        self._create_flight_type(id=FlightTypeId.Instruction.value, name="הדרכה")
-        self._create_flight_type(id=FlightTypeId.Members.value, name="חברים")
-        self._create_flight_type(
-            id=FlightTypeId.InstructorsCourse.value, name="קורס מדריכים"
-        )
-
-        # PayersType
-        self._create_payers_type(id=PayersTypeId.FirstPilot.value, name="טייס ראשון")
-        self._create_payers_type(id=PayersTypeId.SecondPilot.value, name="טייס שני")
-        self._create_payers_type(id=PayersTypeId.BothPilots.value, name="שני הטייסים")
-        self._create_payers_type(id=PayersTypeId.ThirdMember.value, name="צד שלישי")
-        self._create_payers_type(id=PayersTypeId.NoPayment.value, name="ללא תשלום")
-        self._create_payers_type(id=PayersTypeId.Guest.value, name="אורח")
-
-        # PaymentMethod
-        self._create_payment_method(name="מזומן")
-        self._create_payment_method(name="אשראי")
-        self._create_payment_method(name="ביט")
-
-        # TowType
-        self._create_tow_type(name="1500 מטוס")
-        self._create_tow_type(name="2000 מטוס")

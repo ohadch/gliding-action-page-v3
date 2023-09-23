@@ -17,12 +17,6 @@ from .flight import (
     FlightUpdateSchema,
     FlightSearchSchema,
 )
-from .flight_type import (
-    FlightTypeSchema,
-    FlightTypeCreateSchema,
-    FlightTypeUpdateSchema,
-    FlightTypeSearchSchema,
-)
 from .glider import (
     GliderSchema,
     GliderCreateSchema,
@@ -47,28 +41,10 @@ from .member_role import (
     MemberRoleUpdateSchema,
     MemberRoleSearchSchema,
 )
-from .payment_method import (
-    PaymentMethodSchema,
-    PaymentMethodCreateSchema,
-    PaymentMethodUpdateSchema,
-    PaymentMethodSearchSchema,
-)
-from .payers_type import (
-    PayersTypeSchema,
-    PayersTypeCreateSchema,
-    PayersTypeUpdateSchema,
-    PayersTypeSearchSchema,
-)
 from .role import RoleSchema, RoleCreateSchema, RoleUpdateSchema, RoleSearchSchema
 from .tow_airplane import (
     TowAirplaneSchema,
     TowAirplaneCreateSchema,
     TowAirplaneUpdateSchema,
     TowAirplaneSearchSchema,
-)
-from .tow_type import (
-    TowTypeSchema,
-    TowTypeCreateSchema,
-    TowTypeUpdateSchema,
-    TowTypeSearchSchema,
 )

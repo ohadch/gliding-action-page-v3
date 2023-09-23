@@ -1,24 +1,24 @@
 import {
+    Autocomplete,
+    Button,
     Dialog,
-    DialogTitle,
     DialogContent,
-    Button, FormControl, Autocomplete, TextField, FormGroup, Grid,
+    DialogTitle,
+    FormControl,
+    FormGroup,
+    Grid,
+    TextField,
 } from "@mui/material";
-import {useEffect, useState} from "react";
-import {
-    GliderSchema,
-} from "../../lib/types.ts";
+import {useCallback, useEffect, useState} from "react";
+import {GliderSchema,} from "../../lib/types.ts";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
 import {fetchMembers} from "../../store/actions/member.ts";
 import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
-import {fetchTowTypes} from "../../store/actions/towType.ts";
-import {fetchFlightTypes} from "../../store/actions/flightType.ts";
-import {fetchPayersTypes} from "../../store/actions/payersType.ts";
-import {fetchPaymentMethods} from "../../store/actions/paymentMethod.ts";
-import {getMemberDisplayName} from "../../utils/display.ts";
+import {getGliderDisplayValue, getMemberDisplayName} from "../../utils/display.ts";
+import {FlightType, PayersType} from "../../utils/enums.ts";
 
 enum RenderedInputName {
     GLIDER = "GLIDER",
@@ -39,9 +39,9 @@ export interface FlightCreationWizardDialogSubmitPayload {
     pilot2Id?: number | null,
     towAirplaneId?: number | null,
     towPilotId?: number | null,
-    towTypeId?: number | null,
-    flightTypeId?: number | null,
-    payersTypeId?: number | null,
+    towType?: number | null,
+    flightType?: number | null,
+    payersType?: number | null,
     paymentMethodId?: number | null,
     payingMemberId?: number | null,
     paymentReceiverId?: number | null,
@@ -52,14 +52,48 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const towTypesStoreState = useSelector((state: RootState) => state.towTypes)
-    const flightTypesStoreState = useSelector((state: RootState) => state.flightTypes)
-    const payersTypesStoreState = useSelector((state: RootState) => state.payersTypes)
-    const paymentMethodsStoreState = useSelector((state: RootState) => state.paymentMethods)
 
     const {
         t
     } = useTranslation()
+
+
+    const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
+    const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
+
+    const getGliderOwnersById = useCallback((id: number) => glidersStoreState.ownerships?.filter((ownership) => ownership.glider_id === id) || [], [glidersStoreState.ownerships]);
+    const isGliderPrivate = useCallback((id: number) => getGliderOwnersById(id).length > 0, [getGliderOwnersById]);
+
+    const displayGlider = (id: number) => {
+        const glider = getGliderById(id);
+        return glider ? getGliderDisplayValue(glider) : "";
+    }
+
+    const displayMember = (id: number) => {
+        const member = getMemberById(id);
+        return member ? getMemberDisplayName(member) : "";
+    }
+
+    const displayTowAirplane = (id: number) => {
+        const towAirplane = getTowAirplaneById(id);
+        return towAirplane ? towAirplane.call_sign : "";
+    }
+
+    const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
+
+    const [gliderId, setGliderId] = useState<number | null | undefined>();
+    const [pilot1Id, setPilot1Id] = useState<number | null | undefined>();
+    const [pilot2Id, setPilot2Id] = useState<number | null | undefined>();
+    const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>();
+    // const [towPilotId, setTowPilotId] = useState<number | null | undefined>();
+    // const [towType, setTowType] = useState<number | null | undefined>();
+    const [flightType, setFlightType] = useState<FlightType | null | undefined>();
+    const [payersType, setPayersType] = useState<PayersType | null | undefined>()
+    // const [paymentMethodId, setPaymentMethodId] = useState<number | null | undefined>();
+    // const [payingMemberId, setPayingMemberId] = useState<number | null | undefined>();
+    // const [paymentReceiverId, setPaymentReceiverId] = useState<number | null | undefined>();
+
+
 
     useEffect(() => {
         if (!membersStoreState.members && !membersStoreState.fetchInProgress) {
@@ -81,52 +115,28 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
     });
 
     useEffect(() => {
-        if (!towTypesStoreState.towTypes && !towTypesStoreState.fetchInProgress) {
-            dispatch(fetchTowTypes());
+        if (!gliderId) {
+            return
         }
-    })
 
-    useEffect(() => {
-        if (!flightTypesStoreState.flightTypes && !flightTypesStoreState.fetchInProgress) {
-            dispatch(fetchFlightTypes());
+        if (isGliderPrivate(gliderId)) {
+            return;
+        } else {
+            if (!flightType) {
+                return setFlightType(FlightType.Members)
+            }
+
+            if (!payersType) {
+                return setPayersType(PayersType.FirstPilot)
+            }
         }
-    })
+    },[
+        gliderId,
+        flightType,
+        payersType,
+        isGliderPrivate,
+    ]);
 
-    useEffect(() => {
-        if (!payersTypesStoreState.payersTypes && !payersTypesStoreState.fetchInProgress) {
-            dispatch(fetchPayersTypes());
-        }
-    })
-
-    useEffect(() => {
-        if (!paymentMethodsStoreState.paymentMethods && !paymentMethodsStoreState.fetchInProgress) {
-            dispatch(fetchPaymentMethods());
-        }
-    })
-
-    const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
-    const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
-    const getGliderOwnersById = (id: number) => glidersStoreState.ownerships?.filter((ownership) => ownership.glider_id === id) || [];
-    const isGliderPrivate = (id: number) => getGliderOwnersById(id).length > 0;
-
-    const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
-    // const getTowTypeById = (id: number) => towTypesStoreState.towTypes?.find((towType) => towType.id === id);
-    // const getFlightTypeById = (id: number) => flightTypesStoreState.flightTypes?.find((flightType) => flightType.id === id);
-    // const getPayersTypeById = (id: number) => payersTypesStoreState.payersTypes?.find((payersType) => payersType.id === id);
-    // const getPaymentMethodById = (id: number) => paymentMethodsStoreState.paymentMethods?.find((paymentMethod) => paymentMethod.id === id);
-    //
-    //
-    const [gliderId, setGliderId] = useState<number | null | undefined>();
-    const [pilot1Id, setPilot1Id] = useState<number | null | undefined>();
-    const [pilot2Id, setPilot2Id] = useState<number | null | undefined>();
-    const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>();
-    // const [towPilotId, setTowPilotId] = useState<number | null | undefined>();
-    // const [towTypeId, setTowTypeId] = useState<number | null | undefined>();
-    // const [flightTypeId, setFlightTypeId] = useState<number | null | undefined>();
-    // const [payersTypeId, setPayersTypeId] = useState<number | null | undefined>(d)
-    // const [paymentMethodId, setPaymentMethodId] = useState<number | null | undefined>();
-    // const [payingMemberId, setPayingMemberId] = useState<number | null | undefined>();
-    // const [paymentReceiverId, setPaymentReceiverId] = useState<number | null | undefined>();
 
     const [autocompleteOpen, setAutocompleteOpen] = useState(true);
 
@@ -266,6 +276,33 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
 
     const renderedInputName = getInputToRender();
 
+    function renderFlightPreview() {
+        return (
+            <Grid>
+                {gliderId && (
+                    <Grid>
+                    <strong>{t("GLIDER")}</strong>: {displayGlider(gliderId)}
+                </Grid>
+                )}
+                {pilot1Id && (
+                    <Grid>
+                    <strong>{t("PILOT_1")}</strong>: {displayMember(pilot1Id)}
+                    </Grid>
+                )}
+                {pilot2Id && (
+                    <Grid>
+                    <strong>{t("PILOT_2")}</strong>: {displayMember(pilot2Id)}
+                    </Grid>
+                )}
+                {towAirplaneId && (
+                    <Grid>
+                    <strong>{t("TOW_AIRPLANE")}</strong>: {displayTowAirplane(towAirplaneId)}
+                    </Grid>
+                )}
+            </Grid>
+        )
+    }
+
     return (
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -288,7 +325,9 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                 </div>
             </DialogTitle>
             <DialogContent>
+                {renderFlightPreview()}
                 <Grid sx={{
+                    mt: 2,
                     width: 400,
                     display: "flex",
                     flexDirection: "column",

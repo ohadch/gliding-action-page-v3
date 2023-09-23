@@ -1,10 +1,9 @@
 import {
     ActionSchema,
-    ActiveTowAirplaneSchema, FlightSchema, FlightTypeSchema, GliderOwnerSchema,
+    ActiveTowAirplaneSchema, FlightSchema, GliderOwnerSchema,
     GliderSchema,
-    MemberSchema, PayersTypeSchema, PaymentMethodSchema,
+    MemberSchema,
     TowAirplaneSchema,
-    TowTypeSchema
 } from "../../lib/types.ts";
 
 export interface BaseInitialState {
@@ -45,25 +44,5 @@ export interface GlidersStoreState extends BaseInitialState {
 
 export interface TowAirplanesStoreState extends BaseInitialState {
     towAirplanes: TowAirplaneSchema[] | undefined;
-    initialState: boolean;
-}
-
-export interface TowTypesStoreState extends BaseInitialState {
-    towTypes: TowTypeSchema[] | undefined;
-    initialState: boolean;
-}
-
-export interface FlightTypesStoreState extends BaseInitialState {
-    flightTypes: FlightTypeSchema[] | undefined;
-    initialState: boolean;
-}
-
-export interface PayersTypesStoreState extends BaseInitialState {
-    payersTypes: PayersTypeSchema[] | undefined;
-    initialState: boolean;
-}
-
-export interface PaymentMethodsStoreState extends BaseInitialState {
-    paymentMethods: PaymentMethodSchema[] | undefined;
     initialState: boolean;
 }

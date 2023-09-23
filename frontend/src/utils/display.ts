@@ -1,11 +1,8 @@
-import {FlightState} from "./enums.ts";
+import {FlightState, FlightType, PayersType, PaymentMethod, TowType} from "./enums.ts";
 import {
     GliderSchema,
     MemberSchema,
-    PayersTypeSchema,
-    PaymentMethodSchema,
     TowAirplaneSchema,
-    TowTypeSchema
 } from "../lib/types.ts";
 
 export function getFlightStateDisplayValue(state: FlightState): string {
@@ -23,6 +20,79 @@ export function getFlightStateDisplayValue(state: FlightState): string {
     }
 }
 
+export function getFlightTypeDisplayValue(type: FlightType): string {
+    switch (type) {
+        case FlightType.Instruction:
+            return "הדרכה"
+        case FlightType.ClubGuest:
+            return "אורח מועדון"
+        case FlightType.MembersGuest:
+            return "אורח חבר"
+        case FlightType.Inspection:
+            return "ביקורת"
+        case FlightType.Members:
+            return "חברים"
+        case FlightType.InstructorsCourse:
+            return "קורס מדריכים"
+        case FlightType.Solo:
+            return "סולו"
+        default:
+            throw new Error(`Unknown flight type: ${type}`)
+    }
+}
+
+
+export function getPaymentMethodDisplayValue(paymentMethod: PaymentMethod) {
+    switch (paymentMethod) {
+        case PaymentMethod.Cash:
+            return "מזומן"
+        case PaymentMethod.CreditCard:
+            return "אשראי"
+        case PaymentMethod.Check:
+            return "צ'ק"
+        case PaymentMethod.Bit:
+            return "ביט"
+        default:
+            throw new Error(`Unknown payment method: ${paymentMethod}`)
+    }
+}
+
+
+export function getTowTypeDisplayValue(towType: TowType) {
+    switch (towType) {
+        case TowType.AIRPLANE_1000:
+            return "מטוס 1000"
+        case TowType.AIRPLANE_1500:
+            return "מטוס 1500"
+        case TowType.AIRPLANE_2000:
+            return "מטוס 2000"
+        case TowType.AIRPLANE_2500:
+            return "מטוס 2500"
+        case TowType.AIRPLANE_3000:
+            return "מטוס 3000"
+        default:
+            throw new Error(`Unknown tow type: ${towType}`)
+    }
+}
+
+export function getPayersTypeDisplayValue(payersType: PayersType) {
+    switch (payersType) {
+        case PayersType.BothPilots:
+            return "שני הטייסים"
+        case PayersType.SecondPilot:
+            return "טייס משני"
+        case PayersType.ThirdMember:
+            return "חבר שלישי"
+        case PayersType.FirstPilot:
+            return "טייס ראשון"
+        case PayersType.Guest:
+            return "אורח"
+        case PayersType.NoPayment:
+            return "ללא תשלום"
+        default:
+            throw new Error(`Unknown payers type: ${payersType}`)
+    }
+}
 
 export function getMemberDisplayName(member: MemberSchema) {
     return `${member.first_name} ${member.last_name}`
@@ -34,16 +104,4 @@ export function getGliderDisplayValue(glider: GliderSchema) {
 
 export function getTowAirplaneDisplayValue(towAirplane: TowAirplaneSchema) {
     return towAirplane.call_sign
-}
-
-export function getTowTypeDisplayValue(towType: TowTypeSchema) {
-    return towType.name
-}
-
-export function getPayersTypeDisplayValue(payersType: PayersTypeSchema) {
-    return payersType.name
-}
-
-export function getPaymentMethodDisplayValue(paymentMethod: PaymentMethodSchema) {
-    return paymentMethod.name
 }

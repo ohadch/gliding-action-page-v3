@@ -14,10 +14,10 @@ class FlightSchema(BaseModel):
     pilot_2_id: Optional[int] = None
     tow_airplane_id: Optional[int] = None
     tow_pilot_id: Optional[int] = None
-    tow_type_id: Optional[int] = None
-    flight_type_id: Optional[int] = None
-    payers_type_id: Optional[int] = None
-    payment_method_id: Optional[int] = None
+    tow_type: Optional[str] = None
+    flight_type: Optional[str] = None
+    payers_type: Optional[str] = None
+    payment_method: Optional[str] = None
     payment_receiver_id: Optional[int] = None
     paying_member_id: Optional[int] = None
     status: str
@@ -34,10 +34,10 @@ class FlightCreateSchema(BaseModel):
     pilot_2_id: Optional[int] = None
     tow_airplane_id: Optional[int] = None
     tow_pilot_id: Optional[int] = None
-    tow_type_id: Optional[int] = None
-    flight_type_id: Optional[int] = None
-    payers_type_id: Optional[int] = None
-    payment_method_id: Optional[int] = None
+    tow_type: Optional[str] = None
+    flight_type: Optional[str] = None
+    payers_type: Optional[str] = None
+    payment_method: Optional[str] = None
     payment_receiver_id: Optional[int] = None
     paying_member_id: Optional[int] = None
     status: str
@@ -52,10 +52,10 @@ class FlightUpdateSchema(BaseModel):
     pilot_2_id: Optional[int] = None
     tow_airplane_id: Optional[int] = None
     tow_pilot_id: Optional[int] = None
-    tow_type_id: Optional[int] = None
-    flight_type_id: Optional[int] = None
-    payers_type_id: Optional[int] = None
-    payment_method_id: Optional[int] = None
+    tow_type: Optional[str] = None
+    flight_type: Optional[str] = None
+    payers_type: Optional[str] = None
+    payment_method: Optional[str] = None
     payment_receiver_id: Optional[int] = None
     paying_member_id: Optional[int] = None
     status: Optional[str] = None

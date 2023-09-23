@@ -197,54 +197,6 @@ export interface paths {
      */
     delete: operations["delete_flights__id___delete"];
   };
-  "/flight_types/search": {
-    /**
-     * Search flight_types
-     * @description Search flight_types
-     * :param page: Page number
-     * :param page_size: Page size
-     * :param filters: Filters
-     * :param db: Database session
-     * :param settings: Settings
-     * :return: List of flight_types
-     */
-    post: operations["search_flight_types_search_post"];
-  };
-  "/flight_types": {
-    /**
-     * Create flight_types
-     * @description Create flight_type
-     * :param data: Data
-     * :param db: Database session
-     */
-    post: operations["create_flight_types_post"];
-  };
-  "/flight_types/{id_}": {
-    /**
-     * Get flight_types by ID
-     * @description Read flight_type by ID
-     * :param id_: FlightType ID
-     * :param db: Database session
-     * :return: FlightType
-     */
-    get: operations["get_by_id_flight_types__id___get"];
-    /**
-     * Update flight_types
-     * @description Update flight_type
-     * :param id_: FlightType ID
-     * :param data: Data to update
-     * :param db: Database session
-     * :return: Updated flight_type
-     */
-    put: operations["update_flight_types__id___put"];
-    /**
-     * Delete flight_types
-     * @description Delete flight_type
-     * :param id_: FlightType ID
-     * :param db: Database session
-     */
-    delete: operations["delete_flight_types__id___delete"];
-  };
   "/gliders/search": {
     /**
      * Search gliders
@@ -437,102 +389,6 @@ export interface paths {
      */
     delete: operations["delete_member_roles__id___delete"];
   };
-  "/payment_methods/search": {
-    /**
-     * Search payment_methods
-     * @description Search payment_methods
-     * :param page: Page number
-     * :param page_size: Page size
-     * :param filters: Filters
-     * :param db: Database session
-     * :param settings: Settings
-     * :return: List of payment_methods
-     */
-    post: operations["search_payment_methods_search_post"];
-  };
-  "/payment_methods": {
-    /**
-     * Create payment_methods
-     * @description Create payment_method
-     * :param data: Data
-     * :param db: Database session
-     */
-    post: operations["create_payment_methods_post"];
-  };
-  "/payment_methods/{id_}": {
-    /**
-     * Get payment_methods by ID
-     * @description Read payment_method by ID
-     * :param id_: PaymentMethod ID
-     * :param db: Database session
-     * :return: PaymentMethod
-     */
-    get: operations["get_by_id_payment_methods__id___get"];
-    /**
-     * Update payment_methods
-     * @description Update payment_method
-     * :param id_: PaymentMethod ID
-     * :param data: Data to update
-     * :param db: Database session
-     * :return: Updated payment_method
-     */
-    put: operations["update_payment_methods__id___put"];
-    /**
-     * Delete payment_methods
-     * @description Delete payment_method
-     * :param id_: PaymentMethod ID
-     * :param db: Database session
-     */
-    delete: operations["delete_payment_methods__id___delete"];
-  };
-  "/payers_types/search": {
-    /**
-     * Search payers_types
-     * @description Search payers_types
-     * :param page: Page number
-     * :param page_size: Page size
-     * :param filters: Filters
-     * :param db: Database session
-     * :param settings: Settings
-     * :return: List of payers_types
-     */
-    post: operations["search_payers_types_search_post"];
-  };
-  "/payers_types": {
-    /**
-     * Create payers_types
-     * @description Create payers_type
-     * :param data: Data
-     * :param db: Database session
-     */
-    post: operations["create_payers_types_post"];
-  };
-  "/payers_types/{id_}": {
-    /**
-     * Get payers_types by ID
-     * @description Read payers_type by ID
-     * :param id_: PayersType ID
-     * :param db: Database session
-     * :return: PayersType
-     */
-    get: operations["get_by_id_payers_types__id___get"];
-    /**
-     * Update payers_types
-     * @description Update payers_type
-     * :param id_: PayersType ID
-     * :param data: Data to update
-     * :param db: Database session
-     * :return: Updated payers_type
-     */
-    put: operations["update_payers_types__id___put"];
-    /**
-     * Delete payers_types
-     * @description Delete payers_type
-     * :param id_: PayersType ID
-     * :param db: Database session
-     */
-    delete: operations["delete_payers_types__id___delete"];
-  };
   "/roles/search": {
     /**
      * Search roles
@@ -628,54 +484,6 @@ export interface paths {
      * :param db: Database session
      */
     delete: operations["delete_tow_airplanes__id___delete"];
-  };
-  "/tow_types/search": {
-    /**
-     * Search tow_types
-     * @description Search tow_types
-     * :param page: Page number
-     * :param page_size: Page size
-     * :param filters: Filters
-     * :param db: Database session
-     * :param settings: Settings
-     * :return: List of tow_types
-     */
-    post: operations["search_tow_types_search_post"];
-  };
-  "/tow_types": {
-    /**
-     * Create tow_types
-     * @description Create tow_type
-     * :param data: Data
-     * :param db: Database session
-     */
-    post: operations["create_tow_types_post"];
-  };
-  "/tow_types/{id_}": {
-    /**
-     * Get tow_types by ID
-     * @description Read tow_type by ID
-     * :param id_: TowType ID
-     * :param db: Database session
-     * :return: TowType
-     */
-    get: operations["get_by_id_tow_types__id___get"];
-    /**
-     * Update tow_types
-     * @description Update tow_type
-     * :param id_: TowType ID
-     * :param data: Data to update
-     * :param db: Database session
-     * :return: Updated tow_type
-     */
-    put: operations["update_tow_types__id___put"];
-    /**
-     * Delete tow_types
-     * @description Delete tow_type
-     * :param id_: TowType ID
-     * :param db: Database session
-     */
-    delete: operations["delete_tow_types__id___delete"];
   };
 }
 
@@ -843,14 +651,14 @@ export interface components {
       tow_airplane_id?: number | null;
       /** Tow Pilot Id */
       tow_pilot_id?: number | null;
-      /** Tow Type Id */
-      tow_type_id?: number | null;
-      /** Flight Type Id */
-      flight_type_id?: number | null;
-      /** Payers Type Id */
-      payers_type_id?: number | null;
-      /** Payment Method Id */
-      payment_method_id?: number | null;
+      /** Tow Type */
+      tow_type?: string | null;
+      /** Flight Type */
+      flight_type?: string | null;
+      /** Payers Type */
+      payers_type?: string | null;
+      /** Payment Method */
+      payment_method?: string | null;
       /** Payment Receiver Id */
       payment_receiver_id?: number | null;
       /** Paying Member Id */
@@ -878,14 +686,14 @@ export interface components {
       tow_airplane_id: number | null;
       /** Tow Pilot Id */
       tow_pilot_id: number | null;
-      /** Tow Type Id */
-      tow_type_id: number | null;
-      /** Flight Type Id */
-      flight_type_id: number | null;
-      /** Payers Type Id */
-      payers_type_id: number | null;
-      /** Payment Method Id */
-      payment_method_id: number | null;
+      /** Tow Type */
+      tow_type: string | null;
+      /** Flight Type */
+      flight_type: string | null;
+      /** Payers Type */
+      payers_type: string | null;
+      /** Payment Method */
+      payment_method: string | null;
       /** Payment Receiver Id */
       payment_receiver_id: number | null;
       /** Paying Member Id */
@@ -911,42 +719,20 @@ export interface components {
       tow_airplane_id?: number | null;
       /** Tow Pilot Id */
       tow_pilot_id?: number | null;
-      /** Tow Type Id */
-      tow_type_id?: number | null;
-      /** Flight Type Id */
-      flight_type_id?: number | null;
-      /** Payers Type Id */
-      payers_type_id?: number | null;
-      /** Payment Method Id */
-      payment_method_id?: number | null;
+      /** Tow Type */
+      tow_type?: string | null;
+      /** Flight Type */
+      flight_type?: string | null;
+      /** Payers Type */
+      payers_type?: string | null;
+      /** Payment Method */
+      payment_method?: string | null;
       /** Payment Receiver Id */
       payment_receiver_id?: number | null;
       /** Paying Member Id */
       paying_member_id?: number | null;
       /** Status */
       status?: string | null;
-    };
-    /** FlightTypeCreateSchema */
-    FlightTypeCreateSchema: {
-      /** Name */
-      name: string;
-    };
-    /** FlightTypeSchema */
-    FlightTypeSchema: {
-      /** Id */
-      id: number;
-      /** Name */
-      name: string;
-    };
-    /** FlightTypeSearchSchema */
-    FlightTypeSearchSchema: {
-      /** Name */
-      name?: string | null;
-    };
-    /** FlightTypeUpdateSchema */
-    FlightTypeUpdateSchema: {
-      /** Name */
-      name?: string | null;
     };
     /** FlightUpdateSchema */
     FlightUpdateSchema: {
@@ -966,14 +752,14 @@ export interface components {
       tow_airplane_id?: number | null;
       /** Tow Pilot Id */
       tow_pilot_id?: number | null;
-      /** Tow Type Id */
-      tow_type_id?: number | null;
-      /** Flight Type Id */
-      flight_type_id?: number | null;
-      /** Payers Type Id */
-      payers_type_id?: number | null;
-      /** Payment Method Id */
-      payment_method_id?: number | null;
+      /** Tow Type */
+      tow_type?: string | null;
+      /** Flight Type */
+      flight_type?: string | null;
+      /** Payers Type */
+      payers_type?: string | null;
+      /** Payment Method */
+      payment_method?: string | null;
       /** Payment Receiver Id */
       payment_receiver_id?: number | null;
       /** Paying Member Id */
@@ -1130,50 +916,6 @@ export interface components {
       /** Phone Number */
       phone_number?: string | null;
     };
-    /** PayersTypeCreateSchema */
-    PayersTypeCreateSchema: {
-      /** Name */
-      name: string;
-    };
-    /** PayersTypeSchema */
-    PayersTypeSchema: {
-      /** Id */
-      id: number;
-      /** Name */
-      name: string;
-    };
-    /** PayersTypeSearchSchema */
-    PayersTypeSearchSchema: {
-      /** Name */
-      name?: string | null;
-    };
-    /** PayersTypeUpdateSchema */
-    PayersTypeUpdateSchema: {
-      /** Name */
-      name?: string | null;
-    };
-    /** PaymentMethodCreateSchema */
-    PaymentMethodCreateSchema: {
-      /** Name */
-      name: string;
-    };
-    /** PaymentMethodSchema */
-    PaymentMethodSchema: {
-      /** Id */
-      id: number;
-      /** Name */
-      name: string;
-    };
-    /** PaymentMethodSearchSchema */
-    PaymentMethodSearchSchema: {
-      /** Name */
-      name?: string | null;
-    };
-    /** PaymentMethodUpdateSchema */
-    PaymentMethodUpdateSchema: {
-      /** Name */
-      name?: string | null;
-    };
     /** RoleCreateSchema */
     RoleCreateSchema: {
       /** Name */
@@ -1225,28 +967,6 @@ export interface components {
       call_sign?: string | null;
       /** Type */
       type?: number | null;
-    };
-    /** TowTypeCreateSchema */
-    TowTypeCreateSchema: {
-      /** Name */
-      name: string;
-    };
-    /** TowTypeSchema */
-    TowTypeSchema: {
-      /** Id */
-      id: number;
-      /** Name */
-      name: string;
-    };
-    /** TowTypeSearchSchema */
-    TowTypeSearchSchema: {
-      /** Name */
-      name?: string | null;
-    };
-    /** TowTypeUpdateSchema */
-    TowTypeUpdateSchema: {
-      /** Name */
-      name?: string | null;
     };
     /** ValidationError */
     ValidationError: {
@@ -1884,159 +1604,6 @@ export interface operations {
     };
   };
   /**
-   * Search flight_types
-   * @description Search flight_types
-   * :param page: Page number
-   * :param page_size: Page size
-   * :param filters: Filters
-   * :param db: Database session
-   * :param settings: Settings
-   * :return: List of flight_types
-   */
-  search_flight_types_search_post: {
-    parameters: {
-      query?: {
-        page?: number;
-        page_size?: number | null;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["FlightTypeSearchSchema"] | null;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["FlightTypeSchema"][];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Create flight_types
-   * @description Create flight_type
-   * :param data: Data
-   * :param db: Database session
-   */
-  create_flight_types_post: {
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["FlightTypeCreateSchema"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["FlightTypeSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Get flight_types by ID
-   * @description Read flight_type by ID
-   * :param id_: FlightType ID
-   * :param db: Database session
-   * :return: FlightType
-   */
-  get_by_id_flight_types__id___get: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["FlightTypeSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Update flight_types
-   * @description Update flight_type
-   * :param id_: FlightType ID
-   * :param data: Data to update
-   * :param db: Database session
-   * :return: Updated flight_type
-   */
-  update_flight_types__id___put: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["FlightTypeUpdateSchema"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["FlightTypeSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Delete flight_types
-   * @description Delete flight_type
-   * :param id_: FlightType ID
-   * :param db: Database session
-   */
-  delete_flight_types__id___delete: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
    * Search gliders
    * @description Search gliders
    * :param page: Page number
@@ -2649,312 +2216,6 @@ export interface operations {
     };
   };
   /**
-   * Search payment_methods
-   * @description Search payment_methods
-   * :param page: Page number
-   * :param page_size: Page size
-   * :param filters: Filters
-   * :param db: Database session
-   * :param settings: Settings
-   * :return: List of payment_methods
-   */
-  search_payment_methods_search_post: {
-    parameters: {
-      query?: {
-        page?: number;
-        page_size?: number | null;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["PaymentMethodSearchSchema"] | null;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["PaymentMethodSchema"][];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Create payment_methods
-   * @description Create payment_method
-   * :param data: Data
-   * :param db: Database session
-   */
-  create_payment_methods_post: {
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PaymentMethodCreateSchema"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["PaymentMethodSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Get payment_methods by ID
-   * @description Read payment_method by ID
-   * :param id_: PaymentMethod ID
-   * :param db: Database session
-   * :return: PaymentMethod
-   */
-  get_by_id_payment_methods__id___get: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["PaymentMethodSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Update payment_methods
-   * @description Update payment_method
-   * :param id_: PaymentMethod ID
-   * :param data: Data to update
-   * :param db: Database session
-   * :return: Updated payment_method
-   */
-  update_payment_methods__id___put: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PaymentMethodUpdateSchema"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["PaymentMethodSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Delete payment_methods
-   * @description Delete payment_method
-   * :param id_: PaymentMethod ID
-   * :param db: Database session
-   */
-  delete_payment_methods__id___delete: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Search payers_types
-   * @description Search payers_types
-   * :param page: Page number
-   * :param page_size: Page size
-   * :param filters: Filters
-   * :param db: Database session
-   * :param settings: Settings
-   * :return: List of payers_types
-   */
-  search_payers_types_search_post: {
-    parameters: {
-      query?: {
-        page?: number;
-        page_size?: number | null;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["PayersTypeSearchSchema"] | null;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["PayersTypeSchema"][];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Create payers_types
-   * @description Create payers_type
-   * :param data: Data
-   * :param db: Database session
-   */
-  create_payers_types_post: {
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PayersTypeCreateSchema"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["PayersTypeSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Get payers_types by ID
-   * @description Read payers_type by ID
-   * :param id_: PayersType ID
-   * :param db: Database session
-   * :return: PayersType
-   */
-  get_by_id_payers_types__id___get: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["PayersTypeSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Update payers_types
-   * @description Update payers_type
-   * :param id_: PayersType ID
-   * :param data: Data to update
-   * :param db: Database session
-   * :return: Updated payers_type
-   */
-  update_payers_types__id___put: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PayersTypeUpdateSchema"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["PayersTypeSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Delete payers_types
-   * @description Delete payers_type
-   * :param id_: PayersType ID
-   * :param db: Database session
-   */
-  delete_payers_types__id___delete: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
    * Search roles
    * @description Search roles
    * :param page: Page number
@@ -3240,159 +2501,6 @@ export interface operations {
    * :param db: Database session
    */
   delete_tow_airplanes__id___delete: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Search tow_types
-   * @description Search tow_types
-   * :param page: Page number
-   * :param page_size: Page size
-   * :param filters: Filters
-   * :param db: Database session
-   * :param settings: Settings
-   * :return: List of tow_types
-   */
-  search_tow_types_search_post: {
-    parameters: {
-      query?: {
-        page?: number;
-        page_size?: number | null;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["TowTypeSearchSchema"] | null;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["TowTypeSchema"][];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Create tow_types
-   * @description Create tow_type
-   * :param data: Data
-   * :param db: Database session
-   */
-  create_tow_types_post: {
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TowTypeCreateSchema"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["TowTypeSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Get tow_types by ID
-   * @description Read tow_type by ID
-   * :param id_: TowType ID
-   * :param db: Database session
-   * :return: TowType
-   */
-  get_by_id_tow_types__id___get: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["TowTypeSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Update tow_types
-   * @description Update tow_type
-   * :param id_: TowType ID
-   * :param data: Data to update
-   * :param db: Database session
-   * :return: Updated tow_type
-   */
-  update_tow_types__id___put: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TowTypeUpdateSchema"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["TowTypeSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Delete tow_types
-   * @description Delete tow_type
-   * :param id_: TowType ID
-   * :param db: Database session
-   */
-  delete_tow_types__id___delete: {
     parameters: {
       path: {
         id_: number;

@@ -10,11 +10,9 @@ import {
 import {useEffect, useState} from "react";
 import {
     FlightSchema,
-    FlightTypeSchema,
     GliderSchema,
-    MemberSchema, PayersTypeSchema, PaymentMethodSchema,
+    MemberSchema,
     TowAirplaneSchema,
-    TowTypeSchema
 } from "../../lib/types.ts";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
@@ -22,10 +20,20 @@ import {RootState, useAppDispatch} from "../../store";
 import {fetchMembers} from "../../store/actions/member.ts";
 import {fetchGliders} from "../../store/actions/glider.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
-import {fetchTowTypes} from "../../store/actions/towType.ts";
-import {fetchFlightTypes} from "../../store/actions/flightType.ts";
-import {fetchPayersTypes} from "../../store/actions/payersType.ts";
-import {fetchPaymentMethods} from "../../store/actions/paymentMethod.ts";
+import {
+    FlightType,
+    getEnumValues,
+    getFlightType,
+    getPayersType, getPaymentMethod,
+    getTowType, PayersType, PaymentMethod,
+    TowType
+} from "../../utils/enums.ts";
+import {
+    getFlightTypeDisplayValue,
+    getPayersTypeDisplayValue,
+    getPaymentMethodDisplayValue,
+    getTowTypeDisplayValue
+} from "../../utils/display.ts";
 
 export interface CreateOrUpdateFlightDialogProps {
     flight?: FlightSchema
@@ -40,10 +48,10 @@ export interface CreateOrUpdateFlightDialogSubmitPayload {
     pilot2Id?: number | null,
     towAirplaneId?: number | null,
     towPilotId?: number | null,
-    towTypeId?: number | null,
-    flightTypeId?: number | null,
-    payersTypeId?: number | null,
-    paymentMethodId?: number | null,
+    towType?: TowType | null,
+    flightType?: FlightType | null,
+    payersType?: PayersType| null,
+    paymentMethod?: PaymentMethod | null,
     payingMemberId?: number | null,
     paymentReceiverId?: number | null,
 }
@@ -53,10 +61,6 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const towTypesStoreState = useSelector((state: RootState) => state.towTypes)
-    const flightTypesStoreState = useSelector((state: RootState) => state.flightTypes)
-    const payersTypesStoreState = useSelector((state: RootState) => state.payersTypes)
-    const paymentMethodsStoreState = useSelector((state: RootState) => state.paymentMethods)
 
     const {
         t
@@ -80,37 +84,9 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
         }
     });
 
-    useEffect(() => {
-        if (!towTypesStoreState.towTypes && !towTypesStoreState.fetchInProgress) {
-            dispatch(fetchTowTypes());
-        }
-    })
-
-    useEffect(() => {
-        if (!flightTypesStoreState.flightTypes && !flightTypesStoreState.fetchInProgress) {
-            dispatch(fetchFlightTypes());
-        }
-    })
-
-    useEffect(() => {
-        if (!payersTypesStoreState.payersTypes && !payersTypesStoreState.fetchInProgress) {
-            dispatch(fetchPayersTypes());
-        }
-    })
-
-    useEffect(() => {
-        if (!paymentMethodsStoreState.paymentMethods && !paymentMethodsStoreState.fetchInProgress) {
-            dispatch(fetchPaymentMethods());
-        }
-    })
-
     const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
     const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
     const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
-    const getTowTypeById = (id: number) => towTypesStoreState.towTypes?.find((towType) => towType.id === id);
-    const getFlightTypeById = (id: number) => flightTypesStoreState.flightTypes?.find((flightType) => flightType.id === id);
-    const getPayersTypeById = (id: number) => payersTypesStoreState.payersTypes?.find((payersType) => payersType.id === id);
-    const getPaymentMethodById = (id: number) => paymentMethodsStoreState.paymentMethods?.find((paymentMethod) => paymentMethod.id === id);
 
 
     const [gliderId, setGliderId] = useState<number | null | undefined>(flight?.glider_id);
@@ -118,12 +94,12 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
     const [pilot2Id, setPilot2Id] = useState<number | null | undefined>(flight?.pilot_2_id);
     const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>(flight?.tow_airplane_id);
     const [towPilotId, setTowPilotId] = useState<number | null | undefined>(flight?.tow_pilot_id);
-    const [towTypeId, setTowTypeId] = useState<number | null | undefined>(flight?.tow_type_id);
-    const [flightTypeId, setFlightTypeId] = useState<number | null | undefined>(flight?.flight_type_id);
-    const [payersTypeId, setPayersTypeId] = useState<number | null | undefined>(flight?.payers_type_id)
-    const [paymentMethodId, setPaymentMethodId] = useState<number | null | undefined>(flight?.payment_method_id);
     const [payingMemberId, setPayingMemberId] = useState<number | null | undefined>(flight?.paying_member_id);
     const [paymentReceiverId, setPaymentReceiverId] = useState<number | null | undefined>(flight?.payment_receiver_id);
+    const [flightType, setFlightType] = useState<FlightType | null | undefined>(flight?.flight_type ? getFlightType(flight?.flight_type) : null);
+    const [towType, setTowType] = useState<TowType | null | undefined>(flight?.tow_type ? getTowType(flight?.tow_type) : null);
+    const [payersType, setPayersType] = useState<PayersType | null | undefined>(flight?.payers_type ? getPayersType(flight?.payers_type) : null);
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null | undefined>(flight?.payment_method ? getPaymentMethod(flight?.payment_method) : null);
 
 
     return (
@@ -150,10 +126,12 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
                             <FormControl>
                                 <Autocomplete
                                     id="flight-type"
-                                    options={flightTypesStoreState.flightTypes || []}
-                                    value={flightTypeId ? getFlightTypeById(flightTypeId) : null}
-                                    onChange={(_, newValue) => setFlightTypeId(newValue?.id)}
-                                    getOptionLabel={(option: FlightTypeSchema) => option.name}
+                                    options={getEnumValues(FlightType).map(val => getFlightType(val))}
+                                    value={flightType}
+                                    getOptionLabel={(option: FlightType) => getFlightTypeDisplayValue(option)}
+                                    onChange={(_, newValue) => setFlightType(
+                                        newValue ? getFlightType(newValue) : null
+                                    )}
                                     renderInput={(params) => {
                                         return (
                                             <TextField
@@ -280,10 +258,12 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
                             <FormControl>
                                 <Autocomplete
                                     id="tow-type"
-                                    options={towTypesStoreState.towTypes || []}
-                                    value={towTypeId ? getTowTypeById(towTypeId) : null}
-                                    onChange={(_, newValue) => setTowTypeId(newValue?.id)}
-                                    getOptionLabel={(option: TowTypeSchema) => option.name}
+                                    options={getEnumValues(TowType).map(val => getTowType(val))}
+                                    value={towType}
+                                    getOptionLabel={(option: TowType) => getTowTypeDisplayValue(option)}
+                                    onChange={(_, newValue) => setTowType(
+                                        newValue ? getTowType(newValue) : null
+                                    )}
                                     renderInput={(params) => {
                                         return (
                                             <TextField
@@ -308,10 +288,12 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
                             <FormControl>
                                 <Autocomplete
                                     id="payers-type"
-                                    options={payersTypesStoreState.payersTypes || []}
-                                    value={payersTypeId ? getPayersTypeById(payersTypeId) : null}
-                                    onChange={(_, newValue) => setPayersTypeId(newValue?.id)}
-                                    getOptionLabel={(option: PayersTypeSchema) => option.name}
+                                    options={getEnumValues(PayersType).map(val => getPayersType(val))}
+                                    value={payersType}
+                                    getOptionLabel={(option: PayersType) => getPayersTypeDisplayValue(option)}
+                                    onChange={(_, newValue) => setPayersType(
+                                        newValue ? getPayersType(newValue) : null
+                                    )}
                                     renderInput={(params) => {
                                         return (
                                             <TextField
@@ -327,10 +309,12 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
                             <FormControl>
                                 <Autocomplete
                                     id="payment-method"
-                                    options={paymentMethodsStoreState.paymentMethods || []}
-                                    value={paymentMethodId ? getPaymentMethodById(paymentMethodId) : null}
-                                    onChange={(_, newValue) => setPaymentMethodId(newValue?.id)}
-                                    getOptionLabel={(option: PaymentMethodSchema) => option.name}
+                                    options={getEnumValues(PaymentMethod).map(val => getPaymentMethod(val))}
+                                    value={paymentMethod}
+                                    onChange={(_, newValue) => setPaymentMethod(
+                                        newValue ? getPaymentMethod(newValue) : null
+                                    )}
+                                    getOptionLabel={(option: PaymentMethod) => getPaymentMethodDisplayValue(option)}
                                     renderInput={(params) => {
                                         return (
                                             <TextField
@@ -393,10 +377,10 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
                     pilot2Id,
                     towAirplaneId,
                     towPilotId,
-                    towTypeId,
-                    flightTypeId,
-                    payersTypeId,
-                    paymentMethodId,
+                    towType,
+                    flightType,
+                    payersType,
+                    paymentMethod,
                     payingMemberId,
                     paymentReceiverId,
                 })}>
