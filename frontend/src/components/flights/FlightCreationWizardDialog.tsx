@@ -23,7 +23,7 @@ import {
     getMemberDisplayValue,
     getPayersTypeDisplayValue
 } from "../../utils/display.ts";
-import {hasRole, isCertifiedForSinglePilotOperation, isCfi} from "../../utils/members.ts";
+import {hasRole, isCertifiedForSinglePilotOperation, isCfi, isTowPilot} from "../../utils/members.ts";
 import {SUPPORTED_FLIGHT_TYPES} from "../../utils/consts.ts";
 
 enum RenderedInputName {
@@ -104,9 +104,6 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
     const [towPilotId, setTowPilotId] = useState<number | null | undefined>();
     const [flightType, setFlightType] = useState<FlightType | null | undefined>();
     const [payersType, setPayersType] = useState<PayersType | null | undefined>()
-    // const [paymentMethodId, setPaymentMethodId] = useState<number | null | undefined>();
-    // const [payingMemberId, setPayingMemberId] = useState<number | null | undefined>();
-    // const [paymentReceiverId, setPaymentReceiverId] = useState<number | null | undefined>();
 
 
     useEffect(() => {
@@ -293,6 +290,11 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
         return initialOptions;
     }
 
+    const getTowPilotOptions = () => {
+        const initialOptions = membersStoreState.members || [];
+        return initialOptions.filter((member) => isTowPilot(member, membersStoreState.membersRoles || []));
+    }
+
     function renderInput(inputName: RenderedInputName) {
         switch (inputName) {
             case RenderedInputName.GLIDER:
@@ -409,7 +411,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                         <FormControl>
                             <Autocomplete
                                 id="towPilot"
-                                options={membersStoreState.members || []}
+                                options={getTowPilotOptions()}
                                 value={towPilotId ? getMemberById(towPilotId) : null}
                                 onChange={(_, newValue) => setTowPilotId(newValue?.id)}
                                 getOptionLabel={(option) => getMemberDisplayValue(
