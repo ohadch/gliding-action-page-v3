@@ -43,3 +43,8 @@ export function isObserver(member: MemberSchema, roles: MemberRoleSchema[]): boo
 export function isTester(member: MemberSchema, roles: MemberRoleSchema[]): boolean {
     return hasRole(member, roles, "Tester")
 }
+
+
+export function isCertifiedForSingleSeatGliders(member: MemberSchema, roles: MemberRoleSchema[]): boolean {
+    return isCfi(member, roles) || isPrivatePilotLicense(member, roles) || isSoloStudent(member, roles)
+}

@@ -23,7 +23,7 @@ import {
     getMemberDisplayValue,
     getPayersTypeDisplayValue
 } from "../../utils/display.ts";
-import {hasRole} from "../../utils/members.ts";
+import {hasRole, isCertifiedForSingleSeatGliders} from "../../utils/members.ts";
 
 enum RenderedInputName {
     GLIDER = "GLIDER",
@@ -173,11 +173,14 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
 
         }
     }, [
+        pilot1Id,
         gliderId,
         flightType,
         payersType,
         isGliderPrivate,
         getGliderById,
+        getMemberById,
+        membersStoreState.membersRoles,
     ]);
 
 
@@ -194,32 +197,48 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
             throw new Error("Glider not found");
         }
 
-        if (isGliderPrivate(glider.id)) {
-            alert("TODO")
-        } else {
-            if (glider.num_seats === 1) {
-                if (!pilot1Id) {
-                    return RenderedInputName.PILOT_1;
-                }
-
-                if (!towAirplaneId) {
-                    return RenderedInputName.TOW_AIRPLANE;
-                }
-
-                if (!towPilotId) {
-                    return RenderedInputName.TOW_PILOT;
-                }
-            } else if (glider.num_seats === 2) {
-                if (!pilot1Id) {
-                    return RenderedInputName.PILOT_1;
-                } else if (!pilot2Id) {
-                    return RenderedInputName.PILOT_2;
-                }
-            } else {
-                throw new Error("Invalid number of seats");
-            }
+        if (!pilot1Id) {
+            return RenderedInputName.PILOT_1;
         }
+
+        if ((glider.num_seats === 2) && !pilot2Id) {
+            return RenderedInputName.PILOT_2;
+        }
+
+        if (!towAirplaneId) {
+            return RenderedInputName.TOW_AIRPLANE;
+        }
+
+        if (!towPilotId) {
+            return RenderedInputName.TOW_PILOT;
+        }
+
         return null;
+    }
+
+    const getPilot1Options = () => {
+        const initialOptions = membersStoreState.members || [];
+
+        if (!gliderId) {
+            return initialOptions;
+        }
+
+        const glider = getGliderById(gliderId);
+
+        if (!glider) {
+            return initialOptions;
+        }
+
+        if (isGliderPrivate(glider.id)) {
+            const gliderOwners = getGliderOwnersById(glider.id);
+            return initialOptions.filter((member) => gliderOwners.some((ownership) => ownership.member_id === member.id));
+        }
+
+        if (glider.num_seats === 1) {
+            return initialOptions.filter((member) => isCertifiedForSingleSeatGliders(member, membersStoreState.membersRoles || []));
+        }
+
+        return initialOptions;
     }
 
     function renderInput(inputName: RenderedInputName) {
@@ -282,7 +301,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                         <FormControl>
                             <Autocomplete
                                 id="pilot1"
-                                options={membersStoreState.members || []}
+                                options={getPilot1Options()}
                                 value={pilot1Id ? getMemberById(pilot1Id) : null}
                                 onChange={(_, newValue) => setPilot1Id(newValue?.id)}
                                 getOptionLabel={(option) => getMemberDisplayValue(
