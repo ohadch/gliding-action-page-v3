@@ -293,6 +293,54 @@ export interface paths {
      */
     delete: operations["delete_gliders__id___delete"];
   };
+  "/glider_owners/search": {
+    /**
+     * Search glider_owners
+     * @description Search glider_owners
+     * :param page: Page number
+     * :param page_size: Page size
+     * :param filters: Filters
+     * :param db: Database session
+     * :param settings: Settings
+     * :return: List of glider_owners
+     */
+    post: operations["search_glider_owners_search_post"];
+  };
+  "/glider_owners": {
+    /**
+     * Create glider_owners
+     * @description Create glider_owner
+     * :param data: Data
+     * :param db: Database session
+     */
+    post: operations["create_glider_owners_post"];
+  };
+  "/glider_owners/{id_}": {
+    /**
+     * Get glider_owners by ID
+     * @description Read glider_owner by ID
+     * :param id_: GliderOwner ID
+     * :param db: Database session
+     * :return: GliderOwner
+     */
+    get: operations["get_by_id_glider_owners__id___get"];
+    /**
+     * Update glider_owners
+     * @description Update glider_owner
+     * :param id_: GliderOwner ID
+     * :param data: Data to update
+     * :param db: Database session
+     * :return: Updated glider_owner
+     */
+    put: operations["update_glider_owners__id___put"];
+    /**
+     * Delete glider_owners
+     * @description Delete glider_owner
+     * :param id_: GliderOwner ID
+     * :param db: Database session
+     */
+    delete: operations["delete_glider_owners__id___delete"];
+  };
   "/members/search": {
     /**
      * Search members
@@ -941,6 +989,36 @@ export interface components {
       num_seats: number;
       /** Type */
       type: number;
+    };
+    /** GliderOwnerCreateSchema */
+    GliderOwnerCreateSchema: {
+      /** Glider Id */
+      glider_id: number;
+      /** Member Id */
+      member_id: number;
+    };
+    /** GliderOwnerSchema */
+    GliderOwnerSchema: {
+      /** Id */
+      id: number;
+      /** Glider Id */
+      glider_id: number;
+      /** Member Id */
+      member_id: number;
+    };
+    /** GliderOwnerSearchSchema */
+    GliderOwnerSearchSchema: {
+      /** Glider Id */
+      glider_id?: number | null;
+      /** Member Id */
+      member_id?: number | null;
+    };
+    /** GliderOwnerUpdateSchema */
+    GliderOwnerUpdateSchema: {
+      /** Glider Id */
+      glider_id?: number | null;
+      /** Member Id */
+      member_id?: number | null;
     };
     /** GliderSchema */
     GliderSchema: {
@@ -2091,6 +2169,159 @@ export interface operations {
    * :param db: Database session
    */
   delete_gliders__id___delete: {
+    parameters: {
+      path: {
+        id_: number;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Search glider_owners
+   * @description Search glider_owners
+   * :param page: Page number
+   * :param page_size: Page size
+   * :param filters: Filters
+   * :param db: Database session
+   * :param settings: Settings
+   * :return: List of glider_owners
+   */
+  search_glider_owners_search_post: {
+    parameters: {
+      query?: {
+        page?: number;
+        page_size?: number | null;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["GliderOwnerSearchSchema"] | null;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GliderOwnerSchema"][];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Create glider_owners
+   * @description Create glider_owner
+   * :param data: Data
+   * :param db: Database session
+   */
+  create_glider_owners_post: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GliderOwnerCreateSchema"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GliderOwnerSchema"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Get glider_owners by ID
+   * @description Read glider_owner by ID
+   * :param id_: GliderOwner ID
+   * :param db: Database session
+   * :return: GliderOwner
+   */
+  get_by_id_glider_owners__id___get: {
+    parameters: {
+      path: {
+        id_: number;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GliderOwnerSchema"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Update glider_owners
+   * @description Update glider_owner
+   * :param id_: GliderOwner ID
+   * :param data: Data to update
+   * :param db: Database session
+   * :return: Updated glider_owner
+   */
+  update_glider_owners__id___put: {
+    parameters: {
+      path: {
+        id_: number;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GliderOwnerUpdateSchema"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GliderOwnerSchema"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Delete glider_owners
+   * @description Delete glider_owner
+   * :param id_: GliderOwner ID
+   * :param db: Database session
+   */
+  delete_glider_owners__id___delete: {
     parameters: {
       path: {
         id_: number;

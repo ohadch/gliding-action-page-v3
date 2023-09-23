@@ -1,6 +1,6 @@
 import {
     ActionSchema,
-    ActiveTowAirplaneSchema, FlightSchema, FlightTypeSchema,
+    ActiveTowAirplaneSchema, FlightSchema, FlightTypeSchema, GliderOwnerSchema,
     GliderSchema,
     MemberSchema, PayersTypeSchema, PaymentMethodSchema,
     TowAirplaneSchema,
@@ -38,6 +38,7 @@ export interface MembersStoreState extends BaseInitialState {
 
 export interface GlidersStoreState extends BaseInitialState {
     gliders: GliderSchema[] | undefined;
+    ownerships: GliderOwnerSchema[] | undefined;
     initialState: boolean;
 }
 

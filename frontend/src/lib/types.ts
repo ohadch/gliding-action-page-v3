@@ -10,6 +10,6 @@ export type TowTypeSchema = components["schemas"]["TowTypeSchema"]
 export type FlightTypeSchema = components["schemas"]["FlightTypeSchema"]
 export type PayersTypeSchema = components["schemas"]["PayersTypeSchema"]
 export type PaymentMethodSchema = components["schemas"]["PaymentMethodSchema"]
-
+export type GliderOwnerSchema = components["schemas"]["GliderOwnerSchema"]
 
 export type FlightCreateSchema = components["schemas"]["FlightCreateSchema"]
