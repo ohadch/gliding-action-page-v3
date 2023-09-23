@@ -31,4 +31,5 @@ export const TEXTS_HEBREW = {
     PAYMENT_METHOD: "אמצעי תשלום",
     DUPLICATE_FLIGHT: "שכפל טיסה",
     DELETE_FLIGHT: "מחק טיסה",
+    DELETE_FLIGHT_CONFIRMATION: "האם אתה בטוח שברצונך למחוק את הטיסה?",
 }

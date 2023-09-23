@@ -2,7 +2,7 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {CurrentActionStoreState} from "../@types/InitialData.ts";
 import {CacheService} from "../../utils/cache.ts";
 import {CACHE_KEY_ACTION} from "../../utils/consts.ts";
-import {createFlight, fetchActiveTowAirplanes, fetchFlights} from "../actions/currentAction.ts";
+import {createFlight, deleteFlight, fetchActiveTowAirplanes, fetchFlights} from "../actions/currentAction.ts";
 
 const initialState: CurrentActionStoreState = {
     action: CacheService.get(CACHE_KEY_ACTION) ? JSON.parse(CacheService.get(CACHE_KEY_ACTION) as never) : undefined,
@@ -63,6 +63,13 @@ export const currentActionSlice = createSlice({
             .addCase(createFlight.rejected, (state, action) => {
                 state.fetchingFlightsInProgress = false
                 state.error = action.error.message
+            })
+            .addCase(deleteFlight.pending, (state) => {
+                state.fetchingFlightsInProgress = true
+            })
+            .addCase(deleteFlight.fulfilled, (state, action) => {
+                state.fetchingFlightsInProgress = false
+                state.flights = state.flights?.filter(flight => flight.id !== action.payload)
             })
     }
 })

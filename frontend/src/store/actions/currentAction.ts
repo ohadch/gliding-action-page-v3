@@ -5,7 +5,7 @@ import {API_HOST} from "../../utils/consts.ts";
 import {ActiveTowAirplaneSchema, FlightCreateSchema, FlightSchema} from "../../lib/types.ts";
 
 
-const {POST} = createClient<paths>({baseUrl: API_HOST});
+const {POST, DELETE} = createClient<paths>({baseUrl: API_HOST});
 
 
 
@@ -72,5 +72,25 @@ export const createFlight = createAsyncThunk<FlightSchema, { createPayload: Flig
         }
 
         return data;
+    }
+)
+
+export const deleteFlight = createAsyncThunk<number, number, { rejectValue: string }
+>(
+    'actions/deleteFlight',
+    async (flightId, thunkAPI) => {
+        const {error} = await DELETE("/flights/{id_}", {
+            params: {
+                path: {
+                    id_: flightId,
+                }
+            }
+        });
+
+        if (error) {
+            return thunkAPI.rejectWithValue("Error deleting flight");
+        }
+
+        return flightId;
     }
 )

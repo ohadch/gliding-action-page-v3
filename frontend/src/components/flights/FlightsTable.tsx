@@ -22,6 +22,7 @@ import {Tooltip} from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {deleteFlight} from "../../store/actions/currentAction.ts";
 
 
 export default function FlightsTable() {
@@ -106,6 +107,14 @@ export default function FlightsTable() {
         return towAirplane ? towAirplane.call_sign : "";
     }
 
+    function onFlightDelete(id: number) {
+        if (!confirm(t("DELETE_FLIGHT_CONFIRMATION"))) {
+            return;
+        }
+
+        dispatch(deleteFlight(id));
+    }
+
     return (
         <TableContainer component={Paper}>
             <Table sx={{minWidth: 650}} aria-label="simple table">
@@ -142,7 +151,7 @@ export default function FlightsTable() {
                                         <ContentCopyIcon/>
                                     </IconButton>
                                 </Tooltip>
-                                <Tooltip title={t("DELETE_FLIGHT")} onClick={() => alert("TODO")}>
+                                <Tooltip title={t("DELETE_FLIGHT")} onClick={() => onFlightDelete(flight.id)}>
                                     <IconButton aria-label="delete">
                                         <DeleteIcon/>
                                     </IconButton>
