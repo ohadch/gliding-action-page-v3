@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
-from src.utils.enums import FlightType, PayersType, PaymentMethod, TowType
+from src.utils.enums import FlightType, PayersType, PaymentMethod, TowType, FlightState
 
 
 class FlightSchema(BaseModel):
@@ -22,7 +22,7 @@ class FlightSchema(BaseModel):
     payment_method: Optional[PaymentMethod] = None
     payment_receiver_id: Optional[int] = None
     paying_member_id: Optional[int] = None
-    status: str
+    state: FlightState
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -42,7 +42,7 @@ class FlightCreateSchema(BaseModel):
     payment_method: Optional[PaymentMethod] = None
     payment_receiver_id: Optional[int] = None
     paying_member_id: Optional[int] = None
-    status: str
+    state: FlightState
 
 
 class FlightUpdateSchema(BaseModel):
@@ -60,7 +60,7 @@ class FlightUpdateSchema(BaseModel):
     payment_method: Optional[PaymentMethod] = None
     payment_receiver_id: Optional[int] = None
     paying_member_id: Optional[int] = None
-    status: Optional[str] = None
+    state: Optional[FlightState] = None
 
 
 class FlightSearchSchema(FlightUpdateSchema):

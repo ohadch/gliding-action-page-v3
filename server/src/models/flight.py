@@ -24,7 +24,7 @@ class Flight(Base):
     payment_method = Column(String, nullable=True)
     payment_receiver_id = Column(Integer, ForeignKey("members.id"), nullable=True)
     paying_member_id = Column(Integer, ForeignKey("members.id"), nullable=True)
-    status = Column(String, nullable=False)
+    state = Column(String, nullable=False)
 
     glider = relationship("Glider")
     pilot_1 = relationship("Member", foreign_keys=[pilot_1_id])

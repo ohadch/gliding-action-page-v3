@@ -51,6 +51,13 @@ class PaymentMethod(enum.Enum):
     Bit = "Bit"
 
 
+class FlightState(enum.Enum):
+    Draft = "Draft"
+    Tow = "Tow"
+    Inflight = "Inflight"
+    Landed = "Landed"
+
+
 class TowType(enum.Enum):
     AIRPLANE_1000 = "AIRPLANE_1000"
     AIRPLANE_1500 = "AIRPLANE_1500"
