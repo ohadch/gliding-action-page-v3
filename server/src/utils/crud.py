@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Optional, Any, Type, Dict, Union, TypeVar, Generic, List
 from uuid import UUID
 
@@ -62,7 +63,12 @@ class GenericModelCrud(
         :param data: Data to create
         :return: Created item
         """
-        db_item = self.model(**data.dict())
+        db_item = self.model(
+            **{
+                k: (v if not isinstance(v, Enum) else v.value)
+                for k, v in data.model_dump().items()
+            }
+        )
         db.add(db_item)
         db.commit()
         db.refresh(db_item)

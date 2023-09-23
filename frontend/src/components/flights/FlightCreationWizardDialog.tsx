@@ -10,7 +10,7 @@ import {
     TextField,
 } from "@mui/material";
 import {useCallback, useEffect, useState} from "react";
-import {FlightType, GliderSchema, PayersType,} from "../../lib/types.ts";
+import {FlightCreateSchema, FlightType, GliderSchema, PayersType,} from "../../lib/types.ts";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
@@ -38,21 +38,7 @@ enum RenderedInputName {
 export interface FlightCreationWizardDialogProps {
     open: boolean
     onCancel: () => void
-    onSubmit: (flight: FlightCreationWizardDialogSubmitPayload) => void
-}
-
-export interface FlightCreationWizardDialogSubmitPayload {
-    gliderId?: number | null,
-    pilot1Id?: number | null,
-    pilot2Id?: number | null,
-    towAirplaneId?: number | null,
-    towPilotId?: number | null,
-    towType?: number | null,
-    flightType?: number | null,
-    payersType?: number | null,
-    paymentMethodId?: number | null,
-    payingMemberId?: number | null,
-    paymentReceiverId?: number | null,
+    onSubmit: (flight: FlightCreateSchema) => void
 }
 
 export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: FlightCreationWizardDialogProps) {
@@ -60,6 +46,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
+    const {action} = useSelector((state: RootState) => state.currentAction)
 
     const {
         t
@@ -511,6 +498,10 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
         )
     }
 
+    if (!action) {
+        return null;
+    }
+
     return (
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -527,7 +518,24 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                     <Button onClick={onCancel}>
                         {t("CANCEL")}
                     </Button>
-                    <Button onClick={() => onSubmit({})}>
+                    <Button
+                        disabled={
+                            !gliderId || !pilot1Id || !towAirplaneId || !towPilotId || !flightType || !payersType
+                        }
+                        onClick={() => onSubmit({
+                            action_id: action.id,
+                            state: "Draft",
+                            flight_type: flightType,
+                            glider_id: gliderId,
+                            pilot_1_id: pilot1Id,
+                            pilot_2_id: pilot2Id,
+                            tow_airplane_id: towAirplaneId,
+                            tow_pilot_id: towPilotId,
+                            payment_receiver_id: null,
+                            tow_type: null,
+                            payers_type: payersType,
+                            payment_method: null,
+                        })}>
                         {t("CONFIRM")}
                     </Button>
                 </div>

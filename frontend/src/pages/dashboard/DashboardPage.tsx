@@ -65,7 +65,12 @@ export default function DashboardPage() {
                 <FlightCreationWizardDialog
                     open={flightCreationWizardDialogOpen}
                     onCancel={() => setFlightCreationWizardDialogOpen(false)}
-                    onSubmit={() => alert("TODO")}
+                    onSubmit={payload => {
+                        dispatch(createFlight({
+                            createPayload: payload
+                        }))
+                        setFlightCreationWizardDialogOpen(false);
+                    }}
                 />
             )}
 
