@@ -83,13 +83,19 @@ export default function FlightsTable() {
     const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
     const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
     const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
+    const getFlightTypeById = (id: number) => flightTypesStoreState.flightTypes?.find((flightType) => flightType.id === id);
     // const getTowTypeById = (id: number) => towTypesStoreState.towTypes?.find((towType) => towType.id === id);
-    // const getFlightTypeById = (id: number) => flightTypesStoreState.flightTypes?.find((flightType) => flightType.id === id);
+
     // const getPayersTypeById = (id: number) => payersTypesStoreState.payersTypes?.find((payersType) => payersType.id === id);
     // const getPaymentMethodById = (id: number) => paymentMethodsStoreState.paymentMethods?.find((paymentMethod) => paymentMethod.id === id);
 
     const displayFlightState = (state: string) => {
         return getFlightStateDisplayValue(getFlightState(state));
+    }
+
+    const displayFlightType = (id: number) => {
+        const flightType = getFlightTypeById(id);
+        return flightType ? flightType.name : "";
     }
 
     const displayGlider = (id: number) => {
@@ -122,11 +128,12 @@ export default function FlightsTable() {
                     <TableRow>
                         <TableCell>{t("STATUS")}</TableCell>
                         <TableCell align="right">{t("GLIDER")}</TableCell>
+                        <TableCell align="right">{t("FLIGHT_TYPE")}</TableCell>
                         <TableCell align="right">{t("PILOT_1")}</TableCell>
                         <TableCell align="right">{t("PILOT_2")}</TableCell>
                         <TableCell align="right">{t("TOW_AIRPLANE")}</TableCell>
                         <TableCell align="right">{t("TOW_PILOT")}</TableCell>
-                        <TableCell align="right">Actions</TableCell>
+                        <TableCell align="right"></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -139,6 +146,7 @@ export default function FlightsTable() {
                                 {flight.status && displayFlightState(flight.status)}
                             </TableCell>
                             <TableCell align="right">{flight.glider_id && displayGlider(flight.glider_id)}</TableCell>
+                            <TableCell align="right">{flight.flight_type_id && displayFlightType(flight.flight_type_id)}</TableCell>
                             <TableCell align="right">{flight.pilot_1_id && displayMember(flight.pilot_1_id)}</TableCell>
                             <TableCell align="right">{flight.pilot_2_id && displayMember(flight.pilot_2_id)}</TableCell>
                             <TableCell
