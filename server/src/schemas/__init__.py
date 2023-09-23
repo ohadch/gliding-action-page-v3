@@ -41,7 +41,6 @@ from .member_role import (
     MemberRoleUpdateSchema,
     MemberRoleSearchSchema,
 )
-from .role import RoleSchema, RoleCreateSchema, RoleUpdateSchema, RoleSearchSchema
 from .tow_airplane import (
     TowAirplaneSchema,
     TowAirplaneCreateSchema,

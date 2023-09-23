@@ -30,19 +30,19 @@ class FlightTypeId(enum.Enum):
     EnginedTower = 8
 
 
-class RoleId(enum.Enum):
-    TowPilot = 1
-    FieldResponsible = 2
-    ResponsibleCFI = 3
-    Maintenance = 4
-    PrivatePilotLicense = 5
-    CFI = 6
-    NotCertifiedForSoloPayingStudent = 7
-    SoloStudent = 8
-    Contact = 9
-    NotCertifiedForSoloNotPayingStudent = 10
-    Observer = 11
-    Tester = 12
+class Role(enum.Enum):
+    TowPilot = "TowPilot"
+    FieldResponsible = "FieldResponsible"
+    ResponsibleCFI = "ResponsibleCFI"
+    Maintenance = "Maintenance"
+    PrivatePilotLicense = "PrivatePilotLicense"
+    CFI = "CFI"
+    NotCertifiedForSoloPayingStudent = "NotCertifiedForSoloPayingStudent"
+    SoloStudent = "SoloStudent"
+    Contact = "Contact"
+    NotCertifiedForSoloNotPayingStudent = "NotCertifiedForSoloNotPayingStudent"
+    Observer = "Observer"
+    Tester = "Tester"
 
 
 class ImportantMemberIds(enum.Enum):

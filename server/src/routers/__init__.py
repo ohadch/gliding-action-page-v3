@@ -6,5 +6,4 @@ from .glider import *
 from .glider_owner import *
 from .member import *
 from .member_role import *
-from .role import *
 from .tow_airplane import *

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey, String
 from sqlalchemy.orm import relationship
 
 from src.database import Base
@@ -10,7 +10,6 @@ class MemberRole(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     member_id = Column(Integer, ForeignKey("members.id"), nullable=False)
-    role_id = Column(Integer, ForeignKey("roles.id"), nullable=False)
+    role = Column(String, nullable=False)
 
-    member = relationship("Member")
-    role = relationship("Role")
+    member = relationship("Member", foreign_keys=[member_id])

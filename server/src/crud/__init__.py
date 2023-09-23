@@ -6,5 +6,4 @@ from .glider import GliderCrud
 from .glider_owner import GliderOwnerCrud
 from .member import MemberCrud
 from .member_role import MemberRoleCrud
-from .role import RoleCrud
 from .tow_airplane import TowAirplaneCrud

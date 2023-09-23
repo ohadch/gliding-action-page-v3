@@ -4,17 +4,9 @@ from typing import Optional
 from sqlalchemy.orm import Session
 import logging
 
-from src import (
-    MemberRole,
-    Role,
-    TowAirplane,
-    Glider,
-    Member,
-    Action,
-    GliderOwner,
-)
+from src import MemberRole, TowAirplane, Glider, Member, Action, GliderOwner
 from src.utils.enums import (
-    RoleId,
+    Role,
     ImportantMemberIds,
     AircraftTypeId,
 )
@@ -97,7 +89,7 @@ class SeedDataGenerator:
             self.session.add(
                 MemberRole(
                     member=member,
-                    role=role,
+                    role=role.value,
                 )
             )
 
@@ -113,37 +105,9 @@ class SeedDataGenerator:
 
     def create_seed_data(self):
         # If there is something in the database, don't create seed data
-        if self.session.query(Role).count() > 0:
+        if self.session.query(Member).count() > 0:
             logger.warning("Seed data already exists, skipping")
             return
-
-        # Create Roles
-        tow_pilot_role = self._create_role(id=RoleId.TowPilot.value, name="טייס גורר")
-        field_responsible_role = self._create_role(
-            id=RoleId.FieldResponsible.value, name="אחראי בשדה"
-        )
-        responsible_cfi_role = self._create_role(
-            id=RoleId.ResponsibleCFI.value, name="מדריך אחראי"
-        )
-        maintenance_role = self._create_role(id=RoleId.Maintenance.value, name="אחזקה")
-        private_pilot_license_role = self._create_role(
-            id=RoleId.PrivatePilotLicense.value, name="טייס פרטי"
-        )
-        cfi_role = self._create_role(id=RoleId.CFI.value, name="מדריך")
-        not_certified_for_solo_paying_student_role = self._create_role(
-            id=RoleId.NotCertifiedForSoloPayingStudent.value,
-            name="סטודנט משלם לא מורשה סולו",
-        )
-        solo_student_role = self._create_role(
-            id=RoleId.SoloStudent.value, name="סטודנט מורשה סולו"
-        )
-        contact_role = self._create_role(id=RoleId.Contact.value, name="איש קשר")
-        not_certified_for_solo_not_paying_student_role = self._create_role(
-            id=RoleId.NotCertifiedForSoloNotPayingStudent.value,
-            name="סטודנט לא משלם לא מורשה סולו",
-        )
-        observer_role = self._create_role(id=RoleId.Observer.value, name="מפקח")
-        tester_role = self._create_role(id=RoleId.Tester.value, name="בוחן")
 
         # Create Members
         self._create_member(
@@ -151,7 +115,7 @@ class SeedDataGenerator:
             last_name="דיסקין",
             email="example1@email.com",
             phone_number="0501234567",
-            roles=[not_certified_for_solo_paying_student_role, maintenance_role],
+            roles=[Role.NotCertifiedForSoloPayingStudent, Role.Maintenance],
         )
 
         self._create_member(
@@ -159,7 +123,7 @@ class SeedDataGenerator:
             last_name="אפשטיין",
             email="example2@email.com",
             phone_number="0501234567",
-            roles=[not_certified_for_solo_not_paying_student_role, maintenance_role],
+            roles=[Role.NotCertifiedForSoloNotPayingStudent, Role.Maintenance],
         )
 
         self._create_member(
@@ -167,7 +131,7 @@ class SeedDataGenerator:
             last_name="כהן",
             email="example3@example.com",
             phone_number="0501234567",
-            roles=[solo_student_role, maintenance_role],
+            roles=[Role.SoloStudent, Role.Maintenance],
         )
 
         self._create_member(
@@ -175,7 +139,7 @@ class SeedDataGenerator:
             last_name="שלום",
             email="example4@example.com",
             phone_number="0501234567",
-            roles=[private_pilot_license_role, field_responsible_role],
+            roles=[Role.PrivatePilotLicense, Role.FieldResponsible],
         )
 
         self._create_member(
@@ -183,7 +147,7 @@ class SeedDataGenerator:
             last_name="סמרה",
             email="example5@example.com",
             phone_number="0501234567",
-            roles=[private_pilot_license_role, field_responsible_role],
+            roles=[Role.PrivatePilotLicense, Role.FieldResponsible],
         )
 
         member1 = self._create_member(
@@ -191,7 +155,7 @@ class SeedDataGenerator:
             last_name="רגב",
             email="example6@example.com",
             phone_number="0501234567",
-            roles=[responsible_cfi_role, private_pilot_license_role],
+            roles=[Role.ResponsibleCFI],
         )
 
         member2 = self._create_member(
@@ -199,7 +163,7 @@ class SeedDataGenerator:
             last_name="דניאלי",
             email="example7@example.com",
             phone_number="0501234567",
-            roles=[tow_pilot_role],
+            roles=[Role.TowPilot],
         )
 
         member3 = self._create_member(
@@ -207,7 +171,7 @@ class SeedDataGenerator:
             last_name="לוי",
             email="example8@example.com",
             phone_number="0501234567",
-            roles=[tow_pilot_role, cfi_role, private_pilot_license_role],
+            roles=[Role.TowPilot, Role.CFI, Role.PrivatePilotLicense],
         )
 
         self._create_member(
@@ -215,7 +179,7 @@ class SeedDataGenerator:
             last_name="כהן",
             email="example9@example.com",
             phone_number="0501234567",
-            roles=[private_pilot_license_role, tow_pilot_role, cfi_role, observer_role],
+            roles=[Role.PrivatePilotLicense, Role.TowPilot, Role.CFI, Role.Observer],
         )
 
         self._create_member(
@@ -223,7 +187,7 @@ class SeedDataGenerator:
             last_name="שדה",
             email="example10@example.com",
             phone_number="0501234567",
-            roles=[contact_role],
+            roles=[Role.Contact],
         )
 
         self._create_member(
@@ -231,7 +195,7 @@ class SeedDataGenerator:
             last_name="מרחבית",
             email="example11@example.com",
             phone_number="0507654321",
-            roles=[contact_role],
+            roles=[Role.Contact],
         )
 
         self._create_member(
@@ -239,7 +203,7 @@ class SeedDataGenerator:
             last_name="אריאלי",
             email="example12@example.com",
             phone_number="0501234567",
-            roles=[tester_role],
+            roles=[Role.Tester],
         )
 
         self._create_member(

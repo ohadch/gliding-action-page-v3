@@ -1,8 +1,8 @@
 """first_migration
 
-Revision ID: 289e1d05a581
+Revision ID: 8a416231052e
 Revises:
-Create Date: 2023-09-23 12:47:25.541800
+Create Date: 2023-09-23 14:46:00.732549
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "289e1d05a581"
+revision = "8a416231052e"
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -38,13 +38,6 @@ def upgrade() -> None:
         sa.UniqueConstraint("email"),
     )
     op.create_index(op.f("ix_members_id"), "members", ["id"], unique=False)
-    op.create_table(
-        "roles",
-        sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("name", sa.String(), nullable=False),
-        sa.PrimaryKeyConstraint("id"),
-    )
-    op.create_index(op.f("ix_roles_id"), "roles", ["id"], unique=False)
     op.create_table(
         "tow_airplanes",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -98,14 +91,10 @@ def upgrade() -> None:
         "members_roles",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("member_id", sa.Integer(), nullable=False),
-        sa.Column("role_id", sa.Integer(), nullable=False),
+        sa.Column("role", sa.String(), nullable=False),
         sa.ForeignKeyConstraint(
             ["member_id"],
             ["members.id"],
-        ),
-        sa.ForeignKeyConstraint(
-            ["role_id"],
-            ["roles.id"],
         ),
         sa.PrimaryKeyConstraint("id"),
     )
@@ -222,8 +211,6 @@ def downgrade() -> None:
     op.drop_table("actions")
     op.drop_index(op.f("ix_tow_airplanes_id"), table_name="tow_airplanes")
     op.drop_table("tow_airplanes")
-    op.drop_index(op.f("ix_roles_id"), table_name="roles")
-    op.drop_table("roles")
     op.drop_index(op.f("ix_members_id"), table_name="members")
     op.drop_table("members")
     op.drop_index(op.f("ix_gliders_id"), table_name="gliders")
