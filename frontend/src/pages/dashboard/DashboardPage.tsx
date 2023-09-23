@@ -6,7 +6,6 @@ import {useTranslation} from "react-i18next";
 import CreateOrUpdateFlightDialog from "../../components/flights/CreateOrUpdateFlightDialog.tsx";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
-import {FlightState} from "../../utils/enums.ts";
 import {createFlight, fetchFlights} from "../../store/actions/currentAction.ts";
 import FlightCreationWizardDialog from "../../components/flights/FlightCreationWizardDialog.tsx";
 import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
@@ -41,7 +40,7 @@ export default function DashboardPage() {
                         dispatch(createFlight({
                             createPayload: {
                                 action_id: action.id,
-                                status: FlightState.DRAFT,
+                                state: "Draft",
                                 flight_type: payload.flightType,
                                 glider_id: payload.gliderId,
                                 pilot_1_id: payload.pilot1Id,

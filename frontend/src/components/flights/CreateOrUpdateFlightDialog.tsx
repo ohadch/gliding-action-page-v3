@@ -9,10 +9,10 @@ import {
 } from "@mui/material";
 import {useEffect, useState} from "react";
 import {
-    FlightSchema,
+    FlightSchema, FlightType,
     GliderSchema,
-    MemberSchema,
-    TowAirplaneSchema,
+    MemberSchema, PayersType, PaymentMethod,
+    TowAirplaneSchema, TowType,
 } from "../../lib/types.ts";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
@@ -21,19 +21,17 @@ import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
 import {fetchGliders} from "../../store/actions/glider.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import {
-    FlightType,
-    getEnumValues,
-    getFlightType,
-    getPayersType, getPaymentMethod,
-    getTowType, PayersType, PaymentMethod,
-    TowType
-} from "../../utils/enums.ts";
-import {
     getFlightTypeDisplayValue,
     getPayersTypeDisplayValue,
     getPaymentMethodDisplayValue,
     getTowTypeDisplayValue
 } from "../../utils/display.ts";
+import {
+    SUPPORTED_FLIGHT_TYPES,
+    SUPPORTED_PAYERS_TYPES,
+    SUPPORTED_PAYMENT_METHODS,
+    SUPPORTED_TOW_TYPES
+} from "../../utils/consts.ts";
 
 export interface CreateOrUpdateFlightDialogProps {
     flight?: FlightSchema
@@ -97,10 +95,10 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
     const [towPilotId, setTowPilotId] = useState<number | null | undefined>(flight?.tow_pilot_id);
     const [payingMemberId, setPayingMemberId] = useState<number | null | undefined>(flight?.paying_member_id);
     const [paymentReceiverId, setPaymentReceiverId] = useState<number | null | undefined>(flight?.payment_receiver_id);
-    const [flightType, setFlightType] = useState<FlightType | null | undefined>(flight?.flight_type ? getFlightType(flight?.flight_type) : null);
-    const [towType, setTowType] = useState<TowType | null | undefined>(flight?.tow_type ? getTowType(flight?.tow_type) : null);
-    const [payersType, setPayersType] = useState<PayersType | null | undefined>(flight?.payers_type ? getPayersType(flight?.payers_type) : null);
-    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null | undefined>(flight?.payment_method ? getPaymentMethod(flight?.payment_method) : null);
+    const [flightType, setFlightType] = useState<FlightType | null | undefined>(flight?.flight_type);
+    const [towType, setTowType] = useState<TowType | null | undefined>(flight?.tow_type);
+    const [payersType, setPayersType] = useState<PayersType | null | undefined>(flight?.payers_type);
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null | undefined>(flight?.payment_method);
 
 
     return (
@@ -127,12 +125,10 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
                             <FormControl>
                                 <Autocomplete
                                     id="flight-type"
-                                    options={getEnumValues(FlightType).map(val => getFlightType(val))}
+                                    options={SUPPORTED_FLIGHT_TYPES}
                                     value={flightType}
                                     getOptionLabel={(option: FlightType) => getFlightTypeDisplayValue(option)}
-                                    onChange={(_, newValue) => setFlightType(
-                                        newValue ? getFlightType(newValue) : null
-                                    )}
+                                    onChange={(_, newValue) => setFlightType(newValue)}
                                     renderInput={(params) => {
                                         return (
                                             <TextField
@@ -259,12 +255,10 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
                             <FormControl>
                                 <Autocomplete
                                     id="tow-type"
-                                    options={getEnumValues(TowType).map(val => getTowType(val))}
+                                    options={SUPPORTED_TOW_TYPES}
                                     value={towType}
                                     getOptionLabel={(option: TowType) => getTowTypeDisplayValue(option)}
-                                    onChange={(_, newValue) => setTowType(
-                                        newValue ? getTowType(newValue) : null
-                                    )}
+                                    onChange={(_, newValue) => setTowType(newValue)}
                                     renderInput={(params) => {
                                         return (
                                             <TextField
@@ -289,12 +283,10 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
                             <FormControl>
                                 <Autocomplete
                                     id="payers-type"
-                                    options={getEnumValues(PayersType).map(val => getPayersType(val))}
+                                    options={SUPPORTED_PAYERS_TYPES}
                                     value={payersType}
                                     getOptionLabel={(option: PayersType) => getPayersTypeDisplayValue(option)}
-                                    onChange={(_, newValue) => setPayersType(
-                                        newValue ? getPayersType(newValue) : null
-                                    )}
+                                    onChange={(_, newValue) => setPayersType(newValue)}
                                     renderInput={(params) => {
                                         return (
                                             <TextField
@@ -310,11 +302,9 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
                             <FormControl>
                                 <Autocomplete
                                     id="payment-method"
-                                    options={getEnumValues(PaymentMethod).map(val => getPaymentMethod(val))}
+                                    options={SUPPORTED_PAYMENT_METHODS}
                                     value={paymentMethod}
-                                    onChange={(_, newValue) => setPaymentMethod(
-                                        newValue ? getPaymentMethod(newValue) : null
-                                    )}
+                                    onChange={(_, newValue) => setPaymentMethod(newValue)}
                                     getOptionLabel={(option: PaymentMethod) => getPaymentMethodDisplayValue(option)}
                                     renderInput={(params) => {
                                         return (

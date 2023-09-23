@@ -603,20 +603,15 @@ export interface components {
       tow_airplane_id?: number | null;
       /** Tow Pilot Id */
       tow_pilot_id?: number | null;
-      /** Tow Type */
-      tow_type?: string | null;
-      /** Flight Type */
-      flight_type?: string | null;
-      /** Payers Type */
-      payers_type?: string | null;
-      /** Payment Method */
-      payment_method?: string | null;
+      tow_type?: components["schemas"]["TowType"] | null;
+      flight_type?: components["schemas"]["FlightType"] | null;
+      payers_type?: components["schemas"]["PayersType"] | null;
+      payment_method?: components["schemas"]["PaymentMethod"] | null;
       /** Payment Receiver Id */
       payment_receiver_id?: number | null;
       /** Paying Member Id */
       paying_member_id?: number | null;
-      /** Status */
-      status: string;
+      state: components["schemas"]["FlightState"];
     };
     /** FlightSchema */
     FlightSchema: {
@@ -638,20 +633,15 @@ export interface components {
       tow_airplane_id: number | null;
       /** Tow Pilot Id */
       tow_pilot_id: number | null;
-      /** Tow Type */
-      tow_type: string | null;
-      /** Flight Type */
-      flight_type: string | null;
-      /** Payers Type */
-      payers_type: string | null;
-      /** Payment Method */
-      payment_method: string | null;
+      tow_type: components["schemas"]["TowType"] | null;
+      flight_type: components["schemas"]["FlightType"] | null;
+      payers_type: components["schemas"]["PayersType"] | null;
+      payment_method: components["schemas"]["PaymentMethod"] | null;
       /** Payment Receiver Id */
       payment_receiver_id: number | null;
       /** Paying Member Id */
       paying_member_id: number | null;
-      /** Status */
-      status: string;
+      state: components["schemas"]["FlightState"];
     };
     /** FlightSearchSchema */
     FlightSearchSchema: {
@@ -671,21 +661,26 @@ export interface components {
       tow_airplane_id?: number | null;
       /** Tow Pilot Id */
       tow_pilot_id?: number | null;
-      /** Tow Type */
-      tow_type?: string | null;
-      /** Flight Type */
-      flight_type?: string | null;
-      /** Payers Type */
-      payers_type?: string | null;
-      /** Payment Method */
-      payment_method?: string | null;
+      tow_type?: components["schemas"]["TowType"] | null;
+      flight_type?: components["schemas"]["FlightType"] | null;
+      payers_type?: components["schemas"]["PayersType"] | null;
+      payment_method?: components["schemas"]["PaymentMethod"] | null;
       /** Payment Receiver Id */
       payment_receiver_id?: number | null;
       /** Paying Member Id */
       paying_member_id?: number | null;
-      /** Status */
-      status?: string | null;
+      state?: components["schemas"]["FlightState"] | null;
     };
+    /**
+     * FlightState
+     * @enum {string}
+     */
+    FlightState: "Draft" | "Tow" | "Inflight" | "Landed";
+    /**
+     * FlightType
+     * @enum {string}
+     */
+    FlightType: "Instruction" | "ClubGuest" | "MembersGuest" | "Inspection" | "Members" | "InstructorsCourse" | "Solo";
     /** FlightUpdateSchema */
     FlightUpdateSchema: {
       /** Action Id */
@@ -704,20 +699,15 @@ export interface components {
       tow_airplane_id?: number | null;
       /** Tow Pilot Id */
       tow_pilot_id?: number | null;
-      /** Tow Type */
-      tow_type?: string | null;
-      /** Flight Type */
-      flight_type?: string | null;
-      /** Payers Type */
-      payers_type?: string | null;
-      /** Payment Method */
-      payment_method?: string | null;
+      tow_type?: components["schemas"]["TowType"] | null;
+      flight_type?: components["schemas"]["FlightType"] | null;
+      payers_type?: components["schemas"]["PayersType"] | null;
+      payment_method?: components["schemas"]["PaymentMethod"] | null;
       /** Payment Receiver Id */
       payment_receiver_id?: number | null;
       /** Paying Member Id */
       paying_member_id?: number | null;
-      /** Status */
-      status?: string | null;
+      state?: components["schemas"]["FlightState"] | null;
     };
     /** GliderCreateSchema */
     GliderCreateSchema: {
@@ -865,6 +855,16 @@ export interface components {
       phone_number?: string | null;
     };
     /**
+     * PayersType
+     * @enum {string}
+     */
+    PayersType: "NoPayment" | "FirstPilot" | "Guest" | "BothPilots" | "SecondPilot" | "ThirdMember";
+    /**
+     * PaymentMethod
+     * @enum {string}
+     */
+    PaymentMethod: "Cash" | "Check" | "CreditCard" | "Bit";
+    /**
      * Role
      * @enum {string}
      */
@@ -899,6 +899,11 @@ export interface components {
       /** Type */
       type?: number | null;
     };
+    /**
+     * TowType
+     * @enum {string}
+     */
+    TowType: "AIRPLANE_1000" | "AIRPLANE_1500" | "AIRPLANE_2000" | "AIRPLANE_2500" | "AIRPLANE_3000" | "AIRPLANE_3500";
     /** ValidationError */
     ValidationError: {
       /** Location */

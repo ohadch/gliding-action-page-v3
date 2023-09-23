@@ -1,20 +1,20 @@
-import {FlightState, FlightType, PayersType, PaymentMethod, TowType} from "./enums.ts";
 import {
+    FlightState, FlightType,
     GliderOwnerSchema,
     GliderSchema, MemberRoleSchema,
-    MemberSchema, Role,
-    TowAirplaneSchema,
+    MemberSchema, PayersType, PaymentMethod, Role,
+    TowAirplaneSchema, TowType,
 } from "../lib/types.ts";
 
 export function getFlightStateDisplayValue(state: FlightState): string {
     switch (state) {
-        case FlightState.DRAFT:
+        case "Draft":
             return "בהכנה"
-        case FlightState.TOW:
+        case "Tow":
             return "בגרירה"
-        case FlightState.IN_FLIGHT:
+        case "Inflight":
             return "בטיסה"
-        case FlightState.LANDED:
+        case "Landed":
             return "לאחר נחיתה"
         default:
             throw new Error(`Unknown flight state: ${state}`)
@@ -23,19 +23,19 @@ export function getFlightStateDisplayValue(state: FlightState): string {
 
 export function getFlightTypeDisplayValue(type: FlightType): string {
     switch (type) {
-        case FlightType.Instruction:
+        case "Instruction":
             return "הדרכה"
-        case FlightType.ClubGuest:
+        case "ClubGuest":
             return "אורח מועדון"
-        case FlightType.MembersGuest:
+        case "MembersGuest":
             return "אורח חבר"
-        case FlightType.Inspection:
+        case "Inspection":
             return "ביקורת"
-        case FlightType.Members:
+        case "Members":
             return "חברים"
-        case FlightType.InstructorsCourse:
+        case "InstructorsCourse":
             return "קורס מדריכים"
-        case FlightType.Solo:
+        case "Solo":
             return "סולו"
         default:
             throw new Error(`Unknown flight type: ${type}`)
@@ -45,32 +45,33 @@ export function getFlightTypeDisplayValue(type: FlightType): string {
 
 export function getPaymentMethodDisplayValue(paymentMethod: PaymentMethod) {
     switch (paymentMethod) {
-        case PaymentMethod.Cash:
+        case "Cash":
             return "מזומן"
-        case PaymentMethod.CreditCard:
+        case "CreditCard":
             return "אשראי"
-        case PaymentMethod.Check:
+        case "Check":
             return "צ'ק"
-        case PaymentMethod.Bit:
+        case "Bit":
             return "ביט"
         default:
             throw new Error(`Unknown payment method: ${paymentMethod}`)
     }
 }
 
-
 export function getTowTypeDisplayValue(towType: TowType) {
     switch (towType) {
-        case TowType.AIRPLANE_1000:
+        case "AIRPLANE_1000":
             return "מטוס 1000"
-        case TowType.AIRPLANE_1500:
+        case "AIRPLANE_1500":
             return "מטוס 1500"
-        case TowType.AIRPLANE_2000:
+        case "AIRPLANE_2000":
             return "מטוס 2000"
-        case TowType.AIRPLANE_2500:
+        case "AIRPLANE_2500":
             return "מטוס 2500"
-        case TowType.AIRPLANE_3000:
+        case "AIRPLANE_3000":
             return "מטוס 3000"
+        case "AIRPLANE_3500":
+            return "מטוס 3500"
         default:
             throw new Error(`Unknown tow type: ${towType}`)
     }
@@ -78,17 +79,17 @@ export function getTowTypeDisplayValue(towType: TowType) {
 
 export function getPayersTypeDisplayValue(payersType: PayersType) {
     switch (payersType) {
-        case PayersType.BothPilots:
+        case "BothPilots":
             return "שני הטייסים"
-        case PayersType.SecondPilot:
+        case "SecondPilot":
             return "טייס משני"
-        case PayersType.ThirdMember:
+        case "ThirdMember":
             return "חבר שלישי"
-        case PayersType.FirstPilot:
+        case "FirstPilot":
             return "טייס ראשון"
-        case PayersType.Guest:
+        case "Guest":
             return "אורח"
-        case PayersType.NoPayment:
+        case "NoPayment":
             return "ללא תשלום"
         default:
             throw new Error(`Unknown payers type: ${payersType}`)
@@ -101,9 +102,15 @@ export function getMemberDisplayValue(
     long = false,
 ) {
     const fullName = `${member.first_name} ${member.last_name}`
-    return long
-        ? `${fullName} (${roles.map(role => getRoleDisplayValue(role.role)).join(", ")})`
-        : fullName
+    if (!long || roles.length === 0) {
+        return fullName
+    }
+
+    const rolesStr = roles.map(role => getRoleDisplayValue(role.role))
+        .sort((a, b) => a.localeCompare(b))
+        .join(", ")
+
+    return `${fullName} (${rolesStr})`
 }
 
 
@@ -114,6 +121,8 @@ export function getRoleDisplayValue(role: Role) {
         case "FieldResponsible":
             return "אחראי בשדה"
         case "ResponsibleCFI":
+            return "מדריך אחראי"
+        case "CFI":
             return "מדריך אחראי"
         case "Maintenance":
             return "תורן אחזקה"

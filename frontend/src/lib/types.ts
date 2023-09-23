@@ -9,5 +9,9 @@ export type ActiveTowAirplaneSchema = components["schemas"]["ActiveTowAirplaneSc
 export type GliderOwnerSchema = components["schemas"]["GliderOwnerSchema"]
 export type MemberRoleSchema = components["schemas"]["MemberRoleSchema"]
 export type Role = components["schemas"]["Role"]
-
+export type FlightType = components["schemas"]["FlightType"]
+export type TowType = components["schemas"]["TowType"]
+export type PayersType = components["schemas"]["PayersType"]
+export type PaymentMethod = components["schemas"]["PaymentMethod"]
+export type FlightState = components["schemas"]["FlightState"]
 export type FlightCreateSchema = components["schemas"]["FlightCreateSchema"]

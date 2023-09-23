@@ -1,3 +1,5 @@
+import {FlightType, PayersType, PaymentMethod, TowType} from "../lib/types.ts";
+
 export const API_HOST = 'http://localhost:9001';
 
 
@@ -36,3 +38,39 @@ export const TEXTS_HEBREW = {
     PAYMENT_RECEIVER: "מקבל תשלום",
     CONFIRM: "אישור",
 }
+
+
+export const SUPPORTED_FLIGHT_TYPES : FlightType[] = [
+    "Instruction",
+    "ClubGuest",
+    "MembersGuest",
+    "Inspection",
+    "Members",
+    "InstructorsCourse",
+    "Solo"
+]
+
+export const SUPPORTED_TOW_TYPES: TowType[] = [
+    "AIRPLANE_1000",
+    "AIRPLANE_1500",
+    "AIRPLANE_2000",
+    "AIRPLANE_2500",
+    "AIRPLANE_3000",
+    "AIRPLANE_3500",
+]
+
+export const SUPPORTED_PAYMENT_METHODS: PaymentMethod[] = [
+    "Cash",
+    "CreditCard",
+    "Check",
+    "Bit",
+]
+
+export const SUPPORTED_PAYERS_TYPES: PayersType[] = [
+    "NoPayment",
+    "FirstPilot",
+    "Guest",
+    "BothPilots",
+    "SecondPilot",
+    "ThirdMember"
+]

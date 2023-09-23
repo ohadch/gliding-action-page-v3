@@ -10,7 +10,7 @@ import {
     TextField,
 } from "@mui/material";
 import {useCallback, useEffect, useState} from "react";
-import {GliderSchema,} from "../../lib/types.ts";
+import {FlightType, GliderSchema, PayersType,} from "../../lib/types.ts";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
@@ -23,7 +23,7 @@ import {
     getMemberDisplayValue,
     getPayersTypeDisplayValue
 } from "../../utils/display.ts";
-import {FlightType, PayersType} from "../../utils/enums.ts";
+import {hasRole} from "../../utils/members.ts";
 
 enum RenderedInputName {
     GLIDER = "GLIDER",
@@ -128,6 +128,10 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
     });
 
     useEffect(() => {
+        if (!membersStoreState.membersRoles) {
+            return
+        }
+
         if (!gliderId) {
             return
         }
@@ -142,16 +146,29 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
             }
 
             if (glider.num_seats === 1) {
-                if (!flightType) {
-                    return setFlightType(FlightType.Members)
+                if (!pilot1Id) {
+                    return
                 }
 
                 if (!payersType) {
-                    return setPayersType(PayersType.FirstPilot)
+                    return setPayersType("FirstPilot")
                 }
-            }
-            {
-                return
+
+                const pilot1 = getMemberById(pilot1Id);
+
+                if (!pilot1) {
+                    return
+                }
+
+                if (hasRole(pilot1, membersStoreState.membersRoles, "SoloStudent")) {
+                    if (!flightType) {
+                        return setFlightType("Solo")
+                    }
+                }
+
+                if (!flightType) {
+                    return setFlightType("Members")
+                }
             }
 
         }
@@ -270,6 +287,8 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                                 onChange={(_, newValue) => setPilot1Id(newValue?.id)}
                                 getOptionLabel={(option) => getMemberDisplayValue(
                                     option,
+                                    membersStoreState.membersRoles?.filter((role) => role.member_id === option.id) || [],
+                                    true
                                 )}
                                 open={autocompleteOpen}
                                 onOpen={() => setAutocompleteOpen(true)}
@@ -295,7 +314,9 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                                 value={pilot2Id ? getMemberById(pilot2Id) : null}
                                 onChange={(_, newValue) => setPilot2Id(newValue?.id)}
                                 getOptionLabel={(option) => getMemberDisplayValue(
-                                    option
+                                    option,
+                                    membersStoreState.membersRoles?.filter((role) => role.member_id === option.id) || [],
+                                    true
                                 )}
                                 open={autocompleteOpen}
                                 onOpen={() => setAutocompleteOpen(true)}

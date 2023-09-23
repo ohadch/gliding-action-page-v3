@@ -6,7 +6,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {useTranslation} from "react-i18next";
-import {getFlightState, getFlightType} from "../../utils/enums.ts";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
 import {useEffect} from "react";
@@ -59,10 +58,6 @@ export default function FlightsTable() {
     const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
     const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
 
-    const displayFlightState = (state: string) => {
-        return getFlightStateDisplayValue(getFlightState(state));
-    }
-
     const displayGlider = (id: number) => {
         const glider = getGliderById(id);
         return glider ? getGliderDisplayValue(
@@ -112,10 +107,10 @@ export default function FlightsTable() {
                             sx={{'&:last-child td, &:last-child th': {border: 0}}}
                         >
                             <TableCell component="th" scope="row">
-                                {flight.status && displayFlightState(flight.status)}
+                                {flight.state && getFlightStateDisplayValue(flight.state)}
                             </TableCell>
                             <TableCell align="right">{flight.glider_id && displayGlider(flight.glider_id)}</TableCell>
-                            <TableCell align="right">{flight.flight_type && getFlightTypeDisplayValue(getFlightType(flight.flight_type))}</TableCell>
+                            <TableCell align="right">{flight.flight_type && getFlightTypeDisplayValue(flight.flight_type)}</TableCell>
                             <TableCell align="right">{flight.pilot_1_id && displayMember(flight.pilot_1_id)}</TableCell>
                             <TableCell align="right">{flight.pilot_2_id && displayMember(flight.pilot_2_id)}</TableCell>
                             <TableCell
