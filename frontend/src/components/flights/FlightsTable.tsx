@@ -23,8 +23,8 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {deleteFlight, updateFlight} from "../../store/actions/currentAction.ts";
-import EditFlightDialog from "./EditFlightDialog.tsx";
+import {createFlight, deleteFlight, updateFlight} from "../../store/actions/currentAction.ts";
+import EditFlightDetailsDialog from "./EditFlightDetailsDialog.tsx";
 
 
 export default function FlightsTable() {
@@ -36,6 +36,7 @@ export default function FlightsTable() {
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
     const [editedFlightId, setEditedFlightId] = useState<number | null>(null);
+    const [duplicateFlightId, setDuplicateFlightId] = useState<number | null>(null);
 
     useEffect(() => {
         if (!membersStoreState.members && !membersStoreState.fetchInProgress) {
@@ -89,28 +90,45 @@ export default function FlightsTable() {
     }
 
     function renderEditFlightDialog() {
-        if (!editedFlightId) {
+        if (!editedFlightId && !duplicateFlightId) {
             return null
         }
 
-        const flight = flights?.find((flight) => flight.id === editedFlightId);
+        const flight = flights?.find((flight) => [editedFlightId, duplicateFlightId].includes(flight.id));
 
         if (!flight) {
             return null;
         }
 
         return (
-            <EditFlightDialog
+            <EditFlightDetailsDialog
                 flight={flight}
-                open={Boolean(editedFlightId)}
-                onCancel={() => setEditedFlightId(null)}
-                onSubmit={(flightId, updatePayload) => {
-                    dispatch(updateFlight({
-                        flightId,
-                        updatePayload,
-                    }));
-                    setEditedFlightId(null);
+                open={Boolean(editedFlightId) || Boolean(duplicateFlightId)}
+                onCancel={() => {
+                    setEditedFlightId(null)
+                    setDuplicateFlightId(null)
                 }}
+                onCreate={
+                duplicateFlightId
+                    ? (createPayload) => {
+                        dispatch(createFlight({
+                            createPayload,
+                        }));
+                        setDuplicateFlightId(null);
+                    }
+                    : undefined
+                }
+                onUpdate={
+                    editedFlightId
+                        ? (flightId, updatePayload) => {
+                            dispatch(updateFlight({
+                                flightId,
+                                updatePayload,
+                            }));
+                            setEditedFlightId(null);
+                        }
+                        : undefined
+                }
             />
         )
     }
@@ -155,7 +173,7 @@ export default function FlightsTable() {
                                     align="right">{flight.tow_pilot_id && displayMember(flight.tow_pilot_id)}</TableCell>
                                 <TableCell align="right">
                                     <Tooltip title={t("DUPLICATE_FLIGHT")}>
-                                        <IconButton aria-label="duplicate" onClick={() => alert("TODO")}>
+                                        <IconButton aria-label="duplicate" onClick={() => setDuplicateFlightId(flight.id)}>
                                             <ContentCopyIcon/>
                                         </IconButton>
                                     </Tooltip>

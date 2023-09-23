@@ -27,7 +27,7 @@ export const TEXTS_HEBREW = {
     TOW_PILOT: "טייס גורר",
     TOW_TYPE: "סוג גרירה",
     NEW_FLIGHT: "טיסה חדשה",
-    CREATE_NEW_FLIGHT: "צור טיסה חדשה",
+    CREATE_FLIGHT: "צור טיסה חדשה",
     FLIGHT_TYPE: "סוג טיסה",
     PAYERS_TYPE: "סוג משלם",
     PAYMENT_METHOD: "אמצעי תשלום",

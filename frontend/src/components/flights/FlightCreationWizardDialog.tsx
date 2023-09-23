@@ -510,7 +510,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                 display: "flex",
                 justifyContent: "space-between",
             }}>
-                <div>{t("CREATE_NEW_FLIGHT")}</div>
+                <div>{t("CREATE_FLIGHT")}</div>
                 <div style={{
                     display: "flex",
                     justifyContent: "flex-end",

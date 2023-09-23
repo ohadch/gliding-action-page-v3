@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import {useEffect, useState} from "react";
 import {
+    FlightCreateSchema,
     FlightSchema, FlightType, FlightUpdateSchema,
     GliderSchema,
     MemberSchema, PayersType, PaymentMethod,
@@ -33,18 +34,20 @@ import {
     SUPPORTED_TOW_TYPES
 } from "../../utils/consts.ts";
 
-export interface EditFlightDialogProps {
-    flight: FlightSchema
+export interface EditFlightDetailsDialogProps {
+    flight: Partial<FlightSchema>
     open: boolean
     onCancel: () => void
-    onSubmit: (flightId: number, flight: FlightUpdateSchema) => void
+    onCreate?: (flight: FlightCreateSchema) => void
+    onUpdate?: (flightId: number, flight: FlightUpdateSchema) => void
 }
 
-export default function EditFlightDialog({flight, open, onCancel, onSubmit}: EditFlightDialogProps) {
+export default function EditFlightDetailsDialog({flight, open, onCancel, onCreate, onUpdate}: EditFlightDetailsDialogProps) {
     const dispatch = useAppDispatch();
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
+    const {action} = useSelector((state: RootState) => state.currentAction)
 
     const {
         t
@@ -86,13 +89,16 @@ export default function EditFlightDialog({flight, open, onCancel, onSubmit}: Edi
     const [payersType, setPayersType] = useState<PayersType | null | undefined>(flight.payers_type);
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null | undefined>(flight.payment_method);
 
+    if (!action) {
+        return null;
+    }
 
     return (
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         <Dialog open={open} maxWidth="xl">
             <DialogTitle>
-                {t("EDIT_FLIGHT")}
+                {onCreate ? t("CREATE_FLIGHT") : t("EDIT_FLIGHT")}
             </DialogTitle>
             <DialogContent>
                 <div style={{
@@ -348,21 +354,46 @@ export default function EditFlightDialog({flight, open, onCancel, onSubmit}: Edi
                 <Button onClick={onCancel}>
                     {t("CANCEL")}
                 </Button>
-                <Button onClick={() => onSubmit(flight.id, {
-                    glider_id: gliderId,
-                    pilot_1_id: pilot1Id,
-                    pilot_2_id: pilot2Id,
-                    tow_airplane_id: towAirplaneId,
-                    tow_pilot_id: towPilotId,
-                    tow_type: towType,
-                    flight_type: flightType,
-                    payers_type: payersType,
-                    payment_method: paymentMethod,
-                    paying_member_id: payingMemberId,
-                    payment_receiver_id: paymentReceiverId,
-                })}>
-                    {t("CONFIRM")}
-                </Button>
+                {onCreate && (
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    <Button onClick={() => onCreate({
+                        state: "Draft",
+                        action_id: action.id,
+                        glider_id: gliderId,
+                        pilot_1_id: pilot1Id,
+                        pilot_2_id: pilot2Id,
+                        tow_airplane_id: towAirplaneId,
+                        tow_pilot_id: towPilotId,
+                        tow_type: towType,
+                        flight_type: flightType,
+                        payers_type: payersType,
+                        payment_method: paymentMethod,
+                        paying_member_id: payingMemberId,
+                        payment_receiver_id: paymentReceiverId,
+                    })}>
+                        {t("CONFIRM")}
+                    </Button>
+                )}
+                {onUpdate && flight.id && (
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    <Button onClick={() => onUpdate(flight.id, {
+                        glider_id: gliderId,
+                        pilot_1_id: pilot1Id,
+                        pilot_2_id: pilot2Id,
+                        tow_airplane_id: towAirplaneId,
+                        tow_pilot_id: towPilotId,
+                        tow_type: towType,
+                        flight_type: flightType,
+                        payers_type: payersType,
+                        payment_method: paymentMethod,
+                        paying_member_id: payingMemberId,
+                        payment_receiver_id: paymentReceiverId,
+                    })}>
+                        {t("CONFIRM")}
+                    </Button>
+                )}
             </DialogActions>
         </Dialog>
     )
