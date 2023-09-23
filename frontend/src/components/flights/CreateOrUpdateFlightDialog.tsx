@@ -44,6 +44,8 @@ export interface CreateOrUpdateFlightDialogSubmitPayload {
     flightTypeId?: number | null,
     payersTypeId?: number | null,
     paymentMethodId?: number | null,
+    payingMemberId?: number | null,
+    paymentReceiverId?: number | null,
 }
 
 export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSubmit}: CreateOrUpdateFlightDialogProps) {
@@ -120,6 +122,8 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
     const [flightTypeId, setFlightTypeId] = useState<number | null | undefined>(flight?.flight_type_id);
     const [payersTypeId, setPayersTypeId] = useState<number | null | undefined>(flight?.payers_type_id)
     const [paymentMethodId, setPaymentMethodId] = useState<number | null | undefined>(flight?.payment_method_id);
+    const [payingMemberId, setPayingMemberId] = useState<number | null | undefined>(flight?.paying_member_id);
+    const [paymentReceiverId, setPaymentReceiverId] = useState<number | null | undefined>(flight?.payment_receiver_id);
 
 
     return (
@@ -338,6 +342,44 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
                                 />
                             </FormControl>
                         </FormGroup>
+                        <FormGroup>
+                            <FormControl>
+                                <Autocomplete
+                                    id="paying-member"
+                                    options={membersStoreState.members || []}
+                                    value={payingMemberId ? getMemberById(payingMemberId) : null}
+                                    onChange={(_, newValue) => setPayingMemberId(newValue?.id)}
+                                    getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
+                                    renderInput={(params) => {
+                                        return (
+                                            <TextField
+                                                {...params}
+                                                label={t("PAYING_MEMBER")}
+                                            />
+                                        )
+                                    }}
+                                />
+                            </FormControl>
+                        </FormGroup>
+                        <FormGroup>
+                            <FormControl>
+                                <Autocomplete
+                                    id="payment-receiver"
+                                    options={membersStoreState.members || []}
+                                    value={paymentReceiverId ? getMemberById(paymentReceiverId) : null}
+                                    onChange={(_, newValue) => setPaymentReceiverId(newValue?.id)}
+                                    getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
+                                    renderInput={(params) => {
+                                        return (
+                                            <TextField
+                                                {...params}
+                                                label={t("PAYMENT_RECEIVER")}
+                                            />
+                                        )
+                                    }}
+                                />
+                            </FormControl>
+                        </FormGroup>
                     </Grid>
                 </div>
             </DialogContent>
@@ -355,6 +397,8 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
                     flightTypeId,
                     payersTypeId,
                     paymentMethodId,
+                    payingMemberId,
+                    paymentReceiverId,
                 })}>
                     {t("SELECT")}
                 </Button>

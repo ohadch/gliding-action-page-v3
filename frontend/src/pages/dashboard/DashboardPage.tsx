@@ -45,6 +45,8 @@ export default function DashboardPage() {
                             tow_type_id: payload.towTypeId,
                             payers_type_id: payload.payersTypeId,
                             payment_method_id: payload.paymentMethodId,
+                            paying_member_id: payload.payingMemberId,
+                            payment_receiver_id: payload.paymentReceiverId,
                             take_off_at: new Date().toISOString(),
                         }
                     }));
