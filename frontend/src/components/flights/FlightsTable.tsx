@@ -28,7 +28,7 @@ export default function FlightsTable() {
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
 
-    const {flights} = useSelector((state: RootState) => state.actions);
+    const {flights} = useSelector((state: RootState) => state.currentAction);
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)

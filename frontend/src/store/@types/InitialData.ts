@@ -14,8 +14,13 @@ export interface BaseInitialState {
 
 
 export interface ActionsStoreState extends BaseInitialState {
-    currentAction?: ActionSchema;
     actions: ActionSchema[] | undefined;
+    initialState: boolean;
+}
+
+
+export interface CurrentActionStoreState extends BaseInitialState {
+    action?: ActionSchema;
     initialState: boolean;
     fieldResponsibleId?: number;
     responsibleCfiId?: number;

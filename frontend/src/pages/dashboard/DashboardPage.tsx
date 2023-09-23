@@ -6,18 +6,18 @@ import {useTranslation} from "react-i18next";
 import CreateOrUpdateFlightDialog from "../../components/flights/CreateOrUpdateFlightDialog.tsx";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
-import {createFlight, fetchFlights} from "../../store/actions/action.ts";
 import {FlightState} from "../../utils/enums.ts";
+import {createFlight, fetchFlights} from "../../store/actions/currentAction.ts";
 
 export default function DashboardPage() {
     const [createFlightDialogOpen, setCreateFlightDialogOpen] = useState<boolean>(false);
     const {t} = useTranslation();
-    const { flights, fetchingFlightsInProgress, currentAction} = useSelector((state: RootState) => state.actions);
+    const { flights, fetchingFlightsInProgress, action} = useSelector((state: RootState) => state.currentAction);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (!flights && !fetchingFlightsInProgress && currentAction) {
-            dispatch(fetchFlights(currentAction.id));
+        if (!flights && !fetchingFlightsInProgress && action) {
+            dispatch(fetchFlights(action.id));
         }
     });
 
@@ -28,13 +28,13 @@ export default function DashboardPage() {
                 open={createFlightDialogOpen}
                 onCancel={() => setCreateFlightDialogOpen(false)}
                 onSubmit={(payload) => {
-                    if (!currentAction) {
+                    if (!action) {
                         return;
                     }
 
                     dispatch(createFlight({
                         createPayload: {
-                            action_id: currentAction.id,
+                            action_id: action.id,
                             status: FlightState.DRAFT,
                             flight_type_id: payload.flightTypeId,
                             glider_id: payload.gliderId,
@@ -63,7 +63,7 @@ export default function DashboardPage() {
                 </Grid>
 
 
-                {flights && <FlightsTable flights={flights}/>}
+                <FlightsTable />
             </Grid>
         </>
     )

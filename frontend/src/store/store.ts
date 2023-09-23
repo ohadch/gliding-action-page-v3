@@ -8,10 +8,12 @@ import {towTypesSlice} from "./reducers/towTypeSlice.ts";
 import {flightTypesSlice} from "./reducers/flightTypeSlice.ts";
 import {payersTypesSlice} from "./reducers/payersTypeSlice.ts";
 import {paymentMethodsSlice} from "./reducers/paymentMethod.ts";
+import {currentActionSlice} from "./reducers/currentActionSlice.ts";
 
 export const store = configureStore({
     reducer: {
         actions: actionsSlice.reducer,
+        currentAction: currentActionSlice.reducer,
         members: membersSlice.reducer,
         gliders: glidersSlice.reducer,
         towAirplanes: towAirplanesSlice.reducer,

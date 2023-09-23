@@ -21,10 +21,10 @@ import {initReactI18next, useTranslation} from "react-i18next";
 import SelectActionDialog from "./components/actions/SelectActionDialog.tsx";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "./store";
-import {setCurrentAction} from "./store/reducers/actionSlice.ts";
-import {fetchActiveTowAirplanes, fetchFlights} from "./store/actions/action.ts";
 import {TEXTS_HEBREW} from "./utils/consts.ts";
 import {CacheService} from "./utils/cache.ts";
+import {setCurrentAction} from "./store/reducers/currentActionSlice.ts";
+import {fetchActiveTowAirplanes, fetchFlights} from "./store/actions/currentAction.ts";
 
 const DRAWER_WIDTH = 240;
 
@@ -111,7 +111,7 @@ export default function App() {
     const dispatch = useAppDispatch();
     const [drawerOpen, setDrawerDrawerOpen] = React.useState(false);
     const [theme, setTheme] = React.useState(CacheService.get("CACHE_KEY_THEME") === "dark" ? darkTheme : lightTheme);
-    const { currentAction } = useSelector((state: RootState) => state.actions)
+    const { action } = useSelector((state: RootState) => state.currentAction)
     const [selectActionDialogOpen, setSelectActionDialogOpen] = React.useState(false);
     const {t} = useTranslation()
     const {pathname} = useLocation();
@@ -173,7 +173,7 @@ export default function App() {
                         <Tooltip title={t("CLICK_TO_SELECT")}>
                             <Button color="inherit" onClick={() => setSelectActionDialogOpen(true)}>
                                 {t("CURRENT_ACTION")}: {" "}
-                                {currentAction?.date.split("T")[0]}
+                                {action?.date.split("T")[0]}
                             </Button>
                         </Tooltip>
                     </Toolbar>
