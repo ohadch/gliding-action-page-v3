@@ -64,7 +64,11 @@ export default function FlightsTable() {
 
     const displayGlider = (id: number) => {
         const glider = getGliderById(id);
-        return glider ? getGliderDisplayValue(glider) : "";
+        return glider ? getGliderDisplayValue(
+            glider,
+            glidersStoreState.ownerships?.filter((ownership) => ownership.glider_id === id) || [],
+            true
+        ) : "";
     }
 
     const displayMember = (id: number) => {

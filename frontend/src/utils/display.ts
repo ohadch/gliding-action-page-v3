@@ -1,5 +1,6 @@
 import {FlightState, FlightType, PayersType, PaymentMethod, TowType} from "./enums.ts";
 import {
+    GliderOwnerSchema,
     GliderSchema,
     MemberSchema,
     TowAirplaneSchema,
@@ -98,8 +99,23 @@ export function getMemberDisplayName(member: MemberSchema) {
     return `${member.first_name} ${member.last_name}`
 }
 
-export function getGliderDisplayValue(glider: GliderSchema) {
-    return glider.call_sign
+/**
+ * Returns the display value of a glider
+ * @param glider - The glider to display
+ * @param ownerships - The ownerships of the glider
+ * @param long - Whether to return a long display value
+ */
+export function getGliderDisplayValue(
+    glider: GliderSchema,
+    ownerships: GliderOwnerSchema[],
+    long = false,
+) {
+    const numSeats = glider.num_seats > 1 ? `דו-מושבי` : `חד מושבי`;
+    const ownership = ownerships.length > 0 ? "פרטי" : "מועדון";
+
+    return long
+        ? `${glider.call_sign} (${numSeats}/${ownership})`
+        : glider.call_sign
 }
 
 export function getTowAirplaneDisplayValue(towAirplane: TowAirplaneSchema) {

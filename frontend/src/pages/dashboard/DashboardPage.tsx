@@ -9,6 +9,7 @@ import {RootState, useAppDispatch} from "../../store";
 import {FlightState} from "../../utils/enums.ts";
 import {createFlight, fetchFlights} from "../../store/actions/currentAction.ts";
 import FlightCreationWizardDialog from "../../components/flights/FlightCreationWizardDialog.tsx";
+import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
 
 export default function DashboardPage() {
     const [createOrUpdateFlightDialogOpen, setCreateOrUpdateFlightDialogOpen] = useState<boolean>(false);
@@ -20,6 +21,8 @@ export default function DashboardPage() {
     useEffect(() => {
         if (!flights && !fetchingFlightsInProgress && action) {
             dispatch(fetchFlights(action.id));
+            dispatch(fetchGliders());
+            dispatch(fetchGliderOwners());
         }
     });
 
@@ -39,15 +42,15 @@ export default function DashboardPage() {
                             createPayload: {
                                 action_id: action.id,
                                 status: FlightState.DRAFT,
-                                flight_type_id: payload.flightTypeId,
+                                flight_type: payload.flightType,
                                 glider_id: payload.gliderId,
                                 pilot_1_id: payload.pilot1Id,
                                 pilot_2_id: payload.pilot2Id,
                                 tow_airplane_id: payload.towAirplaneId,
                                 tow_pilot_id: payload.towPilotId,
-                                tow_type_id: payload.towTypeId,
-                                payers_type_id: payload.payersTypeId,
-                                payment_method_id: payload.paymentMethodId,
+                                tow_type: payload.towType,
+                                payers_type: payload.payersType,
+                                payment_method: payload.paymentMethod,
                                 paying_member_id: payload.payingMemberId,
                                 payment_receiver_id: payload.paymentReceiverId,
                                 take_off_at: new Date().toISOString(),

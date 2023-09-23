@@ -66,7 +66,11 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
 
     const displayGlider = (id: number) => {
         const glider = getGliderById(id);
-        return glider ? getGliderDisplayValue(glider) : "";
+        return glider ? getGliderDisplayValue(
+            glider,
+            glidersStoreState.ownerships?.filter((ownership) => ownership.glider_id === id) || [],
+            true
+        ) : "";
     }
 
     const displayMember = (id: number) => {
@@ -182,7 +186,11 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                                 options={glidersStoreState.gliders || []}
                                 value={gliderId ? getGliderById(gliderId) : null}
                                 onChange={(_, newValue) => setGliderId(newValue?.id)}
-                                getOptionLabel={(option: GliderSchema) => option.call_sign}
+                                getOptionLabel={(option: GliderSchema) => getGliderDisplayValue(
+                                    option,
+                                    glidersStoreState.ownerships?.filter((ownership) => ownership.glider_id === option.id) || [],
+                                    true
+                                )}
                                 open={autocompleteOpen}
                                 onOpen={() => setAutocompleteOpen(true)}
                                 renderInput={(params) => {
