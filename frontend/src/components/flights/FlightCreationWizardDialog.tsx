@@ -171,6 +171,10 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                     if (!payersType) {
                         return setPayersType("SecondPilot")
                     }
+                } else if (flightType === "Instruction") {
+                    if (!payersType) {
+                        return setPayersType("FirstPilot")
+                    }
                 }
             }
 
@@ -498,6 +502,24 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
         )
     }
 
+    const isSubmitEnabled = () => {
+        const conditions: boolean[] = [
+            Boolean(gliderId),
+            Boolean(flightType),
+            Boolean(payersType),
+        ]
+
+        if ((flightType !== "MembersGuest") && (flightType !== "ClubGuest")) {
+            conditions.push(Boolean(pilot1Id))
+        }
+
+        if (flightType === "Instruction") {
+            conditions.push(Boolean(pilot2Id))
+        }
+
+        return conditions.every(Boolean)
+    }
+
     if (!action) {
         return null;
     }
@@ -519,9 +541,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                         {t("CANCEL")}
                     </Button>
                     <Button
-                        disabled={
-                            !gliderId || !pilot1Id || !towAirplaneId || !towPilotId || !flightType || !payersType
-                        }
+                        disabled={!isSubmitEnabled()}
                         onClick={() => onSubmit({
                             action_id: action.id,
                             state: "Draft",
