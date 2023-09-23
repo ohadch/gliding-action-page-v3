@@ -37,6 +37,7 @@ export const TEXTS_HEBREW = {
     PAYING_MEMBER: "חבר משלם",
     PAYMENT_RECEIVER: "מקבל תשלום",
     CONFIRM: "אישור",
+    EDIT_FLIGHT: "ערוך טיסה",
 }
 
 

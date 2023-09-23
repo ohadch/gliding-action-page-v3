@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import {useEffect, useState} from "react";
 import {
-    FlightSchema, FlightType,
+    FlightSchema, FlightType, FlightUpdateSchema,
     GliderSchema,
     MemberSchema, PayersType, PaymentMethod,
     TowAirplaneSchema, TowType,
@@ -33,28 +33,14 @@ import {
     SUPPORTED_TOW_TYPES
 } from "../../utils/consts.ts";
 
-export interface CreateOrUpdateFlightDialogProps {
-    flight?: FlightSchema
+export interface EditFlightDialogProps {
+    flight: FlightSchema
     open: boolean
     onCancel: () => void
-    onSubmit: (flight: CreateOrUpdateFlightDialogSubmitPayload) => void
+    onSubmit: (flightId: number, flight: FlightUpdateSchema) => void
 }
 
-export interface CreateOrUpdateFlightDialogSubmitPayload {
-    gliderId?: number | null,
-    pilot1Id?: number | null,
-    pilot2Id?: number | null,
-    towAirplaneId?: number | null,
-    towPilotId?: number | null,
-    towType?: TowType | null,
-    flightType?: FlightType | null,
-    payersType?: PayersType| null,
-    paymentMethod?: PaymentMethod | null,
-    payingMemberId?: number | null,
-    paymentReceiverId?: number | null,
-}
-
-export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSubmit}: CreateOrUpdateFlightDialogProps) {
+export default function EditFlightDialog({flight, open, onCancel, onSubmit}: EditFlightDialogProps) {
     const dispatch = useAppDispatch();
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
@@ -88,17 +74,17 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
     const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
 
 
-    const [gliderId, setGliderId] = useState<number | null | undefined>(flight?.glider_id);
-    const [pilot1Id, setPilot1Id] = useState<number | null | undefined>(flight?.pilot_1_id);
-    const [pilot2Id, setPilot2Id] = useState<number | null | undefined>(flight?.pilot_2_id);
-    const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>(flight?.tow_airplane_id);
-    const [towPilotId, setTowPilotId] = useState<number | null | undefined>(flight?.tow_pilot_id);
-    const [payingMemberId, setPayingMemberId] = useState<number | null | undefined>(flight?.paying_member_id);
-    const [paymentReceiverId, setPaymentReceiverId] = useState<number | null | undefined>(flight?.payment_receiver_id);
-    const [flightType, setFlightType] = useState<FlightType | null | undefined>(flight?.flight_type);
-    const [towType, setTowType] = useState<TowType | null | undefined>(flight?.tow_type);
-    const [payersType, setPayersType] = useState<PayersType | null | undefined>(flight?.payers_type);
-    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null | undefined>(flight?.payment_method);
+    const [gliderId, setGliderId] = useState<number | null | undefined>(flight.glider_id);
+    const [pilot1Id, setPilot1Id] = useState<number | null | undefined>(flight.pilot_1_id);
+    const [pilot2Id, setPilot2Id] = useState<number | null | undefined>(flight.pilot_2_id);
+    const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>(flight.tow_airplane_id);
+    const [towPilotId, setTowPilotId] = useState<number | null | undefined>(flight.tow_pilot_id);
+    const [payingMemberId, setPayingMemberId] = useState<number | null | undefined>(flight.paying_member_id);
+    const [paymentReceiverId, setPaymentReceiverId] = useState<number | null | undefined>(flight.payment_receiver_id);
+    const [flightType, setFlightType] = useState<FlightType | null | undefined>(flight.flight_type);
+    const [towType, setTowType] = useState<TowType | null | undefined>(flight.tow_type);
+    const [payersType, setPayersType] = useState<PayersType | null | undefined>(flight.payers_type);
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null | undefined>(flight.payment_method);
 
 
     return (
@@ -106,7 +92,7 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
         // @ts-ignore
         <Dialog open={open} maxWidth="xl">
             <DialogTitle>
-                {t("CREATE_NEW_FLIGHT")}
+                {t("EDIT_FLIGHT")}
             </DialogTitle>
             <DialogContent>
                 <div style={{
@@ -362,20 +348,20 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
                 <Button onClick={onCancel}>
                     {t("CANCEL")}
                 </Button>
-                <Button onClick={() => onSubmit({
-                    gliderId,
-                    pilot1Id,
-                    pilot2Id,
-                    towAirplaneId,
-                    towPilotId,
-                    towType,
-                    flightType,
-                    payersType,
-                    paymentMethod,
-                    payingMemberId,
-                    paymentReceiverId,
+                <Button onClick={() => onSubmit(flight.id, {
+                    glider_id: gliderId,
+                    pilot_1_id: pilot1Id,
+                    pilot_2_id: pilot2Id,
+                    tow_airplane_id: towAirplaneId,
+                    tow_pilot_id: towPilotId,
+                    tow_type: towType,
+                    flight_type: flightType,
+                    payers_type: payersType,
+                    payment_method: paymentMethod,
+                    paying_member_id: payingMemberId,
+                    payment_receiver_id: paymentReceiverId,
                 })}>
-                    {t("SELECT")}
+                    {t("CONFIRM")}
                 </Button>
             </DialogActions>
         </Dialog>
