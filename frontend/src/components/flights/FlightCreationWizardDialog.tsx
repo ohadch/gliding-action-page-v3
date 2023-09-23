@@ -2,7 +2,6 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogActions,
     Button, FormControl, Autocomplete, TextField, FormGroup, Grid,
 } from "@mui/material";
 import {useEffect, useState} from "react";
@@ -19,10 +18,13 @@ import {fetchTowTypes} from "../../store/actions/towType.ts";
 import {fetchFlightTypes} from "../../store/actions/flightType.ts";
 import {fetchPayersTypes} from "../../store/actions/payersType.ts";
 import {fetchPaymentMethods} from "../../store/actions/paymentMethod.ts";
+import {getMemberDisplayName} from "../../utils/display.ts";
 
 enum RenderedInputName {
     GLIDER = "GLIDER",
     TOW_AIRPLANE = "TOW_AIRPLANE",
+    PILOT_1 = "PILOT_1",
+    PILOT_2 = "PILOT_2",
 }
 
 export interface FlightCreationWizardDialogProps {
@@ -102,7 +104,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
         }
     })
 
-    // const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
+    const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
     const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
     const getGliderOwnersById = (id: number) => glidersStoreState.ownerships?.filter((ownership) => ownership.glider_id === id) || [];
     const isGliderPrivate = (id: number) => getGliderOwnersById(id).length > 0;
@@ -115,8 +117,8 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
     //
     //
     const [gliderId, setGliderId] = useState<number | null | undefined>();
-    // const [pilot1Id, setPilot1Id] = useState<number | null | undefined>();
-    // const [pilot2Id, setPilot2Id] = useState<number | null | undefined>();
+    const [pilot1Id, setPilot1Id] = useState<number | null | undefined>();
+    const [pilot2Id, setPilot2Id] = useState<number | null | undefined>();
     const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>();
     // const [towPilotId, setTowPilotId] = useState<number | null | undefined>();
     // const [towTypeId, setTowTypeId] = useState<number | null | undefined>();
@@ -147,7 +149,11 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                     return RenderedInputName.TOW_AIRPLANE;
                 }
             } else if (glider.num_seats === 2) {
-                alert("TODO")
+                if (!pilot1Id) {
+                    return RenderedInputName.PILOT_1;
+                } else if (!pilot2Id) {
+                    return RenderedInputName.PILOT_2;
+                }
             } else {
                 throw new Error("Invalid number of seats");
             }
@@ -205,6 +211,54 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                         </FormControl>
                     </FormGroup>
                 )
+            case RenderedInputName.PILOT_1:
+                return (
+                    <FormGroup>
+                        <FormControl>
+                            <Autocomplete
+                                id="pilot1"
+                                options={membersStoreState.members || []}
+                                value={pilot1Id ? getMemberById(pilot1Id) : null}
+                                onChange={(_, newValue) => setPilot1Id(newValue?.id)}
+                                getOptionLabel={(option) => getMemberDisplayName(option)}
+                                open={autocompleteOpen}
+                                onOpen={() => setAutocompleteOpen(true)}
+                                renderInput={(params) => {
+                                    return (
+                                        <TextField
+                                            {...params}
+                                            label={t("PILOT_1")}
+                                        />
+                                    )
+                                }}
+                            />
+                        </FormControl>
+                    </FormGroup>
+                )
+            case RenderedInputName.PILOT_2:
+                return (
+                    <FormGroup>
+                        <FormControl>
+                            <Autocomplete
+                                id="pilot2"
+                                options={membersStoreState.members || []}
+                                value={pilot2Id ? getMemberById(pilot2Id) : null}
+                                onChange={(_, newValue) => setPilot2Id(newValue?.id)}
+                                getOptionLabel={(option) => getMemberDisplayName(option)}
+                                open={autocompleteOpen}
+                                onOpen={() => setAutocompleteOpen(true)}
+                                renderInput={(params) => {
+                                    return (
+                                        <TextField
+                                            {...params}
+                                            label={t("PILOT_2")}
+                                        />
+                                    )
+                                }}
+                            />
+                        </FormControl>
+                    </FormGroup>
+                )
             default:
                 return null;
         }
@@ -216,8 +270,22 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         <Dialog open={open} maxWidth="xl">
-            <DialogTitle>
-                {t("CREATE_NEW_FLIGHT")}
+            <DialogTitle sx={{
+                display: "flex",
+                justifyContent: "space-between",
+            }}>
+                <div>{t("CREATE_NEW_FLIGHT")}</div>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                }}>
+                    <Button onClick={onCancel}>
+                        {t("CANCEL")}
+                    </Button>
+                    <Button onClick={() => onSubmit({})}>
+                        {t("CONFIRM")}
+                    </Button>
+                </div>
             </DialogTitle>
             <DialogContent>
                 <Grid sx={{
@@ -229,14 +297,6 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                     {renderedInputName && renderInput(renderedInputName)}
                 </Grid>
             </DialogContent>
-            <DialogActions>
-                <Button onClick={onCancel}>
-                    {t("CANCEL")}
-                </Button>
-                <Button onClick={() => onSubmit({})}>
-                    {t("CREATE")}
-                </Button>
-            </DialogActions>
         </Dialog>
     )
 }
