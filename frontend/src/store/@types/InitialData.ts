@@ -1,7 +1,7 @@
 import {
     ActionSchema,
     ActiveTowAirplaneSchema, FlightSchema, GliderOwnerSchema,
-    GliderSchema,
+    GliderSchema, MemberRoleSchema,
     MemberSchema,
     TowAirplaneSchema,
 } from "../../lib/types.ts";
@@ -32,6 +32,7 @@ export interface CurrentActionStoreState extends BaseInitialState {
 export interface MembersStoreState extends BaseInitialState {
     members: MemberSchema[] | undefined;
     initialState: boolean;
+    membersRoles: MemberRoleSchema[] | undefined;
 }
 
 

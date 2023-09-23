@@ -1,8 +1,8 @@
 import {FlightState, FlightType, PayersType, PaymentMethod, TowType} from "./enums.ts";
 import {
     GliderOwnerSchema,
-    GliderSchema,
-    MemberSchema,
+    GliderSchema, MemberRoleSchema,
+    MemberSchema, Role,
     TowAirplaneSchema,
 } from "../lib/types.ts";
 
@@ -95,8 +95,45 @@ export function getPayersTypeDisplayValue(payersType: PayersType) {
     }
 }
 
-export function getMemberDisplayName(member: MemberSchema) {
-    return `${member.first_name} ${member.last_name}`
+export function getMemberDisplayValue(
+    member: MemberSchema,
+    roles: MemberRoleSchema[] = [],
+    long = false,
+) {
+    const fullName = `${member.first_name} ${member.last_name}`
+    return long
+        ? `${fullName} (${roles.map(role => getRoleDisplayValue(role.role)).join(", ")})`
+        : fullName
+}
+
+
+export function getRoleDisplayValue(role: Role) {
+    switch (role) {
+        case "TowPilot":
+            return "טייס גורר"
+        case "FieldResponsible":
+            return "אחראי בשדה"
+        case "ResponsibleCFI":
+            return "מדריך אחראי"
+        case "Maintenance":
+            return "תורן אחזקה"
+        case "PrivatePilotLicense":
+            return "טייס פרטי"
+        case "NotCertifiedForSoloPayingStudent":
+            return "חניך לפני סולו"
+        case "SoloStudent":
+            return "סוליסט"
+        case "Contact":
+            return "איש קשר"
+        case "NotCertifiedForSoloNotPayingStudent":
+            return "חניך לפני סולו - לא משלם"
+        case "Observer":
+            return "מדווח פעולה"
+        case "Tester":
+            return "בוחן"
+        default:
+            throw new Error(`Unknown role: ${role}`)
+    }
 }
 
 /**

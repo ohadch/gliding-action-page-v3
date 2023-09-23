@@ -14,13 +14,13 @@ import {GliderSchema,} from "../../lib/types.ts";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
-import {fetchMembers} from "../../store/actions/member.ts";
+import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
 import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import {
     getFlightTypeDisplayValue,
     getGliderDisplayValue,
-    getMemberDisplayName,
+    getMemberDisplayValue,
     getPayersTypeDisplayValue
 } from "../../utils/display.ts";
 import {FlightType, PayersType} from "../../utils/enums.ts";
@@ -81,7 +81,11 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
 
     const displayMember = (id: number) => {
         const member = getMemberById(id);
-        return member ? getMemberDisplayName(member) : "";
+        return member ? getMemberDisplayValue(
+            member,
+            membersStoreState.membersRoles?.filter((role) => role.member_id === member.id) || [],
+            true
+        ) : "";
     }
 
     const displayTowAirplane = (id: number) => {
@@ -96,7 +100,6 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
     const [pilot2Id, setPilot2Id] = useState<number | null | undefined>();
     const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>();
     const [towPilotId, setTowPilotId] = useState<number | null | undefined>();
-    // const [towType, setTowType] = useState<number | null | undefined>();
     const [flightType, setFlightType] = useState<FlightType | null | undefined>();
     const [payersType, setPayersType] = useState<PayersType | null | undefined>()
     // const [paymentMethodId, setPaymentMethodId] = useState<number | null | undefined>();
@@ -107,6 +110,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
     useEffect(() => {
         if (!membersStoreState.members && !membersStoreState.fetchInProgress) {
             dispatch(fetchMembers());
+            dispatch(fetchMembersRoles());
         }
     });
 
@@ -264,7 +268,9 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                                 options={membersStoreState.members || []}
                                 value={pilot1Id ? getMemberById(pilot1Id) : null}
                                 onChange={(_, newValue) => setPilot1Id(newValue?.id)}
-                                getOptionLabel={(option) => getMemberDisplayName(option)}
+                                getOptionLabel={(option) => getMemberDisplayValue(
+                                    option,
+                                )}
                                 open={autocompleteOpen}
                                 onOpen={() => setAutocompleteOpen(true)}
                                 renderInput={(params) => {
@@ -288,7 +294,9 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                                 options={membersStoreState.members || []}
                                 value={pilot2Id ? getMemberById(pilot2Id) : null}
                                 onChange={(_, newValue) => setPilot2Id(newValue?.id)}
-                                getOptionLabel={(option) => getMemberDisplayName(option)}
+                                getOptionLabel={(option) => getMemberDisplayValue(
+                                    option
+                                )}
                                 open={autocompleteOpen}
                                 onOpen={() => setAutocompleteOpen(true)}
                                 renderInput={(params) => {
@@ -312,7 +320,9 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                                 options={membersStoreState.members || []}
                                 value={towPilotId ? getMemberById(towPilotId) : null}
                                 onChange={(_, newValue) => setTowPilotId(newValue?.id)}
-                                getOptionLabel={(option) => getMemberDisplayName(option)}
+                                getOptionLabel={(option) => getMemberDisplayValue(
+                                    option
+                                )}
                                 open={autocompleteOpen}
                                 onOpen={() => setAutocompleteOpen(true)}
                                 renderInput={(params) => {

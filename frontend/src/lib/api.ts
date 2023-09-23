@@ -389,54 +389,6 @@ export interface paths {
      */
     delete: operations["delete_member_roles__id___delete"];
   };
-  "/roles/search": {
-    /**
-     * Search roles
-     * @description Search roles
-     * :param page: Page number
-     * :param page_size: Page size
-     * :param filters: Filters
-     * :param db: Database session
-     * :param settings: Settings
-     * :return: List of roles
-     */
-    post: operations["search_roles_search_post"];
-  };
-  "/roles": {
-    /**
-     * Create roles
-     * @description Create role
-     * :param data: Data
-     * :param db: Database session
-     */
-    post: operations["create_roles_post"];
-  };
-  "/roles/{id_}": {
-    /**
-     * Get roles by ID
-     * @description Read role by ID
-     * :param id_: Role ID
-     * :param db: Database session
-     * :return: Role
-     */
-    get: operations["get_by_id_roles__id___get"];
-    /**
-     * Update roles
-     * @description Update role
-     * :param id_: Role ID
-     * :param data: Data to update
-     * :param db: Database session
-     * :return: Updated role
-     */
-    put: operations["update_roles__id___put"];
-    /**
-     * Delete roles
-     * @description Delete role
-     * :param id_: Role ID
-     * :param db: Database session
-     */
-    delete: operations["delete_roles__id___delete"];
-  };
   "/tow_airplanes/search": {
     /**
      * Search tow_airplanes
@@ -855,8 +807,7 @@ export interface components {
     MemberRoleCreateSchema: {
       /** Member Id */
       member_id: number;
-      /** Role Id */
-      role_id: number;
+      role: components["schemas"]["Role"];
     };
     /** MemberRoleSchema */
     MemberRoleSchema: {
@@ -864,22 +815,19 @@ export interface components {
       id: number;
       /** Member Id */
       member_id: number;
-      /** Role Id */
-      role_id: number;
+      role: components["schemas"]["Role"];
     };
     /** MemberRoleSearchSchema */
     MemberRoleSearchSchema: {
       /** Member Id */
       member_id?: number | null;
-      /** Role Id */
-      role_id?: number | null;
+      role?: components["schemas"]["Role"] | null;
     };
     /** MemberRoleUpdateSchema */
     MemberRoleUpdateSchema: {
       /** Member Id */
       member_id?: number | null;
-      /** Role Id */
-      role_id?: number | null;
+      role?: components["schemas"]["Role"] | null;
     };
     /** MemberSchema */
     MemberSchema: {
@@ -916,28 +864,11 @@ export interface components {
       /** Phone Number */
       phone_number?: string | null;
     };
-    /** RoleCreateSchema */
-    RoleCreateSchema: {
-      /** Name */
-      name: string;
-    };
-    /** RoleSchema */
-    RoleSchema: {
-      /** Id */
-      id: number;
-      /** Name */
-      name: string;
-    };
-    /** RoleSearchSchema */
-    RoleSearchSchema: {
-      /** Name */
-      name?: string | null;
-    };
-    /** RoleUpdateSchema */
-    RoleUpdateSchema: {
-      /** Name */
-      name?: string | null;
-    };
+    /**
+     * Role
+     * @enum {string}
+     */
+    Role: "TowPilot" | "FieldResponsible" | "ResponsibleCFI" | "Maintenance" | "PrivatePilotLicense" | "CFI" | "NotCertifiedForSoloPayingStudent" | "SoloStudent" | "Contact" | "NotCertifiedForSoloNotPayingStudent" | "Observer" | "Tester";
     /** TowAirplaneCreateSchema */
     TowAirplaneCreateSchema: {
       /** Call Sign */
@@ -2195,159 +2126,6 @@ export interface operations {
    * :param db: Database session
    */
   delete_member_roles__id___delete: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Search roles
-   * @description Search roles
-   * :param page: Page number
-   * :param page_size: Page size
-   * :param filters: Filters
-   * :param db: Database session
-   * :param settings: Settings
-   * :return: List of roles
-   */
-  search_roles_search_post: {
-    parameters: {
-      query?: {
-        page?: number;
-        page_size?: number | null;
-      };
-    };
-    requestBody?: {
-      content: {
-        "application/json": components["schemas"]["RoleSearchSchema"] | null;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["RoleSchema"][];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Create roles
-   * @description Create role
-   * :param data: Data
-   * :param db: Database session
-   */
-  create_roles_post: {
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["RoleCreateSchema"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["RoleSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Get roles by ID
-   * @description Read role by ID
-   * :param id_: Role ID
-   * :param db: Database session
-   * :return: Role
-   */
-  get_by_id_roles__id___get: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["RoleSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Update roles
-   * @description Update role
-   * :param id_: Role ID
-   * :param data: Data to update
-   * :param db: Database session
-   * :return: Updated role
-   */
-  update_roles__id___put: {
-    parameters: {
-      path: {
-        id_: number;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["RoleUpdateSchema"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": components["schemas"]["RoleSchema"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Delete roles
-   * @description Delete role
-   * :param id_: Role ID
-   * :param db: Database session
-   */
-  delete_roles__id___delete: {
     parameters: {
       path: {
         id_: number;

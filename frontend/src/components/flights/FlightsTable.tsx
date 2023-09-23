@@ -10,14 +10,14 @@ import {getFlightState, getFlightType} from "../../utils/enums.ts";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
 import {useEffect} from "react";
-import {fetchMembers} from "../../store/actions/member.ts";
+import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
 import {fetchGliders} from "../../store/actions/glider.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import {
     getFlightStateDisplayValue,
     getFlightTypeDisplayValue,
     getGliderDisplayValue,
-    getMemberDisplayName
+    getMemberDisplayValue
 } from "../../utils/display.ts";
 import {Tooltip} from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy"
@@ -38,6 +38,7 @@ export default function FlightsTable() {
     useEffect(() => {
         if (!membersStoreState.members && !membersStoreState.fetchInProgress) {
             dispatch(fetchMembers());
+            dispatch(fetchMembersRoles());
         }
     });
 
@@ -73,7 +74,7 @@ export default function FlightsTable() {
 
     const displayMember = (id: number) => {
         const member = getMemberById(id);
-        return member ? getMemberDisplayName(member) : "";
+        return member ? getMemberDisplayValue(member) : "";
     }
 
     const displayTowAirplane = (id: number) => {

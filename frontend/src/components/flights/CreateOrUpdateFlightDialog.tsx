@@ -17,7 +17,7 @@ import {
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
-import {fetchMembers} from "../../store/actions/member.ts";
+import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
 import {fetchGliders} from "../../store/actions/glider.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import {
@@ -69,6 +69,7 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
     useEffect(() => {
         if (!membersStoreState.members && !membersStoreState.fetchInProgress) {
             dispatch(fetchMembers());
+            dispatch(fetchMembersRoles());
         }
     });
 
