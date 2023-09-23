@@ -3,6 +3,8 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
+from src.utils.enums import FlightType, PayersType, PaymentMethod, TowType
+
 
 class FlightSchema(BaseModel):
     id: int
@@ -14,10 +16,10 @@ class FlightSchema(BaseModel):
     pilot_2_id: Optional[int] = None
     tow_airplane_id: Optional[int] = None
     tow_pilot_id: Optional[int] = None
-    tow_type: Optional[str] = None
-    flight_type: Optional[str] = None
-    payers_type: Optional[str] = None
-    payment_method: Optional[str] = None
+    tow_type: Optional[TowType] = None
+    flight_type: Optional[FlightType] = None
+    payers_type: Optional[PayersType] = None
+    payment_method: Optional[PaymentMethod] = None
     payment_receiver_id: Optional[int] = None
     paying_member_id: Optional[int] = None
     status: str
@@ -34,10 +36,10 @@ class FlightCreateSchema(BaseModel):
     pilot_2_id: Optional[int] = None
     tow_airplane_id: Optional[int] = None
     tow_pilot_id: Optional[int] = None
-    tow_type: Optional[str] = None
-    flight_type: Optional[str] = None
-    payers_type: Optional[str] = None
-    payment_method: Optional[str] = None
+    tow_type: Optional[TowType] = None
+    flight_type: Optional[FlightType] = None
+    payers_type: Optional[PayersType] = None
+    payment_method: Optional[PaymentMethod] = None
     payment_receiver_id: Optional[int] = None
     paying_member_id: Optional[int] = None
     status: str
@@ -52,10 +54,10 @@ class FlightUpdateSchema(BaseModel):
     pilot_2_id: Optional[int] = None
     tow_airplane_id: Optional[int] = None
     tow_pilot_id: Optional[int] = None
-    tow_type: Optional[str] = None
-    flight_type: Optional[str] = None
-    payers_type: Optional[str] = None
-    payment_method: Optional[str] = None
+    tow_type: Optional[TowType] = None
+    flight_type: Optional[FlightType] = None
+    payers_type: Optional[PayersType] = None
+    payment_method: Optional[PaymentMethod] = None
     payment_receiver_id: Optional[int] = None
     paying_member_id: Optional[int] = None
     status: Optional[str] = None

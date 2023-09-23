@@ -10,24 +10,23 @@ class AircraftTypeId(enum.Enum):
     SecondaryTowAirplane = 6
 
 
-class PayersTypeId(enum.Enum):
-    NoPayment = 1
-    FirstPilot = 2
-    Guest = 3
-    BothPilots = 4
-    SecondPilot = 5
-    ThirdMember = 6
+class PayersType(enum.Enum):
+    NoPayment = "NoPayment"
+    FirstPilot = "FirstPilot"
+    Guest = "Guest"
+    BothPilots = "BothPilots"
+    SecondPilot = "SecondPilot"
+    ThirdMember = "ThirdMember"
 
 
-class FlightTypeId(enum.Enum):
-    Instruction = 1
-    ClubGuest = 2
-    MembersGuest = 3
-    Inspection = 4
-    Members = 5
-    InstructorsCourse = 6
-    Solo = 7
-    EnginedTower = 8
+class FlightType(enum.Enum):
+    Instruction = "Instruction"
+    ClubGuest = "ClubGuest"
+    MembersGuest = "MembersGuest"
+    Inspection = "Inspection"
+    Members = "Members"
+    InstructorsCourse = "InstructorsCourse"
+    Solo = "Solo"
 
 
 class Role(enum.Enum):
@@ -43,6 +42,22 @@ class Role(enum.Enum):
     NotCertifiedForSoloNotPayingStudent = "NotCertifiedForSoloNotPayingStudent"
     Observer = "Observer"
     Tester = "Tester"
+
+
+class PaymentMethod(enum.Enum):
+    Cash = "Cash"
+    Check = "Check"
+    CreditCard = "CreditCard"
+    Bit = "Bit"
+
+
+class TowType(enum.Enum):
+    AIRPLANE_1000 = "AIRPLANE_1000"
+    AIRPLANE_1500 = "AIRPLANE_1500"
+    AIRPLANE_2000 = "AIRPLANE_2000"
+    AIRPLANE_2500 = "AIRPLANE_2500"
+    AIRPLANE_3000 = "AIRPLANE_3000"
+    AIRPLANE_3500 = "AIRPLANE_3500"
 
 
 class ImportantMemberIds(enum.Enum):
