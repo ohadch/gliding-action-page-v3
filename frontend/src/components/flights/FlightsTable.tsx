@@ -18,6 +18,11 @@ import {fetchFlightTypes} from "../../store/actions/flightType.ts";
 import {fetchPayersTypes} from "../../store/actions/payersType.ts";
 import {fetchPaymentMethods} from "../../store/actions/paymentMethod.ts";
 import {getFlightStateDisplayValue, getGliderDisplayValue, getMemberDisplayName} from "../../utils/display.ts";
+import {Tooltip} from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy"
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 
 export default function FlightsTable() {
     const {t} = useTranslation();
@@ -112,6 +117,7 @@ export default function FlightsTable() {
                         <TableCell align="right">{t("PILOT_2")}</TableCell>
                         <TableCell align="right">{t("TOW_AIRPLANE")}</TableCell>
                         <TableCell align="right">{t("TOW_PILOT")}</TableCell>
+                        <TableCell align="right">Actions</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -126,8 +132,22 @@ export default function FlightsTable() {
                             <TableCell align="right">{flight.glider_id && displayGlider(flight.glider_id)}</TableCell>
                             <TableCell align="right">{flight.pilot_1_id && displayMember(flight.pilot_1_id)}</TableCell>
                             <TableCell align="right">{flight.pilot_2_id && displayMember(flight.pilot_2_id)}</TableCell>
-                            <TableCell align="right">{flight.tow_airplane_id && displayTowAirplane(flight.tow_airplane_id)}</TableCell>
-                            <TableCell align="right">{flight.tow_pilot_id && displayMember(flight.tow_pilot_id)}</TableCell>
+                            <TableCell
+                                align="right">{flight.tow_airplane_id && displayTowAirplane(flight.tow_airplane_id)}</TableCell>
+                            <TableCell
+                                align="right">{flight.tow_pilot_id && displayMember(flight.tow_pilot_id)}</TableCell>
+                            <TableCell align="right">
+                                <Tooltip title={t("DUPLICATE_FLIGHT")}>
+                                    <IconButton aria-label="duplicate" onClick={() => alert("TODO")}>
+                                        <ContentCopyIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title={t("DELETE_FLIGHT")} onClick={() => alert("TODO")}>
+                                    <IconButton aria-label="delete">
+                                        <DeleteIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

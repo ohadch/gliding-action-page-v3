@@ -29,4 +29,6 @@ export const TEXTS_HEBREW = {
     FLIGHT_TYPE: "סוג טיסה",
     PAYERS_TYPE: "סוג משלם",
     PAYMENT_METHOD: "אמצעי תשלום",
+    DUPLICATE_FLIGHT: "שכפל טיסה",
+    DELETE_FLIGHT: "מחק טיסה",
 }
