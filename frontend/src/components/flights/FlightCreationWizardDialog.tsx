@@ -60,15 +60,12 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const { flights } = useSelector((state: RootState) => state.currentAction)
 
     const {
         t
     } = useTranslation()
 
-
-    const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
-
+    const getMemberById = useCallback((id: number) => membersStoreState.members?.find((member) => member.id === id), [membersStoreState.members]);
     const getGliderById = useCallback((id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id), [glidersStoreState.gliders]);
     const getGliderOwnersById = useCallback((id: number) => glidersStoreState.ownerships?.filter((ownership) => ownership.glider_id === id) || [], [glidersStoreState.ownerships]);
     const isGliderPrivate = useCallback((id: number) => getGliderOwnersById(id).length > 0, [getGliderOwnersById]);
@@ -107,12 +104,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
     const [payersType, setPayersType] = useState<PayersType | null | undefined>()
 
     const isMemberOccupied = (memberId: number) => {
-        const activeFlights = flights?.filter((flight) => (flight.state === "Tow") || (flight.state === "Inflight")) || [];
-
         const activePilots = [
-            ...activeFlights.map((flight) => flight.tow_pilot_id),
-            ...activeFlights.map((flight) => flight.pilot_1_id),
-            ...activeFlights.map((flight) => flight.pilot_2_id),
             towPilotId,
             pilot1Id,
             pilot2Id,
