@@ -23,7 +23,8 @@ import {
     getMemberDisplayValue,
     getPayersTypeDisplayValue
 } from "../../utils/display.ts";
-import {hasRole, isCertifiedForSingleSeatGliders} from "../../utils/members.ts";
+import {hasRole, isCertifiedForSinglePilotOperation} from "../../utils/members.ts";
+import {SUPPORTED_FLIGHT_TYPES} from "../../utils/consts.ts";
 
 enum RenderedInputName {
     GLIDER = "GLIDER",
@@ -31,6 +32,7 @@ enum RenderedInputName {
     PILOT_1 = "PILOT_1",
     PILOT_2 = "PILOT_2",
     TOW_PILOT = "TOW_PILOT",
+    FLIGHT_TYPE = "FLIGHT_TYPE",
 }
 
 export interface FlightCreationWizardDialogProps {
@@ -169,6 +171,16 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                 if (!flightType) {
                     return setFlightType("Members")
                 }
+            } else {
+                if (flightType === "ClubGuest") {
+                    if (!payersType) {
+                        return setPayersType("Guest")
+                    }
+                } else if (flightType === "MembersGuest") {
+                    if (!payersType) {
+                        return setPayersType("SecondPilot")
+                    }
+                }
             }
 
         }
@@ -197,12 +209,23 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
             throw new Error("Glider not found");
         }
 
-        if (!pilot1Id) {
-            return RenderedInputName.PILOT_1;
+        if (glider.num_seats === 1) {
+            if (!pilot1Id) {
+                return RenderedInputName.PILOT_1;
+            }
         }
+        if (glider.num_seats === 2) {
+            if (!flightType) {
+                return RenderedInputName.FLIGHT_TYPE;
+            }
 
-        if ((glider.num_seats === 2) && !pilot2Id) {
-            return RenderedInputName.PILOT_2;
+            if (flightType !== "ClubGuest" && flightType !== "MembersGuest" && !pilot1Id) {
+                return RenderedInputName.PILOT_1;
+            }
+
+            if (flightType !== "Solo" && !pilot2Id) {
+                return RenderedInputName.PILOT_2;
+            }
         }
 
         if (!towAirplaneId) {
@@ -234,8 +257,8 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
             return initialOptions.filter((member) => gliderOwners.some((ownership) => ownership.member_id === member.id));
         }
 
-        if (glider.num_seats === 1) {
-            return initialOptions.filter((member) => isCertifiedForSingleSeatGliders(member, membersStoreState.membersRoles || []));
+        if ((glider.num_seats === 1) || (flightType && flightType === "Solo")) {
+            return initialOptions.filter((member) => isCertifiedForSinglePilotOperation(member, membersStoreState.membersRoles || []));
         }
 
         return initialOptions;
@@ -370,6 +393,30 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                                         <TextField
                                             {...params}
                                             label={t("TOW_PILOT")}
+                                        />
+                                    )
+                                }}
+                            />
+                        </FormControl>
+                    </FormGroup>
+                )
+            case RenderedInputName.FLIGHT_TYPE:
+                return (
+                    <FormGroup>
+                        <FormControl>
+                            <Autocomplete
+                                id="flightType"
+                                options={SUPPORTED_FLIGHT_TYPES}
+                                value={flightType}
+                                onChange={(_, newValue) => setFlightType(newValue)}
+                                getOptionLabel={(option) => getFlightTypeDisplayValue(option)}
+                                open={autocompleteOpen}
+                                onOpen={() => setAutocompleteOpen(true)}
+                                renderInput={(params) => {
+                                    return (
+                                        <TextField
+                                            {...params}
+                                            label={t("FLIGHT_TYPE")}
                                         />
                                     )
                                 }}
