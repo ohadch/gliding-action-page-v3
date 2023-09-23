@@ -379,6 +379,8 @@ export default function EditFlightDetailsDialog({flight, open, onCancel, onCreat
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
                     <Button onClick={() => onUpdate(flight.id, {
+                        state: flight.state,
+                        action_id: action.id,
                         glider_id: gliderId,
                         pilot_1_id: pilot1Id,
                         pilot_2_id: pilot2Id,
