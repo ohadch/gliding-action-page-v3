@@ -13,7 +13,7 @@ import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
 import {fetchMembers} from "../../store/actions/member.ts";
-import {fetchGliders} from "../../store/actions/glider.ts";
+import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import {fetchTowTypes} from "../../store/actions/towType.ts";
 import {fetchFlightTypes} from "../../store/actions/flightType.ts";
@@ -22,6 +22,7 @@ import {fetchPaymentMethods} from "../../store/actions/paymentMethod.ts";
 
 enum RenderedInputName {
     GLIDER = "GLIDER",
+    TOW_AIRPLANE = "TOW_AIRPLANE",
 }
 
 export interface FlightCreationWizardDialogProps {
@@ -67,6 +68,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
     useEffect(() => {
         if (!glidersStoreState.gliders && !glidersStoreState.fetchInProgress) {
             dispatch(fetchGliders());
+            dispatch(fetchGliderOwners());
         }
     });
 
@@ -102,7 +104,10 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
 
     // const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
     const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
-    // const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
+    const getGliderOwnersById = (id: number) => glidersStoreState.ownerships?.filter((ownership) => ownership.glider_id === id) || [];
+    const isGliderPrivate = (id: number) => getGliderOwnersById(id).length > 0;
+
+    const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
     // const getTowTypeById = (id: number) => towTypesStoreState.towTypes?.find((towType) => towType.id === id);
     // const getFlightTypeById = (id: number) => flightTypesStoreState.flightTypes?.find((flightType) => flightType.id === id);
     // const getPayersTypeById = (id: number) => payersTypesStoreState.payersTypes?.find((payersType) => payersType.id === id);
@@ -112,7 +117,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
     const [gliderId, setGliderId] = useState<number | null | undefined>();
     // const [pilot1Id, setPilot1Id] = useState<number | null | undefined>();
     // const [pilot2Id, setPilot2Id] = useState<number | null | undefined>();
-    // const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>();
+    const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>();
     // const [towPilotId, setTowPilotId] = useState<number | null | undefined>();
     // const [towTypeId, setTowTypeId] = useState<number | null | undefined>();
     // const [flightTypeId, setFlightTypeId] = useState<number | null | undefined>();
@@ -134,6 +139,19 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
             throw new Error("Glider not found");
         }
 
+        if (isGliderPrivate(glider.id)) {
+            alert("TODO")
+        } else {
+            if (glider.num_seats === 1) {
+                if (!towAirplaneId) {
+                    return RenderedInputName.TOW_AIRPLANE;
+                }
+            } else if (glider.num_seats === 2) {
+                alert("TODO")
+            } else {
+                throw new Error("Invalid number of seats");
+            }
+        }
         return null;
     }
 
@@ -156,6 +174,30 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                                         <TextField
                                             {...params}
                                             label={t("GLIDER")}
+                                        />
+                                    )
+                                }}
+                            />
+                        </FormControl>
+                    </FormGroup>
+                )
+            case RenderedInputName.TOW_AIRPLANE:
+                return (
+                    <FormGroup>
+                        <FormControl>
+                            <Autocomplete
+                                id="towAirplane"
+                                options={towAirplanesStoreState.towAirplanes || []}
+                                value={towAirplaneId ? getTowAirplaneById(towAirplaneId) : null}
+                                onChange={(_, newValue) => setTowAirplaneId(newValue?.id)}
+                                getOptionLabel={(option) => option.call_sign}
+                                open={autocompleteOpen}
+                                onOpen={() => setAutocompleteOpen(true)}
+                                renderInput={(params) => {
+                                    return (
+                                        <TextField
+                                            {...params}
+                                            label={t("TOW_AIRPLANE")}
                                         />
                                     )
                                 }}
