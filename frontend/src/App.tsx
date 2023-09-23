@@ -21,8 +21,10 @@ import {initReactI18next, useTranslation} from "react-i18next";
 import SelectActionDialog from "./components/actions/SelectActionDialog.tsx";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "./store";
-import {setCurrentAction} from "./store/reducers/actionSlice.ts";
-import {fetchActiveTowAirplanes} from "./store/actions/action.ts";
+import {TEXTS_HEBREW} from "./utils/consts.ts";
+import {CacheService} from "./utils/cache.ts";
+import {setCurrentAction} from "./store/reducers/currentActionSlice.ts";
+import {fetchActiveTowAirplanes, fetchFlights} from "./store/actions/currentAction.ts";
 
 const DRAWER_WIDTH = 240;
 
@@ -94,19 +96,7 @@ i18n
         // or even better, manage them via a UI: https://react.i18next.com/guides/multiple-translation-files#manage-your-translations-with-a-management-gui)
         resources: {
             he: {
-                translation: {
-                    APP_NAME: "ניהול פעולת הדאיה",
-                    DASHBOARD: "לוח הטיסות",
-                    TOGGLE_THEME: "שנה צבע",
-                    CURRENT_ACTION: "הפעולה הנוכחית",
-                    SELECT_ACTION: "בחר פעולה",
-                    SELECT: "בחר",
-                    CANCEL: "ביטול",
-                    ACTION: "פעולה",
-                    CLICK_TO_SELECT: "לחץ לבחירה",
-                    FIELD_RESPONSIBLE: "אחראי בשדה",
-                    RESPONSIBLE_CFI: "מדריך אחראי",
-                }
+                translation: TEXTS_HEBREW
             }
         },
         lng: "he",
@@ -120,8 +110,8 @@ i18n
 export default function App() {
     const dispatch = useAppDispatch();
     const [drawerOpen, setDrawerDrawerOpen] = React.useState(false);
-    const [theme, setTheme] = React.useState(lightTheme);
-    const { currentAction } = useSelector((state: RootState) => state.actions)
+    const [theme, setTheme] = React.useState(CacheService.get("CACHE_KEY_THEME") === "dark" ? darkTheme : lightTheme);
+    const { action } = useSelector((state: RootState) => state.currentAction)
     const [selectActionDialogOpen, setSelectActionDialogOpen] = React.useState(false);
     const {t} = useTranslation()
     const {pathname} = useLocation();
@@ -148,6 +138,7 @@ export default function App() {
                 onActionSelected={(action) => {
                     dispatch(setCurrentAction(action))
                     dispatch(fetchActiveTowAirplanes(action.id))
+                    dispatch(fetchFlights(action.id))
                 }}
             />
             <Box sx={{display: 'flex'}}>
@@ -182,7 +173,7 @@ export default function App() {
                         <Tooltip title={t("CLICK_TO_SELECT")}>
                             <Button color="inherit" onClick={() => setSelectActionDialogOpen(true)}>
                                 {t("CURRENT_ACTION")}: {" "}
-                                {currentAction?.date.split("T")[0]}
+                                {action?.date.split("T")[0]}
                             </Button>
                         </Tooltip>
                     </Toolbar>
@@ -220,7 +211,10 @@ export default function App() {
                                 ))}
                             <Divider/>
                             <ListItemButton
-                                onClick={() => setTheme(theme.palette.mode === 'light' ? darkTheme : lightTheme)}>
+                                onClick={() => {
+                                    setTheme(theme.palette.mode === 'light' ? darkTheme : lightTheme)
+                                    CacheService.set("CACHE_KEY_THEME", theme.palette.mode === 'light' ? "dark" : "light")
+                                }}>
                                 <ListItemIcon>
                                     <Brightness4Icon/>
                                 </ListItemIcon>

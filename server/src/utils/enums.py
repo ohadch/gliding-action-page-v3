@@ -10,39 +10,61 @@ class AircraftTypeId(enum.Enum):
     SecondaryTowAirplane = 6
 
 
-class PayersTypeId(enum.Enum):
-    NoPayment = 1
-    FirstPilot = 2
-    Guest = 3
-    BothPilots = 4
-    SecondPilot = 5
-    ThirdMember = 6
+class PayersType(enum.Enum):
+    NoPayment = "NoPayment"
+    FirstPilot = "FirstPilot"
+    Guest = "Guest"
+    BothPilots = "BothPilots"
+    SecondPilot = "SecondPilot"
+    ThirdMember = "ThirdMember"
 
 
-class FlightTypeId(enum.Enum):
-    Instruction = 1
-    ClubGuest = 2
-    MembersGuest = 3
-    Inspection = 4
-    Members = 5
-    InstructorsCourse = 6
-    Solo = 7
-    EnginedTower = 8
+class FlightType(enum.Enum):
+    Instruction = "Instruction"
+    ClubGuest = "ClubGuest"
+    MembersGuest = "MembersGuest"
+    Inspection = "Inspection"
+    Members = "Members"
+    InstructorsCourse = "InstructorsCourse"
+    Solo = "Solo"
 
 
-class RoleId(enum.Enum):
-    TowPilot = 1
-    FieldResponsible = 2
-    ResponsibleCFI = 3
-    Maintenance = 4
-    PrivatePilotLicense = 5
-    CFI = 6
-    NotCertifiedForSoloPayingStudent = 7
-    SoloStudent = 8
-    Contact = 9
-    NotCertifiedForSoloNotPayingStudent = 10
-    Observer = 11
-    Tester = 12
+class Role(enum.Enum):
+    TowPilot = "TowPilot"
+    FieldResponsible = "FieldResponsible"
+    ResponsibleCFI = "ResponsibleCFI"
+    Maintenance = "Maintenance"
+    PrivatePilotLicense = "PrivatePilotLicense"
+    CFI = "CFI"
+    NotCertifiedForSoloPayingStudent = "NotCertifiedForSoloPayingStudent"
+    SoloStudent = "SoloStudent"
+    Contact = "Contact"
+    NotCertifiedForSoloNotPayingStudent = "NotCertifiedForSoloNotPayingStudent"
+    Observer = "Observer"
+    Tester = "Tester"
+
+
+class PaymentMethod(enum.Enum):
+    Cash = "Cash"
+    Check = "Check"
+    CreditCard = "CreditCard"
+    Bit = "Bit"
+
+
+class FlightState(enum.Enum):
+    Draft = "Draft"
+    Tow = "Tow"
+    Inflight = "Inflight"
+    Landed = "Landed"
+
+
+class TowType(enum.Enum):
+    AIRPLANE_1000 = "AIRPLANE_1000"
+    AIRPLANE_1500 = "AIRPLANE_1500"
+    AIRPLANE_2000 = "AIRPLANE_2000"
+    AIRPLANE_2500 = "AIRPLANE_2500"
+    AIRPLANE_3000 = "AIRPLANE_3000"
+    AIRPLANE_3500 = "AIRPLANE_3500"
 
 
 class ImportantMemberIds(enum.Enum):

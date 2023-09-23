@@ -3,6 +3,8 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
+from src.utils.enums import FlightType, PayersType, PaymentMethod, TowType, FlightState
+
 
 class FlightSchema(BaseModel):
     id: int
@@ -14,13 +16,13 @@ class FlightSchema(BaseModel):
     pilot_2_id: Optional[int] = None
     tow_airplane_id: Optional[int] = None
     tow_pilot_id: Optional[int] = None
-    tow_type_id: Optional[int] = None
-    flight_type_id: Optional[int] = None
-    payers_type_id: Optional[int] = None
-    payment_method_id: Optional[int] = None
+    tow_type: Optional[TowType] = None
+    flight_type: Optional[FlightType] = None
+    payers_type: Optional[PayersType] = None
+    payment_method: Optional[PaymentMethod] = None
     payment_receiver_id: Optional[int] = None
     paying_member_id: Optional[int] = None
-    status: str
+    state: FlightState
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -34,13 +36,13 @@ class FlightCreateSchema(BaseModel):
     pilot_2_id: Optional[int] = None
     tow_airplane_id: Optional[int] = None
     tow_pilot_id: Optional[int] = None
-    tow_type_id: Optional[int] = None
-    flight_type_id: Optional[int] = None
-    payers_type_id: Optional[int] = None
-    payment_method_id: Optional[int] = None
+    tow_type: Optional[TowType] = None
+    flight_type: Optional[FlightType] = None
+    payers_type: Optional[PayersType] = None
+    payment_method: Optional[PaymentMethod] = None
     payment_receiver_id: Optional[int] = None
     paying_member_id: Optional[int] = None
-    status: str
+    state: FlightState
 
 
 class FlightUpdateSchema(BaseModel):
@@ -52,13 +54,13 @@ class FlightUpdateSchema(BaseModel):
     pilot_2_id: Optional[int] = None
     tow_airplane_id: Optional[int] = None
     tow_pilot_id: Optional[int] = None
-    tow_type_id: Optional[int] = None
-    flight_type_id: Optional[int] = None
-    payers_type_id: Optional[int] = None
-    payment_method_id: Optional[int] = None
+    tow_type: Optional[TowType] = None
+    flight_type: Optional[FlightType] = None
+    payers_type: Optional[PayersType] = None
+    payment_method: Optional[PaymentMethod] = None
     payment_receiver_id: Optional[int] = None
     paying_member_id: Optional[int] = None
-    status: Optional[str] = None
+    state: Optional[FlightState] = None
 
 
 class FlightSearchSchema(FlightUpdateSchema):

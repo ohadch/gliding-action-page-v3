@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Optional, Any, Type, Dict, Union, TypeVar, Generic, List
 from uuid import UUID
 
@@ -62,7 +63,12 @@ class GenericModelCrud(
         :param data: Data to create
         :return: Created item
         """
-        db_item = self.model(**data.dict())
+        db_item = self.model(
+            **{
+                k: (v if not isinstance(v, Enum) else v.value)
+                for k, v in data.model_dump().items()
+            }
+        )
         db.add(db_item)
         db.commit()
         db.refresh(db_item)
@@ -86,8 +92,14 @@ class GenericModelCrud(
         :return: Updated item
         """
         db_item = db.query(self.model).filter_by(id=id_)
-        db_item.update(data.dict(exclude_unset=True))
+        db_item.update(
+            {
+                k: (v if not isinstance(v, Enum) else v.value)
+                for k, v in data.model_dump().items()
+            }
+        )
         db.commit()
+        return db_item.first()
 
     def delete(self, db: Session, id_: Union[int, str, UUID]):
         """

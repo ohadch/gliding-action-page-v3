@@ -5,42 +5,42 @@ from sqlalchemy.orm import Session
 
 from src.app import app
 
-from src.crud import GliderCrud
+from src.crud import GliderOwnerCrud
 from src.database import get_db
 from src.schemas import (
-    GliderSchema,
-    GliderSearchSchema,
-    GliderCreateSchema,
-    GliderUpdateSchema,
+    GliderOwnerSchema,
+    GliderOwnerSearchSchema,
+    GliderOwnerCreateSchema,
+    GliderOwnerUpdateSchema,
 )
 from src.settings import Settings, get_settings
 
-crud = GliderCrud()
-prefix = "gliders"
+crud = GliderOwnerCrud()
+prefix = "glider_owners"
 tags = [prefix]
 
 
 @app.post(
     f"/{prefix}/search",
     tags=tags,
-    response_model=List[GliderSchema],
+    response_model=List[GliderOwnerSchema],
     summary=f"Search {prefix}",
 )
 async def search(
     page: int = 1,
     page_size: Optional[int] = None,
-    filters: Optional[GliderSearchSchema] = None,
+    filters: Optional[GliderOwnerSearchSchema] = None,
     db: Session = Depends(get_db),
     settings: Settings = Depends(get_settings),
 ):
     """
-    Search gliders
+    Search glider_owners
     :param page: Page number
     :param page_size: Page size
     :param filters: Filters
     :param db: Database session
     :param settings: Settings
-    :return: List of gliders
+    :return: List of glider_owners
     """
     return await crud.search(
         db=db,
@@ -53,12 +53,12 @@ async def search(
 @app.post(
     f"/{prefix}",
     tags=tags,
-    response_model=GliderSchema,
+    response_model=GliderOwnerSchema,
     summary=f"Create {prefix}",
 )
-async def create(data: GliderCreateSchema, db: Session = Depends(get_db)):
+async def create(data: GliderOwnerCreateSchema, db: Session = Depends(get_db)):
     """
-    Create glider
+    Create glider_owner
     :param data: Data
     :param db: Database session
     """
@@ -71,39 +71,39 @@ async def create(data: GliderCreateSchema, db: Session = Depends(get_db)):
 @app.get(
     f"/{prefix}/{{id_}}",
     tags=tags,
-    response_model=GliderSchema,
+    response_model=GliderOwnerSchema,
     summary=f"Get {prefix} by ID",
 )
 async def get_by_id(id_: int, db: Session = Depends(get_db)):
     """
-    Read glider by ID
-    :param id_: Glider ID
+    Read glider_owner by ID
+    :param id_: GliderOwner ID
     :param db: Database session
-    :return: Glider
+    :return: GliderOwner
     """
-    glider = await crud.get_by_id(db=db, id_=id_)
-    if not glider:
+    glider_owner = await crud.get_by_id(db=db, id_=id_)
+    if not glider_owner:
         raise HTTPException(status_code=404, detail=f"{prefix.title()} not found")
-    return glider
+    return glider_owner
 
 
 @app.put(
     f"/{prefix}/{{id_}}",
     tags=tags,
-    response_model=GliderSchema,
+    response_model=GliderOwnerSchema,
     summary=f"Update {prefix}",
 )
 async def update(
     id_: int,
-    data: GliderUpdateSchema,
+    data: GliderOwnerUpdateSchema,
     db: Session = Depends(get_db),
 ):
     """
-    Update glider
-    :param id_: Glider ID
+    Update glider_owner
+    :param id_: GliderOwner ID
     :param data: Data to update
     :param db: Database session
-    :return: Updated glider
+    :return: Updated glider_owner
     """
     return crud.update(
         db=db,
@@ -119,8 +119,8 @@ async def update(
 )
 async def delete(id_: int, db: Session = Depends(get_db)):
     """
-    Delete glider
-    :param id_: Glider ID
+    Delete glider_owner
+    :param id_: GliderOwner ID
     :param db: Database session
     """
     crud.delete(db=db, id_=id_)

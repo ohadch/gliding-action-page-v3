@@ -2,17 +2,17 @@ import {createAsyncThunk} from "@reduxjs/toolkit";
 import createClient from "openapi-fetch";
 import {paths} from "../../lib/api.ts";
 import {API_HOST} from "../../utils/consts.ts";
-import {MemberRoleSchema, MemberSchema} from "../../lib/types.ts";
+import {GliderOwnerSchema, GliderSchema} from "../../lib/types.ts";
 
 
 const {POST} = createClient<paths>({baseUrl: API_HOST});
 
 
-export const fetchMembers = createAsyncThunk<MemberSchema[], void, { rejectValue: string }
+export const fetchGliders = createAsyncThunk<GliderSchema[], void, { rejectValue: string }
 >(
-    'members/fetchMembers',
+    'gliders/fetchGliders',
     async (_, thunkAPI) => {
-        const {data, error} = await POST("/members/search", {
+        const {data, error} = await POST("/gliders/search", {
             params: {
                 query: {
                     page: 1,
@@ -22,18 +22,18 @@ export const fetchMembers = createAsyncThunk<MemberSchema[], void, { rejectValue
         });
 
         if (error) {
-            return thunkAPI.rejectWithValue("Error fetching members");
+            return thunkAPI.rejectWithValue("Error fetching gliders");
         }
 
         return data;
     }
 )
 
-export const fetchMembersRoles = createAsyncThunk<MemberRoleSchema[], void, { rejectValue: string }
+export const fetchGliderOwners = createAsyncThunk<GliderOwnerSchema[], void, { rejectValue: string }
 >(
-    'members/fetchMembersRoles',
+    'gliders/fetchOwners',
     async (_, thunkAPI) => {
-        const {data, error} = await POST("/member_roles/search", {
+        const {data, error} = await POST("/glider_owners/search", {
             params: {
                 query: {
                     page: 1,
@@ -43,7 +43,7 @@ export const fetchMembersRoles = createAsyncThunk<MemberRoleSchema[], void, { re
         });
 
         if (error) {
-            return thunkAPI.rejectWithValue("Error fetching members roles");
+            return thunkAPI.rejectWithValue("Error fetching glider owners");
         }
 
         return data;
