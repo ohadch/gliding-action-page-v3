@@ -32,7 +32,6 @@ export default function DashboardPage() {
                         return;
                     }
 
-                    setCreateFlightDialogOpen(false);
                     dispatch(createFlight({
                         createPayload: {
                             action_id: currentAction.id,
@@ -49,11 +48,13 @@ export default function DashboardPage() {
                             take_off_at: new Date().toISOString(),
                         }
                     }));
+
+                    setCreateFlightDialogOpen(false);
                 }}
             />
 
             <Grid container spacing={2}>
-                <Grid xs={12} mb={2}>
+                <Grid mb={2}>
                     <Box sx={{display: "flex", justifyContent: "flex-end"}}>
                         <Button variant="contained" color="primary" onClick={() => setCreateFlightDialogOpen(true)}>
                             {t("NEW_FLIGHT")}

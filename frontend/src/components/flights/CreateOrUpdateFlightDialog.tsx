@@ -125,7 +125,7 @@ export default function CreateOrUpdateFlightDialog({flight, open, onCancel, onSu
     return (
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        <Dialog open={open} maxWidth={true}>
+        <Dialog open={open} maxWidth="xl">
             <DialogTitle>
                 {t("CREATE_NEW_FLIGHT")}
             </DialogTitle>
