@@ -17,7 +17,12 @@ import {RootState, useAppDispatch} from "../../store";
 import {fetchMembers} from "../../store/actions/member.ts";
 import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
-import {getGliderDisplayValue, getMemberDisplayName} from "../../utils/display.ts";
+import {
+    getFlightTypeDisplayValue,
+    getGliderDisplayValue,
+    getMemberDisplayName,
+    getPayersTypeDisplayValue
+} from "../../utils/display.ts";
 import {FlightType, PayersType} from "../../utils/enums.ts";
 
 enum RenderedInputName {
@@ -25,6 +30,7 @@ enum RenderedInputName {
     TOW_AIRPLANE = "TOW_AIRPLANE",
     PILOT_1 = "PILOT_1",
     PILOT_2 = "PILOT_2",
+    TOW_PILOT = "TOW_PILOT",
 }
 
 export interface FlightCreationWizardDialogProps {
@@ -59,8 +65,8 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
 
 
     const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
-    const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
 
+    const getGliderById = useCallback((id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id), [glidersStoreState.gliders]);
     const getGliderOwnersById = useCallback((id: number) => glidersStoreState.ownerships?.filter((ownership) => ownership.glider_id === id) || [], [glidersStoreState.ownerships]);
     const isGliderPrivate = useCallback((id: number) => getGliderOwnersById(id).length > 0, [getGliderOwnersById]);
 
@@ -89,14 +95,13 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
     const [pilot1Id, setPilot1Id] = useState<number | null | undefined>();
     const [pilot2Id, setPilot2Id] = useState<number | null | undefined>();
     const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>();
-    // const [towPilotId, setTowPilotId] = useState<number | null | undefined>();
+    const [towPilotId, setTowPilotId] = useState<number | null | undefined>();
     // const [towType, setTowType] = useState<number | null | undefined>();
     const [flightType, setFlightType] = useState<FlightType | null | undefined>();
     const [payersType, setPayersType] = useState<PayersType | null | undefined>()
     // const [paymentMethodId, setPaymentMethodId] = useState<number | null | undefined>();
     // const [payingMemberId, setPayingMemberId] = useState<number | null | undefined>();
     // const [paymentReceiverId, setPaymentReceiverId] = useState<number | null | undefined>();
-
 
 
     useEffect(() => {
@@ -126,19 +131,32 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
         if (isGliderPrivate(gliderId)) {
             return;
         } else {
-            if (!flightType) {
-                return setFlightType(FlightType.Members)
+            const glider = getGliderById(gliderId);
+
+            if (!glider) {
+                return;
             }
 
-            if (!payersType) {
-                return setPayersType(PayersType.FirstPilot)
+            if (glider.num_seats === 1) {
+                if (!flightType) {
+                    return setFlightType(FlightType.Members)
+                }
+
+                if (!payersType) {
+                    return setPayersType(PayersType.FirstPilot)
+                }
             }
+            {
+                return
+            }
+
         }
-    },[
+    }, [
         gliderId,
         flightType,
         payersType,
         isGliderPrivate,
+        getGliderById,
     ]);
 
 
@@ -159,8 +177,16 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
             alert("TODO")
         } else {
             if (glider.num_seats === 1) {
+                if (!pilot1Id) {
+                    return RenderedInputName.PILOT_1;
+                }
+
                 if (!towAirplaneId) {
                     return RenderedInputName.TOW_AIRPLANE;
+                }
+
+                if (!towPilotId) {
+                    return RenderedInputName.TOW_PILOT;
                 }
             } else if (glider.num_seats === 2) {
                 if (!pilot1Id) {
@@ -277,6 +303,30 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                         </FormControl>
                     </FormGroup>
                 )
+            case RenderedInputName.TOW_PILOT:
+                return (
+                    <FormGroup>
+                        <FormControl>
+                            <Autocomplete
+                                id="towPilot"
+                                options={membersStoreState.members || []}
+                                value={towPilotId ? getMemberById(towPilotId) : null}
+                                onChange={(_, newValue) => setTowPilotId(newValue?.id)}
+                                getOptionLabel={(option) => getMemberDisplayName(option)}
+                                open={autocompleteOpen}
+                                onOpen={() => setAutocompleteOpen(true)}
+                                renderInput={(params) => {
+                                    return (
+                                        <TextField
+                                            {...params}
+                                            label={t("TOW_PILOT")}
+                                        />
+                                    )
+                                }}
+                            />
+                        </FormControl>
+                    </FormGroup>
+                )
             default:
                 return null;
         }
@@ -287,24 +337,39 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
     function renderFlightPreview() {
         return (
             <Grid>
+                {flightType && (
+                    <Grid>
+                        <strong>{t("FLIGHT_TYPE")}</strong>: {getFlightTypeDisplayValue(flightType)}
+                    </Grid>
+                )}
                 {gliderId && (
                     <Grid>
-                    <strong>{t("GLIDER")}</strong>: {displayGlider(gliderId)}
-                </Grid>
+                        <strong>{t("GLIDER")}</strong>: {displayGlider(gliderId)}
+                    </Grid>
                 )}
                 {pilot1Id && (
                     <Grid>
-                    <strong>{t("PILOT_1")}</strong>: {displayMember(pilot1Id)}
+                        <strong>{t("PILOT_1")}</strong>: {displayMember(pilot1Id)}
                     </Grid>
                 )}
                 {pilot2Id && (
                     <Grid>
-                    <strong>{t("PILOT_2")}</strong>: {displayMember(pilot2Id)}
+                        <strong>{t("PILOT_2")}</strong>: {displayMember(pilot2Id)}
                     </Grid>
                 )}
                 {towAirplaneId && (
                     <Grid>
-                    <strong>{t("TOW_AIRPLANE")}</strong>: {displayTowAirplane(towAirplaneId)}
+                        <strong>{t("TOW_AIRPLANE")}</strong>: {displayTowAirplane(towAirplaneId)}
+                    </Grid>
+                )}
+                {towPilotId && (
+                    <Grid>
+                        <strong>{t("TOW_PILOT")}</strong>: {displayMember(towPilotId)}
+                    </Grid>
+                )}
+                {payersType && (
+                    <Grid>
+                        <strong>{t("PAYERS_TYPE")}</strong>: {getPayersTypeDisplayValue(payersType)}
                     </Grid>
                 )}
             </Grid>
