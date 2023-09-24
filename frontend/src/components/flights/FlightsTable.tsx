@@ -25,6 +25,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {deleteFlight} from "../../store/actions/currentAction.ts";
 import {FlightCreateSchema, FlightUpdateSchema} from "../../lib/types.ts";
+import FlightStateChip from "./FlightStateChip.tsx";
 
 export interface FlightsTableProps {
     setEditedFlight: (flightId: number, flight: FlightUpdateSchema) => void;
@@ -99,7 +100,7 @@ export default function FlightsTable(props: FlightsTableProps) {
                 <Table sx={{minWidth: 650}} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>{t("STATUS")}</TableCell>
+                            <TableCell>{t("STATE")}</TableCell>
                             <TableCell align="right">{t("GLIDER")}</TableCell>
                             <TableCell align="right">{t("FLIGHT_TYPE")}</TableCell>
                             <TableCell align="right">{t("PILOT_1")}</TableCell>
@@ -116,7 +117,9 @@ export default function FlightsTable(props: FlightsTableProps) {
                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
                             >
                                 <TableCell component="th" scope="row">
-                                    {flight.state && getFlightStateDisplayValue(flight.state)}
+                                    {flight && (
+                                        <FlightStateChip flight={flight}/>
+                                    )}
                                 </TableCell>
                                 <TableCell
                                     align="right">{flight.glider_id && displayGlider(flight.glider_id)}</TableCell>

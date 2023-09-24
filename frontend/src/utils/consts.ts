@@ -19,7 +19,7 @@ export const TEXTS_HEBREW = {
     CLICK_TO_SELECT: "לחץ לבחירה",
     FIELD_RESPONSIBLE: "אחראי בשדה",
     RESPONSIBLE_CFI: "מדריך אחראי",
-    STATUS: "סטטוס",
+    STATE: "מצב",
     GLIDER: "דאון",
     PILOT_1: "טייס ראשון או חניך",
     PILOT_2: "טייס שני או מדריך",
@@ -41,6 +41,10 @@ export const TEXTS_HEBREW = {
     CLEAR: "נקה",
     ADVANCED_EDIT: "עריכה מתקדמת",
     CLEAR_CONFIRMATION: "האם אתה בטוח שברצונך לנקות את הטופס?",
+    DRAFT: "בהכנה",
+    TOW: "בגרירה",
+    INFLIGHT: "בטיסה",
+    LANDED: "לאחר נחיתה",
 }
 
 

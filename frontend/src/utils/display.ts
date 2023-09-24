@@ -1,25 +1,11 @@
 import {
-    FlightState, FlightType,
+    FlightType,
     GliderOwnerSchema,
     GliderSchema, MemberRoleSchema,
     MemberSchema, PayersType, PaymentMethod, Role,
     TowAirplaneSchema, TowType,
 } from "../lib/types.ts";
 
-export function getFlightStateDisplayValue(state: FlightState): string {
-    switch (state) {
-        case "Draft":
-            return "בהכנה"
-        case "Tow":
-            return "בגרירה"
-        case "Inflight":
-            return "בטיסה"
-        case "Landed":
-            return "לאחר נחיתה"
-        default:
-            throw new Error(`Unknown flight state: ${state}`)
-    }
-}
 
 export function getFlightTypeDisplayValue(type: FlightType): string {
     switch (type) {
