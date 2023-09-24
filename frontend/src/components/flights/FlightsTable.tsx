@@ -13,7 +13,6 @@ import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
 import {fetchGliders} from "../../store/actions/glider.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import {
-    getFlightStateDisplayValue,
     getFlightTypeDisplayValue,
     getGliderDisplayValue,
     getMemberDisplayValue
@@ -24,17 +23,18 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {deleteFlight} from "../../store/actions/currentAction.ts";
-import {FlightCreateSchema, FlightUpdateSchema} from "../../lib/types.ts";
+import {FlightCreateSchema, FlightState, FlightUpdateSchema} from "../../lib/types.ts";
 import FlightStateController from "./FlightStateController.tsx";
 
 export interface FlightsTableProps {
     setEditedFlight: (flightId: number, flight: FlightUpdateSchema) => void;
     setDuplicateFlight: (flight: FlightCreateSchema) => void;
+    onFlightStateUpdated: (flightId: number, state: FlightState) => void;
 }
 
 
 export default function FlightsTable(props: FlightsTableProps) {
-    const {setEditedFlight, setDuplicateFlight} = props;
+    const {setEditedFlight, setDuplicateFlight, onFlightStateUpdated} = props;
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
 
@@ -118,7 +118,10 @@ export default function FlightsTable(props: FlightsTableProps) {
                             >
                                 <TableCell component="th" scope="row">
                                     {flight && (
-                                        <FlightStateController flight={flight}/>
+                                        <FlightStateController
+                                            flight={flight}
+                                            onStateUpdated={onFlightStateUpdated}
+                                        />
                                     )}
                                 </TableCell>
                                 <TableCell

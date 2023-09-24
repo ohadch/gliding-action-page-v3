@@ -9,7 +9,9 @@ import {createFlight, fetchFlights, updateFlight} from "../../store/actions/curr
 import FlightCreationWizardDialog from "../../components/flights/FlightCreationWizardDialog.tsx";
 import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
 import EditFlightDetailsDialog from "../../components/flights/EditFlightDetailsDialog.tsx";
-import {FlightCreateSchema} from "../../lib/types.ts";
+import {FlightCreateSchema, FlightSchema, FlightState, FlightUpdateSchema} from "../../lib/types.ts";
+import FlightStartTowDialog from "../../components/flights/FlightStartTowDialog.tsx";
+import moment from "moment/moment";
 
 export default function DashboardPage() {
     const [flightCreationWizardDialogOpen, setFlightCreationWizardDialogOpen] = useState<boolean>(false);
@@ -19,6 +21,7 @@ export default function DashboardPage() {
     const [editedFlightId, setEditedFlightId] = useState<number | null>(null);
     const [editedFlightData, setEditedFlightData] = useState<FlightCreateSchema | null>(null);
     const [editFlightDetailsDialogOpen, setEditFlightDetailsDialogOpen] = useState<boolean>(false);
+    const [startTowDialogFlight, setStartTowDialogFlight] = useState<FlightSchema | null>(null);
 
     useEffect(() => {
         if (!flights && !fetchingFlightsInProgress && action) {
@@ -27,6 +30,52 @@ export default function DashboardPage() {
             dispatch(fetchGliderOwners());
         }
     });
+
+    function onFlightStateUpdated(flightId: number, state: FlightState) {
+        const flight = flights?.find((flight) => flight.id === flightId);
+
+        if (!flight) {
+            return;
+        }
+
+        if (flight.state === state) {
+            return;
+        }
+
+        const updatePayload: FlightUpdateSchema = {
+            ...flight,
+            state
+        }
+
+        const now = moment().utcOffset(0, true).toISOString();
+
+        switch (state) {
+            case "Draft":
+                updatePayload.take_off_at = null;
+                updatePayload.landing_at = null;
+                updatePayload.tow_type = null;
+                updatePayload.tow_airplane_id = null;
+                updatePayload.tow_pilot_id = null;
+                break;
+            case "Tow":
+                if (!flight.tow_airplane_id || !flight.tow_pilot_id) {
+                    return setStartTowDialogFlight(flight);
+                }
+                break;
+            case "Inflight":
+                break;
+            case "Landed":
+                updatePayload.landing_at = now;
+                break;
+            default:
+                throw new Error(`Unknown flight state: ${state}`)
+        }
+
+        dispatch(updateFlight({
+            flightId,
+            updatePayload,
+        }))
+    }
 
     function renderEditFlightDialog() {
         if (!editFlightDetailsDialogOpen || !editedFlightData) {
@@ -62,32 +111,58 @@ export default function DashboardPage() {
         )
     }
 
+    function renderStartTowDialog() {
+        if (!startTowDialogFlight?.id) {
+            return
+        }
+
+        return (
+            <FlightStartTowDialog
+                open={Boolean(startTowDialogFlight)}
+                flight={startTowDialogFlight}
+                onCancel={() => setStartTowDialogFlight(null)}
+                onSubmit={(flight) => {
+                    dispatch(updateFlight({
+                        flightId: startTowDialogFlight?.id,
+                        updatePayload: flight,
+                    }))
+                    setStartTowDialogFlight(null)
+                }}
+            />
+        )
+    }
+
+
+    function renderFlightCreationWizardDialog() {
+        return flightCreationWizardDialogOpen && (
+            <FlightCreationWizardDialog
+                open={flightCreationWizardDialogOpen}
+                onCancel={() => {
+                    setFlightCreationWizardDialogOpen(false);
+                    setEditedFlightData(null);
+                }}
+                onSubmit={payload => {
+                    dispatch(createFlight({
+                        createPayload: payload
+                    }))
+                    setFlightCreationWizardDialogOpen(false);
+                    setEditedFlightData(null)
+                }}
+                onAdvancedEdit={(flight) => {
+                    setEditedFlightId(null)
+                    setFlightCreationWizardDialogOpen(false);
+                    setEditedFlightData(flight)
+                    setEditFlightDetailsDialogOpen(true);
+                }}
+            />
+        )
+    }
+
     return (
         <>
             {renderEditFlightDialog()}
-
-            {flightCreationWizardDialogOpen && (
-                <FlightCreationWizardDialog
-                    open={flightCreationWizardDialogOpen}
-                    onCancel={() => {
-                        setFlightCreationWizardDialogOpen(false);
-                        setEditedFlightData(null);
-                    }}
-                    onSubmit={payload => {
-                        dispatch(createFlight({
-                            createPayload: payload
-                        }))
-                        setFlightCreationWizardDialogOpen(false);
-                        setEditedFlightData(null)
-                    }}
-                    onAdvancedEdit={(flight) => {
-                        setEditedFlightId(null)
-                        setFlightCreationWizardDialogOpen(false);
-                        setEditedFlightData(flight)
-                        setEditFlightDetailsDialogOpen(true);
-                    }}
-                />
-            )}
+            {renderStartTowDialog()}
+            {renderFlightCreationWizardDialog()}
 
             <Grid container spacing={2}>
                 <Grid mb={2}>
@@ -121,6 +196,7 @@ export default function DashboardPage() {
                             ...flight
                         })
                     }}
+                    onFlightStateUpdated={onFlightStateUpdated}
                 />
             </Grid>
         </>

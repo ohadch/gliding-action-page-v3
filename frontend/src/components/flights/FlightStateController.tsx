@@ -6,8 +6,9 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import {ORDERED_FLIGHT_STATES} from "../../utils/consts.ts";
 import Typography from "@mui/material/Typography";
 
-export interface FlightStateChipProps {
-    flight: FlightSchema
+export interface FlightStateControllerProps {
+    flight: FlightSchema,
+    onStateUpdated: (flightId: number, state: FlightState) => void;
 }
 
 interface StateButtonConfig {
@@ -35,7 +36,7 @@ const STATE_BUTTON_CONFIGS: Record<FlightState, StateButtonConfig> = {
 }
 
 
-export default function FlightStateController({flight}: FlightStateChipProps) {
+export default function FlightStateController({flight, onStateUpdated}: FlightStateControllerProps) {
     const {t} = useTranslation();
     const {label, color} = STATE_BUTTON_CONFIGS[flight.state];
 
@@ -57,6 +58,7 @@ export default function FlightStateController({flight}: FlightStateChipProps) {
                     <Button
                         variant="text"
                         color={color}
+                        onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) - 1])}
                     >
                         <ArrowRightIcon/>
                     </Button>
@@ -79,6 +81,7 @@ export default function FlightStateController({flight}: FlightStateChipProps) {
                     <Button
                         variant="text"
                         color={color}
+                        onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) + 1])}
                     >
                         <ArrowLeftIcon/>
                     </Button>
