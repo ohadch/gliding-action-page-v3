@@ -86,6 +86,11 @@ export default function EditFlightDetailsDialog({
     const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
     const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
 
+    const parseDateStringDropTimezone = (dateString: string) => {
+        const momentDate = moment(dateString);
+        momentDate.utcOffset(0, true);
+        return momentDate;
+    }
 
     const [gliderId, setGliderId] = useState<number | null | undefined>(flightData.glider_id);
     const [pilot1Id, setPilot1Id] = useState<number | null | undefined>(flightData.pilot_1_id);
@@ -98,8 +103,8 @@ export default function EditFlightDetailsDialog({
     const [towType, setTowType] = useState<TowType | null | undefined>(flightData.tow_type);
     const [payersType, setPayersType] = useState<PayersType | null | undefined>(flightData.payers_type);
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null | undefined>(flightData.payment_method);
-    const [takeOffat, setTakeOffat] = useState<Date | null | undefined>(flightData.take_off_at ? new Date(flightData.take_off_at) : null);
-    const [landingAt, setLandingAt] = useState<Date | null | undefined>(flightData.landing_at ? new Date(flightData.landing_at) : null);
+    const [takeOffat, setTakeOffat] = useState<moment.Moment | null | undefined>(flightData.take_off_at ? parseDateStringDropTimezone(flightData.take_off_at) : null);
+    const [landingAt, setLandingAt] = useState<moment.Moment | null | undefined>(flightData.landing_at ? parseDateStringDropTimezone(flightData.landing_at) : null);
 
 
     if (!action) {
@@ -181,11 +186,16 @@ export default function EditFlightDetailsDialog({
                                             return;
                                         }
 
-                                        const date = new Date(action.date);
-                                        const newDate = newValue.toDate();
-                                        date.setHours(newDate.getHours());
-                                        date.setMinutes(newDate.getMinutes());
-                                        date.setSeconds(newDate.getSeconds());
+                                        // Remove the timezone
+                                        newValue.utcOffset(0, true);
+
+                                        const date = moment(action.date);
+                                        date.utcOffset(0, true);
+                                        date.set({
+                                            hour: newValue.hour(),
+                                            minute: newValue.minute(),
+                                            second: newValue.second(),
+                                        });
                                         setTakeOffat(date);
                                     }}
                                 />
@@ -204,16 +214,21 @@ export default function EditFlightDetailsDialog({
                                             return;
                                         }
 
+                                        // Remove the timezone
+                                        newValue.utcOffset(0, true);
+
                                         if (!action?.date) {
                                             return;
                                         }
 
-                                        const date = new Date(action.date);
-                                        const newDate = newValue.toDate();
-                                        newDate.setDate(date.getDate());
-                                        newDate.setMonth(date.getMonth());
-                                        newDate.setFullYear(date.getFullYear());
-                                        setLandingAt(newDate);
+                                        const date = moment(action.date);
+                                        date.utcOffset(0, true);
+                                        date.set({
+                                            hour: newValue.hour(),
+                                            minute: newValue.minute(),
+                                            second: newValue.second(),
+                                        });
+                                        setLandingAt(date);
                                     }}
                                 />
                             </FormControl>
