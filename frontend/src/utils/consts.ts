@@ -41,6 +41,8 @@ export const TEXTS_HEBREW = {
     CLEAR: "נקה",
     ADVANCED_EDIT: "עריכה מתקדמת",
     CLEAR_CONFIRMATION: "האם אתה בטוח שברצונך לנקות את הטופס?",
+    TAKE_OFF_TIME: "שעת ההמראה",
+    LANDING_TIME: "שעת הנחיתה",
     DRAFT: "בהכנה",
     TOW: "בגרירה",
     INFLIGHT: "בטיסה",
