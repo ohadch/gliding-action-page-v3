@@ -12,6 +12,7 @@ import EditFlightDetailsDialog from "../../components/flights/EditFlightDetailsD
 import {FlightCreateSchema, FlightSchema, FlightState, FlightUpdateSchema} from "../../lib/types.ts";
 import FlightStartTowDialog from "../../components/flights/FlightStartTowDialog.tsx";
 import moment from "moment/moment";
+import FlightEndTowDialog from "../../components/flights/FlightEndTowDialog.tsx";
 
 export default function DashboardPage() {
     const [flightCreationWizardDialogOpen, setFlightCreationWizardDialogOpen] = useState<boolean>(false);
@@ -22,6 +23,7 @@ export default function DashboardPage() {
     const [editedFlightData, setEditedFlightData] = useState<FlightCreateSchema | null>(null);
     const [editFlightDetailsDialogOpen, setEditFlightDetailsDialogOpen] = useState<boolean>(false);
     const [startTowDialogFlight, setStartTowDialogFlight] = useState<FlightSchema | null>(null);
+    const [endTowDialogFlight, setEndTowDialogFlight] = useState<FlightSchema | null>(null);
 
     useEffect(() => {
         if (!flights && !fetchingFlightsInProgress && action) {
@@ -61,8 +63,16 @@ export default function DashboardPage() {
                 if (!flight.tow_airplane_id || !flight.tow_pilot_id) {
                     return setStartTowDialogFlight(flight);
                 }
+
+                if (!flight.take_off_at) {
+                    updatePayload.take_off_at = now;
+                }
+                updatePayload.tow_type = null;
                 break;
             case "Inflight":
+                if (!flight.tow_type) {
+                    return setEndTowDialogFlight(flight);
+                }
                 break;
             case "Landed":
                 updatePayload.landing_at = now;
@@ -158,10 +168,32 @@ export default function DashboardPage() {
         )
     }
 
+    function renderEndTowDialog() {
+        if (!endTowDialogFlight?.id) {
+            return
+        }
+
+        return (
+            <FlightEndTowDialog
+                open={Boolean(endTowDialogFlight)}
+                flight={endTowDialogFlight}
+                onCancel={() => setEndTowDialogFlight(null)}
+                onSubmit={(flight) => {
+                    dispatch(updateFlight({
+                        flightId: endTowDialogFlight?.id,
+                        updatePayload: flight,
+                    }))
+                    setEndTowDialogFlight(null)
+                }}
+            />
+        )
+    }
+
     return (
         <>
             {renderEditFlightDialog()}
             {renderStartTowDialog()}
+            {renderEndTowDialog()}
             {renderFlightCreationWizardDialog()}
 
             <Grid container spacing={2}>

@@ -23,6 +23,7 @@ import {
     getMemberDisplayValue,
 } from "../../utils/display.ts";
 import {isTowPilot} from "../../utils/members.ts";
+import moment from "moment";
 
 enum RenderedInputName {
     GLIDER = "GLIDER",
@@ -234,6 +235,8 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
                             state: "Tow",
                             tow_airplane_id: towAirplaneId,
                             tow_pilot_id: towPilotId,
+                            take_off_at: flight.take_off_at || moment().utcOffset(0, true).toISOString(),
+                            tow_type: null
                         })}>
                         {t("CONFIRM")}
                     </Button>
