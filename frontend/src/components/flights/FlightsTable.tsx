@@ -25,6 +25,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import {deleteFlight} from "../../store/actions/currentAction.ts";
 import {FlightCreateSchema, FlightState, FlightUpdateSchema} from "../../lib/types.ts";
 import FlightStateController from "./FlightStateController.tsx";
+import FlightDuration from "./FlightDuration.tsx";
 
 export interface FlightsTableProps {
     setEditedFlight: (flightId: number, flight: FlightUpdateSchema) => void;
@@ -120,6 +121,7 @@ export default function FlightsTable(props: FlightsTableProps) {
                             <TableCell align="right"><strong>{t("PILOT_2")}</strong></TableCell>
                             <TableCell align="right"><strong>{t("TOW_AIRPLANE")}</strong></TableCell>
                             <TableCell align="right"><strong>{t("TOW_PILOT")}</strong></TableCell>
+                            <TableCell align="right"><strong>{t("DURATION")}</strong></TableCell>
                             <TableCell align="right"></TableCell>
                         </TableRow>
                     </TableHead>
@@ -149,6 +151,9 @@ export default function FlightsTable(props: FlightsTableProps) {
                                     align="right">{flight.tow_airplane_id && displayTowAirplane(flight.tow_airplane_id)}</TableCell>
                                 <TableCell
                                     align="right">{flight.tow_pilot_id && displayMember(flight.tow_pilot_id)}</TableCell>
+                                <TableCell align="right">
+                                    <FlightDuration flight={flight}/>
+                                </TableCell>
                                 <TableCell align="right">
                                     <Tooltip title={t("DUPLICATE_FLIGHT")}>
                                         <IconButton aria-label="duplicate" onClick={() => setDuplicateFlight(flight)}>

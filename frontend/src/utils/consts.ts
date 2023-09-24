@@ -47,6 +47,7 @@ export const TEXTS_HEBREW = {
     TOW: "גרירה פעילה",
     INFLIGHT: "בטיסה",
     LANDED: "לאחר נחיתה",
+    DURATION: "משך",
 }
 
 
