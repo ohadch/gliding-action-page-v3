@@ -34,6 +34,7 @@ import {
     SUPPORTED_TOW_TYPES
 } from "../../utils/consts.ts";
 import {TimePicker} from "@mui/x-date-pickers";
+import moment from "moment";
 
 export interface EditFlightDetailsDialogProps {
     flightId?: number | null
@@ -98,6 +99,7 @@ export default function EditFlightDetailsDialog({
     const [payersType, setPayersType] = useState<PayersType | null | undefined>(flightData.payers_type);
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null | undefined>(flightData.payment_method);
     const [takeOffat, setTakeOffat] = useState<Date | null | undefined>(flightData.take_off_at ? new Date(flightData.take_off_at) : null);
+    const [landingAt, setLandingAt] = useState<Date | null | undefined>(flightData.landing_at ? new Date(flightData.landing_at) : null);
 
 
     if (!action) {
@@ -168,8 +170,8 @@ export default function EditFlightDetailsDialog({
                             }}>
                                 <TimePicker
                                     label={t("TAKE_OFF_TIME")}
-                                    value={takeOffat}
-                                    onChange={(newValue) => {
+                                    value={takeOffat ? moment(takeOffat) : null}
+                                    onChange={(newValue: moment.Moment | null) => {
                                         if (!newValue) {
                                             setTakeOffat(null);
                                             return;
@@ -180,10 +182,38 @@ export default function EditFlightDetailsDialog({
                                         }
 
                                         const date = new Date(action.date);
-                                        date.setHours(newValue.getHours());
-                                        date.setMinutes(newValue.getMinutes());
-                                        date.setSeconds(newValue.getSeconds());
+                                        const newDate = newValue.toDate();
+                                        date.setHours(newDate.getHours());
+                                        date.setMinutes(newDate.getMinutes());
+                                        date.setSeconds(newDate.getSeconds());
                                         setTakeOffat(date);
+                                    }}
+                                />
+                            </FormControl>
+                        </FormGroup>
+                        <FormGroup>
+                            <FormControl style={{
+                                direction: "ltr",
+                            }}>
+                                <TimePicker
+                                    label={t("LANDING_TIME")}
+                                    value={landingAt ? moment(landingAt) : null}
+                                    onChange={(newValue: moment.Moment | null) => {
+                                        if (!newValue) {
+                                            setLandingAt(null);
+                                            return;
+                                        }
+
+                                        if (!action?.date) {
+                                            return;
+                                        }
+
+                                        const date = new Date(action.date);
+                                        const newDate = newValue.toDate();
+                                        newDate.setDate(date.getDate());
+                                        newDate.setMonth(date.getMonth());
+                                        newDate.setFullYear(date.getFullYear());
+                                        setLandingAt(newDate);
                                     }}
                                 />
                             </FormControl>
@@ -408,6 +438,8 @@ export default function EditFlightDetailsDialog({
                         payment_method: paymentMethod,
                         paying_member_id: payingMemberId,
                         payment_receiver_id: paymentReceiverId,
+                        take_off_at: takeOffat ? takeOffat.toISOString() : null,
+                        landing_at: landingAt ? landingAt.toISOString() : null,
                     })}>
                         {t("CONFIRM")}
                     </Button>
@@ -429,6 +461,8 @@ export default function EditFlightDetailsDialog({
                         payment_method: paymentMethod,
                         paying_member_id: payingMemberId,
                         payment_receiver_id: paymentReceiverId,
+                        take_off_at: takeOffat ? takeOffat.toISOString() : null,
+                        landing_at: landingAt ? landingAt.toISOString() : null,
                     })}>
                         {t("CONFIRM")}
                     </Button>
