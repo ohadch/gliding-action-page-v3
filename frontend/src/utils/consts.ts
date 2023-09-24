@@ -40,6 +40,7 @@ export const TEXTS_HEBREW = {
     EDIT_FLIGHT: "ערוך טיסה",
     CLEAR: "נקה",
     ADVANCED_EDIT: "עריכה מתקדמת",
+    CLEAR_CONFIRMATION: "האם אתה בטוח שברצונך לנקות את הטופס?",
 }
 
 
