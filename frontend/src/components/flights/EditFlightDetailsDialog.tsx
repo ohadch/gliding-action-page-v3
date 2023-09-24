@@ -33,17 +33,26 @@ import {
     SUPPORTED_PAYMENT_METHODS,
     SUPPORTED_TOW_TYPES
 } from "../../utils/consts.ts";
+import {TimePicker} from "@mui/x-date-pickers";
+import moment from "moment";
 
 export interface EditFlightDetailsDialogProps {
     flightId?: number | null
-    flightData: FlightCreateSchema | FlightUpdateSchema
+    flightData: FlightUpdateSchema
     open: boolean
     onCancel: () => void
     onCreate: (flight: FlightCreateSchema) => void
     onUpdate: (flightId: number, flight: FlightUpdateSchema) => void
 }
 
-export default function EditFlightDetailsDialog({flightId, flightData, open, onCancel, onCreate, onUpdate}: EditFlightDetailsDialogProps) {
+export default function EditFlightDetailsDialog({
+                                                    flightId,
+                                                    flightData,
+                                                    open,
+                                                    onCancel,
+                                                    onCreate,
+                                                    onUpdate
+                                                }: EditFlightDetailsDialogProps) {
     const dispatch = useAppDispatch();
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
@@ -77,6 +86,11 @@ export default function EditFlightDetailsDialog({flightId, flightData, open, onC
     const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
     const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
 
+    const parseDateStringDropTimezone = (dateString: string) => {
+        const momentDate = moment(dateString);
+        momentDate.utcOffset(0, true);
+        return momentDate;
+    }
 
     const [gliderId, setGliderId] = useState<number | null | undefined>(flightData.glider_id);
     const [pilot1Id, setPilot1Id] = useState<number | null | undefined>(flightData.pilot_1_id);
@@ -89,6 +103,9 @@ export default function EditFlightDetailsDialog({flightId, flightData, open, onC
     const [towType, setTowType] = useState<TowType | null | undefined>(flightData.tow_type);
     const [payersType, setPayersType] = useState<PayersType | null | undefined>(flightData.payers_type);
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null | undefined>(flightData.payment_method);
+    const [takeOffat, setTakeOffat] = useState<moment.Moment | null | undefined>(flightData.take_off_at ? parseDateStringDropTimezone(flightData.take_off_at) : null);
+    const [landingAt, setLandingAt] = useState<moment.Moment | null | undefined>(flightData.landing_at ? parseDateStringDropTimezone(flightData.landing_at) : null);
+
 
     if (!action) {
         return null;
@@ -148,6 +165,70 @@ export default function EditFlightDetailsDialog({flightId, flightData, open, onC
                                                 label={t("GLIDER")}
                                             />
                                         )
+                                    }}
+                                />
+                            </FormControl>
+                        </FormGroup>
+                        <FormGroup>
+                            <FormControl style={{
+                                direction: "ltr",
+                            }}>
+                                <TimePicker
+                                    label={t("TAKE_OFF_TIME")}
+                                    value={takeOffat ? moment(takeOffat) : null}
+                                    onChange={(newValue: moment.Moment | null) => {
+                                        if (!newValue) {
+                                            setTakeOffat(null);
+                                            return;
+                                        }
+
+                                        if (!action?.date) {
+                                            return;
+                                        }
+
+                                        // Remove the timezone
+                                        newValue.utcOffset(0, true);
+
+                                        const date = moment(action.date);
+                                        date.utcOffset(0, true);
+                                        date.set({
+                                            hour: newValue.hour(),
+                                            minute: newValue.minute(),
+                                            second: newValue.second(),
+                                        });
+                                        setTakeOffat(date);
+                                    }}
+                                />
+                            </FormControl>
+                        </FormGroup>
+                        <FormGroup>
+                            <FormControl style={{
+                                direction: "ltr",
+                            }}>
+                                <TimePicker
+                                    label={t("LANDING_TIME")}
+                                    value={landingAt ? moment(landingAt) : null}
+                                    onChange={(newValue: moment.Moment | null) => {
+                                        if (!newValue) {
+                                            setLandingAt(null);
+                                            return;
+                                        }
+
+                                        // Remove the timezone
+                                        newValue.utcOffset(0, true);
+
+                                        if (!action?.date) {
+                                            return;
+                                        }
+
+                                        const date = moment(action.date);
+                                        date.utcOffset(0, true);
+                                        date.set({
+                                            hour: newValue.hour(),
+                                            minute: newValue.minute(),
+                                            second: newValue.second(),
+                                        });
+                                        setLandingAt(date);
                                     }}
                                 />
                             </FormControl>
@@ -372,6 +453,8 @@ export default function EditFlightDetailsDialog({flightId, flightData, open, onC
                         payment_method: paymentMethod,
                         paying_member_id: payingMemberId,
                         payment_receiver_id: paymentReceiverId,
+                        take_off_at: takeOffat ? takeOffat.toISOString() : null,
+                        landing_at: landingAt ? landingAt.toISOString() : null,
                     })}>
                         {t("CONFIRM")}
                     </Button>
@@ -393,6 +476,8 @@ export default function EditFlightDetailsDialog({flightId, flightData, open, onC
                         payment_method: paymentMethod,
                         paying_member_id: payingMemberId,
                         payment_receiver_id: paymentReceiverId,
+                        take_off_at: takeOffat ? takeOffat.toISOString() : null,
+                        landing_at: landingAt ? landingAt.toISOString() : null,
                     })}>
                         {t("CONFIRM")}
                     </Button>
