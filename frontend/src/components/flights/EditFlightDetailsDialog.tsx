@@ -33,17 +33,25 @@ import {
     SUPPORTED_PAYMENT_METHODS,
     SUPPORTED_TOW_TYPES
 } from "../../utils/consts.ts";
+import {TimePicker} from "@mui/x-date-pickers";
 
 export interface EditFlightDetailsDialogProps {
     flightId?: number | null
-    flightData: FlightCreateSchema | FlightUpdateSchema
+    flightData: FlightUpdateSchema
     open: boolean
     onCancel: () => void
     onCreate: (flight: FlightCreateSchema) => void
     onUpdate: (flightId: number, flight: FlightUpdateSchema) => void
 }
 
-export default function EditFlightDetailsDialog({flightId, flightData, open, onCancel, onCreate, onUpdate}: EditFlightDetailsDialogProps) {
+export default function EditFlightDetailsDialog({
+                                                    flightId,
+                                                    flightData,
+                                                    open,
+                                                    onCancel,
+                                                    onCreate,
+                                                    onUpdate
+                                                }: EditFlightDetailsDialogProps) {
     const dispatch = useAppDispatch();
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
@@ -89,6 +97,8 @@ export default function EditFlightDetailsDialog({flightId, flightData, open, onC
     const [towType, setTowType] = useState<TowType | null | undefined>(flightData.tow_type);
     const [payersType, setPayersType] = useState<PayersType | null | undefined>(flightData.payers_type);
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null | undefined>(flightData.payment_method);
+    const [takeOffat, setTakeOffat] = useState<Date | null | undefined>(flightData.take_off_at ? new Date(flightData.take_off_at) : null);
+
 
     if (!action) {
         return null;
@@ -148,6 +158,32 @@ export default function EditFlightDetailsDialog({flightId, flightData, open, onC
                                                 label={t("GLIDER")}
                                             />
                                         )
+                                    }}
+                                />
+                            </FormControl>
+                        </FormGroup>
+                        <FormGroup>
+                            <FormControl style={{
+                                direction: "ltr",
+                            }}>
+                                <TimePicker
+                                    label={t("TAKE_OFF_TIME")}
+                                    value={takeOffat}
+                                    onChange={(newValue) => {
+                                        if (!newValue) {
+                                            setTakeOffat(null);
+                                            return;
+                                        }
+
+                                        if (!action?.date) {
+                                            return;
+                                        }
+
+                                        const date = new Date(action.date);
+                                        date.setHours(newValue.getHours());
+                                        date.setMinutes(newValue.getMinutes());
+                                        date.setSeconds(newValue.getSeconds());
+                                        setTakeOffat(date);
                                     }}
                                 />
                             </FormControl>
