@@ -8,12 +8,11 @@ import Paper from '@mui/material/Paper';
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
-import {useEffect} from "react";
+import {useCallback, useEffect} from "react";
 import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
 import {fetchGliders} from "../../store/actions/glider.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import {
-    getFlightStateDisplayValue,
     getFlightTypeDisplayValue,
     getGliderDisplayValue,
     getMemberDisplayValue
@@ -24,16 +23,20 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {deleteFlight} from "../../store/actions/currentAction.ts";
-import {FlightCreateSchema, FlightUpdateSchema} from "../../lib/types.ts";
+import {FlightCreateSchema, FlightState, FlightUpdateSchema} from "../../lib/types.ts";
+import FlightStateController from "./FlightStateController.tsx";
+import FlightDuration from "./FlightDuration.tsx";
 
 export interface FlightsTableProps {
     setEditedFlight: (flightId: number, flight: FlightUpdateSchema) => void;
     setDuplicateFlight: (flight: FlightCreateSchema) => void;
+    onFlightStateUpdated: (flightId: number, state: FlightState) => void;
+    shownFlightStates?: FlightState[];
 }
 
 
 export default function FlightsTable(props: FlightsTableProps) {
-    const {setEditedFlight, setDuplicateFlight} = props;
+    const {setEditedFlight, setDuplicateFlight, onFlightStateUpdated, shownFlightStates} = props;
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
 
@@ -61,6 +64,21 @@ export default function FlightsTable(props: FlightsTableProps) {
         }
     });
 
+    const shownAndSortedFlights = useCallback(() => {
+        if (!flights) {
+            return [];
+        }
+
+        return flights
+            .filter((flight) => !shownFlightStates || shownFlightStates.includes(flight.state))
+            .sort((a, b) => {
+                if (!a || !b) {
+                    return 0;
+                }
+
+                return a.id - b.id;
+            })
+    }, [flights, shownFlightStates])
 
     const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
     const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
@@ -99,24 +117,30 @@ export default function FlightsTable(props: FlightsTableProps) {
                 <Table sx={{minWidth: 650}} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>{t("STATUS")}</TableCell>
-                            <TableCell align="right">{t("GLIDER")}</TableCell>
-                            <TableCell align="right">{t("FLIGHT_TYPE")}</TableCell>
-                            <TableCell align="right">{t("PILOT_1")}</TableCell>
-                            <TableCell align="right">{t("PILOT_2")}</TableCell>
-                            <TableCell align="right">{t("TOW_AIRPLANE")}</TableCell>
-                            <TableCell align="right">{t("TOW_PILOT")}</TableCell>
+                            <TableCell align="right"></TableCell>
+                            <TableCell align="right"><strong>{t("GLIDER")}</strong></TableCell>
+                            <TableCell align="right"><strong>{t("FLIGHT_TYPE")}</strong></TableCell>
+                            <TableCell align="right"><strong>{t("PILOT_1")}</strong></TableCell>
+                            <TableCell align="right"><strong>{t("PILOT_2")}</strong></TableCell>
+                            <TableCell align="right"><strong>{t("TOW_AIRPLANE")}</strong></TableCell>
+                            <TableCell align="right"><strong>{t("TOW_PILOT")}</strong></TableCell>
+                            <TableCell align="right"><strong>{t("DURATION")}</strong></TableCell>
                             <TableCell align="right"></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {flights?.map((flight) => (
+                        {shownAndSortedFlights().map((flight) => (
                             <TableRow
                                 key={flight.id}
                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
                             >
                                 <TableCell component="th" scope="row">
-                                    {flight.state && getFlightStateDisplayValue(flight.state)}
+                                    {flight && (
+                                        <FlightStateController
+                                            flight={flight}
+                                            onStateUpdated={onFlightStateUpdated}
+                                        />
+                                    )}
                                 </TableCell>
                                 <TableCell
                                     align="right">{flight.glider_id && displayGlider(flight.glider_id)}</TableCell>
@@ -131,14 +155,18 @@ export default function FlightsTable(props: FlightsTableProps) {
                                 <TableCell
                                     align="right">{flight.tow_pilot_id && displayMember(flight.tow_pilot_id)}</TableCell>
                                 <TableCell align="right">
+                                    <FlightDuration flight={flight}/>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Tooltip title={t("EDIT_FLIGHT")}
+                                             onClick={() => setEditedFlight(flight.id, flight)}>
+                                        <IconButton aria-label="edit">
+                                            <EditIcon/>
+                                        </IconButton>
+                                    </Tooltip>
                                     <Tooltip title={t("DUPLICATE_FLIGHT")}>
                                         <IconButton aria-label="duplicate" onClick={() => setDuplicateFlight(flight)}>
                                             <ContentCopyIcon/>
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title={t("EDIT_FLIGHT")} onClick={() => setEditedFlight(flight.id, flight)}>
-                                        <IconButton aria-label="edit">
-                                            <EditIcon/>
                                         </IconButton>
                                     </Tooltip>
                                     <Tooltip title={t("DELETE_FLIGHT")} onClick={() => onFlightDelete(flight.id)}>

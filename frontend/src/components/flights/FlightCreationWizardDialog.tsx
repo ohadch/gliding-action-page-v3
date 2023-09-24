@@ -23,15 +23,13 @@ import {
     getMemberDisplayValue,
     getPayersTypeDisplayValue
 } from "../../utils/display.ts";
-import {hasRole, isCertifiedForSinglePilotOperation, isCfi, isTowPilot} from "../../utils/members.ts";
+import {hasRole, isCertifiedForSinglePilotOperation, isCfi} from "../../utils/members.ts";
 import {SUPPORTED_FLIGHT_TYPES} from "../../utils/consts.ts";
 
 enum RenderedInputName {
     GLIDER = "GLIDER",
-    TOW_AIRPLANE = "TOW_AIRPLANE",
     PILOT_1 = "PILOT_1",
     PILOT_2 = "PILOT_2",
-    TOW_PILOT = "TOW_PILOT",
     FLIGHT_TYPE = "FLIGHT_TYPE",
 }
 
@@ -234,14 +232,6 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
             }
         }
 
-        if (!towAirplaneId) {
-            return RenderedInputName.TOW_AIRPLANE;
-        }
-
-        if (!towPilotId) {
-            return RenderedInputName.TOW_PILOT;
-        }
-
         return null;
     }
 
@@ -299,11 +289,6 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
         return initialOptions;
     }
 
-    const getTowPilotOptions = () => {
-        const initialOptions = membersStoreState.members || [];
-        return initialOptions.filter((member) => isTowPilot(member, membersStoreState.membersRoles || []));
-    }
-
     function renderInput(inputName: RenderedInputName) {
         switch (inputName) {
             case RenderedInputName.GLIDER:
@@ -327,30 +312,6 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
                                         <TextField
                                             {...params}
                                             label={t("GLIDER")}
-                                        />
-                                    )
-                                }}
-                            />
-                        </FormControl>
-                    </FormGroup>
-                )
-            case RenderedInputName.TOW_AIRPLANE:
-                return (
-                    <FormGroup>
-                        <FormControl>
-                            <Autocomplete
-                                id="towAirplane"
-                                options={towAirplanesStoreState.towAirplanes || []}
-                                value={towAirplaneId ? getTowAirplaneById(towAirplaneId) : null}
-                                onChange={(_, newValue) => setTowAirplaneId(newValue?.id)}
-                                getOptionLabel={(option) => option.call_sign}
-                                open={autocompleteOpen}
-                                onOpen={() => setAutocompleteOpen(true)}
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            label={t("TOW_AIRPLANE")}
                                         />
                                     )
                                 }}
@@ -407,32 +368,6 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
                                         <TextField
                                             {...params}
                                             label={t("PILOT_2")}
-                                        />
-                                    )
-                                }}
-                            />
-                        </FormControl>
-                    </FormGroup>
-                )
-            case RenderedInputName.TOW_PILOT:
-                return (
-                    <FormGroup>
-                        <FormControl>
-                            <Autocomplete
-                                id="towPilot"
-                                options={getTowPilotOptions().filter((member) => !isMemberOccupied(member.id))}
-                                value={towPilotId ? getMemberById(towPilotId) : null}
-                                onChange={(_, newValue) => setTowPilotId(newValue?.id)}
-                                getOptionLabel={(option) => getMemberDisplayValue(
-                                    option
-                                )}
-                                open={autocompleteOpen}
-                                onOpen={() => setAutocompleteOpen(true)}
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            label={t("TOW_PILOT")}
                                         />
                                     )
                                 }}
