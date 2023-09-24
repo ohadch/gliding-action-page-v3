@@ -563,6 +563,12 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                     <Button onClick={onCancel}>
                         {t("CANCEL")}
                     </Button>
+                    <Button onClick={onCancel}>
+                        {t("CLEAR")}
+                    </Button>
+                    <Button onClick={onCancel}>
+                        {t("ADVANCED_EDIT")}
+                    </Button>
                     <Button
                         disabled={!isSubmitEnabled()}
                         onClick={() => onSubmit({

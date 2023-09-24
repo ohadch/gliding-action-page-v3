@@ -38,6 +38,8 @@ export const TEXTS_HEBREW = {
     PAYMENT_RECEIVER: "מקבל תשלום",
     CONFIRM: "אישור",
     EDIT_FLIGHT: "ערוך טיסה",
+    CLEAR: "נקה",
+    ADVANCED_EDIT: "עריכה מתקדמת",
 }
 
 
