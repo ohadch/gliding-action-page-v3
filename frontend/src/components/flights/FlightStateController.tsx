@@ -4,7 +4,7 @@ import {FlightSchema, FlightState} from "../../lib/types.ts";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import {ORDERED_FLIGHT_STATES} from "../../utils/consts.ts";
-import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
 
 export interface FlightStateControllerProps {
     flight: FlightSchema,
@@ -19,11 +19,11 @@ interface StateButtonConfig {
 const STATE_BUTTON_CONFIGS: Record<FlightState, StateButtonConfig> = {
     "Draft": {
         label: "DRAFT",
-        color: "secondary",
+        color: "error",
     },
     "Tow": {
         label: "TOW",
-        color: "error",
+        color: "warning",
     },
     "Inflight": {
         label: "INFLIGHT",
@@ -55,36 +55,31 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
         }}>
             {goToPreviousStateEnabled() && (
                 <Grid>
-                    <Button
-                        variant="text"
+                    <IconButton
                         color={color}
                         onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) - 1])}
                     >
                         <ArrowRightIcon/>
-                    </Button>
+                    </IconButton>
                 </Grid>
             )}
             <Grid>
-                <Typography
-                    variant="h6"
-                    component="div"
+                {/* make the button blink */}
+                <Button
+                    variant="text"
                     color={color}
-                    sx={{
-                        fontWeight: "bold",
-                    }}
                 >
                     {t(label)}
-                </Typography>
+                </Button>
             </Grid>
             {goToNextStateEnabled() && (
                 <Grid>
-                    <Button
-                        variant="text"
+                    <IconButton
                         color={color}
                         onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) + 1])}
                     >
                         <ArrowLeftIcon/>
-                    </Button>
+                    </IconButton>
                 </Grid>
             )}
         </Grid>

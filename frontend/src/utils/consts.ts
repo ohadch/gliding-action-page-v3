@@ -44,7 +44,7 @@ export const TEXTS_HEBREW = {
     TAKE_OFF_TIME: "שעת ההמראה",
     LANDING_TIME: "שעת הנחיתה",
     DRAFT: "בהכנה",
-    TOW: "בגרירה",
+    TOW: "גרירה פעילה",
     INFLIGHT: "בטיסה",
     LANDED: "לאחר נחיתה",
 }

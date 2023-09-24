@@ -8,7 +8,7 @@ import Paper from '@mui/material/Paper';
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
-import {useEffect} from "react";
+import {useCallback, useEffect} from "react";
 import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
 import {fetchGliders} from "../../store/actions/glider.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
@@ -62,6 +62,19 @@ export default function FlightsTable(props: FlightsTableProps) {
         }
     });
 
+    const sortedFlights = useCallback(() => {
+        if (!flights) {
+            return [];
+        }
+
+        return [...flights].sort((a, b) => {
+            if (!a || !b) {
+                return 0;
+            }
+
+            return a.id - b.id;
+        });
+    }, [flights])
 
     const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
     const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
@@ -100,18 +113,18 @@ export default function FlightsTable(props: FlightsTableProps) {
                 <Table sx={{minWidth: 650}} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>{t("STATE")}</TableCell>
-                            <TableCell align="right">{t("GLIDER")}</TableCell>
-                            <TableCell align="right">{t("FLIGHT_TYPE")}</TableCell>
-                            <TableCell align="right">{t("PILOT_1")}</TableCell>
-                            <TableCell align="right">{t("PILOT_2")}</TableCell>
-                            <TableCell align="right">{t("TOW_AIRPLANE")}</TableCell>
-                            <TableCell align="right">{t("TOW_PILOT")}</TableCell>
+                            <TableCell align="right"></TableCell>
+                            <TableCell align="right"><strong>{t("GLIDER")}</strong></TableCell>
+                            <TableCell align="right"><strong>{t("FLIGHT_TYPE")}</strong></TableCell>
+                            <TableCell align="right"><strong>{t("PILOT_1")}</strong></TableCell>
+                            <TableCell align="right"><strong>{t("PILOT_2")}</strong></TableCell>
+                            <TableCell align="right"><strong>{t("TOW_AIRPLANE")}</strong></TableCell>
+                            <TableCell align="right"><strong>{t("TOW_PILOT")}</strong></TableCell>
                             <TableCell align="right"></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {flights?.map((flight) => (
+                        {sortedFlights().map((flight) => (
                             <TableRow
                                 key={flight.id}
                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
