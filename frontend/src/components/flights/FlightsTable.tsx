@@ -25,7 +25,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {deleteFlight} from "../../store/actions/currentAction.ts";
 import {FlightCreateSchema, FlightUpdateSchema} from "../../lib/types.ts";
-import FlightStateChip from "./FlightStateChip.tsx";
+import FlightStateController from "./FlightStateController.tsx";
 
 export interface FlightsTableProps {
     setEditedFlight: (flightId: number, flight: FlightUpdateSchema) => void;
@@ -118,7 +118,7 @@ export default function FlightsTable(props: FlightsTableProps) {
                             >
                                 <TableCell component="th" scope="row">
                                     {flight && (
-                                        <FlightStateChip flight={flight}/>
+                                        <FlightStateController flight={flight}/>
                                     )}
                                 </TableCell>
                                 <TableCell

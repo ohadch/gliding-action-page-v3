@@ -1,4 +1,4 @@
-import {FlightType, PayersType, PaymentMethod, TowType} from "../lib/types.ts";
+import {FlightState, FlightType, PayersType, PaymentMethod, TowType} from "../lib/types.ts";
 
 export const API_HOST = 'http://localhost:9001';
 
@@ -84,3 +84,11 @@ export const SUPPORTED_PAYERS_TYPES: PayersType[] = [
     "SecondPilot",
     "ThirdMember"
 ]
+
+
+export const ORDERED_FLIGHT_STATES: FlightState[] = [
+    "Draft",
+    "Tow",
+    "Inflight",
+    "Landed",
+];
