@@ -15,7 +15,7 @@ export default function FlightDuration({ flight }: FlightDurationProps) {
     }
 
     const intervalId = setInterval(() => {
-      const end = flight.landing_at || moment().utcOffset(0, true).toISOString();
+      const end = flight.landing_at || moment().toISOString();
       const duration = moment.duration(moment(end).diff(moment(flight.take_off_at)));
       setDuration(
         `${duration.hours().toString().padStart(2, "0")}:${duration.minutes().toString().padStart(2, "0")}:${duration.seconds().toString().padStart(2, "0")}`
