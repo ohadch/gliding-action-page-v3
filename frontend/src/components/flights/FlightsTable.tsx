@@ -158,15 +158,15 @@ export default function FlightsTable(props: FlightsTableProps) {
                                     <FlightDuration flight={flight}/>
                                 </TableCell>
                                 <TableCell align="right">
-                                    <Tooltip title={t("DUPLICATE_FLIGHT")}>
-                                        <IconButton aria-label="duplicate" onClick={() => setDuplicateFlight(flight)}>
-                                            <ContentCopyIcon/>
-                                        </IconButton>
-                                    </Tooltip>
                                     <Tooltip title={t("EDIT_FLIGHT")}
                                              onClick={() => setEditedFlight(flight.id, flight)}>
                                         <IconButton aria-label="edit">
                                             <EditIcon/>
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title={t("DUPLICATE_FLIGHT")}>
+                                        <IconButton aria-label="duplicate" onClick={() => setDuplicateFlight(flight)}>
+                                            <ContentCopyIcon/>
                                         </IconButton>
                                     </Tooltip>
                                     <Tooltip title={t("DELETE_FLIGHT")} onClick={() => onFlightDelete(flight.id)}>
