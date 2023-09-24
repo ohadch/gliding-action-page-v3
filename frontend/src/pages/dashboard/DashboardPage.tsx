@@ -96,6 +96,7 @@ export default function DashboardPage() {
                 if (!flight.tow_type) {
                     return setEndTowDialogFlight(flight);
                 }
+                updatePayload.landing_at = null;
                 break;
             case "Landed":
                 updatePayload.landing_at = now;
