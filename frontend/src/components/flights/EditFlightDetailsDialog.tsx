@@ -35,12 +35,12 @@ import {
 } from "../../utils/consts.ts";
 
 export interface EditFlightDetailsDialogProps {
-    flightId?: number
-    flightData: FlightCreateSchema
+    flightId?: number | null
+    flightData: FlightCreateSchema | FlightUpdateSchema
     open: boolean
     onCancel: () => void
-    onCreate?: (flight: FlightCreateSchema) => void
-    onUpdate?: (flightId: number, flight: FlightUpdateSchema) => void
+    onCreate: (flight: FlightCreateSchema) => void
+    onUpdate: (flightId: number, flight: FlightUpdateSchema) => void
 }
 
 export default function EditFlightDetailsDialog({flightId, flightData, open, onCancel, onCreate, onUpdate}: EditFlightDetailsDialogProps) {
@@ -99,7 +99,7 @@ export default function EditFlightDetailsDialog({flightId, flightData, open, onC
         // @ts-ignore
         <Dialog open={open} maxWidth="xl">
             <DialogTitle>
-                {onCreate ? t("CREATE_FLIGHT") : t("EDIT_FLIGHT")}
+                {flightId ? t("EDIT_FLIGHT") : t("CREATE_FLIGHT")}
             </DialogTitle>
             <DialogContent>
                 <div style={{
@@ -355,7 +355,7 @@ export default function EditFlightDetailsDialog({flightId, flightData, open, onC
                 <Button onClick={onCancel}>
                     {t("CANCEL")}
                 </Button>
-                {onCreate && (
+                {!flightId && (
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
                     <Button onClick={() => onCreate({
@@ -376,7 +376,7 @@ export default function EditFlightDetailsDialog({flightId, flightData, open, onC
                         {t("CONFIRM")}
                     </Button>
                 )}
-                {onUpdate && flightId && (
+                {flightId && (
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
                     <Button onClick={() => onUpdate(flightId, {

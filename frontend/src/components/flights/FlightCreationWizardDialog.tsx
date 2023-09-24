@@ -44,7 +44,7 @@ export interface FlightCreationWizardDialogProps {
     onAdvancedEdit: (flight: FlightCreateSchema) => void
 }
 
-export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: FlightCreationWizardDialogProps) {
+export default function FlightCreationWizardDialog({open, onCancel, onSubmit, onAdvancedEdit}: FlightCreationWizardDialogProps) {
     const dispatch = useAppDispatch();
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
@@ -469,7 +469,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                 {flightType && (
                     <Grid>
                         <IconButton disabled={true}>
-                            <CancelIcon />
+                            <CancelIcon/>
                         </IconButton>
                         <strong>{t("FLIGHT_TYPE")}</strong>: {getFlightTypeDisplayValue(flightType)}
                     </Grid>
@@ -477,7 +477,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                 {gliderId && (
                     <Grid>
                         <IconButton onClick={() => setGliderId(undefined)}>
-                            <CancelIcon />
+                            <CancelIcon/>
                         </IconButton>
                         <strong>{t("GLIDER")}</strong>: {displayGlider(gliderId)}
                     </Grid>
@@ -485,7 +485,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                 {pilot1Id && (
                     <Grid>
                         <IconButton onClick={() => setPilot1Id(undefined)}>
-                            <CancelIcon />
+                            <CancelIcon/>
                         </IconButton>
                         <strong>{t("PILOT_1")}</strong>: {displayMember(pilot1Id)}
                     </Grid>
@@ -493,7 +493,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                 {pilot2Id && (
                     <Grid>
                         <IconButton onClick={() => setPilot2Id(undefined)}>
-                            <CancelIcon />
+                            <CancelIcon/>
                         </IconButton>
                         <strong>{t("PILOT_2")}</strong>: {displayMember(pilot2Id)}
                     </Grid>
@@ -501,7 +501,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                 {towAirplaneId && (
                     <Grid>
                         <IconButton onClick={() => setTowAirplaneId(undefined)}>
-                            <CancelIcon />
+                            <CancelIcon/>
                         </IconButton>
                         <strong>{t("TOW_AIRPLANE")}</strong>: {displayTowAirplane(towAirplaneId)}
                     </Grid>
@@ -509,7 +509,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                 {towPilotId && (
                     <Grid>
                         <IconButton onClick={() => setTowPilotId(undefined)}>
-                            <CancelIcon />
+                            <CancelIcon/>
                         </IconButton>
                         <strong>{t("TOW_PILOT")}</strong>: {displayMember(towPilotId)}
                     </Grid>
@@ -517,7 +517,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                 {payersType && (
                     <Grid>
                         <IconButton disabled={true}>
-                            <CancelIcon />
+                            <CancelIcon/>
                         </IconButton>
                         <strong>{t("PAYERS_TYPE")}</strong>: {getPayersTypeDisplayValue(payersType)}
                     </Grid>
@@ -567,7 +567,20 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
                     <Button onClick={onCancel}>
                         {t("CLEAR")}
                     </Button>
-                    <Button onClick={onCancel}>
+                    <Button onClick={() => onAdvancedEdit({
+                        action_id: action.id,
+                        state: "Draft",
+                        flight_type: flightType,
+                        glider_id: gliderId,
+                        pilot_1_id: pilot1Id,
+                        pilot_2_id: pilot2Id,
+                        tow_airplane_id: towAirplaneId,
+                        tow_pilot_id: towPilotId,
+                        payment_receiver_id: null,
+                        tow_type: null,
+                        payers_type: payersType,
+                        payment_method: null,
+                    })}>
                         {t("ADVANCED_EDIT")}
                     </Button>
                     <Button

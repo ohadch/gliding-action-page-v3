@@ -24,15 +24,16 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {deleteFlight} from "../../store/actions/currentAction.ts";
+import {FlightCreateSchema, FlightUpdateSchema} from "../../lib/types.ts";
 
 export interface FlightsTableProps {
-    setEditedFlightId: (flightId: number | null) => void;
-    setDuplicateFlightId: (flightId: number | null) => void;
+    setEditedFlight: (flightId: number, flight: FlightUpdateSchema) => void;
+    setDuplicateFlight: (flight: FlightCreateSchema) => void;
 }
 
 
 export default function FlightsTable(props: FlightsTableProps) {
-    const {setEditedFlightId, setDuplicateFlightId} = props;
+    const {setEditedFlight, setDuplicateFlight} = props;
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
 
@@ -131,11 +132,11 @@ export default function FlightsTable(props: FlightsTableProps) {
                                     align="right">{flight.tow_pilot_id && displayMember(flight.tow_pilot_id)}</TableCell>
                                 <TableCell align="right">
                                     <Tooltip title={t("DUPLICATE_FLIGHT")}>
-                                        <IconButton aria-label="duplicate" onClick={() => setDuplicateFlightId(flight.id)}>
+                                        <IconButton aria-label="duplicate" onClick={() => setDuplicateFlight(flight)}>
                                             <ContentCopyIcon/>
                                         </IconButton>
                                     </Tooltip>
-                                    <Tooltip title={t("EDIT_FLIGHT")} onClick={() => setEditedFlightId(flight.id)}>
+                                    <Tooltip title={t("EDIT_FLIGHT")} onClick={() => setEditedFlight(flight.id, flight)}>
                                         <IconButton aria-label="edit">
                                             <EditIcon/>
                                         </IconButton>
