@@ -10,7 +10,7 @@ import {
 import {useEffect, useState} from "react";
 import {
     FlightCreateSchema,
-    FlightSchema, FlightType, FlightUpdateSchema,
+    FlightType, FlightUpdateSchema,
     GliderSchema,
     MemberSchema, PayersType, PaymentMethod,
     TowAirplaneSchema, TowType,
@@ -35,14 +35,15 @@ import {
 } from "../../utils/consts.ts";
 
 export interface EditFlightDetailsDialogProps {
-    flight: Partial<FlightSchema>
+    flightId?: number | null
+    flightData: FlightCreateSchema | FlightUpdateSchema
     open: boolean
     onCancel: () => void
-    onCreate?: (flight: FlightCreateSchema) => void
-    onUpdate?: (flightId: number, flight: FlightUpdateSchema) => void
+    onCreate: (flight: FlightCreateSchema) => void
+    onUpdate: (flightId: number, flight: FlightUpdateSchema) => void
 }
 
-export default function EditFlightDetailsDialog({flight, open, onCancel, onCreate, onUpdate}: EditFlightDetailsDialogProps) {
+export default function EditFlightDetailsDialog({flightId, flightData, open, onCancel, onCreate, onUpdate}: EditFlightDetailsDialogProps) {
     const dispatch = useAppDispatch();
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
@@ -77,17 +78,17 @@ export default function EditFlightDetailsDialog({flight, open, onCancel, onCreat
     const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
 
 
-    const [gliderId, setGliderId] = useState<number | null | undefined>(flight.glider_id);
-    const [pilot1Id, setPilot1Id] = useState<number | null | undefined>(flight.pilot_1_id);
-    const [pilot2Id, setPilot2Id] = useState<number | null | undefined>(flight.pilot_2_id);
-    const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>(flight.tow_airplane_id);
-    const [towPilotId, setTowPilotId] = useState<number | null | undefined>(flight.tow_pilot_id);
-    const [payingMemberId, setPayingMemberId] = useState<number | null | undefined>(flight.paying_member_id);
-    const [paymentReceiverId, setPaymentReceiverId] = useState<number | null | undefined>(flight.payment_receiver_id);
-    const [flightType, setFlightType] = useState<FlightType | null | undefined>(flight.flight_type);
-    const [towType, setTowType] = useState<TowType | null | undefined>(flight.tow_type);
-    const [payersType, setPayersType] = useState<PayersType | null | undefined>(flight.payers_type);
-    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null | undefined>(flight.payment_method);
+    const [gliderId, setGliderId] = useState<number | null | undefined>(flightData.glider_id);
+    const [pilot1Id, setPilot1Id] = useState<number | null | undefined>(flightData.pilot_1_id);
+    const [pilot2Id, setPilot2Id] = useState<number | null | undefined>(flightData.pilot_2_id);
+    const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>(flightData.tow_airplane_id);
+    const [towPilotId, setTowPilotId] = useState<number | null | undefined>(flightData.tow_pilot_id);
+    const [payingMemberId, setPayingMemberId] = useState<number | null | undefined>(flightData.paying_member_id);
+    const [paymentReceiverId, setPaymentReceiverId] = useState<number | null | undefined>(flightData.payment_receiver_id);
+    const [flightType, setFlightType] = useState<FlightType | null | undefined>(flightData.flight_type);
+    const [towType, setTowType] = useState<TowType | null | undefined>(flightData.tow_type);
+    const [payersType, setPayersType] = useState<PayersType | null | undefined>(flightData.payers_type);
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null | undefined>(flightData.payment_method);
 
     if (!action) {
         return null;
@@ -98,7 +99,7 @@ export default function EditFlightDetailsDialog({flight, open, onCancel, onCreat
         // @ts-ignore
         <Dialog open={open} maxWidth="xl">
             <DialogTitle>
-                {onCreate ? t("CREATE_FLIGHT") : t("EDIT_FLIGHT")}
+                {flightId ? t("EDIT_FLIGHT") : t("CREATE_FLIGHT")}
             </DialogTitle>
             <DialogContent>
                 <div style={{
@@ -354,7 +355,7 @@ export default function EditFlightDetailsDialog({flight, open, onCancel, onCreat
                 <Button onClick={onCancel}>
                     {t("CANCEL")}
                 </Button>
-                {onCreate && (
+                {!flightId && (
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
                     <Button onClick={() => onCreate({
@@ -375,11 +376,11 @@ export default function EditFlightDetailsDialog({flight, open, onCancel, onCreat
                         {t("CONFIRM")}
                     </Button>
                 )}
-                {onUpdate && flight.id && (
+                {flightId && (
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    <Button onClick={() => onUpdate(flight.id, {
-                        state: flight.state,
+                    <Button onClick={() => onUpdate(flightId, {
+                        state: flightData.state,
                         action_id: action.id,
                         glider_id: gliderId,
                         pilot_1_id: pilot1Id,

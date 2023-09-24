@@ -22,7 +22,8 @@ export interface SelectActionDialogProps {
 
 export default function SelectActionDialog({open, onClose, onActionSelected}: SelectActionDialogProps) {
     const dispatch = useAppDispatch();
-    const { fetchInProgress, actions, currentAction } = useSelector((state: RootState) => state.actions)
+    const { fetchInProgress, actions } = useSelector((state: RootState) => state.actions)
+    const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
     const {
         t
     } = useTranslation()
@@ -34,7 +35,7 @@ export default function SelectActionDialog({open, onClose, onActionSelected}: Se
     });
 
     const [action, setAction] = useState<ActionSchema | undefined>(
-        currentAction
+        currentActionStoreState.action
     );
 
 

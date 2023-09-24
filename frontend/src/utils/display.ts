@@ -82,7 +82,7 @@ export function getPayersTypeDisplayValue(payersType: PayersType) {
         case "BothPilots":
             return "שני הטייסים"
         case "SecondPilot":
-            return "טייס משני"
+            return "טייס שני"
         case "ThirdMember":
             return "חבר שלישי"
         case "FirstPilot":

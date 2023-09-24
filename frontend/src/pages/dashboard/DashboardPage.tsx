@@ -5,15 +5,20 @@ import Box from "@mui/material/Box";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
-import {createFlight, fetchFlights} from "../../store/actions/currentAction.ts";
+import {createFlight, fetchFlights, updateFlight} from "../../store/actions/currentAction.ts";
 import FlightCreationWizardDialog from "../../components/flights/FlightCreationWizardDialog.tsx";
 import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
+import EditFlightDetailsDialog from "../../components/flights/EditFlightDetailsDialog.tsx";
+import {FlightCreateSchema} from "../../lib/types.ts";
 
 export default function DashboardPage() {
     const [flightCreationWizardDialogOpen, setFlightCreationWizardDialogOpen] = useState<boolean>(false);
     const {t} = useTranslation();
     const {flights, fetchingFlightsInProgress, action} = useSelector((state: RootState) => state.currentAction);
     const dispatch = useAppDispatch();
+    const [editedFlightId, setEditedFlightId] = useState<number | null>(null);
+    const [editedFlightData, setEditedFlightData] = useState<FlightCreateSchema | null>(null);
+    const [editFlightDetailsDialogOpen, setEditFlightDetailsDialogOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (!flights && !fetchingFlightsInProgress && action) {
@@ -23,18 +28,63 @@ export default function DashboardPage() {
         }
     });
 
+    function renderEditFlightDialog() {
+        if (!editFlightDetailsDialogOpen || !editedFlightData) {
+            return null;
+        }
+
+        return (
+            <EditFlightDetailsDialog
+                flightId={editedFlightId}
+                flightData={editedFlightData}
+                open={editFlightDetailsDialogOpen}
+                onCancel={() => {
+                    setEditedFlightId(null)
+                    setEditFlightDetailsDialogOpen(false)
+                }}
+                onCreate={(createPayload) => {
+                    dispatch(createFlight({
+                        createPayload,
+                    }));
+                    setEditFlightDetailsDialogOpen(false)
+                    setEditedFlightData(null)
+                }}
+                onUpdate={(flightId, updatePayload) => {
+                    dispatch(updateFlight({
+                        flightId,
+                        updatePayload,
+                    }));
+                    setEditedFlightId(null);
+                    setEditFlightDetailsDialogOpen(false)
+                    setEditedFlightData(null)
+                }}
+            />
+        )
+    }
 
     return (
         <>
+            {renderEditFlightDialog()}
+
             {flightCreationWizardDialogOpen && (
                 <FlightCreationWizardDialog
                     open={flightCreationWizardDialogOpen}
-                    onCancel={() => setFlightCreationWizardDialogOpen(false)}
+                    onCancel={() => {
+                        setFlightCreationWizardDialogOpen(false);
+                        setEditedFlightData(null);
+                    }}
                     onSubmit={payload => {
                         dispatch(createFlight({
                             createPayload: payload
                         }))
                         setFlightCreationWizardDialogOpen(false);
+                        setEditedFlightData(null)
+                    }}
+                    onAdvancedEdit={(flight) => {
+                        setEditedFlightId(null)
+                        setFlightCreationWizardDialogOpen(false);
+                        setEditedFlightData(flight)
+                        setEditFlightDetailsDialogOpen(true);
                     }}
                 />
             )}
@@ -50,7 +100,28 @@ export default function DashboardPage() {
                 </Grid>
 
 
-                <FlightsTable/>
+                <FlightsTable
+                    setDuplicateFlight={(flight) => {
+                        setEditFlightDetailsDialogOpen(true);
+                        setEditedFlightData({...flight})
+                    }}
+                    setEditedFlight={(flightId, flight) => {
+                        const actionId = action?.id;
+
+                        if (!actionId) {
+                            return;
+                        }
+
+                        setEditFlightDetailsDialogOpen(true);
+                        setEditedFlightId(flightId);
+                        setEditedFlightData({
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-ignore
+                            action_id: actionId,
+                            ...flight
+                        })
+                    }}
+                />
             </Grid>
         </>
     )

@@ -8,7 +8,7 @@ import Paper from '@mui/material/Paper';
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
 import {fetchGliders} from "../../store/actions/glider.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
@@ -23,11 +23,17 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {createFlight, deleteFlight, updateFlight} from "../../store/actions/currentAction.ts";
-import EditFlightDetailsDialog from "./EditFlightDetailsDialog.tsx";
+import {deleteFlight} from "../../store/actions/currentAction.ts";
+import {FlightCreateSchema, FlightUpdateSchema} from "../../lib/types.ts";
+
+export interface FlightsTableProps {
+    setEditedFlight: (flightId: number, flight: FlightUpdateSchema) => void;
+    setDuplicateFlight: (flight: FlightCreateSchema) => void;
+}
 
 
-export default function FlightsTable() {
+export default function FlightsTable(props: FlightsTableProps) {
+    const {setEditedFlight, setDuplicateFlight} = props;
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
 
@@ -35,8 +41,6 @@ export default function FlightsTable() {
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const [editedFlightId, setEditedFlightId] = useState<number | null>(null);
-    const [duplicateFlightId, setDuplicateFlightId] = useState<number | null>(null);
 
     useEffect(() => {
         if (!membersStoreState.members && !membersStoreState.fetchInProgress) {
@@ -89,53 +93,8 @@ export default function FlightsTable() {
         dispatch(deleteFlight(id));
     }
 
-    function renderEditFlightDialog() {
-        if (!editedFlightId && !duplicateFlightId) {
-            return null
-        }
-
-        const flight = flights?.find((flight) => [editedFlightId, duplicateFlightId].includes(flight.id));
-
-        if (!flight) {
-            return null;
-        }
-
-        return (
-            <EditFlightDetailsDialog
-                flight={flight}
-                open={Boolean(editedFlightId) || Boolean(duplicateFlightId)}
-                onCancel={() => {
-                    setEditedFlightId(null)
-                    setDuplicateFlightId(null)
-                }}
-                onCreate={
-                duplicateFlightId
-                    ? (createPayload) => {
-                        dispatch(createFlight({
-                            createPayload,
-                        }));
-                        setDuplicateFlightId(null);
-                    }
-                    : undefined
-                }
-                onUpdate={
-                    editedFlightId
-                        ? (flightId, updatePayload) => {
-                            dispatch(updateFlight({
-                                flightId,
-                                updatePayload,
-                            }));
-                            setEditedFlightId(null);
-                        }
-                        : undefined
-                }
-            />
-        )
-    }
-
     return (
         <>
-            {renderEditFlightDialog()}
             <TableContainer component={Paper}>
                 <Table sx={{minWidth: 650}} aria-label="simple table">
                     <TableHead>
@@ -173,11 +132,11 @@ export default function FlightsTable() {
                                     align="right">{flight.tow_pilot_id && displayMember(flight.tow_pilot_id)}</TableCell>
                                 <TableCell align="right">
                                     <Tooltip title={t("DUPLICATE_FLIGHT")}>
-                                        <IconButton aria-label="duplicate" onClick={() => setDuplicateFlightId(flight.id)}>
+                                        <IconButton aria-label="duplicate" onClick={() => setDuplicateFlight(flight)}>
                                             <ContentCopyIcon/>
                                         </IconButton>
                                     </Tooltip>
-                                    <Tooltip title={t("EDIT_FLIGHT")} onClick={() => setEditedFlightId(flight.id)}>
+                                    <Tooltip title={t("EDIT_FLIGHT")} onClick={() => setEditedFlight(flight.id, flight)}>
                                         <IconButton aria-label="edit">
                                             <EditIcon/>
                                         </IconButton>
