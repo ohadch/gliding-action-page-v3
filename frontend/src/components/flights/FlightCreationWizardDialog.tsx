@@ -41,6 +41,7 @@ export interface FlightCreationWizardDialogProps {
     open: boolean
     onCancel: () => void
     onSubmit: (flight: FlightCreateSchema) => void
+    onAdvancedEdit: (flight: FlightCreateSchema) => void
 }
 
 export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: FlightCreationWizardDialogProps) {
