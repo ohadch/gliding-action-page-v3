@@ -31,11 +31,12 @@ export interface FlightsTableProps {
     setEditedFlight: (flightId: number, flight: FlightUpdateSchema) => void;
     setDuplicateFlight: (flight: FlightCreateSchema) => void;
     onFlightStateUpdated: (flightId: number, state: FlightState) => void;
+    shownFlightStates?: FlightState[];
 }
 
 
 export default function FlightsTable(props: FlightsTableProps) {
-    const {setEditedFlight, setDuplicateFlight, onFlightStateUpdated} = props;
+    const {setEditedFlight, setDuplicateFlight, onFlightStateUpdated, shownFlightStates} = props;
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
 
@@ -63,19 +64,21 @@ export default function FlightsTable(props: FlightsTableProps) {
         }
     });
 
-    const sortedFlights = useCallback(() => {
+    const shownAndSortedFlights = useCallback(() => {
         if (!flights) {
             return [];
         }
 
-        return [...flights].sort((a, b) => {
-            if (!a || !b) {
-                return 0;
-            }
+        return flights
+            .filter((flight) => !shownFlightStates || shownFlightStates.includes(flight.state))
+            .sort((a, b) => {
+                if (!a || !b) {
+                    return 0;
+                }
 
-            return a.id - b.id;
-        });
-    }, [flights])
+                return a.id - b.id;
+            })
+    }, [flights, shownFlightStates])
 
     const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
     const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
@@ -126,7 +129,7 @@ export default function FlightsTable(props: FlightsTableProps) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {sortedFlights().map((flight) => (
+                        {shownAndSortedFlights().map((flight) => (
                             <TableRow
                                 key={flight.id}
                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -160,7 +163,8 @@ export default function FlightsTable(props: FlightsTableProps) {
                                             <ContentCopyIcon/>
                                         </IconButton>
                                     </Tooltip>
-                                    <Tooltip title={t("EDIT_FLIGHT")} onClick={() => setEditedFlight(flight.id, flight)}>
+                                    <Tooltip title={t("EDIT_FLIGHT")}
+                                             onClick={() => setEditedFlight(flight.id, flight)}>
                                         <IconButton aria-label="edit">
                                             <EditIcon/>
                                         </IconButton>

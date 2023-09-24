@@ -1,4 +1,14 @@
-import {Button, Grid} from "@mui/material";
+import {
+    Button,
+    Checkbox,
+    FormControl,
+    Grid,
+    InputLabel, ListItemText,
+    MenuItem,
+    OutlinedInput,
+    Select,
+    SelectChangeEvent
+} from "@mui/material";
 import FlightsTable from "../../components/flights/FlightsTable.tsx";
 import {useEffect, useState} from "react";
 import Box from "@mui/material/Box";
@@ -13,6 +23,18 @@ import {FlightCreateSchema, FlightSchema, FlightState, FlightUpdateSchema} from 
 import FlightStartTowDialog from "../../components/flights/FlightStartTowDialog.tsx";
 import moment from "moment/moment";
 import FlightEndTowDialog from "../../components/flights/FlightEndTowDialog.tsx";
+import {ORDERED_FLIGHT_STATES} from "../../utils/consts.ts";
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 export default function DashboardPage() {
     const [flightCreationWizardDialogOpen, setFlightCreationWizardDialogOpen] = useState<boolean>(false);
@@ -24,6 +46,7 @@ export default function DashboardPage() {
     const [editFlightDetailsDialogOpen, setEditFlightDetailsDialogOpen] = useState<boolean>(false);
     const [startTowDialogFlight, setStartTowDialogFlight] = useState<FlightSchema | null>(null);
     const [endTowDialogFlight, setEndTowDialogFlight] = useState<FlightSchema | null>(null);
+    const [shownFlightStates, setShownFlightStates] = useState<FlightState[]>(["Draft", "Tow", "Inflight"]);
 
     useEffect(() => {
         if (!flights && !fetchingFlightsInProgress && action) {
@@ -189,6 +212,17 @@ export default function DashboardPage() {
         )
     }
 
+    const handleFlightStateChange = (event: SelectChangeEvent<typeof shownFlightStates>) => {
+        const {
+            target: {value},
+        } = event;
+        setShownFlightStates(
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            typeof value === 'string' ? value.split(',') : value,
+        );
+    };
+
     return (
         <>
             {renderEditFlightDialog()}
@@ -203,11 +237,32 @@ export default function DashboardPage() {
                                 onClick={() => setFlightCreationWizardDialogOpen(true)}>
                             {t("NEW_FLIGHT")}
                         </Button>
+                        <FormControl sx={{m: 1, width: 300}}>
+                            <InputLabel id="flight-state-select-label">{t("FLIGHT_STATES")}</InputLabel>
+                            <Select
+                                labelId="flight-state-select-label"
+                                id="flight-state-select"
+                                multiple
+                                value={shownFlightStates}
+                                onChange={(event) => handleFlightStateChange(event)}
+                                input={<OutlinedInput label="Tag"/>}
+                                renderValue={(selected) => selected.map((value) => t(value.toUpperCase())).join(', ')}
+                                MenuProps={MenuProps}
+                            >
+                                {ORDERED_FLIGHT_STATES.map((state) => (
+                                    <MenuItem key={state} value={state}>
+                                        <Checkbox checked={shownFlightStates.indexOf(state) > -1}/>
+                                        <ListItemText primary={t(state.toUpperCase())}/>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                     </Box>
                 </Grid>
 
 
                 <FlightsTable
+                    shownFlightStates={shownFlightStates}
                     setDuplicateFlight={(flight) => {
                         setEditFlightDetailsDialogOpen(true);
                         setEditedFlightData({...flight})

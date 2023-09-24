@@ -19,7 +19,7 @@ export const TEXTS_HEBREW = {
     CLICK_TO_SELECT: "לחץ לבחירה",
     FIELD_RESPONSIBLE: "אחראי בשדה",
     RESPONSIBLE_CFI: "מדריך אחראי",
-    STATE: "מצב",
+    STATE: "שלב",
     GLIDER: "דאון",
     PILOT_1: "טייס ראשון או חניך",
     PILOT_2: "טייס שני או מדריך",
@@ -48,6 +48,8 @@ export const TEXTS_HEBREW = {
     INFLIGHT: "בטיסה",
     LANDED: "לאחר נחיתה",
     DURATION: "משך",
+    FLIGHT_STATE: "שלב טיסה",
+    FLIGHT_STATES: "שלבי טיסה",
 }
 
 
