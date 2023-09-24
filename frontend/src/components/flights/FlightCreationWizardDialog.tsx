@@ -25,6 +25,8 @@ import {
 } from "../../utils/display.ts";
 import {hasRole, isCertifiedForSinglePilotOperation, isCfi, isTowPilot} from "../../utils/members.ts";
 import {SUPPORTED_FLIGHT_TYPES} from "../../utils/consts.ts";
+import IconButton from "@mui/material/IconButton";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 enum RenderedInputName {
     GLIDER = "GLIDER",
@@ -465,36 +467,57 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit}: F
             <Grid>
                 {flightType && (
                     <Grid>
+                        <IconButton disabled={true}>
+                            <CancelIcon />
+                        </IconButton>
                         <strong>{t("FLIGHT_TYPE")}</strong>: {getFlightTypeDisplayValue(flightType)}
                     </Grid>
                 )}
                 {gliderId && (
                     <Grid>
+                        <IconButton onClick={() => setGliderId(undefined)}>
+                            <CancelIcon />
+                        </IconButton>
                         <strong>{t("GLIDER")}</strong>: {displayGlider(gliderId)}
                     </Grid>
                 )}
                 {pilot1Id && (
                     <Grid>
+                        <IconButton onClick={() => setPilot1Id(undefined)}>
+                            <CancelIcon />
+                        </IconButton>
                         <strong>{t("PILOT_1")}</strong>: {displayMember(pilot1Id)}
                     </Grid>
                 )}
                 {pilot2Id && (
                     <Grid>
+                        <IconButton onClick={() => setPilot2Id(undefined)}>
+                            <CancelIcon />
+                        </IconButton>
                         <strong>{t("PILOT_2")}</strong>: {displayMember(pilot2Id)}
                     </Grid>
                 )}
                 {towAirplaneId && (
                     <Grid>
+                        <IconButton onClick={() => setTowAirplaneId(undefined)}>
+                            <CancelIcon />
+                        </IconButton>
                         <strong>{t("TOW_AIRPLANE")}</strong>: {displayTowAirplane(towAirplaneId)}
                     </Grid>
                 )}
                 {towPilotId && (
                     <Grid>
+                        <IconButton onClick={() => setTowPilotId(undefined)}>
+                            <CancelIcon />
+                        </IconButton>
                         <strong>{t("TOW_PILOT")}</strong>: {displayMember(towPilotId)}
                     </Grid>
                 )}
                 {payersType && (
                     <Grid>
+                        <IconButton disabled={true}>
+                            <CancelIcon />
+                        </IconButton>
                         <strong>{t("PAYERS_TYPE")}</strong>: {getPayersTypeDisplayValue(payersType)}
                     </Grid>
                 )}
