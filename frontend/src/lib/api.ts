@@ -591,6 +591,8 @@ export interface components {
       action_id: number;
       /** Take Off At */
       take_off_at?: string | null;
+      /** Tow Release At */
+      tow_release_at?: string | null;
       /** Landing At */
       landing_at?: string | null;
       /** Glider Id */
@@ -621,6 +623,8 @@ export interface components {
       action_id: number;
       /** Take Off At */
       take_off_at: string | null;
+      /** Tow Release At */
+      tow_release_at: string | null;
       /** Landing At */
       landing_at: string | null;
       /** Glider Id */
@@ -649,6 +653,8 @@ export interface components {
       action_id?: number | null;
       /** Take Off At */
       take_off_at?: string | null;
+      /** Tow Release At */
+      tow_release_at?: string | null;
       /** Landing At */
       landing_at?: string | null;
       /** Glider Id */
@@ -687,6 +693,8 @@ export interface components {
       action_id?: number | null;
       /** Take Off At */
       take_off_at?: string | null;
+      /** Tow Release At */
+      tow_release_at?: string | null;
       /** Landing At */
       landing_at?: string | null;
       /** Glider Id */

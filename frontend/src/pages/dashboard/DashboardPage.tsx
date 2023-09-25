@@ -185,12 +185,18 @@ export default function DashboardPage() {
                     updatePayload.take_off_at = now;
                 }
                 updatePayload.tow_type = null;
+                updatePayload.tow_release_at = null;
                 break;
             case "Inflight":
                 if (!flight.tow_type) {
                     return setEndTowDialogFlight(flight);
                 }
                 updatePayload.landing_at = null;
+
+                if (!flight.tow_release_at) {
+                    updatePayload.tow_release_at = now;
+                }
+
                 break;
             case "Landed":
                 updatePayload.landing_at = now;

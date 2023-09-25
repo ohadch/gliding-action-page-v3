@@ -104,6 +104,7 @@ export default function EditFlightDetailsDialog({
     const [payersType, setPayersType] = useState<PayersType | null | undefined>(flightData.payers_type);
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null | undefined>(flightData.payment_method);
     const [takeOffat, setTakeOffat] = useState<moment.Moment | null | undefined>(flightData.take_off_at ? parseDateStringDropTimezone(flightData.take_off_at) : null);
+    const [towReleaseAt, setTowReleaseAt] = useState<moment.Moment | null | undefined>(flightData.tow_release_at ? parseDateStringDropTimezone(flightData.tow_release_at) : null);
     const [landingAt, setLandingAt] = useState<moment.Moment | null | undefined>(flightData.landing_at ? parseDateStringDropTimezone(flightData.landing_at) : null);
 
     function getPilot1Options() {
@@ -223,6 +224,38 @@ export default function EditFlightDetailsDialog({
                                             second: newValue.second(),
                                         });
                                         setTakeOffat(date);
+                                    }}
+                                />
+                            </FormControl>
+                        </FormGroup>
+                        <FormGroup>
+                            <FormControl style={{
+                                direction: "ltr",
+                            }}>
+                                <TimePicker
+                                    label={t("TOW_RELEASE_TIME")}
+                                    value={towReleaseAt ? moment(towReleaseAt) : null}
+                                    onChange={(newValue: moment.Moment | null) => {
+                                        if (!newValue) {
+                                            setTowReleaseAt(null);
+                                            return;
+                                        }
+
+                                        // Remove the timezone
+                                        newValue.utcOffset(0, true);
+
+                                        if (!action?.date) {
+                                            return;
+                                        }
+
+                                        const date = moment(action.date);
+                                        date.utcOffset(0, true);
+                                        date.set({
+                                            hour: newValue.hour(),
+                                            minute: newValue.minute(),
+                                            second: newValue.second(),
+                                        });
+                                        setTowReleaseAt(date);
                                     }}
                                 />
                             </FormControl>
