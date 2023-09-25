@@ -101,6 +101,54 @@ export interface paths {
      */
     delete: operations["delete_active_tow_airplanes__id___delete"];
   };
+  "/events/search": {
+    /**
+     * Search events
+     * @description Search events
+     * :param page: Page number
+     * :param page_size: Page size
+     * :param filters: Filters
+     * :param db: Database session
+     * :param settings: Settings
+     * :return: List of events
+     */
+    post: operations["search_events_search_post"];
+  };
+  "/events": {
+    /**
+     * Create events
+     * @description Create event
+     * :param data: Data
+     * :param db: Database session
+     */
+    post: operations["create_events_post"];
+  };
+  "/events/{id_}": {
+    /**
+     * Get events by ID
+     * @description Read event by ID
+     * :param id_: Event ID
+     * :param db: Database session
+     * :return: Event
+     */
+    get: operations["get_by_id_events__id___get"];
+    /**
+     * Update events
+     * @description Update event
+     * :param id_: Event ID
+     * :param data: Data to update
+     * :param db: Database session
+     * :return: Updated event
+     */
+    put: operations["update_events__id___put"];
+    /**
+     * Delete events
+     * @description Delete event
+     * :param id_: Event ID
+     * :param db: Database session
+     */
+    delete: operations["delete_events__id___delete"];
+  };
   "/notifications/search": {
     /**
      * Search notifications
@@ -541,6 +589,62 @@ export interface components {
       /** Airplane Id */
       airplane_id?: number | null;
     };
+    /** EventCreateSchema */
+    EventCreateSchema: {
+      type: components["schemas"]["EventType"];
+      payload: components["schemas"]["EventPayloadSchema-Input"];
+    };
+    /** EventPayloadSchema */
+    "EventPayloadSchema-Input": {
+      /** Flight Id */
+      flight_id?: number | null;
+      /** Action Id */
+      action_id?: number | null;
+    };
+    /** EventPayloadSchema */
+    "EventPayloadSchema-Output": {
+      /** Flight Id */
+      flight_id: number | null;
+      /** Action Id */
+      action_id: number | null;
+    };
+    /** EventSchema */
+    EventSchema: {
+      /** Id */
+      id: number;
+      type: components["schemas"]["EventType"];
+      state: components["schemas"]["EventState"];
+      payload: components["schemas"]["EventPayloadSchema-Output"];
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /** Handled At */
+      handled_at: string | null;
+      /** Num Handling Attempts */
+      num_handling_attempts: number;
+    };
+    /** EventSearchSchema */
+    EventSearchSchema: {
+      type: components["schemas"]["EventType"] | null;
+      payload: components["schemas"]["EventPayloadSchema-Input"] | null;
+    };
+    /**
+     * EventState
+     * @enum {string}
+     */
+    EventState: "pending" | "being_handled" | "handled" | "failed";
+    /**
+     * EventType
+     * @enum {string}
+     */
+    EventType: "flight_landed" | "action_closed";
+    /** EventUpdateSchema */
+    EventUpdateSchema: {
+      type: components["schemas"]["EventType"] | null;
+      payload: components["schemas"]["EventPayloadSchema-Input"] | null;
+    };
     /** FlightCreateSchema */
     FlightCreateSchema: {
       /** Action Id */
@@ -818,16 +922,11 @@ export interface components {
       /** Phone Number */
       phone_number?: string | null;
     };
-    /** NotificationConfigSchema */
-    NotificationConfigSchema: {
-      /** Flight Ids */
-      flight_ids: number[];
-    };
     /** NotificationCreateSchema */
     NotificationCreateSchema: {
       /** Recipient Member Id */
       recipient_member_id: number;
-      config: components["schemas"]["NotificationConfigSchema"];
+      payload: components["schemas"]["NotificationPayloadSchema"];
       type: components["schemas"]["NotificationType"];
       method?: components["schemas"]["NotificationMethod"] | null;
     };
@@ -836,6 +935,11 @@ export interface components {
      * @enum {string}
      */
     NotificationMethod: "console" | "email";
+    /** NotificationPayloadSchema */
+    NotificationPayloadSchema: {
+      /** Flight Ids */
+      flight_ids: number[];
+    };
     /** NotificationSchema */
     NotificationSchema: {
       /** Id */
@@ -853,14 +957,14 @@ export interface components {
       recipient_member_id: number;
       method: components["schemas"]["NotificationMethod"];
       type: components["schemas"]["NotificationType"];
-      config: components["schemas"]["NotificationConfigSchema"];
+      payload: components["schemas"]["NotificationPayloadSchema"];
       state: components["schemas"]["NotificationState"];
     };
     /** NotificationSearchSchema */
     NotificationSearchSchema: {
       /** Recipient Member Id */
       recipient_member_id?: number | null;
-      config?: components["schemas"]["NotificationConfigSchema"] | null;
+      payload?: components["schemas"]["NotificationPayloadSchema"] | null;
       type?: components["schemas"]["NotificationType"] | null;
       method?: components["schemas"]["NotificationMethod"] | null;
     };
@@ -878,7 +982,7 @@ export interface components {
     NotificationUpdateSchema: {
       /** Recipient Member Id */
       recipient_member_id?: number | null;
-      config?: components["schemas"]["NotificationConfigSchema"] | null;
+      payload?: components["schemas"]["NotificationPayloadSchema"] | null;
       type?: components["schemas"]["NotificationType"] | null;
       method?: components["schemas"]["NotificationMethod"] | null;
     };
@@ -1241,6 +1345,159 @@ export interface operations {
    * :param db: Database session
    */
   delete_active_tow_airplanes__id___delete: {
+    parameters: {
+      path: {
+        id_: number;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Search events
+   * @description Search events
+   * :param page: Page number
+   * :param page_size: Page size
+   * :param filters: Filters
+   * :param db: Database session
+   * :param settings: Settings
+   * :return: List of events
+   */
+  search_events_search_post: {
+    parameters: {
+      query?: {
+        page?: number;
+        page_size?: number | null;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["EventSearchSchema"] | null;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["EventSchema"][];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Create events
+   * @description Create event
+   * :param data: Data
+   * :param db: Database session
+   */
+  create_events_post: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["EventCreateSchema"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["EventSchema"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Get events by ID
+   * @description Read event by ID
+   * :param id_: Event ID
+   * :param db: Database session
+   * :return: Event
+   */
+  get_by_id_events__id___get: {
+    parameters: {
+      path: {
+        id_: number;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["EventSchema"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Update events
+   * @description Update event
+   * :param id_: Event ID
+   * :param data: Data to update
+   * :param db: Database session
+   * :return: Updated event
+   */
+  update_events__id___put: {
+    parameters: {
+      path: {
+        id_: number;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["EventUpdateSchema"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["EventSchema"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Delete events
+   * @description Delete event
+   * :param id_: Event ID
+   * :param db: Database session
+   */
+  delete_events__id___delete: {
     parameters: {
       path: {
         id_: number;
