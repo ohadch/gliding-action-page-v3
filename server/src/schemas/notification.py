@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict
 
 
-class EmailSchema(BaseModel):
+class NotificationSchema(BaseModel):
     id: int
     sent_at: datetime.datetime
     num_sending_attempts: int
@@ -15,15 +15,15 @@ class EmailSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class EmailCreateSchema(BaseModel):
+class NotificationCreateSchema(BaseModel):
     recipient_member_id: int
     content: str
 
 
-class EmailUpdateSchema(BaseModel):
+class NotificationUpdateSchema(BaseModel):
     recipient_member_id: Optional[int] = None
     content: Optional[str] = None
 
 
-class EmailSearchSchema(EmailUpdateSchema):
+class NotificationSearchSchema(NotificationUpdateSchema):
     pass

@@ -58,6 +58,17 @@ class FlightState(enum.Enum):
     Landed = "Landed"
 
 
+class NotificationMethod(enum.Enum):
+    Email = "Email"
+
+
+class NotificationType(enum.Enum):
+    FlightSummaryForPilot = "FlightSummaryForPilot"
+    DailySummaryForObserver = "DailySummaryForObserver"
+    DailySummaryForTowPilot = "DailySummaryForTowPilot"
+    DailySummaryForCfi = "DailySummaryForCfi"
+
+
 class TowType(enum.Enum):
     AIRPLANE_1000 = "AIRPLANE_1000"
     AIRPLANE_1500 = "AIRPLANE_1500"

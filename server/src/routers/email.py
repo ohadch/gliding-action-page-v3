@@ -5,42 +5,42 @@ from sqlalchemy.orm import Session
 
 from src.app import app
 
-from src.crud import EmailCrud
+from src.crud import NotificationCrud
 from src.database import get_db
 from src.schemas import (
-    EmailSchema,
-    EmailSearchSchema,
-    EmailCreateSchema,
-    EmailUpdateSchema,
+    NotificationSchema,
+    NotificationSearchSchema,
+    NotificationCreateSchema,
+    NotificationUpdateSchema,
 )
 from src.settings import Settings, get_settings
 
-crud = EmailCrud()
-prefix = "emails"
+crud = NotificationCrud()
+prefix = "notifications"
 tags = [prefix]
 
 
 @app.post(
     f"/{prefix}/search",
     tags=tags,
-    response_model=List[EmailSchema],
+    response_model=List[NotificationSchema],
     summary=f"Search {prefix}",
 )
 async def search(
     page: int = 1,
     page_size: Optional[int] = None,
-    filters: Optional[EmailSearchSchema] = None,
+    filters: Optional[NotificationSearchSchema] = None,
     db: Session = Depends(get_db),
     settings: Settings = Depends(get_settings),
 ):
     """
-    Search emails
+    Search notifications
     :param page: Page number
     :param page_size: Page size
     :param filters: Filters
     :param db: Database session
     :param settings: Settings
-    :return: List of emails
+    :return: List of notifications
     """
     return await crud.search(
         db=db,
@@ -53,12 +53,12 @@ async def search(
 @app.post(
     f"/{prefix}",
     tags=tags,
-    response_model=EmailSchema,
+    response_model=NotificationSchema,
     summary=f"Create {prefix}",
 )
-async def create(data: EmailCreateSchema, db: Session = Depends(get_db)):
+async def create(data: NotificationCreateSchema, db: Session = Depends(get_db)):
     """
-    Create email
+    Create notification
     :param data: Data
     :param db: Database session
     """
@@ -71,39 +71,39 @@ async def create(data: EmailCreateSchema, db: Session = Depends(get_db)):
 @app.get(
     f"/{prefix}/{{id_}}",
     tags=tags,
-    response_model=EmailSchema,
+    response_model=NotificationSchema,
     summary=f"Get {prefix} by ID",
 )
 async def get_by_id(id_: int, db: Session = Depends(get_db)):
     """
-    Read email by ID
-    :param id_: Email ID
+    Read notification by ID
+    :param id_: Notification ID
     :param db: Database session
-    :return: Email
+    :return: Notification
     """
-    email = await crud.get_by_id(db=db, id_=id_)
-    if not email:
+    notification = await crud.get_by_id(db=db, id_=id_)
+    if not notification:
         raise HTTPException(status_code=404, detail=f"{prefix.title()} not found")
-    return email
+    return notification
 
 
 @app.put(
     f"/{prefix}/{{id_}}",
     tags=tags,
-    response_model=EmailSchema,
+    response_model=NotificationSchema,
     summary=f"Update {prefix}",
 )
 async def update(
     id_: int,
-    data: EmailUpdateSchema,
+    data: NotificationUpdateSchema,
     db: Session = Depends(get_db),
 ):
     """
-    Update email
-    :param id_: Email ID
+    Update notification
+    :param id_: Notification ID
     :param data: Data to update
     :param db: Database session
-    :return: Updated email
+    :return: Updated notification
     """
     return crud.update(
         db=db,
@@ -119,8 +119,8 @@ async def update(
 )
 async def delete(id_: int, db: Session = Depends(get_db)):
     """
-    Delete email
-    :param id_: Email ID
+    Delete notification
+    :param id_: Notification ID
     :param db: Database session
     """
     crud.delete(db=db, id_=id_)

@@ -5,5 +5,5 @@ from .glider import Glider
 from .glider_owner import GliderOwner
 from .member import Member
 from .member_role import MemberRole
-from .email import Email
+from .notification import Notification
 from .tow_airplane import TowAirplane
