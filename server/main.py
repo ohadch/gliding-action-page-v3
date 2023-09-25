@@ -3,6 +3,7 @@ import threading
 
 from dotenv import load_dotenv
 
+from src.events.events_consumer import EventsConsumer
 from src.notifications.notifications_consumer import NotificationsConsumer
 
 load_dotenv()
@@ -33,6 +34,12 @@ if __name__ == "__main__":
     notifications_consumer = NotificationsConsumer(interval_seconds=5)
     notifications_consumer_thread = threading.Thread(
         target=notifications_consumer.run, daemon=True
+    ).start()
+
+    # Events consumer thread
+    events_consumer = EventsConsumer(interval_seconds=5)
+    events_consumer_thread = threading.Thread(
+        target=events_consumer.run, daemon=True
     ).start()
 
     # Uvicorn thread

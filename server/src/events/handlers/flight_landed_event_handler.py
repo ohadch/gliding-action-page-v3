@@ -22,6 +22,9 @@ class FlightLandedEventHandler(EventHandler):
             flight = session.query(Flight).get(payload.flight_id)
 
             if flight.pilot_1_id:
+                self._logger.info(
+                    f"Creating flight summary notification to pilot 1: {flight.pilot_1_id}"
+                )
                 notifications.append(
                     Notification(
                         recipient_member_id=flight.pilot_1_id,
@@ -32,6 +35,9 @@ class FlightLandedEventHandler(EventHandler):
                 )
 
             if flight.pilot_2_id:
+                self._logger.info(
+                    f"Creating flight summary notification to pilot 2: {flight.pilot_2_id}"
+                )
                 notifications.append(
                     Notification(
                         recipient_member_id=flight.pilot_2_id,

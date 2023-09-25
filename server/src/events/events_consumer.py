@@ -1,6 +1,5 @@
 import datetime
 import logging
-import os
 import time
 
 from src import Event
@@ -25,8 +24,7 @@ class EventsConsumer:
         """
         self._logger.info(
             f"The events consumer is running, "
-            f"interval: {self._interval_seconds} seconds, "
-            f"default handler: {os.environ['DEFAULT_NOTIFICATION_METHOD']}"
+            f"interval: {self._interval_seconds} seconds"
         )
 
         while True:
