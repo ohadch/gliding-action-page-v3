@@ -5,6 +5,7 @@ import {useCallback} from "react";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
 import {updateAction} from "../../store/actions/action.ts";
+import {isCfi} from "../../utils/members.ts";
 
 export default function ActionConfigurationComponent() {
     const {t} = useTranslation();
@@ -58,7 +59,7 @@ export default function ActionConfigurationComponent() {
                     <FormControl>
                         <Autocomplete
                             id="responsible-cfi"
-                            options={membersStoreState.members || []}
+                            options={(membersStoreState.members || []).filter(member => isCfi(member, membersStoreState.membersRoles || []))}
                             value={(responsible_cfi_id ? getMemberById(responsible_cfi_id) : null) || null}
                             onChange={(_, newValue) => dispatch(
                                 updateAction({
