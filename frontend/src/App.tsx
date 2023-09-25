@@ -113,7 +113,7 @@ export default function App() {
     const dispatch = useAppDispatch();
     const [drawerOpen, setDrawerDrawerOpen] = React.useState(false);
     const [theme, setTheme] = React.useState(CacheService.get("CACHE_KEY_THEME") === "dark" ? darkTheme : lightTheme);
-    const {action} = useSelector((state: RootState) => state.currentAction)
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
     const [selectActionDialogOpen, setSelectActionDialogOpen] = React.useState(false);
     const {t} = useTranslation()
     const {pathname} = useLocation();

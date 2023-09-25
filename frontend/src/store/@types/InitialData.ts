@@ -19,10 +19,8 @@ export interface ActionsStoreState extends BaseInitialState {
 
 
 export interface CurrentActionStoreState extends BaseInitialState {
-    action?: ActionSchema;
+    actionId?: number;
     initialState: boolean;
-    fieldResponsibleId?: number;
-    responsibleCfiId?: number;
     fetchingActiveTowAirplanesInProgress: boolean;
     fetchingFlightsInProgress: boolean;
     activeTowAirplanes?: ActiveTowAirplaneSchema[];

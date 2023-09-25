@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {createSlice} from '@reduxjs/toolkit'
 import {CurrentActionStoreState} from "../@types/InitialData.ts";
 import {CacheService} from "../../utils/cache.ts";
 import {CACHE_KEY_ACTION} from "../../utils/consts.ts";
@@ -11,12 +11,10 @@ import {
 } from "../actions/currentAction.ts";
 
 const initialState: CurrentActionStoreState = {
-    action: CacheService.get(CACHE_KEY_ACTION) ? JSON.parse(CacheService.get(CACHE_KEY_ACTION) as never) : undefined,
+    actionId: CacheService.getNumber(CACHE_KEY_ACTION),
     fetchInProgress: false,
     fetchingActiveTowAirplanesInProgress: false,
     initialState: false,
-    fieldResponsibleId: undefined,
-    responsibleCfiId: undefined,
     fetchingFlightsInProgress: false,
 }
 
@@ -25,15 +23,9 @@ export const currentActionSlice = createSlice({
     initialState,
     reducers: {
         setCurrentAction: (state, action) => {
-            state.action = action.payload
-            CacheService.set(CACHE_KEY_ACTION, JSON.stringify(action.payload))
+            state.actionId = action.payload.id
+            CacheService.set(CACHE_KEY_ACTION, action.payload.id)
         },
-        setFieldResponsibleId: (state, action: PayloadAction<number | undefined>) => {
-            state.fieldResponsibleId = action.payload
-        },
-        setResponsibleCfiId: (state, action: PayloadAction<number | undefined>) => {
-            state.responsibleCfiId = action.payload
-        }
     },
     extraReducers: (builder) => {
         builder
@@ -95,4 +87,4 @@ export const currentActionSlice = createSlice({
     }
 })
 
-export const {setResponsibleCfiId, setCurrentAction, setFieldResponsibleId} = currentActionSlice.actions;
+export const {setCurrentAction} = currentActionSlice.actions;

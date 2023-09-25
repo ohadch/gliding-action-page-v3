@@ -45,7 +45,7 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
     const dispatch = useAppDispatch();
     const membersStoreState = useSelector((state: RootState) => state.members)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const {action} = useSelector((state: RootState) => state.currentAction)
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
 
     const {
         t

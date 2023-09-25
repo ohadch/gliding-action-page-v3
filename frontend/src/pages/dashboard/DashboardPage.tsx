@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import FlightsTable from "../../components/flights/FlightsTable.tsx";
 import {useCallback, useEffect, useState} from "react";
-import Box from "@mui/material/Box";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
@@ -43,7 +42,8 @@ const MenuProps = {
 export default function DashboardPage() {
     const [flightCreationWizardDialogOpen, setFlightCreationWizardDialogOpen] = useState<boolean>(false);
     const {t} = useTranslation();
-    const {flights, fetchingFlightsInProgress, action} = useSelector((state: RootState) => state.currentAction);
+    const {flights, fetchingFlightsInProgress} = useSelector((state: RootState) => state.currentAction);
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
     const {members} = useSelector((state: RootState) => state.members);
     const {gliders} = useSelector((state: RootState) => state.gliders);
     const {towAirplanes} = useSelector((state: RootState) => state.towAirplanes);
