@@ -22,10 +22,16 @@ export const currentActionSlice = createSlice({
     name: 'actions',
     initialState,
     reducers: {
-        setCurrentAction: (state, action) => {
-            state.actionId = action.payload.id
-            CacheService.set(CACHE_KEY_ACTION, action.payload.id)
+        setCurrentActionId: (state, action) => {
+            state.actionId = action.payload
+            action.payload ? CacheService.set(CACHE_KEY_ACTION, action.payload) : CacheService.remove(CACHE_KEY_ACTION)
         },
+        setActiveTowAirplanes: (state, action) => {
+            state.activeTowAirplanes = action.payload
+        },
+        setFlights: (state, action) => {
+            state.flights = action.payload
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -87,4 +93,4 @@ export const currentActionSlice = createSlice({
     }
 })
 
-export const {setCurrentAction} = currentActionSlice.actions;
+export const {setCurrentActionId, setActiveTowAirplanes, setFlights} = currentActionSlice.actions;

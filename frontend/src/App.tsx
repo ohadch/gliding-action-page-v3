@@ -12,7 +12,16 @@ import Container from '@mui/material/Container';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronRightIcon from '@mui/icons-material/ChevronLeft';
 import List from '@mui/material/List';
-import {Button, ListItemButton, ListItemIcon, ListItemText, Tooltip} from "@mui/material";
+import {
+    Alert,
+    AlertTitle,
+    Button,
+    Card,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Tooltip
+} from "@mui/material";
 import {Route, Routes, useLocation} from "react-router-dom";
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import BadgeIcon from '@mui/icons-material/Badge';
@@ -21,12 +30,16 @@ import {initReactI18next, useTranslation} from "react-i18next";
 import SelectActionDialog from "./components/actions/SelectActionDialog.tsx";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "./store";
-import {TEXTS_HEBREW} from "./utils/consts.ts";
+import {CACHE_KEY_ACTION, TEXTS_HEBREW} from "./utils/consts.ts";
 import {CacheService} from "./utils/cache.ts";
-import {setCurrentAction} from "./store/reducers/currentActionSlice.ts";
+import {
+    setActiveTowAirplanes,
+    setCurrentActionId,
+    setFlights
+} from "./store/reducers/currentActionSlice.ts";
 import {fetchActiveTowAirplanes, fetchFlights} from "./store/actions/currentAction.ts";
 import {LocalizationProvider} from "@mui/x-date-pickers";
-import { AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
+import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 
 const DRAWER_WIDTH = 240;
 
@@ -132,16 +145,43 @@ export default function App() {
         }
     ]
 
+    function renderActionNotSelectedMessage() {
+        return (
+            <Typography variant="h4" component="h4">
+                <Card>
+                    <Alert severity="info" sx={{
+                        height: "100%",
+                    }}>
+                        <AlertTitle>
+                            {t("ACTION_NOT_SELECTED_TITLE")}
+                        </AlertTitle>
+                        {t("ACTION_NOT_SELECTED_MESSAGE")}
+                        <Button onClick={() => setSelectActionDialogOpen(true)}>
+                            {t("SELECT_ACTION")}
+                        </Button>
+                    </Alert>
+                </Card>
+            </Typography>
+        )
+    }
+
     return (
         <LocalizationProvider dateAdapter={AdapterMoment}>
             <ThemeProvider theme={theme}>
                 <SelectActionDialog
                     open={selectActionDialogOpen}
                     onClose={() => setSelectActionDialogOpen(false)}
-                    onActionSelected={(action) => {
-                        dispatch(setCurrentAction(action))
-                        dispatch(fetchActiveTowAirplanes(action.id))
-                        dispatch(fetchFlights(action.id))
+                    onQuitAction={() => {
+                        dispatch(setCurrentActionId(null))
+                        dispatch(setActiveTowAirplanes(undefined))
+                        dispatch(setFlights(undefined))
+                        setSelectActionDialogOpen(false)
+                        CacheService.remove(CACHE_KEY_ACTION)
+                    }}
+                    onActionSelected={(actionId) => {
+                        dispatch(setCurrentActionId(actionId))
+                        dispatch(fetchActiveTowAirplanes(actionId))
+                        dispatch(fetchFlights(actionId))
                     }}
                 />
                 <Box sx={{display: 'flex'}}>
@@ -240,19 +280,25 @@ export default function App() {
                     >
                         <Toolbar/>
                         <Container maxWidth="xl" sx={{mt: 4, mb: 4}}>
-                            <Routes>
-                                {ROUTES.map((route) => (
-                                    <Route
-                                        key={route.path}
-                                        path={route.path}
-                                        element={
-                                            <React.Suspense fallback={<div></div>}>
-                                                <route.element/>
-                                            </React.Suspense>
-                                        }
-                                    />
-                                ))}
-                            </Routes>
+                            {
+                                action
+                                    ? (
+                                        <Routes>
+                                            {ROUTES.map((route) => (
+                                                <Route
+                                                    key={route.path}
+                                                    path={route.path}
+                                                    element={
+                                                        <React.Suspense fallback={<div></div>}>
+                                                            <route.element/>
+                                                        </React.Suspense>
+                                                    }
+                                                />
+                                            ))}
+                                        </Routes>
+                                    )
+                                    : renderActionNotSelectedMessage()
+                            }
                         </Container>
                     </Box>
                 </Box>
