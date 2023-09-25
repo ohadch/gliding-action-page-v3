@@ -1,8 +1,8 @@
 """notifications
 
-Revision ID: a5ae57e8551e
+Revision ID: 60bc3815d4c1
 Revises: b8e743349eee
-Create Date: 2023-09-25 10:20:05.051205
+Create Date: 2023-09-25 10:29:50.758971
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = "a5ae57e8551e"
+revision = "60bc3815d4c1"
 down_revision = "b8e743349eee"
 branch_labels = None
 depends_on = None
@@ -25,6 +25,8 @@ def upgrade() -> None:
         sa.Column("num_sending_attempts", sa.Integer(), nullable=False),
         sa.Column("last_sending_attempt_at", sa.DateTime(), nullable=True),
         sa.Column("recipient_member_id", sa.Integer(), nullable=False),
+        sa.Column("method", sa.String(), nullable=True),
+        sa.Column("type", sa.String(), nullable=False),
         sa.Column("config", sa.JSON(), nullable=False),
         sa.ForeignKeyConstraint(
             ["recipient_member_id"],

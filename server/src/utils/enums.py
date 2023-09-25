@@ -59,7 +59,7 @@ class FlightState(enum.Enum):
 
 
 class NotificationMethod(enum.Enum):
-    Email = "Email"
+    EMAIL = "email"
 
 
 class NotificationType(enum.Enum):

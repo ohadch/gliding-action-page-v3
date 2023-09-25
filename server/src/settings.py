@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     port: int
     default_page_size: int
     create_seed_data: bool = True
+    default_notification_method: str = "email"
 
 
 @lru_cache()
