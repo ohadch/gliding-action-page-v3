@@ -50,6 +50,7 @@ export const TEXTS_HEBREW = {
     DURATION: "משך",
     FLIGHT_STATE: "שלב טיסה",
     FLIGHT_STATES: "שלבי טיסה",
+    FLIGHT_HAS_BUSY_ENTITIES_ALERT: "לא ניתן לשגר את הטיסה עד שהבאים מתפנים"
 }
 
 

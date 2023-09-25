@@ -53,16 +53,15 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
             display: "flex",
             justifyContent: "center",
         }}>
-            {goToPreviousStateEnabled() && (
-                <Grid>
-                    <IconButton
-                        color={color}
-                        onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) - 1])}
-                    >
-                        <ArrowRightIcon/>
-                    </IconButton>
-                </Grid>
-            )}
+            <Grid>
+                <IconButton
+                    disabled={!goToPreviousStateEnabled()}
+                    color={color}
+                    onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) - 1])}
+                >
+                    <ArrowRightIcon/>
+                </IconButton>
+            </Grid>
             <Grid>
                 {/* make the button blink */}
                 <Button
@@ -72,16 +71,15 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                     {t(label)}
                 </Button>
             </Grid>
-            {goToNextStateEnabled() && (
-                <Grid>
-                    <IconButton
-                        color={color}
-                        onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) + 1])}
-                    >
-                        <ArrowLeftIcon/>
-                    </IconButton>
-                </Grid>
-            )}
+            <Grid>
+                <IconButton
+                    disabled={!goToNextStateEnabled()}
+                    color={color}
+                    onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) + 1])}
+                >
+                    <ArrowLeftIcon/>
+                </IconButton>
+            </Grid>
         </Grid>
     );
 }

@@ -72,7 +72,7 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
     const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>();
     const [towPilotId, setTowPilotId] = useState<number | null | undefined>();
 
-    const isMemberOccupied = (memberId: number) => {
+    const isMemberBusy = (memberId: number) => {
         const activePilots = [
             flight.pilot_1_id,
             flight.pilot_2_id,
@@ -145,7 +145,7 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
                         <FormControl>
                             <Autocomplete
                                 id="towPilot"
-                                options={getTowPilotOptions().filter((member) => !isMemberOccupied(member.id))}
+                                options={getTowPilotOptions().filter((member) => !isMemberBusy(member.id))}
                                 value={towPilotId ? getMemberById(towPilotId) : null}
                                 onChange={(_, newValue) => setTowPilotId(newValue?.id)}
                                 getOptionLabel={(option) => getMemberDisplayValue(
