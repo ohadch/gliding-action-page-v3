@@ -45,6 +45,10 @@ export function isTester(member: MemberSchema, roles: MemberRoleSchema[]): boole
 }
 
 
+export function hasPrivateGliderPilotLicense(member: MemberSchema, roles: MemberRoleSchema[]): boolean {
+    return isCfi(member, roles) || isPrivatePilotLicense(member, roles)
+}
+
 export function isCertifiedForSinglePilotOperation(member: MemberSchema, roles: MemberRoleSchema[]): boolean {
-    return isCfi(member, roles) || isPrivatePilotLicense(member, roles) || isSoloStudent(member, roles)
+    return hasPrivateGliderPilotLicense(member, roles) || isSoloStudent(member, roles)
 }

@@ -23,7 +23,7 @@ import {
     getMemberDisplayValue,
     getPayersTypeDisplayValue
 } from "../../utils/display.ts";
-import {hasRole, isCertifiedForSinglePilotOperation, isCfi} from "../../utils/members.ts";
+import {hasPrivateGliderPilotLicense, hasRole, isCertifiedForSinglePilotOperation, isCfi} from "../../utils/members.ts";
 import {SUPPORTED_FLIGHT_TYPES} from "../../utils/consts.ts";
 
 enum RenderedInputName {
@@ -119,6 +119,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
         }
     });
 
+    // This effect is responsible for setting default values for flight creation wizard
     useEffect(() => {
         if (!membersStoreState.membersRoles) {
             return
@@ -172,8 +173,12 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
                 if (!flightType) {
                     return setFlightType("Members")
                 }
-            } else {
-                if (flightType === "ClubGuest") {
+            } else if (glider.num_seats === 2) {
+                if (flightType === "Members" && pilot1Id && pilot2Id) {
+                    if (!payersType) {
+                        return setPayersType("BothPilots")
+                    }
+                } else if (flightType === "ClubGuest") {
                     if (!payersType) {
                         return setPayersType("Guest")
                     }
@@ -190,6 +195,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
         }
     }, [
         pilot1Id,
+        pilot2Id,
         gliderId,
         flightType,
         payersType,
@@ -255,6 +261,8 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
 
         if ((glider.num_seats === 1) || (flightType && flightType === "Solo")) {
             return initialOptions.filter((member) => isCertifiedForSinglePilotOperation(member, membersStoreState.membersRoles || []));
+        } else if (flightType && flightType === "Members") {
+            return initialOptions.filter((member) => hasPrivateGliderPilotLicense(member, membersStoreState.membersRoles || []));
         }
 
         return initialOptions;
@@ -284,6 +292,8 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
 
         if (flightType && flightType === "Instruction") {
             return initialOptions.filter((member) => isCfi(member, membersStoreState.membersRoles || []));
+        } else if (flightType && flightType === "Members") {
+            return initialOptions.filter((member) => hasPrivateGliderPilotLicense(member, membersStoreState.membersRoles || []));
         }
 
         return initialOptions;
