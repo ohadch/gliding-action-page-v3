@@ -4,106 +4,24 @@ It is used for debugging purposes.
 """
 from src import Notification, Flight
 from src.database import SessionLocal
+from src.i18n import i18n_client_factory
 from src.notifications.handlers.email.email_notification_handler import (
     EmailNotificationHandler,
 )
 from src.notifications.types import NotificationPayloadSchema
-from src.utils.common import stringify_duration
 
 
 class FlightSummaryForPilotEmailNotificationHandler(EmailNotificationHandler):
     def get_subject(self, notification: Notification) -> str:
+        i18n = i18n_client_factory()
         flight = self._get_flight(notification=notification)
 
-        duration_str = stringify_duration(
-            start_time=flight.take_off_at, end_time=flight.landing_at
-        )
-
-        return f"טיסתך בדאון {flight.glider.call_sign} נמשכה {duration_str} שעות"
+        return i18n.get_flight_summary_for_pilot_email_message_subject(flight=flight)
 
     def get_message(self, notification: Notification) -> str:
+        i18n = i18n_client_factory()
         flight = self._get_flight(notification=notification)
-
-        duration_str = stringify_duration(
-            start_time=flight.take_off_at, end_time=flight.landing_at
-        )
-
-        possible_values = [
-            {"name": "דאון", "value": flight.glider.call_sign},
-            {
-                "name": "שעת ההמראה",
-                "value": flight.take_off_at.strftime("%Y-%m-%d %H:%M")
-                if flight.take_off_at
-                else None,
-            },
-            {
-                "name": "שעת הנחיתה",
-                "value": flight.landing_at.strftime("%Y-%m-%d %H:%M")
-                if flight.landing_at
-                else None,
-            },
-            {"name": "משך הטיסה", "value": duration_str},
-            {
-                "name": "טייס 1 או חניך",
-                "value": flight.pilot_1.full_name if flight.pilot_1 else None,
-            },
-            {
-                "name": "טייס 2 או מדריך",
-                "value": flight.pilot_2.full_name if flight.pilot_2 else None,
-            },
-            {"name": "סוג הטיסה", "value": flight.flight_type},
-            {"name": "גובה הגרירה", "value": flight.tow_type},
-            {
-                "name": "המטוס הגורר",
-                "value": flight.tow_airplane.call_sign if flight.tow_airplane else None,
-            },
-            {
-                "name": "הטייס הגורר",
-                "value": flight.tow_pilot.full_name if flight.tow_pilot else None,
-            },
-            {"name": "זהות המשלם", "value": flight.payers_type},
-            {"name": "אופן התשלום", "value": flight.payment_method},
-            {
-                "name": "מקבל התשלום",
-                "value": flight.payment_receiver.full_name
-                if flight.payment_receiver
-                else None,
-            },
-            {
-                "name": "החבר המשלם",
-                "value": flight.paying_member.full_name
-                if flight.paying_member
-                else None,
-            },
-        ]
-
-        values_str = "\n".join(
-            [
-                f"""
-            <tr>
-                <strong>{entry['name']}:</strong>
-                {entry['value']}
-            </tr>
-            """
-                for entry in possible_values
-                if entry["value"]
-            ]
-        )
-
-        html = f"""
-            <table dir="rtl">
-                <tr>שלום,</tr>
-                <tr></tr>
-                <tr>מצורף סיכום לטיסתך מתאריך {flight.take_off_at.strftime('%Y-%m-%d')}.</tr>
-                <tr></tr>
-                {values_str}
-                <tr></tr>
-                <tr>מקווים שנהנית,</tr>
-                <tr>מרכז הדאיה מגידו</tr>
-            </table>
-        """
-
-        return html
+        return i18n.get_flight_summary_for_pilot_email_message(flight=flight)
 
     @staticmethod
     def _get_flight(notification: Notification):

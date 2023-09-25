@@ -89,6 +89,11 @@ class NotificationType(enum.Enum):
     DailySummaryForCfi = "DailySummaryForCfi"
 
 
+class Language(enum.Enum):
+    Hebrew = "he"
+    English = "en"
+
+
 class TowType(enum.Enum):
     AIRPLANE_1000 = "AIRPLANE_1000"
     AIRPLANE_1500 = "AIRPLANE_1500"
