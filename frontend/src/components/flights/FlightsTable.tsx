@@ -15,7 +15,7 @@ import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import {
     getFlightTypeDisplayValue,
     getGliderDisplayValue,
-    getMemberDisplayValue
+    getMemberDisplayValue, getTowTypeDisplayValue
 } from "../../utils/display.ts";
 import {Tooltip} from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy"
@@ -124,6 +124,7 @@ export default function FlightsTable(props: FlightsTableProps) {
                             <TableCell align="right"><strong>{t("PILOT_2")}</strong></TableCell>
                             <TableCell align="right"><strong>{t("TOW_AIRPLANE")}</strong></TableCell>
                             <TableCell align="right"><strong>{t("TOW_PILOT")}</strong></TableCell>
+                            <TableCell align="right"><strong>{t("TOW_TYPE")}</strong></TableCell>
                             <TableCell align="right"><strong>{t("DURATION")}</strong></TableCell>
                             <TableCell align="right"></TableCell>
                         </TableRow>
@@ -143,17 +144,26 @@ export default function FlightsTable(props: FlightsTableProps) {
                                     )}
                                 </TableCell>
                                 <TableCell
-                                    align="right">{flight.glider_id && displayGlider(flight.glider_id)}</TableCell>
+                                    align="right">{flight.glider_id && displayGlider(flight.glider_id)}
+                                </TableCell>
                                 <TableCell
-                                    align="right">{flight.flight_type && getFlightTypeDisplayValue(flight.flight_type)}</TableCell>
+                                    align="right">{flight.flight_type && getFlightTypeDisplayValue(flight.flight_type)}
+                                </TableCell>
                                 <TableCell
-                                    align="right">{flight.pilot_1_id && displayMember(flight.pilot_1_id)}</TableCell>
+                                    align="right">{flight.pilot_1_id && displayMember(flight.pilot_1_id)}
+                                </TableCell>
                                 <TableCell
-                                    align="right">{flight.pilot_2_id && displayMember(flight.pilot_2_id)}</TableCell>
+                                    align="right">{flight.pilot_2_id && displayMember(flight.pilot_2_id)}
+                                </TableCell>
                                 <TableCell
-                                    align="right">{flight.tow_airplane_id && displayTowAirplane(flight.tow_airplane_id)}</TableCell>
+                                    align="right">{flight.tow_airplane_id && displayTowAirplane(flight.tow_airplane_id)}
+                                </TableCell>
                                 <TableCell
-                                    align="right">{flight.tow_pilot_id && displayMember(flight.tow_pilot_id)}</TableCell>
+                                    align="right">{flight.tow_pilot_id && displayMember(flight.tow_pilot_id)}
+                                </TableCell>
+                                <TableCell
+                                    align="right">{flight.tow_type && getTowTypeDisplayValue(flight.tow_type)}
+                                </TableCell>
                                 <TableCell align="right">
                                     <FlightDuration flight={flight}/>
                                 </TableCell>
