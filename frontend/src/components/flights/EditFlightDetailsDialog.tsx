@@ -106,6 +106,32 @@ export default function EditFlightDetailsDialog({
     const [takeOffat, setTakeOffat] = useState<moment.Moment | null | undefined>(flightData.take_off_at ? parseDateStringDropTimezone(flightData.take_off_at) : null);
     const [landingAt, setLandingAt] = useState<moment.Moment | null | undefined>(flightData.landing_at ? parseDateStringDropTimezone(flightData.landing_at) : null);
 
+    function getPilot1Options() {
+        const initialOptions = membersStoreState.members || [];
+        return initialOptions.filter((member) => ![
+                towPilotId,
+                pilot2Id,
+            ].filter(Boolean).includes(member.id)
+        );
+    }
+
+    function getPilot2Options() {
+        const initialOptions = membersStoreState.members || [];
+        return initialOptions.filter((member) => ![
+                towPilotId,
+                pilot1Id,
+            ].filter(Boolean).includes(member.id)
+        );
+    }
+
+    function getTowPilotOptions() {
+        const initialOptions = membersStoreState.members || [];
+        return initialOptions.filter((member) => ![
+                pilot1Id,
+                pilot2Id,
+            ].filter(Boolean).includes(member.id)
+        );
+    }
 
     if (!action) {
         return null;
@@ -244,7 +270,7 @@ export default function EditFlightDetailsDialog({
                             <FormControl>
                                 <Autocomplete
                                     id="pilot-1"
-                                    options={membersStoreState.members || []}
+                                    options={getPilot1Options()}
                                     value={pilot1Id ? getMemberById(pilot1Id) : null}
                                     onChange={(_, newValue) => setPilot1Id(newValue?.id)}
                                     getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
@@ -263,7 +289,7 @@ export default function EditFlightDetailsDialog({
                             <FormControl>
                                 <Autocomplete
                                     id="pilot-2"
-                                    options={membersStoreState.members || []}
+                                    options={getPilot2Options()}
                                     value={pilot2Id ? getMemberById(pilot2Id) : null}
                                     onChange={(_, newValue) => setPilot2Id(newValue?.id)}
                                     getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
@@ -310,7 +336,7 @@ export default function EditFlightDetailsDialog({
                             <FormControl>
                                 <Autocomplete
                                     id="tow-pilot"
-                                    options={membersStoreState.members || []}
+                                    options={getTowPilotOptions()}
                                     value={towPilotId ? getMemberById(towPilotId) : null}
                                     onChange={(_, newValue) => setTowPilotId(newValue?.id)}
                                     getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
