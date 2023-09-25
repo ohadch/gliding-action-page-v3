@@ -101,15 +101,3 @@ class TowType(enum.Enum):
     AIRPLANE_2500 = "AIRPLANE_2500"
     AIRPLANE_3000 = "AIRPLANE_3000"
     AIRPLANE_3500 = "AIRPLANE_3500"
-
-
-class ImportantMemberIds(enum.Enum):
-    ClubGuest = 1951
-    MemberGuest = 1952
-
-
-class FlightStatus(enum.Enum):
-    Draft = "Draft"
-    Tow = "Tow"
-    Inflight = "Inflight"
-    Landed = "Landed"

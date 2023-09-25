@@ -47,8 +47,14 @@ class I18nClient(abc.ABC):
                 "name": self.translate("PILOT_2"),
                 "value": flight.pilot_2.full_name if flight.pilot_2 else None,
             },
-            {"name": self.translate("FLIGHT_TYPE"), "value": flight.flight_type},
-            {"name": self.translate("TOW_TYPE"), "value": flight.tow_type},
+            {
+                "name": self.translate("FLIGHT_TYPE"),
+                "value": self.translate(flight.flight_type),
+            },
+            {
+                "name": self.translate("TOW_TYPE"),
+                "value": self.translate(flight.tow_type),
+            },
             {
                 "name": self.translate("TOW_AIRPLANE"),
                 "value": flight.tow_airplane.call_sign if flight.tow_airplane else None,
@@ -57,8 +63,14 @@ class I18nClient(abc.ABC):
                 "name": self.translate("TOW_PILOT"),
                 "value": flight.tow_pilot.full_name if flight.tow_pilot else None,
             },
-            {"name": self.translate("PAYERS_TYPE"), "value": flight.payers_type},
-            {"name": self.translate("PAYMENT_METHOD"), "value": flight.payment_method},
+            {
+                "name": self.translate("PAYERS_TYPE"),
+                "value": self.translate(flight.payers_type),
+            },
+            {
+                "name": self.translate("PAYMENT_METHOD"),
+                "value": self.translate(flight.payment_method),
+            },
             {
                 "name": self.translate("PAYMENT_RECEIVER"),
                 "value": flight.payment_receiver.full_name
