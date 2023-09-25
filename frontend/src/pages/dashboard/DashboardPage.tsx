@@ -55,16 +55,16 @@ export default function DashboardPage() {
 
     const flightsInTowState = flights?.filter((flight) => flight.state === "Tow");
     const flightsInAnyFlightState = flights?.filter((flight) => isFlightActive(flight));
-    const busyGliders = useCallback(() => flightsInAnyFlightState?.map((flight) => flight.glider_id).filter(Boolean) || [] as number[], [flightsInAnyFlightState])
-    const busyTowAirplanes = useCallback(() => flightsInTowState?.map((flight) => flight.tow_airplane_id).filter(Boolean) || [] as number [], [flightsInTowState]);
+    const busyGliders = useCallback((currentFlight: FlightSchema) => flightsInAnyFlightState?.filter(flight => flight.id !== currentFlight.id).map((flight) => flight.glider_id).filter(Boolean) || [] as number[], [flightsInAnyFlightState])
+    const busyTowAirplanes = useCallback((currentFlight: FlightSchema) => flightsInTowState?.filter(flight => flight.id !== currentFlight.id).map((flight) => flight.tow_airplane_id).filter(Boolean) || [] as number [], [flightsInTowState]);
     const busyGliderPilots = useCallback(
-        () => flightsInAnyFlightState?.map((flight) => [flight.pilot_1_id, flight.pilot_2_id])
+        (currentFlight: FlightSchema) => flightsInAnyFlightState?.filter(flight => flight.id !== currentFlight.id).map((flight) => [flight.pilot_1_id, flight.pilot_2_id])
             .flat()
             .filter(Boolean) || [] as number[],
         [flightsInAnyFlightState]
     );
-    const busyTowPilots = useCallback(() => flightsInTowState?.map((flight) => flight.tow_pilot_id).filter(Boolean) || [] as number[], [flightsInTowState]);
-    const busyMembers = useCallback(() => [...busyGliderPilots(), ...busyTowPilots()], [busyGliderPilots, busyTowPilots]);
+    const busyTowPilots = useCallback((currentFlight: FlightSchema) => flightsInTowState?.filter(flight => flight.id !== currentFlight.id).map((flight) => flight.tow_pilot_id).filter(Boolean) || [] as number[], [flightsInTowState]);
+    const busyMembers = useCallback((currentFlight: FlightSchema) => [...busyGliderPilots(currentFlight), ...busyTowPilots(currentFlight)], [busyGliderPilots, busyTowPilots]);
 
     /**
      * Returns a tuple of [hasBusyEntities, busyEntities]
@@ -88,7 +88,7 @@ export default function DashboardPage() {
             towAirplanes: [] as string[],
         }
 
-        if (flight.glider_id && busyGliders().includes(flight.glider_id)) {
+        if (flight.glider_id && busyGliders(flight).includes(flight.glider_id)) {
             const glider = gliders.find((glider) => glider.id === flight.glider_id)
             if (!glider) {
                 throw new Error(`Glider with id ${flight.glider_id} not found`)
@@ -96,7 +96,7 @@ export default function DashboardPage() {
             busyEntities.gliders.push(getGliderDisplayValue(glider))
         }
 
-        if (flight.tow_airplane_id && busyTowAirplanes().includes(flight.tow_airplane_id)) {
+        if (flight.tow_airplane_id && busyTowAirplanes(flight).includes(flight.tow_airplane_id)) {
             const towAirplane = towAirplanes.find((towAirplane) => towAirplane.id === flight.tow_airplane_id)
             if (!towAirplane) {
                 throw new Error(`Tow airplane with id ${flight.tow_airplane_id} not found`)
@@ -104,7 +104,7 @@ export default function DashboardPage() {
             busyEntities.towAirplanes.push(getTowAirplaneDisplayValue(towAirplane))
         }
 
-        if (flight.pilot_1_id && busyMembers().includes(flight.pilot_1_id)) {
+        if (flight.pilot_1_id && busyMembers(flight).includes(flight.pilot_1_id)) {
             const member = members.find((member) => member.id === flight.pilot_1_id)
             if (!member) {
                 throw new Error(`Member with id ${flight.pilot_1_id} not found`)
@@ -112,7 +112,7 @@ export default function DashboardPage() {
             busyEntities.members.push(getMemberDisplayValue(member))
         }
 
-        if (flight.pilot_2_id && busyMembers().includes(flight.pilot_2_id)) {
+        if (flight.pilot_2_id && busyMembers(flight).includes(flight.pilot_2_id)) {
             const member = members.find((member) => member.id === flight.pilot_2_id)
             if (!member) {
                 throw new Error(`Member with id ${flight.pilot_2_id} not found`)
@@ -120,7 +120,7 @@ export default function DashboardPage() {
             busyEntities.members.push(getMemberDisplayValue(member))
         }
 
-        if (flight.tow_pilot_id && busyMembers().includes(flight.tow_pilot_id)) {
+        if (flight.tow_pilot_id && busyMembers(flight).includes(flight.tow_pilot_id)) {
             const member = members.find((member) => member.id === flight.tow_pilot_id)
             if (!member) {
                 throw new Error(`Member with id ${flight.tow_pilot_id} not found`)
