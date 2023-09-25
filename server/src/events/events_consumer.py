@@ -1,6 +1,7 @@
 import datetime
 import logging
 import time
+from typing import Optional
 
 from src import Event
 from src.database import SessionLocal
@@ -17,6 +18,7 @@ class EventsConsumer:
         self._interval_seconds = interval_seconds
         self._backoff_after_num_attempts = backoff_after_num_attempts
         self._logger = logging.getLogger(__name__)
+        self._session = SessionLocal()
 
     def run(self):
         """
@@ -39,56 +41,52 @@ class EventsConsumer:
         event = self._get_next_event()
 
         if event:
-            self._logger.debug(f"Processing event: {event.id}")
-            self._handle_event(event)
+            self._logger.debug(f"Processing event: {event}")
+            self._handle_event(event=event)
         else:
             self._logger.debug("No events to process")
 
     def _handle_event(self, event: Event):
         """
         Send event to recipient
-        :param event: The event
+        :param event: event to be sent
         """
         try:
             handler = event_handler_factory(event=event)
-            self._logger.info(
-                f"Sending event {event.id} to recipient: {event.recipient_member.email}, "
-                f"handler: {handler.__class__.__name__}"
-            )
+            self._logger.info(f"Handling event {event.id}")
             handler.handle(event=event)
-            event.sent_at = datetime.datetime.utcnow()
+            event.handled_at = datetime.datetime.utcnow()
             event.state = EventState.HANDLED.value
         except Exception as e:
             self._logger.exception(f"Failed to send event: {e}")
             event.state = EventState.FAILED.value
         finally:
-            session = SessionLocal()
-            session.add(event)
-            session.commit()
+            self._session.add(event)
+            self._session.commit()
 
-    def _get_next_event(self):
+    def _get_next_event(self) -> Optional[Event]:
         """
         Get next event to be sent
         """
-        session = SessionLocal()
         event = (
-            session.query(Event)
+            self._session.query(Event)
             .filter(
-                Event.sent_at is None,
-                Event.state
-                in [
-                    EventState.PENDING.value,
-                    EventState.FAILED.value,
-                ],
-                Event.num_sending_attempts < self._backoff_after_num_attempts,
+                (
+                    (Event.state == EventState.PENDING.value)
+                    | (Event.state == EventState.FAILED.value)
+                )
+                & (Event.num_handling_attempts < self._backoff_after_num_attempts)
+                & (Event.handled_at == None)
             )
             .first()
         )
 
-        if event:
-            event.num_sending_attempts += 1
-            event.last_sending_attempt_at = datetime.datetime.utcnow()
-            event.state = EventState.BEING_HANDLED.value
-            session.commit()
+        if not event:
+            return None
+
+        event.num_handling_attempts += 1
+        event.last_sending_attempt_at = datetime.datetime.utcnow()
+        event.state = EventState.BEING_HANDLED.value
+        self._session.commit()
 
         return event

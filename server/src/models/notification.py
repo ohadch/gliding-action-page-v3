@@ -20,6 +20,6 @@ class Notification(Base):
     method = Column(String, nullable=True)
     type = Column(String, nullable=False)
     payload = Column(JSON, nullable=False)
-    state = Column(String, nullable=False, default=NotificationState.PENDING)
+    state = Column(String, nullable=False, default=NotificationState.PENDING.value)
 
     recipient_member = relationship("Member")

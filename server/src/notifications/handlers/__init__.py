@@ -1,6 +1,9 @@
 import os
 
 from src import Notification
+from src.notifications.handlers.console_notification_handler import (
+    ConsoleNotificationHandler,
+)
 from src.notifications.handlers.email_notification_handler import (
     EmailNotificationHandler,
 )
@@ -24,9 +27,14 @@ def notification_handler_factory(
     )
     notification_method = notification_manual_method or DEFAULT_NOTIFICATION_METHOD
 
-    if notification_method is NotificationMethod.EMAIL:
-        return EmailNotificationHandler(notification)
-    else:
-        raise NotImplementedError(
-            f"Notification type {notification.type} not implemented"
-        )
+    try:
+        return {
+            NotificationMethod.EMAIL: lambda: EmailNotificationHandler(
+                notification=notification
+            ),
+            NotificationMethod.CONSOLE: lambda: ConsoleNotificationHandler(
+                notification=notification
+            ),
+        }[notification_method]()
+    except KeyError:
+        raise ValueError(f"Invalid notification method: {notification_method}")

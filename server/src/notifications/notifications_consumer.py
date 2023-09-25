@@ -2,6 +2,7 @@ import datetime
 import logging
 import os
 import time
+from typing import Optional
 
 from src import Notification
 from src.database import SessionLocal
@@ -18,6 +19,7 @@ class NotificationsConsumer:
         self._interval_seconds = interval_seconds
         self._backoff_after_num_attempts = backoff_after_num_attempts
         self._logger = logging.getLogger(__name__)
+        self._session = SessionLocal()
 
     def run(self):
         """
@@ -41,15 +43,15 @@ class NotificationsConsumer:
         notification = self._get_next_notification()
 
         if notification:
-            self._logger.debug(f"Processing notification: {notification.id}")
-            self._handle_notification(notification)
+            self._logger.debug(f"Processing notification: {notification}")
+            self._handle_notification(notification=notification)
         else:
             self._logger.debug("No notifications to process")
 
     def _handle_notification(self, notification: Notification):
         """
         Send notification to recipient
-        :param notification: The notification
+        :param notification: notification to be sent
         """
         try:
             handler = notification_handler_factory(notification=notification)
@@ -64,33 +66,32 @@ class NotificationsConsumer:
             self._logger.exception(f"Failed to send notification: {e}")
             notification.state = NotificationState.FAILED.value
         finally:
-            session = SessionLocal()
-            session.add(notification)
-            session.commit()
+            self._session.add(notification)
+            self._session.commit()
 
-    def _get_next_notification(self):
+    def _get_next_notification(self) -> Optional[Notification]:
         """
         Get next notification to be sent
         """
-        session = SessionLocal()
         notification = (
-            session.query(Notification)
+            self._session.query(Notification)
             .filter(
-                Notification.sent_at is None,
-                Notification.state
-                in [
-                    NotificationState.PENDING.value,
-                    NotificationState.FAILED.value,
-                ],
-                Notification.num_sending_attempts < self._backoff_after_num_attempts,
+                (
+                    (Notification.state == NotificationState.PENDING.value)
+                    | (Notification.state == NotificationState.FAILED.value)
+                )
+                & (Notification.num_sending_attempts < self._backoff_after_num_attempts)
+                & (Notification.sent_at == None)
             )
             .first()
         )
 
-        if notification:
-            notification.num_sending_attempts += 1
-            notification.last_sending_attempt_at = datetime.datetime.utcnow()
-            notification.state = NotificationState.BEING_HANDLED.value
-            session.commit()
+        if not notification:
+            return None
+
+        notification.num_sending_attempts += 1
+        notification.last_sending_attempt_at = datetime.datetime.utcnow()
+        notification.state = NotificationState.BEING_HANDLED.value
+        self._session.commit()
 
         return notification

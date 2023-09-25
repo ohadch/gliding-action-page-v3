@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
     logging.basicConfig(
-        level=logging.DEBUG, format="%(asctime)s %(levelname)s %(message)s", force=True
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s", force=True
     )
 
     settings = get_settings()

@@ -26,7 +26,7 @@ import FlightEndTowDialog from "../../components/flights/FlightEndTowDialog.tsx"
 import {ORDERED_FLIGHT_STATES} from "../../utils/consts.ts";
 import {isFlightActive} from "../../utils/flights.ts";
 import {getGliderDisplayValue, getMemberDisplayValue, getTowAirplaneDisplayValue} from "../../utils/display.ts";
-import {createNotification} from "../../store/actions/notification.ts";
+import {createEvent} from "../../store/actions/event.ts";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -204,41 +204,24 @@ export default function DashboardPage() {
             case "Landed":
                 updatePayload.landing_at = now;
 
-                if (flight.pilot_1_id) {
-                    promises.push(new Promise(() => dispatch(createNotification({
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-ignore
-                        recipient_member_id: flight.pilot_1_id,
-                        type: "FlightSummaryForPilot",
-                        config: {
-                            flight_ids: [flight.id],
-                        }
-                    }))))
-                }
-
-                if (flight.pilot_2_id) {
-                    promises.push(new Promise((resolve, reject) => dispatch(createNotification({
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-ignore
-                        recipient_member_id: flight.pilot_2_id,
-                        type: "FlightSummaryForPilot",
-                        config: {
-                            flight_ids: [flight.id],
-                        }
-                    }))))
-                }
+                promises.push(new Promise(() => dispatch(createEvent({
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    type: "flight_landed",
+                    payload: {
+                        flight_id: flightId,
+                    }
+                }))))
 
                 break;
             default:
                 throw new Error(`Unknown flight state: ${state}`)
         }
 
-        promises.push(new Promise((resolve, reject) => {
+        promises.push(new Promise(() => {
             dispatch(updateFlight({
                 flightId,
                 updatePayload,
-                resolve,
-                reject,
             }))
         }))
 
