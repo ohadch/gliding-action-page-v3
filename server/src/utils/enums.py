@@ -59,6 +59,7 @@ class FlightState(enum.Enum):
 
 
 class NotificationMethod(enum.Enum):
+    CONSOLE = "console"
     EMAIL = "email"
 
 

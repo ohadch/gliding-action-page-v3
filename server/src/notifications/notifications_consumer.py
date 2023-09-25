@@ -1,5 +1,6 @@
 import datetime
 import logging
+import os
 import time
 
 from src import Notification
@@ -23,7 +24,9 @@ class NotificationsConsumer:
         Run notifications consumer
         """
         self._logger.info(
-            f"The notifications consumer is running, interval: {self._interval_seconds} seconds"
+            f"The notifications consumer is running, "
+            f"interval: {self._interval_seconds} seconds, "
+            f"default handler: {os.environ['DEFAULT_NOTIFICATION_METHOD']}"
         )
 
         while True:
@@ -51,7 +54,8 @@ class NotificationsConsumer:
         try:
             handler = notification_handler_factory(notification=notification)
             self._logger.info(
-                f"Sending notification {notification.id} to recipient: {notification.recipient_member.email}"
+                f"Sending notification {notification.id} to recipient: {notification.recipient_member.email}, "
+                f"handler: {handler.__class__.__name__}"
             )
             handler.send_to_recipient(notification=notification)
             notification.sent_at = datetime.datetime.utcnow()
