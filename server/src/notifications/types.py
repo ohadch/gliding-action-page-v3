@@ -3,5 +3,5 @@ from typing import List
 from pydantic import BaseModel
 
 
-class NotificationConfigSchema(BaseModel):
+class NotificationPayloadSchema(BaseModel):
     flight_ids: List[int]

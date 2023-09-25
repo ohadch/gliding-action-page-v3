@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
-from src.notifications.types import NotificationConfigSchema
+from src.notifications.types import NotificationPayloadSchema
 from src.utils.enums import NotificationMethod, NotificationType, NotificationState
 
 
@@ -15,7 +15,7 @@ class NotificationSchema(BaseModel):
     recipient_member_id: int
     method: NotificationMethod
     type: NotificationType
-    config: NotificationConfigSchema
+    payload: NotificationPayloadSchema
     state: NotificationState
 
     model_config = ConfigDict(from_attributes=True)
@@ -23,14 +23,14 @@ class NotificationSchema(BaseModel):
 
 class NotificationCreateSchema(BaseModel):
     recipient_member_id: int
-    config: NotificationConfigSchema
+    payload: NotificationPayloadSchema
     type: NotificationType
     method: Optional[NotificationMethod] = None
 
 
 class NotificationUpdateSchema(BaseModel):
     recipient_member_id: Optional[int] = None
-    config: Optional[NotificationConfigSchema] = None
+    payload: Optional[NotificationPayloadSchema] = None
     type: Optional[NotificationType] = None
     method: Optional[NotificationMethod] = None
 

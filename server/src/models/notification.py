@@ -19,7 +19,7 @@ class Notification(Base):
     recipient_member_id = Column(Integer, ForeignKey("members.id"), nullable=False)
     method = Column(String, nullable=True)
     type = Column(String, nullable=False)
-    config = Column(JSON, nullable=False)
+    payload = Column(JSON, nullable=False)
     state = Column(String, nullable=False, default=NotificationState.PENDING)
 
     recipient_member = relationship("Member")

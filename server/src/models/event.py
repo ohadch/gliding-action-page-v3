@@ -11,7 +11,7 @@ class Event(Base):
     id = Column(Integer, primary_key=True, index=True)
     type: str = Column(String, nullable=False)
     state: str = Column(String, nullable=False, default=EventState.PENDING)
-    payload: str = Column(JSON, nullable=False)
+    payload: dict = Column(JSON, nullable=False)
     created_at: str = Column(String, nullable=False)
     handled_at: str = Column(String, nullable=True)
     num_handling_attempts: int = Column(Integer, nullable=False, default=0)
