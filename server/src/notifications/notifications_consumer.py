@@ -12,6 +12,13 @@ class NotificationsConsumer:
         self._logger = logging.getLogger(__name__)
 
     def run(self):
+        """
+        Run notifications consumer
+        """
+        self._logger.info(
+            f"The notifications consumer is running, interval: {self._interval_seconds} seconds"
+        )
+
         while True:
             self._process_notifications()
             self._logger.debug(f"Sleeping for {self._interval_seconds} seconds...")
@@ -43,5 +50,5 @@ class NotificationsConsumer:
         Get next notification to be sent
         """
         session = SessionLocal()
-        notification = session.query(Notification).filter_by(sent=False).first()
+        notification = session.query(Notification).filter_by(sent_at=None).first()
         return notification
