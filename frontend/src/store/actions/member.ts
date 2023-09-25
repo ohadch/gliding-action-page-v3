@@ -25,7 +25,11 @@ export const fetchMembers = createAsyncThunk<MemberSchema[], void, { rejectValue
             return thunkAPI.rejectWithValue("Error fetching members");
         }
 
-        return data;
+        return [...data].sort((a, b) => {
+            const aFullName = `${a.first_name} ${a.last_name}`;
+            const bFullName = `${b.first_name} ${b.last_name}`;
+            return aFullName.localeCompare(bFullName);
+        });
     }
 )
 
