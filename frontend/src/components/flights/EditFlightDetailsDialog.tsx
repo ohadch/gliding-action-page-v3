@@ -57,7 +57,7 @@ export default function EditFlightDetailsDialog({
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const {action} = useSelector((state: RootState) => state.currentAction)
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
 
     const {
         t

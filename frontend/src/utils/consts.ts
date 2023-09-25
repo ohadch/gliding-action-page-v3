@@ -53,6 +53,10 @@ export const TEXTS_HEBREW = {
     FLIGHT_HAS_BUSY_ENTITIES_ALERT: "לא ניתן לשגר את הטיסה עד שהבאים מתפנים",
     SOLO_FLIGHT: "טיסת סולו",
     TOW_RELEASE_TIME: "שעת סיום הגרירה",
+    ACTION_NOT_SELECTED_MESSAGE: "יש לבחור פעולה על מנת להתחיל.",
+    ACTION_NOT_SELECTED_TITLE: "לא נבחרה פעולה",
+    QUIT_ACTION: "צא מהפעולה",
+    INSTRUCTION_GLIDER: "דאון ההדרכה",
 }
 
 

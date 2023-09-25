@@ -8,7 +8,6 @@ import {
     FormControl, Select, InputLabel, MenuItem
 } from "@mui/material";
 import {useEffect, useState} from "react";
-import {ActionSchema} from "../../lib/types.ts";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
@@ -17,13 +16,15 @@ import {fetchActions} from "../../store/actions/action.ts";
 export interface SelectActionDialogProps {
     open: boolean
     onClose: () => void
-    onActionSelected: (action: ActionSchema) => void
+    onActionSelected: (actionId: number) => void
+    onQuitAction: () => void
 }
 
-export default function SelectActionDialog({open, onClose, onActionSelected}: SelectActionDialogProps) {
+export default function SelectActionDialog({open, onQuitAction, onClose, onActionSelected}: SelectActionDialogProps) {
     const dispatch = useAppDispatch();
     const { fetchInProgress, actions } = useSelector((state: RootState) => state.actions)
-    const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
+    const { actionId: currentActionId} = useSelector((state: RootState) => state.currentAction)
+
     const {
         t
     } = useTranslation()
@@ -34,9 +35,7 @@ export default function SelectActionDialog({open, onClose, onActionSelected}: Se
         }
     });
 
-    const [action, setAction] = useState<ActionSchema | undefined>(
-        currentActionStoreState.action
-    );
+    const [actionId, setActionId] = useState<number | undefined>(currentActionId);
 
 
     return (
@@ -64,11 +63,11 @@ export default function SelectActionDialog({open, onClose, onActionSelected}: Se
                         <Select
                             labelId="action-label"
                             id="action"
-                            value={action?.id || ""}
+                            value={actionId}
                             label={t("ACTION")}
                             onChange={(e) => {
                                 const action = actions?.find((action) => action.id === e.target.value);
-                                setAction(action);
+                                setActionId(action?.id);
                             }}
                         >
                             {actions?.map((action) => (
@@ -82,13 +81,16 @@ export default function SelectActionDialog({open, onClose, onActionSelected}: Se
                 <Button onClick={onClose}>
                     {t("CANCEL")}
                 </Button>
+                <Button onClick={onQuitAction}>
+                    {t("QUIT_ACTION")}
+                </Button>
                 <Button onClick={
                     () => {
-                        if (!action) {
+                        if (!actionId) {
                             console.warn("No action selected")
                             return;
                         }
-                        onActionSelected(action);
+                        onActionSelected(actionId);
                         onClose();
                     }
                 }>

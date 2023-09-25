@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import FlightsTable from "../../components/flights/FlightsTable.tsx";
 import {useCallback, useEffect, useState} from "react";
-import Box from "@mui/material/Box";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
@@ -27,6 +26,7 @@ import {ORDERED_FLIGHT_STATES} from "../../utils/consts.ts";
 import {isFlightActive} from "../../utils/flights.ts";
 import {getGliderDisplayValue, getMemberDisplayValue, getTowAirplaneDisplayValue} from "../../utils/display.ts";
 import {createEvent} from "../../store/actions/event.ts";
+import ActionConfigurationComponent from "../../components/actions/ActionConfigurationComponent.tsx";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -42,7 +42,8 @@ const MenuProps = {
 export default function DashboardPage() {
     const [flightCreationWizardDialogOpen, setFlightCreationWizardDialogOpen] = useState<boolean>(false);
     const {t} = useTranslation();
-    const {flights, fetchingFlightsInProgress, action} = useSelector((state: RootState) => state.currentAction);
+    const {flights, fetchingFlightsInProgress} = useSelector((state: RootState) => state.currentAction);
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
     const {members} = useSelector((state: RootState) => state.members);
     const {gliders} = useSelector((state: RootState) => state.gliders);
     const {towAirplanes} = useSelector((state: RootState) => state.towAirplanes);
@@ -363,14 +364,21 @@ export default function DashboardPage() {
             {renderEndTowDialog()}
             {renderFlightCreationWizardDialog()}
 
-            <Grid container spacing={2}>
-                <Grid mb={2}>
-                    <Box sx={{display: "flex", justifyContent: "flex-end"}}>
-                        <Button variant="contained" color="primary"
+            <Grid>
+                <Grid container mb={2} spacing={1}>
+                    <Grid item xs={1}>
+                        <Button variant="contained" color="primary" style={{
+                            height: "100%",
+                            width: "100%"
+                        }}
                                 onClick={() => setFlightCreationWizardDialogOpen(true)}>
                             {t("NEW_FLIGHT")}
                         </Button>
-                        <FormControl sx={{m: 1, width: 300}}>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <FormControl style={{
+                            width: "100%",
+                        }}>
                             <InputLabel id="flight-state-select-label">{t("FLIGHT_STATES")}</InputLabel>
                             <Select
                                 labelId="flight-state-select-label"
@@ -390,34 +398,39 @@ export default function DashboardPage() {
                                 ))}
                             </Select>
                         </FormControl>
-                    </Box>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <ActionConfigurationComponent/>
+                    </Grid>
                 </Grid>
 
 
-                <FlightsTable
-                    shownFlightStates={shownFlightStates}
-                    setDuplicateFlight={(flight) => {
-                        setEditFlightDetailsDialogOpen(true);
-                        setEditedFlightData({...flight})
-                    }}
-                    setEditedFlight={(flightId, flight) => {
-                        const actionId = action?.id;
+                <Grid container>
+                    <FlightsTable
+                        shownFlightStates={shownFlightStates}
+                        setDuplicateFlight={(flight) => {
+                            setEditFlightDetailsDialogOpen(true);
+                            setEditedFlightData({...flight})
+                        }}
+                        setEditedFlight={(flightId, flight) => {
+                            const actionId = action?.id;
 
-                        if (!actionId) {
-                            return;
-                        }
+                            if (!actionId) {
+                                return;
+                            }
 
-                        setEditFlightDetailsDialogOpen(true);
-                        setEditedFlightId(flightId);
-                        setEditedFlightData({
-                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                            // @ts-ignore
-                            action_id: actionId,
-                            ...flight
-                        })
-                    }}
-                    onFlightStateUpdated={onFlightStateUpdated}
-                />
+                            setEditFlightDetailsDialogOpen(true);
+                            setEditedFlightId(flightId);
+                            setEditedFlightData({
+                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                                // @ts-ignore
+                                action_id: actionId,
+                                ...flight
+                            })
+                        }}
+                        onFlightStateUpdated={onFlightStateUpdated}
+                    />
+                </Grid>
             </Grid>
         </>
     )
