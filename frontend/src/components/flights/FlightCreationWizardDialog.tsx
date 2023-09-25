@@ -40,7 +40,12 @@ export interface FlightCreationWizardDialogProps {
     onAdvancedEdit: (flight: FlightCreateSchema) => void
 }
 
-export default function FlightCreationWizardDialog({open, onCancel, onSubmit, onAdvancedEdit}: FlightCreationWizardDialogProps) {
+export default function FlightCreationWizardDialog({
+                                                       open,
+                                                       onCancel,
+                                                       onSubmit,
+                                                       onAdvancedEdit
+                                                   }: FlightCreationWizardDialogProps) {
     const dispatch = useAppDispatch();
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
@@ -88,6 +93,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
     const [towPilotId, setTowPilotId] = useState<number | null | undefined>();
     const [flightType, setFlightType] = useState<FlightType | null | undefined>();
     const [payersType, setPayersType] = useState<PayersType | null | undefined>()
+    const [isSoloFlightOfPrivatePilot, setIsSoloFlightOfPrivatePilot] = useState<boolean>(false)
 
     const isMemberBusy = (memberId: number) => {
         const activePilots = [
@@ -132,10 +138,10 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
         const glider = getGliderById(gliderId);
 
         if (!glider) {
-                return;
-            }
+            return;
+        }
 
-        if (glider.num_seats === 1) {
+        if (glider.num_seats === 1 || (flightType && flightType === "Solo") || isSoloFlightOfPrivatePilot) {
             if (!payersType) {
                 return setPayersType("FirstPilot")
             }
@@ -203,6 +209,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
         getGliderById,
         getMemberById,
         membersStoreState.membersRoles,
+        isSoloFlightOfPrivatePilot,
     ]);
 
 
@@ -233,7 +240,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
                 return RenderedInputName.PILOT_1;
             }
 
-            if (flightType !== "Solo" && !pilot2Id) {
+            if (flightType !== "Solo" && !pilot2Id && !isSoloFlightOfPrivatePilot) {
                 return RenderedInputName.PILOT_2;
             }
         }
@@ -361,27 +368,38 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
                 return (
                     <FormGroup>
                         <FormControl>
-                            <Autocomplete
-                                id="pilot2"
-                                options={getPilot2Options().filter((member) => !isMemberBusy(member.id))}
-                                value={pilot2Id ? getMemberById(pilot2Id) : null}
-                                onChange={(_, newValue) => setPilot2Id(newValue?.id)}
-                                getOptionLabel={(option) => getMemberDisplayValue(
-                                    option,
-                                    membersStoreState.membersRoles?.filter((role) => role.member_id === option.id) || [],
-                                    true
-                                )}
-                                open={autocompleteOpen}
-                                onOpen={() => setAutocompleteOpen(true)}
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            label={t("PILOT_2")}
-                                        />
-                                    )
-                                }}
-                            />
+                            <Grid container alignItems="center">
+                                <Grid item xs={7} ml={1}>
+                                    <Autocomplete
+                                        id="pilot2"
+                                        options={getPilot2Options().filter((member) => !isMemberBusy(member.id))}
+                                        value={pilot2Id ? getMemberById(pilot2Id) : null}
+                                        onChange={(_, newValue) => setPilot2Id(newValue?.id)}
+                                        getOptionLabel={(option) => getMemberDisplayValue(
+                                            option,
+                                            membersStoreState.membersRoles?.filter((role) => role.member_id === option.id) || [],
+                                            true
+                                        )}
+                                        open={autocompleteOpen}
+                                        onOpen={() => setAutocompleteOpen(true)}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label={t("PILOT_2")}
+                                            />
+                                        )}
+                                    />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Button
+                                        variant={"text"}
+                                        onClick={() => setIsSoloFlightOfPrivatePilot(!isSoloFlightOfPrivatePilot)}
+                                        fullWidth
+                                    >
+                                        {t("SOLO_FLIGHT")}?
+                                    </Button>
+                                </Grid>
+                            </Grid>
                         </FormControl>
                     </FormGroup>
                 )
@@ -508,6 +526,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
                         setTowAirplaneId(null);
                         setTowPilotId(null);
                         setPayersType(null);
+                        setIsSoloFlightOfPrivatePilot(false);
                     }}>
                         {t("CLEAR")}
                     </Button>
