@@ -91,7 +91,7 @@ class FlightSummaryForPilotEmailNotificationHandler(EmailNotificationHandler):
         )
 
         html = f"""
-            <table>
+            <table dir="rtl">
                 <tr>שלום,</tr>
                 <tr></tr>
                 <tr>מצורף סיכום לטיסתך מתאריך {flight.take_off_at.strftime('%Y-%m-%d')}.</tr>
