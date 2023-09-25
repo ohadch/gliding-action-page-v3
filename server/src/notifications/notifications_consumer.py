@@ -4,10 +4,15 @@ import time
 from src import Notification
 from src.database import SessionLocal
 from src.notifications.handlers import notification_handler_factory
+from src.utils.enums import NotificationState
 
 
 class NotificationsConsumer:
-    def __init__(self, interval_seconds: int = 10):
+    def __init__(
+        self,
+        interval_seconds: int = 10,
+        backoff_after_num_attempts: int = 3,
+    ):
         self._interval_seconds = interval_seconds
         self._logger = logging.getLogger(__name__)
 
@@ -31,7 +36,10 @@ class NotificationsConsumer:
         notification = self._get_next_notification()
 
         if notification:
+            self._logger.debug(f"Processing notification: {notification.id}")
             self._send_notification(notification)
+        else:
+            self._logger.debug("No notifications to process")
 
     def _send_notification(self, notification: Notification):
         """
@@ -50,5 +58,17 @@ class NotificationsConsumer:
         Get next notification to be sent
         """
         session = SessionLocal()
-        notification = session.query(Notification).filter_by(sent_at=None).first()
+        notification = (
+            session.query(Notification)
+            .filter(
+                Notification.sent_at is None,
+                Notification.state
+                in [
+                    NotificationState.PENDING.value,
+                    NotificationState.FAILED.value,
+                ],
+                Notification.num_sending_attempts < 3,
+            )
+            .first()
+        )
         return notification
