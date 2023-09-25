@@ -101,53 +101,53 @@ export interface paths {
      */
     delete: operations["delete_active_tow_airplanes__id___delete"];
   };
-  "/emails/search": {
+  "/notifications/search": {
     /**
-     * Search emails
-     * @description Search emails
+     * Search notifications
+     * @description Search notifications
      * :param page: Page number
      * :param page_size: Page size
      * :param filters: Filters
      * :param db: Database session
      * :param settings: Settings
-     * :return: List of emails
+     * :return: List of notifications
      */
-    post: operations["search_emails_search_post"];
+    post: operations["search_notifications_search_post"];
   };
-  "/emails": {
+  "/notifications": {
     /**
-     * Create emails
-     * @description Create email
+     * Create notifications
+     * @description Create notification
      * :param data: Data
      * :param db: Database session
      */
-    post: operations["create_emails_post"];
+    post: operations["create_notifications_post"];
   };
-  "/emails/{id_}": {
+  "/notifications/{id_}": {
     /**
-     * Get emails by ID
-     * @description Read email by ID
-     * :param id_: Email ID
+     * Get notifications by ID
+     * @description Read notification by ID
+     * :param id_: Notification ID
      * :param db: Database session
-     * :return: Email
+     * :return: Notification
      */
-    get: operations["get_by_id_emails__id___get"];
+    get: operations["get_by_id_notifications__id___get"];
     /**
-     * Update emails
-     * @description Update email
-     * :param id_: Email ID
+     * Update notifications
+     * @description Update notification
+     * :param id_: Notification ID
      * :param data: Data to update
      * :param db: Database session
-     * :return: Updated email
+     * :return: Updated notification
      */
-    put: operations["update_emails__id___put"];
+    put: operations["update_notifications__id___put"];
     /**
-     * Delete emails
-     * @description Delete email
-     * :param id_: Email ID
+     * Delete notifications
+     * @description Delete notification
+     * :param id_: Notification ID
      * :param db: Database session
      */
-    delete: operations["delete_emails__id___delete"];
+    delete: operations["delete_notifications__id___delete"];
   };
   "/flights/search": {
     /**
@@ -541,50 +541,6 @@ export interface components {
       /** Airplane Id */
       airplane_id?: number | null;
     };
-    /** EmailCreateSchema */
-    EmailCreateSchema: {
-      /**
-       * Sent At
-       * Format: date-time
-       */
-      sent_at: string;
-      /** Recipient Member Id */
-      recipient_member_id: number;
-      /** Flight Id */
-      flight_id?: number | null;
-    };
-    /** EmailSchema */
-    EmailSchema: {
-      /** Id */
-      id: number;
-      /**
-       * Sent At
-       * Format: date-time
-       */
-      sent_at: string;
-      /** Recipient Member Id */
-      recipient_member_id: number;
-      /** Flight Id */
-      flight_id: number | null;
-    };
-    /** EmailSearchSchema */
-    EmailSearchSchema: {
-      /** Sent At */
-      sent_at: string | null;
-      /** Recipient Member Id */
-      recipient_member_id?: number | null;
-      /** Flight Id */
-      flight_id?: number | null;
-    };
-    /** EmailUpdateSchema */
-    EmailUpdateSchema: {
-      /** Sent At */
-      sent_at: string | null;
-      /** Recipient Member Id */
-      recipient_member_id?: number | null;
-      /** Flight Id */
-      flight_id?: number | null;
-    };
     /** FlightCreateSchema */
     FlightCreateSchema: {
       /** Action Id */
@@ -861,6 +817,70 @@ export interface components {
       email?: string | null;
       /** Phone Number */
       phone_number?: string | null;
+    };
+    /** NotificationConfigSchema */
+    NotificationConfigSchema: {
+      /** Flight Ids */
+      flight_ids: number[];
+    };
+    /** NotificationCreateSchema */
+    NotificationCreateSchema: {
+      /** Recipient Member Id */
+      recipient_member_id: number;
+      config: components["schemas"]["NotificationConfigSchema"];
+      type: components["schemas"]["NotificationType"];
+      method?: components["schemas"]["NotificationMethod"] | null;
+    };
+    /**
+     * NotificationMethod
+     * @enum {string}
+     */
+    NotificationMethod: "console" | "email";
+    /** NotificationSchema */
+    NotificationSchema: {
+      /** Id */
+      id: number;
+      /**
+       * Sent At
+       * Format: date-time
+       */
+      sent_at: string;
+      /** Num Sending Attempts */
+      num_sending_attempts: number;
+      /** Last Attempt At */
+      last_attempt_at: string | null;
+      /** Recipient Member Id */
+      recipient_member_id: number;
+      method: components["schemas"]["NotificationMethod"];
+      type: components["schemas"]["NotificationType"];
+      config: components["schemas"]["NotificationConfigSchema"];
+      state: components["schemas"]["NotificationState"];
+    };
+    /** NotificationSearchSchema */
+    NotificationSearchSchema: {
+      /** Recipient Member Id */
+      recipient_member_id?: number | null;
+      config?: components["schemas"]["NotificationConfigSchema"] | null;
+      type?: components["schemas"]["NotificationType"] | null;
+      method?: components["schemas"]["NotificationMethod"] | null;
+    };
+    /**
+     * NotificationState
+     * @enum {string}
+     */
+    NotificationState: "pending" | "being_handled" | "sent" | "failed";
+    /**
+     * NotificationType
+     * @enum {string}
+     */
+    NotificationType: "FlightSummaryForPilot" | "DailySummaryForObserver" | "DailySummaryForTowPilot" | "DailySummaryForCfi";
+    /** NotificationUpdateSchema */
+    NotificationUpdateSchema: {
+      /** Recipient Member Id */
+      recipient_member_id?: number | null;
+      config?: components["schemas"]["NotificationConfigSchema"] | null;
+      type?: components["schemas"]["NotificationType"] | null;
+      method?: components["schemas"]["NotificationMethod"] | null;
     };
     /**
      * PayersType
@@ -1242,16 +1262,16 @@ export interface operations {
     };
   };
   /**
-   * Search emails
-   * @description Search emails
+   * Search notifications
+   * @description Search notifications
    * :param page: Page number
    * :param page_size: Page size
    * :param filters: Filters
    * :param db: Database session
    * :param settings: Settings
-   * :return: List of emails
+   * :return: List of notifications
    */
-  search_emails_search_post: {
+  search_notifications_search_post: {
     parameters: {
       query?: {
         page?: number;
@@ -1260,14 +1280,14 @@ export interface operations {
     };
     requestBody?: {
       content: {
-        "application/json": components["schemas"]["EmailSearchSchema"] | null;
+        "application/json": components["schemas"]["NotificationSearchSchema"] | null;
       };
     };
     responses: {
       /** @description Successful Response */
       200: {
         content: {
-          "application/json": components["schemas"]["EmailSchema"][];
+          "application/json": components["schemas"]["NotificationSchema"][];
         };
       };
       /** @description Validation Error */
@@ -1279,22 +1299,22 @@ export interface operations {
     };
   };
   /**
-   * Create emails
-   * @description Create email
+   * Create notifications
+   * @description Create notification
    * :param data: Data
    * :param db: Database session
    */
-  create_emails_post: {
+  create_notifications_post: {
     requestBody: {
       content: {
-        "application/json": components["schemas"]["EmailCreateSchema"];
+        "application/json": components["schemas"]["NotificationCreateSchema"];
       };
     };
     responses: {
       /** @description Successful Response */
       200: {
         content: {
-          "application/json": components["schemas"]["EmailSchema"];
+          "application/json": components["schemas"]["NotificationSchema"];
         };
       };
       /** @description Validation Error */
@@ -1306,13 +1326,13 @@ export interface operations {
     };
   };
   /**
-   * Get emails by ID
-   * @description Read email by ID
-   * :param id_: Email ID
+   * Get notifications by ID
+   * @description Read notification by ID
+   * :param id_: Notification ID
    * :param db: Database session
-   * :return: Email
+   * :return: Notification
    */
-  get_by_id_emails__id___get: {
+  get_by_id_notifications__id___get: {
     parameters: {
       path: {
         id_: number;
@@ -1322,7 +1342,7 @@ export interface operations {
       /** @description Successful Response */
       200: {
         content: {
-          "application/json": components["schemas"]["EmailSchema"];
+          "application/json": components["schemas"]["NotificationSchema"];
         };
       };
       /** @description Validation Error */
@@ -1334,14 +1354,14 @@ export interface operations {
     };
   };
   /**
-   * Update emails
-   * @description Update email
-   * :param id_: Email ID
+   * Update notifications
+   * @description Update notification
+   * :param id_: Notification ID
    * :param data: Data to update
    * :param db: Database session
-   * :return: Updated email
+   * :return: Updated notification
    */
-  update_emails__id___put: {
+  update_notifications__id___put: {
     parameters: {
       path: {
         id_: number;
@@ -1349,14 +1369,14 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["EmailUpdateSchema"];
+        "application/json": components["schemas"]["NotificationUpdateSchema"];
       };
     };
     responses: {
       /** @description Successful Response */
       200: {
         content: {
-          "application/json": components["schemas"]["EmailSchema"];
+          "application/json": components["schemas"]["NotificationSchema"];
         };
       };
       /** @description Validation Error */
@@ -1368,12 +1388,12 @@ export interface operations {
     };
   };
   /**
-   * Delete emails
-   * @description Delete email
-   * :param id_: Email ID
+   * Delete notifications
+   * @description Delete notification
+   * :param id_: Notification ID
    * :param db: Database session
    */
-  delete_emails__id___delete: {
+  delete_notifications__id___delete: {
     parameters: {
       path: {
         id_: number;
