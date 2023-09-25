@@ -1,12 +1,9 @@
 import os
 
 from src import Notification
-from src.notifications.handlers.console_notification_handler import (
-    ConsoleNotificationHandler,
-)
-from src.notifications.handlers.email_notification_handler import (
-    EmailNotificationHandler,
-)
+
+from src.notifications.handlers.console import console_notification_handler_factory
+from src.notifications.handlers.email import email_notification_handler_factory
 from src.notifications.handlers.notification_handler import NotificationHandler
 from src.utils.enums import NotificationMethod
 
@@ -29,10 +26,10 @@ def notification_handler_factory(
 
     try:
         return {
-            NotificationMethod.EMAIL: lambda: EmailNotificationHandler(
+            NotificationMethod.EMAIL: lambda: email_notification_handler_factory(
                 notification=notification
             ),
-            NotificationMethod.CONSOLE: lambda: ConsoleNotificationHandler(
+            NotificationMethod.CONSOLE: lambda: console_notification_handler_factory(
                 notification=notification
             ),
         }[notification_method]()
