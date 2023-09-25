@@ -39,20 +39,30 @@ class NotificationsConsumer:
 
         if notification:
             self._logger.debug(f"Processing notification: {notification.id}")
-            self._send_notification(notification)
+            self._handle_notification(notification)
         else:
             self._logger.debug("No notifications to process")
 
-    def _send_notification(self, notification: Notification):
+    def _handle_notification(self, notification: Notification):
         """
         Send notification to recipient
         :param notification: The notification
         """
-        handler = notification_handler_factory(notification=notification)
-        self._logger.info(
-            f"Sending notification {notification.id} to recipient: {notification.recipient_member.email}"
-        )
-        handler.send_to_recipient(notification=notification)
+        try:
+            handler = notification_handler_factory(notification=notification)
+            self._logger.info(
+                f"Sending notification {notification.id} to recipient: {notification.recipient_member.email}"
+            )
+            handler.send_to_recipient(notification=notification)
+            notification.sent_at = datetime.datetime.utcnow()
+            notification.state = NotificationState.SENT.value
+        except Exception as e:
+            self._logger.exception(f"Failed to send notification: {e}")
+            notification.state = NotificationState.FAILED.value
+        finally:
+            session = SessionLocal()
+            session.add(notification)
+            session.commit()
 
     def _get_next_notification(self):
         """
