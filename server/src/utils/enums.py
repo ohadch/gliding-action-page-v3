@@ -62,6 +62,13 @@ class NotificationMethod(enum.Enum):
     EMAIL = "email"
 
 
+class NotificationState(enum.Enum):
+    PENDING = "pending"
+    BEING_HANDLED = "being_handled"
+    SENT = "sent"
+    FAILED = "failed"
+
+
 class NotificationType(enum.Enum):
     FlightSummaryForPilot = "FlightSummaryForPilot"
     DailySummaryForObserver = "DailySummaryForObserver"

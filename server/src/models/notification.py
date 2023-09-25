@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, DateTime, ForeignKey, JSON, String
 from sqlalchemy.orm import relationship
 
 from src.database import Base
+from src.utils.enums import NotificationState
 
 
 class Notification(Base):
@@ -16,5 +17,6 @@ class Notification(Base):
     method = Column(String, nullable=True)
     type = Column(String, nullable=False)
     config = Column(JSON, nullable=False)
+    state = Column(String, nullable=False, default=NotificationState.PENDING)
 
     recipient_member = relationship("Member")
