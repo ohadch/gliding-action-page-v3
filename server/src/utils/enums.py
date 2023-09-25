@@ -70,6 +70,18 @@ class NotificationState(enum.Enum):
     FAILED = "failed"
 
 
+class EventType(enum.Enum):
+    FLIGHT_LANDED = "flight_landed"
+    ACTION_CLOSED = "action_closed"
+
+
+class EventState(enum.Enum):
+    PENDING = "pending"
+    BEING_HANDLED = "being_handled"
+    HANDLED = "handled"
+    FAILED = "failed"
+
+
 class NotificationType(enum.Enum):
     FlightSummaryForPilot = "FlightSummaryForPilot"
     DailySummaryForObserver = "DailySummaryForObserver"

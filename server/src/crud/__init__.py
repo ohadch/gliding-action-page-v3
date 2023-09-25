@@ -1,5 +1,6 @@
 from .action import ActionCrud
 from .active_tow_airplane import ActiveTowAirplaneCrud
+from .event import EventCrud
 from .notification import NotificationCrud
 from .flight import FlightCrud
 from .glider import GliderCrud

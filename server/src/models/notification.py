@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy import Column, Integer, DateTime, ForeignKey, JSON, String
 from sqlalchemy.orm import relationship
 
@@ -10,6 +12,7 @@ class Notification(Base):
     __tablename__ = "notifications"
 
     id = Column(Integer, primary_key=True, index=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     sent_at = Column(DateTime, nullable=True)
     num_sending_attempts = Column(Integer, nullable=False, default=0)
     last_sending_attempt_at = Column(DateTime, nullable=True)

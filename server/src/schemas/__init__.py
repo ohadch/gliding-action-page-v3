@@ -16,6 +16,12 @@ from .notification import (
     NotificationUpdateSchema,
     NotificationSearchSchema,
 )
+from .event import (
+    EventSchema,
+    EventCreateSchema,
+    EventUpdateSchema,
+    EventSearchSchema,
+)
 from .flight import (
     FlightSchema,
     FlightCreateSchema,

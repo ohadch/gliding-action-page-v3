@@ -26,6 +26,7 @@ import FlightEndTowDialog from "../../components/flights/FlightEndTowDialog.tsx"
 import {ORDERED_FLIGHT_STATES} from "../../utils/consts.ts";
 import {isFlightActive} from "../../utils/flights.ts";
 import {getGliderDisplayValue, getMemberDisplayValue, getTowAirplaneDisplayValue} from "../../utils/display.ts";
+import {createNotification} from "../../store/actions/notification.ts";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -42,9 +43,9 @@ export default function DashboardPage() {
     const [flightCreationWizardDialogOpen, setFlightCreationWizardDialogOpen] = useState<boolean>(false);
     const {t} = useTranslation();
     const {flights, fetchingFlightsInProgress, action} = useSelector((state: RootState) => state.currentAction);
-    const { members } = useSelector((state: RootState) => state.members);
-    const { gliders } = useSelector((state: RootState) => state.gliders);
-    const { towAirplanes } = useSelector((state: RootState) => state.towAirplanes);
+    const {members} = useSelector((state: RootState) => state.members);
+    const {gliders} = useSelector((state: RootState) => state.gliders);
+    const {towAirplanes} = useSelector((state: RootState) => state.towAirplanes);
     const dispatch = useAppDispatch();
     const [editedFlightId, setEditedFlightId] = useState<number | null>(null);
     const [editedFlightData, setEditedFlightData] = useState<FlightCreateSchema | null>(null);
@@ -157,6 +158,8 @@ export default function DashboardPage() {
 
         const now = moment().utcOffset(0, true).toISOString();
 
+        const promises = [];
+
         switch (state) {
             case "Draft":
                 updatePayload.take_off_at = null;
@@ -200,15 +203,46 @@ export default function DashboardPage() {
                 break;
             case "Landed":
                 updatePayload.landing_at = now;
+
+                if (flight.pilot_1_id) {
+                    promises.push(new Promise(() => dispatch(createNotification({
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        recipient_member_id: flight.pilot_1_id,
+                        type: "FlightSummaryForPilot",
+                        config: {
+                            flight_ids: [flight.id],
+                        }
+                    }))))
+                }
+
+                if (flight.pilot_2_id) {
+                    promises.push(new Promise((resolve, reject) => dispatch(createNotification({
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        recipient_member_id: flight.pilot_2_id,
+                        type: "FlightSummaryForPilot",
+                        config: {
+                            flight_ids: [flight.id],
+                        }
+                    }))))
+                }
+
                 break;
             default:
                 throw new Error(`Unknown flight state: ${state}`)
         }
 
-        dispatch(updateFlight({
-            flightId,
-            updatePayload,
+        promises.push(new Promise((resolve, reject) => {
+            dispatch(updateFlight({
+                flightId,
+                updatePayload,
+                resolve,
+                reject,
+            }))
         }))
+
+        return Promise.all(promises)
     }
 
     function renderEditFlightDialog() {
@@ -265,7 +299,6 @@ export default function DashboardPage() {
             />
         )
     }
-
 
     function renderFlightCreationWizardDialog() {
         return flightCreationWizardDialogOpen && (

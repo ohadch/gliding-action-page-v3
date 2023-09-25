@@ -1,5 +1,6 @@
 from .action import Action
 from .active_tow_airplane import ActiveTowAirplane
+from .event import Event
 from .flight import Flight
 from .glider import Glider
 from .glider_owner import GliderOwner
