@@ -3,6 +3,9 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
+from src.notifications.types import NotificationConfigSchema
+from src.utils.enums import NotificationMethod, NotificationType, NotificationState
+
 
 class NotificationSchema(BaseModel):
     id: int
@@ -10,19 +13,26 @@ class NotificationSchema(BaseModel):
     num_sending_attempts: int
     last_attempt_at: Optional[datetime.datetime]
     recipient_member_id: int
-    content: str
+    method: NotificationMethod
+    type: NotificationType
+    config: NotificationConfigSchema
+    state: NotificationState
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class NotificationCreateSchema(BaseModel):
     recipient_member_id: int
-    content: str
+    config: NotificationConfigSchema
+    type: NotificationType
+    method: Optional[NotificationMethod] = None
 
 
 class NotificationUpdateSchema(BaseModel):
     recipient_member_id: Optional[int] = None
-    content: Optional[str] = None
+    config: Optional[NotificationConfigSchema] = None
+    type: Optional[NotificationType] = None
+    method: Optional[NotificationMethod] = None
 
 
 class NotificationSearchSchema(NotificationUpdateSchema):
