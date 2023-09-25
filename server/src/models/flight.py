@@ -11,6 +11,7 @@ class Flight(Base):
     id = Column(Integer, primary_key=True, index=True)
     action_id = Column(Integer, ForeignKey("actions.id"), nullable=False)
     take_off_at = Column(DateTime, nullable=True)
+    tow_release_at = Column(DateTime, nullable=True)
     landing_at = Column(DateTime, nullable=True)
 
     glider_id = Column(Integer, ForeignKey("gliders.id"), nullable=False)

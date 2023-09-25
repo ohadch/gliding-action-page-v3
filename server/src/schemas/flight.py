@@ -10,6 +10,7 @@ class FlightSchema(BaseModel):
     id: int
     action_id: int
     take_off_at: Optional[datetime.datetime]
+    tow_release_at: Optional[datetime.datetime] = None
     landing_at: Optional[datetime.datetime]
     glider_id: Optional[int] = None
     pilot_1_id: Optional[int] = None
@@ -30,6 +31,7 @@ class FlightSchema(BaseModel):
 class FlightCreateSchema(BaseModel):
     action_id: int
     take_off_at: Optional[datetime.datetime] = None
+    tow_release_at: Optional[datetime.datetime] = None
     landing_at: Optional[datetime.datetime] = None
     glider_id: Optional[int] = None
     pilot_1_id: Optional[int] = None
@@ -48,6 +50,7 @@ class FlightCreateSchema(BaseModel):
 class FlightUpdateSchema(BaseModel):
     action_id: Optional[int] = None
     take_off_at: Optional[datetime.datetime] = None
+    tow_release_at: Optional[datetime.datetime] = None
     landing_at: Optional[datetime.datetime] = None
     glider_id: Optional[int] = None
     pilot_1_id: Optional[int] = None

@@ -21,6 +21,7 @@ import {
     getTowTypeDisplayValue,
 } from "../../utils/display.ts";
 import {SUPPORTED_TOW_TYPES} from "../../utils/consts.ts";
+import moment from "moment/moment";
 
 enum RenderedInputName {
     TOW_TYPE = "TOW_TYPE",
@@ -143,6 +144,7 @@ export default function FlightEndTowDialog({flight, open, onCancel, onSubmit}: F
                             ...flight,
                             state: "Inflight",
                             tow_type: towType,
+                            tow_release_at: flight.tow_release_at || moment().utcOffset(0, true).toISOString()
                         })}>
                         {t("CONFIRM")}
                     </Button>
