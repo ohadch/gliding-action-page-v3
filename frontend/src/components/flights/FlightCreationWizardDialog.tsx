@@ -89,7 +89,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
     const [flightType, setFlightType] = useState<FlightType | null | undefined>();
     const [payersType, setPayersType] = useState<PayersType | null | undefined>()
 
-    const isMemberOccupied = (memberId: number) => {
+    const isMemberBusy = (memberId: number) => {
         const activePilots = [
             towPilotId,
             pilot1Id,
@@ -325,7 +325,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
                         <FormControl>
                             <Autocomplete
                                 id="pilot1"
-                                options={getPilot1Options().filter((member) => !isMemberOccupied(member.id))}
+                                options={getPilot1Options().filter((member) => !isMemberBusy(member.id))}
                                 value={pilot1Id ? getMemberById(pilot1Id) : null}
                                 onChange={(_, newValue) => setPilot1Id(newValue?.id)}
                                 getOptionLabel={(option) => getMemberDisplayValue(
@@ -353,7 +353,7 @@ export default function FlightCreationWizardDialog({open, onCancel, onSubmit, on
                         <FormControl>
                             <Autocomplete
                                 id="pilot2"
-                                options={getPilot2Options().filter((member) => !isMemberOccupied(member.id))}
+                                options={getPilot2Options().filter((member) => !isMemberBusy(member.id))}
                                 value={pilot2Id ? getMemberById(pilot2Id) : null}
                                 onChange={(_, newValue) => setPilot2Id(newValue?.id)}
                                 getOptionLabel={(option) => getMemberDisplayValue(
