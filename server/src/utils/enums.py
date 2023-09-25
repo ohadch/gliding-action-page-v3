@@ -72,6 +72,8 @@ class NotificationState(enum.Enum):
 
 class EventType(enum.Enum):
     FLIGHT_LANDED = "flight_landed"
+    FLIGHT_TOOK_OFF = "flight_took_off"
+    FLIGHT_TOW_RELEASED = "flight_tow_released"
     ACTION_CLOSED = "action_closed"
 
 
