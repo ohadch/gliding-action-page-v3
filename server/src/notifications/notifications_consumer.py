@@ -1,3 +1,4 @@
+import datetime
 import logging
 import time
 
@@ -14,6 +15,7 @@ class NotificationsConsumer:
         backoff_after_num_attempts: int = 3,
     ):
         self._interval_seconds = interval_seconds
+        self._backoff_after_num_attempts = backoff_after_num_attempts
         self._logger = logging.getLogger(__name__)
 
     def run(self):
@@ -52,8 +54,7 @@ class NotificationsConsumer:
         )
         handler.send_to_recipient(notification=notification)
 
-    @staticmethod
-    def _get_next_notification():
+    def _get_next_notification(self):
         """
         Get next notification to be sent
         """
@@ -67,8 +68,15 @@ class NotificationsConsumer:
                     NotificationState.PENDING.value,
                     NotificationState.FAILED.value,
                 ],
-                Notification.num_sending_attempts < 3,
+                Notification.num_sending_attempts < self._backoff_after_num_attempts,
             )
             .first()
         )
+
+        if notification:
+            notification.num_sending_attempts += 1
+            notification.last_sending_attempt_at = datetime.datetime.utcnow()
+            notification.state = NotificationState.BEING_HANDLED.value
+            session.commit()
+
         return notification
