@@ -277,6 +277,14 @@ export default function DashboardPage() {
                         flightId: startTowDialogFlight?.id,
                         updatePayload: flight,
                     }))
+                    dispatch(createEvent({
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        type: "flight_took_off",
+                        payload: {
+                            flight_id: startTowDialogFlight.id,
+                        }
+                    }))
                     setStartTowDialogFlight(null)
                 }}
             />
@@ -322,6 +330,14 @@ export default function DashboardPage() {
                     dispatch(updateFlight({
                         flightId: endTowDialogFlight?.id,
                         updatePayload: flight,
+                    }))
+                    dispatch(createEvent({
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        type: "flight_tow_released",
+                        payload: {
+                            flight_id: endTowDialogFlight.id,
+                        }
                     }))
                     setEndTowDialogFlight(null)
                 }}

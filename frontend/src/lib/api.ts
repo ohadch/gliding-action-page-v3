@@ -639,7 +639,7 @@ export interface components {
      * EventType
      * @enum {string}
      */
-    EventType: "flight_landed" | "action_closed";
+    EventType: "flight_landed" | "flight_took_off" | "flight_tow_released" | "action_closed";
     /** EventUpdateSchema */
     EventUpdateSchema: {
       type: components["schemas"]["EventType"] | null;
