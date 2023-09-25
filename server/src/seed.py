@@ -7,7 +7,6 @@ import logging
 from src import MemberRole, TowAirplane, Glider, Member, Action, GliderOwner
 from src.utils.enums import (
     Role,
-    ImportantMemberIds,
     AircraftTypeId,
 )
 
@@ -204,24 +203,6 @@ class SeedDataGenerator:
             email="example12@example.com",
             phone_number="0501234567",
             roles=[Role.Tester],
-        )
-
-        self._create_member(
-            id_=ImportantMemberIds.MemberGuest.value,
-            first_name="אורח",
-            last_name="חבר",
-            email="example13@example.com",
-            phone_number="",
-            roles=[],
-        )
-
-        self._create_member(
-            id_=ImportantMemberIds.ClubGuest.value,
-            first_name="אדמין",
-            last_name="מועדון",
-            email="example14@example.com",
-            phone_number="",
-            roles=[],
         )
 
         # Club single-seat glider

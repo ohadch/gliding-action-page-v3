@@ -10,7 +10,18 @@ from .active_tow_airplane import (
     ActiveTowAirplaneUpdateSchema,
     ActiveTowAirplaneSearchSchema,
 )
-from .email import EmailSchema, EmailCreateSchema, EmailUpdateSchema, EmailSearchSchema
+from .notification import (
+    NotificationSchema,
+    NotificationCreateSchema,
+    NotificationUpdateSchema,
+    NotificationSearchSchema,
+)
+from .event import (
+    EventSchema,
+    EventCreateSchema,
+    EventUpdateSchema,
+    EventSearchSchema,
+)
 from .flight import (
     FlightSchema,
     FlightCreateSchema,

@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     port: int
     default_page_size: int
     create_seed_data: bool = True
+    default_notification_method: str = "email"
+    sendgrid_api_key: str
+    sender_email: str
 
 
 @lru_cache()
