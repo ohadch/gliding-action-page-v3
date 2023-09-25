@@ -25,7 +25,7 @@ import moment from "moment/moment";
 import FlightEndTowDialog from "../../components/flights/FlightEndTowDialog.tsx";
 import {ORDERED_FLIGHT_STATES} from "../../utils/consts.ts";
 import {isFlightActive} from "../../utils/flights.ts";
-import {getMemberDisplayValue, getTowAirplaneDisplayValue} from "../../utils/display.ts";
+import {getGliderDisplayValue, getMemberDisplayValue, getTowAirplaneDisplayValue} from "../../utils/display.ts";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -53,15 +53,18 @@ export default function DashboardPage() {
     const [endTowDialogFlight, setEndTowDialogFlight] = useState<FlightSchema | null>(null);
     const [shownFlightStates, setShownFlightStates] = useState<FlightState[]>(["Draft", "Tow", "Inflight"]);
 
-    const activeFlights = useSelector((state: RootState) => state.currentAction.flights?.filter((flight) => isFlightActive(flight)));
-    const busyGliders = useCallback(() => activeFlights?.map((flight) => flight.glider_id).filter(Boolean) || [] as number[], [activeFlights])
-    const busyTowAirplanes = useCallback(() => activeFlights?.map((flight) => flight.tow_airplane_id).filter(Boolean) || [] as number [], [activeFlights]);
-    const busyMembers = useCallback(
-        () => activeFlights?.map((flight) => [flight.pilot_1_id, flight.pilot_2_id, flight.tow_pilot_id])
+    const flightsInTowState = flights?.filter((flight) => flight.state === "Tow");
+    const flightsInAnyFlightState = flights?.filter((flight) => isFlightActive(flight));
+    const busyGliders = useCallback(() => flightsInAnyFlightState?.map((flight) => flight.glider_id).filter(Boolean) || [] as number[], [flightsInAnyFlightState])
+    const busyTowAirplanes = useCallback(() => flightsInTowState?.map((flight) => flight.tow_airplane_id).filter(Boolean) || [] as number [], [flightsInTowState]);
+    const busyGliderPilots = useCallback(
+        () => flightsInAnyFlightState?.map((flight) => [flight.pilot_1_id, flight.pilot_2_id])
             .flat()
             .filter(Boolean) || [] as number[],
-        [activeFlights]
+        [flightsInAnyFlightState]
     );
+    const busyTowPilots = useCallback(() => flightsInTowState?.map((flight) => flight.tow_pilot_id).filter(Boolean) || [] as number[], [flightsInTowState]);
+    const busyMembers = useCallback(() => [...busyGliderPilots(), ...busyTowPilots()], [busyGliderPilots, busyTowPilots]);
 
     /**
      * Returns a tuple of [hasBusyEntities, busyEntities]
@@ -86,11 +89,11 @@ export default function DashboardPage() {
         }
 
         if (flight.glider_id && busyGliders().includes(flight.glider_id)) {
-            const member = members.find((member) => member.id === flight.glider_id)
-            if (!member) {
-                throw new Error(`Member with id ${flight.glider_id} not found`)
+            const glider = gliders.find((glider) => glider.id === flight.glider_id)
+            if (!glider) {
+                throw new Error(`Glider with id ${flight.glider_id} not found`)
             }
-            busyEntities.gliders.push(getMemberDisplayValue(member))
+            busyEntities.gliders.push(getGliderDisplayValue(glider))
         }
 
         if (flight.tow_airplane_id && busyTowAirplanes().includes(flight.tow_airplane_id)) {

@@ -139,13 +139,13 @@ export function getRoleDisplayValue(role: Role) {
  */
 export function getGliderDisplayValue(
     glider: GliderSchema,
-    ownerships: GliderOwnerSchema[],
+    ownerships?: GliderOwnerSchema[],
     long = false,
 ) {
     const numSeats = glider.num_seats > 1 ? `דו-מושבי` : `חד מושבי`;
-    const ownership = ownerships.length > 0 ? "פרטי" : "מועדון";
+    const ownership = ownerships && ownerships.length > 0 ? "פרטי" : "מועדון";
 
-    return long
+    return long && ownerships
         ? `${glider.call_sign} (${numSeats}/${ownership})`
         : glider.call_sign
 }
