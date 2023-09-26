@@ -7,7 +7,6 @@ import {
     MenuItem, OutlinedInput,
     Select, SelectChangeEvent,
     TextField,
-    useTheme
 } from "@mui/material";
 import {useTranslation} from "react-i18next";
 import {getGliderDisplayValue, getMemberDisplayValue} from "../../utils/display.ts";
