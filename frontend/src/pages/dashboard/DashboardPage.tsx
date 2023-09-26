@@ -378,6 +378,7 @@ export default function DashboardPage() {
                     <Grid item xs={3}>
                         <FormControl style={{
                             width: "100%",
+                            height: "100%",
                         }}>
                             <InputLabel id="flight-state-select-label">{t("FLIGHT_STATES")}</InputLabel>
                             <Select
@@ -389,6 +390,10 @@ export default function DashboardPage() {
                                 input={<OutlinedInput label="Tag"/>}
                                 renderValue={(selected) => selected.map((value) => t(value.toUpperCase())).join(', ')}
                                 MenuProps={MenuProps}
+                                style={{
+                                    width: "100%",
+                                    height: "100%",
+                                }}
                             >
                                 {ORDERED_FLIGHT_STATES.map((state) => (
                                     <MenuItem key={state} value={state}>
