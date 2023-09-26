@@ -7,7 +7,6 @@ import {
     MenuItem, OutlinedInput,
     Select, SelectChangeEvent,
     TextField,
-    Theme,
     useTheme
 } from "@mui/material";
 import {useTranslation} from "react-i18next";
@@ -31,7 +30,6 @@ const MenuProps = {
 };
 
 export default function ActionConfigurationComponent() {
-    const theme = useTheme();
     const {t} = useTranslation();
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
