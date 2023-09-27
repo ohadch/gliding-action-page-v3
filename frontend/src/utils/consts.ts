@@ -57,6 +57,8 @@ export const TEXTS_HEBREW = {
     ACTION_NOT_SELECTED_TITLE: "לא נבחרה פעולה",
     QUIT_ACTION: "צא מהפעולה",
     INSTRUCTION_GLIDER: "דאון ההדרכה",
+    ACTIVE_TOW_AIRPLANES: "מטוסים גוררים פעילים",
+    SELECT_TOW_PILOT: "בחר טייס גורר",
 }
 
 

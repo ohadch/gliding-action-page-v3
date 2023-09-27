@@ -34,7 +34,7 @@ export const actionsSlice = createSlice({
                     if (stateAction.id === action.id) {
                         return action
                     }
-                    return action
+                    return stateAction
                 })
             })
             .addCase(updateAction.rejected, (state, action) => {
