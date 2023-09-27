@@ -39,4 +39,7 @@ services:
       timeout: 5s
       retries: 3
     volumes:
-      - ./volumes/db-dev:/var/lib/postgresql/data
+      - db_home:/var/lib/postgresql/data
+
+volumes:
+  db_home:

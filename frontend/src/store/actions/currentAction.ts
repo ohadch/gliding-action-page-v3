@@ -2,7 +2,13 @@ import {createAsyncThunk} from "@reduxjs/toolkit";
 import createClient from "openapi-fetch";
 import {paths} from "../../lib/api.ts";
 import {API_HOST} from "../../utils/consts.ts";
-import {ActiveTowAirplaneSchema, FlightCreateSchema, FlightSchema, FlightUpdateSchema} from "../../lib/types.ts";
+import {
+    ActiveTowAirplaneCreateSchema,
+    ActiveTowAirplaneSchema, ActiveTowAirplaneUpdateSchema,
+    FlightCreateSchema,
+    FlightSchema,
+    FlightUpdateSchema
+} from "../../lib/types.ts";
 
 
 const {POST, PUT, DELETE} = createClient<paths>({baseUrl: API_HOST});
@@ -116,5 +122,64 @@ export const updateFlight = createAsyncThunk<FlightSchema, { flightId: number, u
         }
 
         return data;
+    }
+)
+
+
+export const addActiveTowAirplane = createAsyncThunk<ActiveTowAirplaneSchema, ActiveTowAirplaneCreateSchema, { rejectValue: string }
+>(
+    'actions/addActiveTowAirplane',
+    async (body, thunkAPI) => {
+        const {data, error} = await POST("/active_tow_airplanes", {
+            body,
+        });
+
+        if (error) {
+            return thunkAPI.rejectWithValue("Error adding active tow airplane");
+        }
+
+        return data;
+    }
+)
+
+
+export const updateActiveTowAirplane = createAsyncThunk<ActiveTowAirplaneSchema, { activationId: number, body: ActiveTowAirplaneUpdateSchema }, { rejectValue: string }
+>(
+    'actions/updateActiveTowAirplane',
+    async ({activationId, body}, thunkAPI) => {
+        const {data, error} = await PUT("/active_tow_airplanes/{id_}", {
+            body,
+            params: {
+                path: {
+                    id_: activationId,
+                }
+            }
+        });
+
+        if (error) {
+            return thunkAPI.rejectWithValue("Error updating active tow airplane");
+        }
+
+        return data;
+    }
+)
+
+export const deleteActiveTowAirplane = createAsyncThunk<number, number, { rejectValue: string }
+>(
+    'actions/deleteActiveTowAirplane',
+    async (activationId, thunkAPI) => {
+        const {error} = await DELETE("/active_tow_airplanes/{id_}", {
+            params: {
+                path: {
+                    id_: activationId,
+                }
+            }
+        });
+
+        if (error) {
+            return thunkAPI.rejectWithValue("Error deleting active tow airplane");
+        }
+
+        return activationId;
     }
 )

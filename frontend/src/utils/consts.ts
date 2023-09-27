@@ -58,6 +58,7 @@ export const TEXTS_HEBREW = {
     QUIT_ACTION: "צא מהפעולה",
     INSTRUCTION_GLIDER: "דאון ההדרכה",
     ACTIVE_TOW_AIRPLANES: "מטוסים גוררים פעילים",
+    SELECT_TOW_PILOT: "בחר טייס גורר",
 }
 
 
