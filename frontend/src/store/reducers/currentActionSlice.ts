@@ -3,10 +3,11 @@ import {CurrentActionStoreState} from "../@types/InitialData.ts";
 import {CacheService} from "../../utils/cache.ts";
 import {CACHE_KEY_ACTION} from "../../utils/consts.ts";
 import {
-    createFlight,
+    addActiveTowAirplane,
+    createFlight, deleteActiveTowAirplane,
     deleteFlight,
     fetchActiveTowAirplanes,
-    fetchFlights,
+    fetchFlights, updateActiveTowAirplane,
     updateFlight
 } from "../actions/currentAction.ts";
 
@@ -26,11 +27,11 @@ export const currentActionSlice = createSlice({
             state.actionId = action.payload
             action.payload ? CacheService.set(CACHE_KEY_ACTION, action.payload) : CacheService.remove(CACHE_KEY_ACTION)
         },
-        setActiveTowAirplanes: (state, action) => {
-            state.activeTowAirplanes = action.payload
-        },
         setFlights: (state, action) => {
             state.flights = action.payload
+        },
+        setActiveTowAirplanes: (state, action) => {
+            state.activeTowAirplanes = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -88,6 +89,39 @@ export const currentActionSlice = createSlice({
             })
             .addCase(updateFlight.rejected, (state, action) => {
                 state.fetchingFlightsInProgress = false
+                state.error = action.error.message
+            })
+            .addCase(addActiveTowAirplane.pending, (state) => {
+                state.fetchingActiveTowAirplanesInProgress = true
+            })
+            .addCase(addActiveTowAirplane.fulfilled, (state, action) => {
+                state.fetchingActiveTowAirplanesInProgress = false
+                state.activeTowAirplanes = [...(state.activeTowAirplanes || []), action.payload]
+            })
+            .addCase(addActiveTowAirplane.rejected, (state, action) => {
+                state.fetchingActiveTowAirplanesInProgress = false
+                state.error = action.error.message
+            })
+            .addCase(updateActiveTowAirplane.pending, (state) => {
+                state.fetchingActiveTowAirplanesInProgress = true
+            })
+            .addCase(updateActiveTowAirplane.fulfilled, (state, action) => {
+                state.fetchingActiveTowAirplanesInProgress = false
+                state.activeTowAirplanes = state.activeTowAirplanes?.map(airplane => airplane.id === action.payload.id ? action.payload : airplane)
+            })
+            .addCase(updateActiveTowAirplane.rejected, (state, action) => {
+                state.fetchingActiveTowAirplanesInProgress = false
+                state.error = action.error.message
+            })
+            .addCase(deleteActiveTowAirplane.pending, (state) => {
+                state.fetchingActiveTowAirplanesInProgress = true
+            })
+            .addCase(deleteActiveTowAirplane.fulfilled, (state, action) => {
+                state.fetchingActiveTowAirplanesInProgress = false
+                state.activeTowAirplanes = state.activeTowAirplanes?.filter(activation => activation.id !== action.payload)
+            })
+            .addCase(deleteActiveTowAirplane.rejected, (state, action) => {
+                state.fetchingActiveTowAirplanesInProgress = false
                 state.error = action.error.message
             })
     }
