@@ -153,7 +153,7 @@ export default function App() {
                         height: "100%",
                     }}>
                         <AlertTitle>
-                            {t("ACTION_NOT_SELECTED_TITLE")}
+                            <strong>{t("ACTION_NOT_SELECTED_TITLE")}</strong>
                         </AlertTitle>
                         {t("ACTION_NOT_SELECTED_MESSAGE")}
                         <Button onClick={() => setSelectActionDialogOpen(true)}>

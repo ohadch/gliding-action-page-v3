@@ -59,6 +59,9 @@ export const TEXTS_HEBREW = {
     INSTRUCTION_GLIDER: "דאון ההדרכה",
     ACTIVE_TOW_AIRPLANES: "מטוסים גוררים פעילים",
     SELECT_TOW_PILOT: "בחר טייס גורר",
+    ACTION_NOT_FULLY_CONFIGURED_TITLE: "נא להגדיר את הפעולה",
+    ACTION_NOT_FULLY_CONFIGURED_MESSAGE: "יש להשלים את הגדרת הפעולה על מנת להתחיל",
+    MISSING_CONFIGURATIONS: "הגדרות חסרות",
 }
 
 

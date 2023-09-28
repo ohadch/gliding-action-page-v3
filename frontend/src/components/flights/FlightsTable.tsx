@@ -45,25 +45,6 @@ export default function FlightsTable(props: FlightsTableProps) {
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
 
-    useEffect(() => {
-        if (!membersStoreState.members && !membersStoreState.fetchInProgress) {
-            dispatch(fetchMembers());
-            dispatch(fetchMembersRoles());
-        }
-    });
-
-    useEffect(() => {
-        if (!glidersStoreState.gliders && !glidersStoreState.fetchInProgress) {
-            dispatch(fetchGliders());
-        }
-    });
-
-    useEffect(() => {
-        if (!towAirplanesStoreState.towAirplanes && !towAirplanesStoreState.fetchInProgress) {
-            dispatch(fetchTowAirplanes());
-        }
-    });
-
     const shownAndSortedFlights = useCallback(() => {
         if (!flights) {
             return [];
