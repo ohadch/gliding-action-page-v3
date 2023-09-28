@@ -165,6 +165,28 @@ export default function App() {
         )
     }
 
+    function renderContent() {
+        if (!action) {
+            return renderActionNotSelectedMessage()
+        }
+
+        return (
+            <Routes>
+                {ROUTES.map((route) => (
+                    <Route
+                        key={route.path}
+                        path={route.path}
+                        element={
+                            <React.Suspense fallback={<div></div>}>
+                                <route.element/>
+                            </React.Suspense>
+                        }
+                    />
+                ))}
+            </Routes>
+        )
+    }
+
     return (
         <LocalizationProvider dateAdapter={AdapterMoment}>
             <ThemeProvider theme={theme}>
@@ -280,25 +302,7 @@ export default function App() {
                     >
                         <Toolbar/>
                         <Container maxWidth="xl" sx={{mt: 4, mb: 4}}>
-                            {
-                                action
-                                    ? (
-                                        <Routes>
-                                            {ROUTES.map((route) => (
-                                                <Route
-                                                    key={route.path}
-                                                    path={route.path}
-                                                    element={
-                                                        <React.Suspense fallback={<div></div>}>
-                                                            <route.element/>
-                                                        </React.Suspense>
-                                                    }
-                                                />
-                                            ))}
-                                        </Routes>
-                                    )
-                                    : renderActionNotSelectedMessage()
-                            }
+                            {renderContent()}
                         </Container>
                     </Box>
                 </Box>
