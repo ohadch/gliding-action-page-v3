@@ -47,16 +47,13 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
     const flightsInTowState = flights?.filter((flight) => flight.state === "Tow") || [];
     const busyTowAirplaneIds = flightsInTowState?.map((flight) => flight.tow_airplane_id) || [];
     const availableTowAirplanes = activeTowAirplanes?.filter((towAirplane) => !busyTowAirplaneIds?.includes(towAirplane.airplane_id)) || [];
+    const isTowAirplaneAvailable = (towAirplaneId: number) => availableTowAirplanes?.find((towAirplane) => towAirplane.airplane_id === towAirplaneId);
 
     function goToPreviousStateEnabled() {
         return ORDERED_FLIGHT_STATES.indexOf(flight.state) > 0;
     }
 
     function goToNextStateEnabled() {
-        if ((flight.state === "Draft") && (availableTowAirplanes.length === 0)) {
-            return false;
-        }
-
         return ORDERED_FLIGHT_STATES.indexOf(flight.state) < ORDERED_FLIGHT_STATES.length - 1;
     }
 
@@ -67,9 +64,15 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
         }}>
             <Grid>
                 <IconButton
-                    disabled={!goToPreviousStateEnabled()}
                     color={color}
-                    onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) - 1])}
+                    disabled={!goToPreviousStateEnabled()}
+                    onClick={() => {
+                        if ((flight.state === "Inflight") && (flight.tow_airplane_id) && (!isTowAirplaneAvailable(flight.tow_airplane_id))) {
+                            alert(t("TOW_AIRPLANE_NOT_AVAILABLE"));
+                            return;
+                        }
+                        return onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) - 1])
+                    }}
                 >
                     <ArrowRightIcon/>
                 </IconButton>
@@ -84,9 +87,16 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
             </Grid>
             <Grid>
                 <IconButton
-                    disabled={!goToNextStateEnabled()}
                     color={color}
-                    onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) + 1])}
+                    disabled={!goToNextStateEnabled()}
+                    onClick={() => {
+                        if ((flight.state === "Draft") && (availableTowAirplanes.length === 0)) {
+                            alert(t("NO_TOW_AIRPLANES_AVAILABLE"));
+                            return;
+                        }
+
+                        return onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) + 1])
+                    }}
                 >
                     <ArrowLeftIcon/>
                 </IconButton>

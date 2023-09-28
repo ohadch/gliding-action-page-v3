@@ -62,6 +62,7 @@ export const TEXTS_HEBREW = {
     ACTION_NOT_FULLY_CONFIGURED_TITLE: "נא להגדיר את הפעולה",
     ACTION_NOT_FULLY_CONFIGURED_MESSAGE: "יש להשלים את הגדרת הפעולה על מנת להתחיל",
     MISSING_CONFIGURATIONS: "הגדרות חסרות",
+    NO_TOW_AIRPLANES_AVAILABLE: "אין מטוסים גוררים זמינים",
 }
 
 
