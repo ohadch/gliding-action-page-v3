@@ -7,6 +7,7 @@ import {ORDERED_FLIGHT_STATES} from "../../utils/consts.ts";
 import IconButton from "@mui/material/IconButton";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
+import {getTowAirplaneDisplayValue} from "../../utils/display.ts";
 
 export interface FlightStateControllerProps {
     flight: FlightSchema,
@@ -42,6 +43,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
     const {t} = useTranslation();
     const {label, color} = STATE_BUTTON_CONFIGS[flight.state];
     const flights = useSelector((state: RootState) => state.currentAction.flights);
+    const {towAirplanes} = useSelector((state: RootState) => state.towAirplanes);
     const {activeTowAirplanes} = useSelector((state: RootState) => state.currentAction);
 
     const flightsInTowState = flights?.filter((flight) => flight.state === "Tow") || [];
@@ -57,6 +59,8 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
         return ORDERED_FLIGHT_STATES.indexOf(flight.state) < ORDERED_FLIGHT_STATES.length - 1;
     }
 
+    const getTowAirplaneById = (id: number) => towAirplanes?.find((towAirplane) => towAirplane.id === id);
+
     return (
         <Grid sx={{
             display: "flex",
@@ -68,8 +72,12 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                     disabled={!goToPreviousStateEnabled()}
                     onClick={() => {
                         if ((flight.state === "Inflight") && (flight.tow_airplane_id) && (!isTowAirplaneAvailable(flight.tow_airplane_id))) {
-                            alert(t("TOW_AIRPLANE_NOT_AVAILABLE"));
-                            return;
+                            const towAirplane = getTowAirplaneById(flight.tow_airplane_id)
+
+                            if (towAirplane) {
+                                alert(`${t("TOW_AIRPLANE_NOT_AVAILABLE")}: ${getTowAirplaneDisplayValue(towAirplane)}`);
+                                return;
+                            }
                         }
                         return onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) - 1])
                     }}
