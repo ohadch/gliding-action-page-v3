@@ -8,10 +8,7 @@ import Paper from '@mui/material/Paper';
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
-import {useCallback, useEffect} from "react";
-import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
-import {fetchGliders} from "../../store/actions/glider.ts";
-import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
+import {useCallback} from "react";
 import {
     getFlightTypeDisplayValue,
     getGliderDisplayValue,

@@ -5,6 +5,9 @@ import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import {ORDERED_FLIGHT_STATES} from "../../utils/consts.ts";
 import IconButton from "@mui/material/IconButton";
+import {useSelector} from "react-redux";
+import {RootState} from "../../store";
+import {getTowAirplaneDisplayValue} from "../../utils/display.ts";
 
 export interface FlightStateControllerProps {
     flight: FlightSchema,
@@ -39,6 +42,14 @@ const STATE_BUTTON_CONFIGS: Record<FlightState, StateButtonConfig> = {
 export default function FlightStateController({flight, onStateUpdated}: FlightStateControllerProps) {
     const {t} = useTranslation();
     const {label, color} = STATE_BUTTON_CONFIGS[flight.state];
+    const flights = useSelector((state: RootState) => state.currentAction.flights);
+    const {towAirplanes} = useSelector((state: RootState) => state.towAirplanes);
+    const {activeTowAirplanes} = useSelector((state: RootState) => state.currentAction);
+
+    const flightsInTowState = flights?.filter((flight) => flight.state === "Tow") || [];
+    const busyTowAirplaneIds = flightsInTowState?.map((flight) => flight.tow_airplane_id) || [];
+    const availableTowAirplanes = activeTowAirplanes?.filter((towAirplane) => !busyTowAirplaneIds?.includes(towAirplane.airplane_id)) || [];
+    const isTowAirplaneAvailable = (towAirplaneId: number) => availableTowAirplanes?.find((towAirplane) => towAirplane.airplane_id === towAirplaneId);
 
     function goToPreviousStateEnabled() {
         return ORDERED_FLIGHT_STATES.indexOf(flight.state) > 0;
@@ -48,6 +59,8 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
         return ORDERED_FLIGHT_STATES.indexOf(flight.state) < ORDERED_FLIGHT_STATES.length - 1;
     }
 
+    const getTowAirplaneById = (id: number) => towAirplanes?.find((towAirplane) => towAirplane.id === id);
+
     return (
         <Grid sx={{
             display: "flex",
@@ -55,15 +68,24 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
         }}>
             <Grid>
                 <IconButton
-                    disabled={!goToPreviousStateEnabled()}
                     color={color}
-                    onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) - 1])}
+                    disabled={!goToPreviousStateEnabled()}
+                    onClick={() => {
+                        if ((flight.state === "Inflight") && (flight.tow_airplane_id) && (!isTowAirplaneAvailable(flight.tow_airplane_id))) {
+                            const towAirplane = getTowAirplaneById(flight.tow_airplane_id)
+
+                            if (towAirplane) {
+                                alert(`${t("TOW_AIRPLANE_NOT_AVAILABLE")}: ${getTowAirplaneDisplayValue(towAirplane)}`);
+                                return;
+                            }
+                        }
+                        return onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) - 1])
+                    }}
                 >
                     <ArrowRightIcon/>
                 </IconButton>
             </Grid>
             <Grid>
-                {/* make the button blink */}
                 <Button
                     variant="text"
                     color={color}
@@ -73,9 +95,16 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
             </Grid>
             <Grid>
                 <IconButton
-                    disabled={!goToNextStateEnabled()}
                     color={color}
-                    onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) + 1])}
+                    disabled={!goToNextStateEnabled()}
+                    onClick={() => {
+                        if ((flight.state === "Draft") && (availableTowAirplanes.length === 0)) {
+                            alert(t("NO_TOW_AIRPLANES_AVAILABLE"));
+                            return;
+                        }
+
+                        return onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) + 1])
+                    }}
                 >
                     <ArrowLeftIcon/>
                 </IconButton>
