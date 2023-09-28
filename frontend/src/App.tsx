@@ -187,6 +187,26 @@ export default function App() {
         )
     }
 
+    function renderActionSelectionButton() {
+        if (!action) {
+            return (
+                <Button
+                    color="inherit"
+                    onClick={() => setSelectActionDialogOpen(true)}
+                    variant={"outlined"}
+                >
+                    {t("SELECT_ACTION")}
+                </Button>
+            )
+        }
+        return (
+            <Button color="inherit" onClick={() => setSelectActionDialogOpen(true)}>
+                {t("CURRENT_ACTION")}: {" "}
+                {action?.date.split("T")[0]}
+            </Button>
+        )
+    }
+
     return (
         <LocalizationProvider dateAdapter={AdapterMoment}>
             <ThemeProvider theme={theme}>
@@ -236,10 +256,7 @@ export default function App() {
                                 {t("APP_NAME")}
                             </Typography>
                             <Tooltip title={t("CLICK_TO_SELECT")}>
-                                <Button color="inherit" onClick={() => setSelectActionDialogOpen(true)}>
-                                    {t("CURRENT_ACTION")}: {" "}
-                                    {action?.date.split("T")[0]}
-                                </Button>
+                                {renderActionSelectionButton()}
                             </Tooltip>
                         </Toolbar>
                     </AppBar>
@@ -291,6 +308,7 @@ export default function App() {
                     <Box
                         component="main"
                         sx={{
+                            // Actually the background color is used, I'm not sure why the IDE complains
                             backgroundColor: (theme) =>
                                 theme.palette.mode === 'light'
                                     ? theme.palette.grey[100]
