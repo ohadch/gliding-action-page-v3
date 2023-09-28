@@ -67,6 +67,7 @@ export default function EditActiveTowAirplaneDialog({towAirplaneId, open, onSubm
     }
 
     const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
+    const activeTowPilotIds = currentActionStoreState.activeTowAirplanes?.map((activeTowAirplane) => activeTowAirplane.tow_pilot_id) || []
 
     useEffect(() => {
         if (!membersStoreState.members && !membersStoreState.fetchInProgress) {
@@ -96,8 +97,15 @@ export default function EditActiveTowAirplaneDialog({towAirplaneId, open, onSubm
     }
 
     const getTowPilotOptions = () => {
-        const initialOptions = membersStoreState.members || [];
-        return initialOptions.filter((member) => isTowPilot(member, membersStoreState.membersRoles || []));
+        const initialOptions = membersStoreState.members || []
+
+        const excludedOptions = [
+            ...activeTowPilotIds,
+            action?.field_responsible_id,
+            action?.responsible_cfi_id
+        ].filter(Boolean) as number[]
+
+        return initialOptions.filter(member => !excludedOptions.includes(member.id) && isTowPilot(member, membersStoreState.membersRoles || []))
     }
 
     function renderInput(inputName: RenderedInputName) {

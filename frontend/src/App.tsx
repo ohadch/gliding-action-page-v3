@@ -153,7 +153,7 @@ export default function App() {
                         height: "100%",
                     }}>
                         <AlertTitle>
-                            {t("ACTION_NOT_SELECTED_TITLE")}
+                            <strong>{t("ACTION_NOT_SELECTED_TITLE")}</strong>
                         </AlertTitle>
                         {t("ACTION_NOT_SELECTED_MESSAGE")}
                         <Button onClick={() => setSelectActionDialogOpen(true)}>
@@ -162,6 +162,48 @@ export default function App() {
                     </Alert>
                 </Card>
             </Typography>
+        )
+    }
+
+    function renderContent() {
+        if (!action) {
+            return renderActionNotSelectedMessage()
+        }
+
+        return (
+            <Routes>
+                {ROUTES.map((route) => (
+                    <Route
+                        key={route.path}
+                        path={route.path}
+                        element={
+                            <React.Suspense fallback={<div></div>}>
+                                <route.element/>
+                            </React.Suspense>
+                        }
+                    />
+                ))}
+            </Routes>
+        )
+    }
+
+    function renderActionSelectionButton() {
+        if (!action) {
+            return (
+                <Button
+                    color="inherit"
+                    onClick={() => setSelectActionDialogOpen(true)}
+                    variant={"outlined"}
+                >
+                    {t("SELECT_ACTION")}
+                </Button>
+            )
+        }
+        return (
+            <Button color="inherit" onClick={() => setSelectActionDialogOpen(true)}>
+                {t("CURRENT_ACTION")}: {" "}
+                {action?.date.split("T")[0]}
+            </Button>
         )
     }
 
@@ -214,10 +256,7 @@ export default function App() {
                                 {t("APP_NAME")}
                             </Typography>
                             <Tooltip title={t("CLICK_TO_SELECT")}>
-                                <Button color="inherit" onClick={() => setSelectActionDialogOpen(true)}>
-                                    {t("CURRENT_ACTION")}: {" "}
-                                    {action?.date.split("T")[0]}
-                                </Button>
+                                {renderActionSelectionButton()}
                             </Tooltip>
                         </Toolbar>
                     </AppBar>
@@ -269,6 +308,7 @@ export default function App() {
                     <Box
                         component="main"
                         sx={{
+                            // Actually the background color is used, I'm not sure why the IDE complains
                             backgroundColor: (theme) =>
                                 theme.palette.mode === 'light'
                                     ? theme.palette.grey[100]
@@ -280,25 +320,7 @@ export default function App() {
                     >
                         <Toolbar/>
                         <Container maxWidth="xl" sx={{mt: 4, mb: 4}}>
-                            {
-                                action
-                                    ? (
-                                        <Routes>
-                                            {ROUTES.map((route) => (
-                                                <Route
-                                                    key={route.path}
-                                                    path={route.path}
-                                                    element={
-                                                        <React.Suspense fallback={<div></div>}>
-                                                            <route.element/>
-                                                        </React.Suspense>
-                                                    }
-                                                />
-                                            ))}
-                                        </Routes>
-                                    )
-                                    : renderActionNotSelectedMessage()
-                            }
+                            {renderContent()}
                         </Container>
                     </Box>
                 </Box>

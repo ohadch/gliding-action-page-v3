@@ -1,5 +1,6 @@
 import {
-    Button,
+    Alert, AlertTitle,
+    Button, Card,
     Checkbox,
     FormControl,
     Grid,
@@ -27,6 +28,9 @@ import {isFlightActive} from "../../utils/flights.ts";
 import {getGliderDisplayValue, getMemberDisplayValue, getTowAirplaneDisplayValue} from "../../utils/display.ts";
 import {createEvent} from "../../store/actions/event.ts";
 import ActionConfigurationComponent from "../../components/actions/ActionConfigurationComponent.tsx";
+import Typography from "@mui/material/Typography";
+import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
+import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -44,9 +48,9 @@ export default function DashboardPage() {
     const {t} = useTranslation();
     const {flights, fetchingFlightsInProgress} = useSelector((state: RootState) => state.currentAction);
     const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
-    const {members} = useSelector((state: RootState) => state.members);
-    const {gliders} = useSelector((state: RootState) => state.gliders);
-    const {towAirplanes} = useSelector((state: RootState) => state.towAirplanes);
+    const membersStoreState = useSelector((state: RootState) => state.members);
+    const glidersStoreState = useSelector((state: RootState) => state.gliders);
+    const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes);
     const dispatch = useAppDispatch();
     const [editedFlightId, setEditedFlightId] = useState<number | null>(null);
     const [editedFlightData, setEditedFlightData] = useState<FlightCreateSchema | null>(null);
@@ -54,7 +58,28 @@ export default function DashboardPage() {
     const [startTowDialogFlight, setStartTowDialogFlight] = useState<FlightSchema | null>(null);
     const [endTowDialogFlight, setEndTowDialogFlight] = useState<FlightSchema | null>(null);
     const [shownFlightStates, setShownFlightStates] = useState<FlightState[]>(["Draft", "Tow", "Inflight"]);
+    const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
 
+
+    useEffect(() => {
+        if (!membersStoreState.members && !membersStoreState.fetchInProgress) {
+            dispatch(fetchMembers());
+            dispatch(fetchMembersRoles());
+        }
+
+        if (!glidersStoreState.gliders && !glidersStoreState.fetchInProgress) {
+            dispatch(fetchGliders());
+        }
+
+        if (!towAirplanesStoreState.towAirplanes && !towAirplanesStoreState.fetchInProgress) {
+            dispatch(fetchTowAirplanes());
+        }
+    });
+
+
+    const isFullyConfigured = () => {
+        return action && action.field_responsible_id && action.responsible_cfi_id && action.instruction_glider_id && ((currentActionStoreState.activeTowAirplanes?.length || 0) > 0)
+    }
     const flightsInTowState = flights?.filter((flight) => flight.state === "Tow");
     const flightsInAnyFlightState = flights?.filter((flight) => isFlightActive(flight));
     const busyGliders = useCallback((currentFlight: FlightSchema) => flightsInAnyFlightState?.filter(flight => flight.id !== currentFlight.id).map((flight) => flight.glider_id).filter(Boolean) || [] as number[], [flightsInAnyFlightState])
@@ -72,15 +97,15 @@ export default function DashboardPage() {
      * Returns a tuple of [hasBusyEntities, busyEntities]
      */
     const getBusyEntitiesFromFlight = useCallback((flight: FlightSchema) => {
-        if (!members) {
+        if (!membersStoreState.members) {
             throw new Error("Members not loaded")
         }
 
-        if (!gliders) {
+        if (!glidersStoreState.gliders) {
             throw new Error("Gliders not loaded")
         }
 
-        if (!towAirplanes) {
+        if (!towAirplanesStoreState.towAirplanes) {
             throw new Error("Tow airplanes not loaded")
         }
 
@@ -91,7 +116,7 @@ export default function DashboardPage() {
         }
 
         if (flight.glider_id && busyGliders(flight).includes(flight.glider_id)) {
-            const glider = gliders.find((glider) => glider.id === flight.glider_id)
+            const glider = glidersStoreState.gliders.find((glider) => glider.id === flight.glider_id)
             if (!glider) {
                 throw new Error(`Glider with id ${flight.glider_id} not found`)
             }
@@ -99,7 +124,7 @@ export default function DashboardPage() {
         }
 
         if (flight.tow_airplane_id && busyTowAirplanes(flight).includes(flight.tow_airplane_id)) {
-            const towAirplane = towAirplanes.find((towAirplane) => towAirplane.id === flight.tow_airplane_id)
+            const towAirplane = towAirplanesStoreState.towAirplanes.find((towAirplane) => towAirplane.id === flight.tow_airplane_id)
             if (!towAirplane) {
                 throw new Error(`Tow airplane with id ${flight.tow_airplane_id} not found`)
             }
@@ -107,7 +132,7 @@ export default function DashboardPage() {
         }
 
         if (flight.pilot_1_id && busyMembers(flight).includes(flight.pilot_1_id)) {
-            const member = members.find((member) => member.id === flight.pilot_1_id)
+            const member = membersStoreState.members.find((member) => member.id === flight.pilot_1_id)
             if (!member) {
                 throw new Error(`Member with id ${flight.pilot_1_id} not found`)
             }
@@ -115,7 +140,7 @@ export default function DashboardPage() {
         }
 
         if (flight.pilot_2_id && busyMembers(flight).includes(flight.pilot_2_id)) {
-            const member = members.find((member) => member.id === flight.pilot_2_id)
+            const member = membersStoreState.members.find((member) => member.id === flight.pilot_2_id)
             if (!member) {
                 throw new Error(`Member with id ${flight.pilot_2_id} not found`)
             }
@@ -123,7 +148,7 @@ export default function DashboardPage() {
         }
 
         if (flight.tow_pilot_id && busyMembers(flight).includes(flight.tow_pilot_id)) {
-            const member = members.find((member) => member.id === flight.tow_pilot_id)
+            const member = membersStoreState.members.find((member) => member.id === flight.tow_pilot_id)
             if (!member) {
                 throw new Error(`Member with id ${flight.tow_pilot_id} not found`)
             }
@@ -131,7 +156,7 @@ export default function DashboardPage() {
         }
 
         return busyEntities
-    }, [busyGliders, busyTowAirplanes, busyMembers, members, gliders, towAirplanes])
+    }, [busyGliders, busyTowAirplanes, busyMembers, membersStoreState.members, glidersStoreState.gliders, towAirplanesStoreState.towAirplanes])
 
     useEffect(() => {
         if (!flights && !fetchingFlightsInProgress && action) {
@@ -357,6 +382,149 @@ export default function DashboardPage() {
         );
     };
 
+    function renderFlightStatesFilter() {
+        return (
+            <FormControl style={{
+                width: "100%",
+                height: "100%",
+            }} disabled={!isFullyConfigured()}>
+                <InputLabel id="flight-state-select-label">{t("FLIGHT_STATES")}</InputLabel>
+                <Select
+                    labelId="flight-state-select-label"
+                    id="flight-state-select"
+                    multiple
+                    value={shownFlightStates}
+                    onChange={(event) => handleFlightStateChange(event)}
+                    input={<OutlinedInput label="Tag"/>}
+                    renderValue={(selected) => selected.map((value) => t(value.toUpperCase())).join(', ')}
+                    MenuProps={MenuProps}
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                    }}
+                >
+                    {ORDERED_FLIGHT_STATES.map((state) => (
+                        <MenuItem key={state} value={state}>
+                            <Checkbox checked={shownFlightStates.indexOf(state) > -1}/>
+                            <ListItemText primary={t(state.toUpperCase())}/>
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        )
+    }
+
+    function renderTopBar() {
+        return (
+            <Grid container mb={2} spacing={1}>
+                <Grid item xs={1}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        disabled={!isFullyConfigured()}
+                        style={{
+                            height: "100%",
+                            width: "100%"
+                        }}
+                        onClick={() => setFlightCreationWizardDialogOpen(true)}>
+                        {t("NEW_FLIGHT")}
+                    </Button>
+                </Grid>
+                <Grid item xs={3}>
+                    {renderFlightStatesFilter()}
+                </Grid>
+                <Grid item xs={8}>
+                    <ActionConfigurationComponent/>
+                </Grid>
+            </Grid>
+        )
+    }
+
+
+    function renderActionNotConfigured() {
+        const missingConfigurations = [];
+
+        if (!action?.field_responsible_id) {
+            missingConfigurations.push(t("FIELD_RESPONSIBLE"))
+        }
+
+        if (!action?.responsible_cfi_id) {
+            missingConfigurations.push(t("RESPONSIBLE_CFI"))
+        }
+
+        if (!action?.instruction_glider_id) {
+            missingConfigurations.push(t("INSTRUCTION_GLIDER"))
+        }
+
+        if ((currentActionStoreState.activeTowAirplanes?.length || 0) === 0) {
+            missingConfigurations.push(t("TOW_AIRPLANE"))
+        }
+
+        return (
+            <Typography variant="h4" component="h4">
+                <Card>
+                    <Alert severity="warning" sx={{
+                        height: "100%",
+                    }}>
+                        <AlertTitle>
+                            <strong>{t("ACTION_NOT_FULLY_CONFIGURED_TITLE")}</strong>
+                        </AlertTitle>
+                        {t("ACTION_NOT_FULLY_CONFIGURED_MESSAGE")}.
+                        <br/>
+                        <br/>
+                        <strong>{t("MISSING_CONFIGURATIONS")}:</strong> {missingConfigurations.join(", ")}
+                    </Alert>
+                </Card>
+            </Typography>
+        )
+    }
+
+
+    function renderFlightsTable() {
+        if (!isFullyConfigured()) {
+            return renderActionNotConfigured()
+        }
+
+        return (
+            <Grid container>
+                <FlightsTable
+                    shownFlightStates={shownFlightStates}
+                    setDuplicateFlight={(flight) => {
+                        setEditFlightDetailsDialogOpen(true);
+                        setEditedFlightData({...flight})
+                    }}
+                    setEditedFlight={(flightId, flight) => {
+                        const actionId = action?.id;
+
+                        if (!actionId) {
+                            return;
+                        }
+
+                        setEditFlightDetailsDialogOpen(true);
+                        setEditedFlightId(flightId);
+                        setEditedFlightData({
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-ignore
+                            action_id: actionId,
+                            ...flight
+                        })
+                    }}
+                    onFlightStateUpdated={onFlightStateUpdated}
+                />
+            </Grid>
+        )
+    }
+
+
+    function renderContent() {
+        return (
+            <Grid>
+                {renderTopBar()}
+                {renderFlightsTable()}
+            </Grid>
+        )
+    }
+
     return (
         <>
             {renderEditFlightDialog()}
@@ -364,79 +532,7 @@ export default function DashboardPage() {
             {renderEndTowDialog()}
             {renderFlightCreationWizardDialog()}
 
-            <Grid>
-                <Grid container mb={2} spacing={1}>
-                    <Grid item xs={1}>
-                        <Button variant="contained" color="primary" style={{
-                            height: "100%",
-                            width: "100%"
-                        }}
-                                onClick={() => setFlightCreationWizardDialogOpen(true)}>
-                            {t("NEW_FLIGHT")}
-                        </Button>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <FormControl style={{
-                            width: "100%",
-                            height: "100%",
-                        }}>
-                            <InputLabel id="flight-state-select-label">{t("FLIGHT_STATES")}</InputLabel>
-                            <Select
-                                labelId="flight-state-select-label"
-                                id="flight-state-select"
-                                multiple
-                                value={shownFlightStates}
-                                onChange={(event) => handleFlightStateChange(event)}
-                                input={<OutlinedInput label="Tag"/>}
-                                renderValue={(selected) => selected.map((value) => t(value.toUpperCase())).join(', ')}
-                                MenuProps={MenuProps}
-                                style={{
-                                    width: "100%",
-                                    height: "100%",
-                                }}
-                            >
-                                {ORDERED_FLIGHT_STATES.map((state) => (
-                                    <MenuItem key={state} value={state}>
-                                        <Checkbox checked={shownFlightStates.indexOf(state) > -1}/>
-                                        <ListItemText primary={t(state.toUpperCase())}/>
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={8}>
-                        <ActionConfigurationComponent/>
-                    </Grid>
-                </Grid>
-
-
-                <Grid container>
-                    <FlightsTable
-                        shownFlightStates={shownFlightStates}
-                        setDuplicateFlight={(flight) => {
-                            setEditFlightDetailsDialogOpen(true);
-                            setEditedFlightData({...flight})
-                        }}
-                        setEditedFlight={(flightId, flight) => {
-                            const actionId = action?.id;
-
-                            if (!actionId) {
-                                return;
-                            }
-
-                            setEditFlightDetailsDialogOpen(true);
-                            setEditedFlightId(flightId);
-                            setEditedFlightData({
-                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                // @ts-ignore
-                                action_id: actionId,
-                                ...flight
-                            })
-                        }}
-                        onFlightStateUpdated={onFlightStateUpdated}
-                    />
-                </Grid>
-            </Grid>
+            {renderContent()}
         </>
     )
 }
