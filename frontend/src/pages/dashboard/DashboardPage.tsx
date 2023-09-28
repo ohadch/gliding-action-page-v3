@@ -382,46 +382,56 @@ export default function DashboardPage() {
         );
     };
 
+    function renderFlightStatesFilter() {
+        return (
+            <FormControl style={{
+                width: "100%",
+                height: "100%",
+            }} disabled={!isFullyConfigured()}>
+                <InputLabel id="flight-state-select-label">{t("FLIGHT_STATES")}</InputLabel>
+                <Select
+                    labelId="flight-state-select-label"
+                    id="flight-state-select"
+                    multiple
+                    value={shownFlightStates}
+                    onChange={(event) => handleFlightStateChange(event)}
+                    input={<OutlinedInput label="Tag"/>}
+                    renderValue={(selected) => selected.map((value) => t(value.toUpperCase())).join(', ')}
+                    MenuProps={MenuProps}
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                    }}
+                >
+                    {ORDERED_FLIGHT_STATES.map((state) => (
+                        <MenuItem key={state} value={state}>
+                            <Checkbox checked={shownFlightStates.indexOf(state) > -1}/>
+                            <ListItemText primary={t(state.toUpperCase())}/>
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        )
+    }
+
     function renderTopBar() {
         return (
             <Grid container mb={2} spacing={1}>
                 <Grid item xs={1}>
-                    <Button variant="contained" color="primary" style={{
-                        height: "100%",
-                        width: "100%"
-                    }}
-                            onClick={() => setFlightCreationWizardDialogOpen(true)}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        disabled={!isFullyConfigured()}
+                        style={{
+                            height: "100%",
+                            width: "100%"
+                        }}
+                        onClick={() => setFlightCreationWizardDialogOpen(true)}>
                         {t("NEW_FLIGHT")}
                     </Button>
                 </Grid>
                 <Grid item xs={3}>
-                    <FormControl style={{
-                        width: "100%",
-                        height: "100%",
-                    }}>
-                        <InputLabel id="flight-state-select-label">{t("FLIGHT_STATES")}</InputLabel>
-                        <Select
-                            labelId="flight-state-select-label"
-                            id="flight-state-select"
-                            multiple
-                            value={shownFlightStates}
-                            onChange={(event) => handleFlightStateChange(event)}
-                            input={<OutlinedInput label="Tag"/>}
-                            renderValue={(selected) => selected.map((value) => t(value.toUpperCase())).join(', ')}
-                            MenuProps={MenuProps}
-                            style={{
-                                width: "100%",
-                                height: "100%",
-                            }}
-                        >
-                            {ORDERED_FLIGHT_STATES.map((state) => (
-                                <MenuItem key={state} value={state}>
-                                    <Checkbox checked={shownFlightStates.indexOf(state) > -1}/>
-                                    <ListItemText primary={t(state.toUpperCase())}/>
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                    {renderFlightStatesFilter()}
                 </Grid>
                 <Grid item xs={8}>
                     <ActionConfigurationComponent/>
