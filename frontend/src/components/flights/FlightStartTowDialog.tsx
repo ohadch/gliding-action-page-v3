@@ -73,7 +73,7 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
     const busyTowAirplaneIds = flights?.filter((flight) => flight.state === "Tow").map((flight) => flight.tow_airplane_id) || [];
     const availableTowAirplanes = towAirplanesStoreState.towAirplanes?.filter((towAirplane) => {
         return !busyTowAirplaneIds.includes(towAirplane.id);
-    }) || [];
+    }).filter((towAirplane) => activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === towAirplane.id)) || [];
 
     const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>(
         availableTowAirplanes.length === 1 ? availableTowAirplanes[0].id : null
