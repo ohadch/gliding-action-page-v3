@@ -54,7 +54,11 @@ export default function DashboardPage() {
     const [startTowDialogFlight, setStartTowDialogFlight] = useState<FlightSchema | null>(null);
     const [endTowDialogFlight, setEndTowDialogFlight] = useState<FlightSchema | null>(null);
     const [shownFlightStates, setShownFlightStates] = useState<FlightState[]>(["Draft", "Tow", "Inflight"]);
+    const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
 
+    const isFullyConfigured = () => {
+        return action && action.field_responsible_id && action.responsible_cfi_id && action.instruction_glider_id && ((currentActionStoreState.activeTowAirplanes?.length || 0) > 0)
+    }
     const flightsInTowState = flights?.filter((flight) => flight.state === "Tow");
     const flightsInAnyFlightState = flights?.filter((flight) => isFlightActive(flight));
     const busyGliders = useCallback((currentFlight: FlightSchema) => flightsInAnyFlightState?.filter(flight => flight.id !== currentFlight.id).map((flight) => flight.glider_id).filter(Boolean) || [] as number[], [flightsInAnyFlightState])
@@ -357,6 +361,95 @@ export default function DashboardPage() {
         );
     };
 
+    function renderTopBar() {
+        return (
+            <Grid container mb={2} spacing={1}>
+                <Grid item xs={1}>
+                    <Button variant="contained" color="primary" style={{
+                        height: "100%",
+                        width: "100%"
+                    }}
+                            onClick={() => setFlightCreationWizardDialogOpen(true)}>
+                        {t("NEW_FLIGHT")}
+                    </Button>
+                </Grid>
+                <Grid item xs={3}>
+                    <FormControl style={{
+                        width: "100%",
+                        height: "100%",
+                    }}>
+                        <InputLabel id="flight-state-select-label">{t("FLIGHT_STATES")}</InputLabel>
+                        <Select
+                            labelId="flight-state-select-label"
+                            id="flight-state-select"
+                            multiple
+                            value={shownFlightStates}
+                            onChange={(event) => handleFlightStateChange(event)}
+                            input={<OutlinedInput label="Tag"/>}
+                            renderValue={(selected) => selected.map((value) => t(value.toUpperCase())).join(', ')}
+                            MenuProps={MenuProps}
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                            }}
+                        >
+                            {ORDERED_FLIGHT_STATES.map((state) => (
+                                <MenuItem key={state} value={state}>
+                                    <Checkbox checked={shownFlightStates.indexOf(state) > -1}/>
+                                    <ListItemText primary={t(state.toUpperCase())}/>
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={8}>
+                    <ActionConfigurationComponent/>
+                </Grid>
+            </Grid>
+        )
+    }
+
+    function renderFlightsTable() {
+        return (
+            <Grid container>
+                <FlightsTable
+                    shownFlightStates={shownFlightStates}
+                    setDuplicateFlight={(flight) => {
+                        setEditFlightDetailsDialogOpen(true);
+                        setEditedFlightData({...flight})
+                    }}
+                    setEditedFlight={(flightId, flight) => {
+                        const actionId = action?.id;
+
+                        if (!actionId) {
+                            return;
+                        }
+
+                        setEditFlightDetailsDialogOpen(true);
+                        setEditedFlightId(flightId);
+                        setEditedFlightData({
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-ignore
+                            action_id: actionId,
+                            ...flight
+                        })
+                    }}
+                    onFlightStateUpdated={onFlightStateUpdated}
+                />
+            </Grid>
+        )
+    }
+
+
+    function renderContent() {
+        return (
+            <Grid>
+                {renderTopBar()}
+                {renderFlightsTable()}
+            </Grid>
+        )
+    }
+
     return (
         <>
             {renderEditFlightDialog()}
@@ -364,79 +457,7 @@ export default function DashboardPage() {
             {renderEndTowDialog()}
             {renderFlightCreationWizardDialog()}
 
-            <Grid>
-                <Grid container mb={2} spacing={1}>
-                    <Grid item xs={1}>
-                        <Button variant="contained" color="primary" style={{
-                            height: "100%",
-                            width: "100%"
-                        }}
-                                onClick={() => setFlightCreationWizardDialogOpen(true)}>
-                            {t("NEW_FLIGHT")}
-                        </Button>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <FormControl style={{
-                            width: "100%",
-                            height: "100%",
-                        }}>
-                            <InputLabel id="flight-state-select-label">{t("FLIGHT_STATES")}</InputLabel>
-                            <Select
-                                labelId="flight-state-select-label"
-                                id="flight-state-select"
-                                multiple
-                                value={shownFlightStates}
-                                onChange={(event) => handleFlightStateChange(event)}
-                                input={<OutlinedInput label="Tag"/>}
-                                renderValue={(selected) => selected.map((value) => t(value.toUpperCase())).join(', ')}
-                                MenuProps={MenuProps}
-                                style={{
-                                    width: "100%",
-                                    height: "100%",
-                                }}
-                            >
-                                {ORDERED_FLIGHT_STATES.map((state) => (
-                                    <MenuItem key={state} value={state}>
-                                        <Checkbox checked={shownFlightStates.indexOf(state) > -1}/>
-                                        <ListItemText primary={t(state.toUpperCase())}/>
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={8}>
-                        <ActionConfigurationComponent/>
-                    </Grid>
-                </Grid>
-
-
-                <Grid container>
-                    <FlightsTable
-                        shownFlightStates={shownFlightStates}
-                        setDuplicateFlight={(flight) => {
-                            setEditFlightDetailsDialogOpen(true);
-                            setEditedFlightData({...flight})
-                        }}
-                        setEditedFlight={(flightId, flight) => {
-                            const actionId = action?.id;
-
-                            if (!actionId) {
-                                return;
-                            }
-
-                            setEditFlightDetailsDialogOpen(true);
-                            setEditedFlightId(flightId);
-                            setEditedFlightData({
-                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                // @ts-ignore
-                                action_id: actionId,
-                                ...flight
-                            })
-                        }}
-                        onFlightStateUpdated={onFlightStateUpdated}
-                    />
-                </Grid>
-            </Grid>
+            {renderContent()}
         </>
     )
 }
