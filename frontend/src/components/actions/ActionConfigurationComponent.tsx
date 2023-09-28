@@ -45,12 +45,11 @@ export default function ActionConfigurationComponent() {
     const dispatch = useAppDispatch();
     const [editedActiveTowAirplaneId, setEditedActiveTowAirplaneId] = useState<number | null>(null);
 
-
-    if (!action) {
-        return null;
-    }
-
     useEffect(() => {
+        if (!action) {
+            return
+        }
+
         if (!currentActionStoreState.activeTowAirplanes) {
             dispatch(
                 fetchActiveTowAirplanes(action?.id)
@@ -58,10 +57,13 @@ export default function ActionConfigurationComponent() {
         }
     }, [
         currentActionStoreState.activeTowAirplanes,
-        action?.id,
         dispatch,
+        action
     ]);
 
+    if (!action) {
+        return null;
+    }
 
     const {field_responsible_id, responsible_cfi_id, instruction_glider_id} = action;
 
@@ -85,7 +87,6 @@ export default function ActionConfigurationComponent() {
                 )
             }
         }
-
     }
 
     function renderTowAirplane(towAirplaneId: number) {
