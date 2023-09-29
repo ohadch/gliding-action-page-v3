@@ -72,6 +72,12 @@ class EventType(enum.Enum):
     FLIGHT_TOOK_OFF = "flight_took_off"
     FLIGHT_TOW_RELEASED = "flight_tow_released"
     ACTION_CLOSED = "action_closed"
+    RESPONSIBLE_CFI_ASSIGNED = "responsible_cfi_assigned"
+    RESPONSIBLE_CFI_UNASSIGNED = "responsible_cfi_unassigned"
+    FIELD_RESPONSIBLE_ASSIGNED = "field_responsible_assigned"
+    FIELD_RESPONSIBLE_UNASSIGNED = "field_responsible_unassigned"
+    TOW_AIRPLANE_ACTIVATED = "tow_airplane_activated"
+    TOW_AIRPLANE_DEACTIVATED = "tow_airplane_deactivated"
 
 
 class EventState(enum.Enum):

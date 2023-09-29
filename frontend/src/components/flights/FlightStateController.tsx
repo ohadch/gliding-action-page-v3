@@ -48,20 +48,32 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
         return ORDERED_FLIGHT_STATES.indexOf(flight.state) < ORDERED_FLIGHT_STATES.length - 1;
     }
 
+    function goToPreviousStateVisible() {
+        return flight.state !== "Draft";
+    }
+
+    function goToNextStateVisible() {
+        return flight.state !== "Landed";
+    }
+
     return (
         <Grid sx={{
             display: "flex",
             justifyContent: "center",
         }}>
-            <Grid>
-                <IconButton
-                    color={color}
-                    disabled={!goToPreviousStateEnabled()}
-                    onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) - 1])}
-                >
-                    <ArrowRightIcon/>
-                </IconButton>
-            </Grid>
+            {
+                goToPreviousStateVisible() && (
+                    <Grid>
+                        <IconButton
+                            color={color}
+                            disabled={!goToPreviousStateEnabled()}
+                            onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) - 1])}
+                        >
+                            <ArrowRightIcon/>
+                        </IconButton>
+                    </Grid>
+                )
+            }
             <Grid>
                 <Button
                     variant="text"
@@ -70,15 +82,19 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                     {t(label)}
                 </Button>
             </Grid>
-            <Grid>
-                <IconButton
-                    color={color}
-                    disabled={!goToNextStateEnabled()}
-                    onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) + 1])}
-                >
-                    <ArrowLeftIcon/>
-                </IconButton>
-            </Grid>
+            {
+                goToNextStateVisible() && (
+                    <Grid>
+                        <IconButton
+                            color={color}
+                            disabled={!goToNextStateEnabled()}
+                            onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) + 1])}
+                        >
+                            <ArrowLeftIcon/>
+                        </IconButton>
+                    </Grid>
+                )
+            }
         </Grid>
     );
 }

@@ -9,7 +9,7 @@ import {
     TextField,
 } from "@mui/material";
 import {useTranslation} from "react-i18next";
-import {getGliderDisplayValue, getMemberDisplayValue, getTowAirplaneDisplayValue} from "../../utils/display.ts";
+import {getMemberDisplayValue, getTowAirplaneDisplayValue} from "../../utils/display.ts";
 import {useCallback, useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
@@ -22,6 +22,8 @@ import {
     deleteActiveTowAirplane,
     fetchActiveTowAirplanes
 } from "../../store/actions/currentAction.ts";
+import {createEvent} from "../../store/actions/event.ts";
+import {MemberSchema} from "../../lib/types.ts";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -37,7 +39,6 @@ const MenuProps = {
 export default function ActionConfigurationComponent() {
     const {t} = useTranslation();
     const membersStoreState = useSelector((state: RootState) => state.members)
-    const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
     const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
     const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
@@ -65,7 +66,7 @@ export default function ActionConfigurationComponent() {
         return null;
     }
 
-    const {field_responsible_id, responsible_cfi_id, instruction_glider_id} = action;
+    const {field_responsible_id, responsible_cfi_id} = action;
 
     function handleActiveTowAirplaneChange(event: SelectChangeEvent<number[]>) {
         const {
@@ -82,6 +83,19 @@ export default function ActionConfigurationComponent() {
         } else if (removedTowAirplaneId) {
             const activationId = currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === removedTowAirplaneId)?.id
             if (activationId) {
+                dispatch(
+                    createEvent({
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        type: "tow_airplane_deactivated",
+                        payload: {
+                            action_id: action?.id,
+                            tow_airplane_id: removedTowAirplaneId,
+                            tow_pilot_id: currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === removedTowAirplaneId)?.tow_pilot_id
+                        }
+                    })
+                )
+
                 dispatch(
                     deleteActiveTowAirplane(activationId)
                 )
@@ -125,17 +139,98 @@ export default function ActionConfigurationComponent() {
         ].includes(member.id) && isCfi(member, membersStoreState.membersRoles || []))
     }
 
-    function getInstructionGliderOptions() {
-        const initialOptions = glidersStoreState.gliders || []
-
-        return initialOptions
-            .filter(glider => glider.num_seats == 2 && !glidersStoreState.ownerships?.some(ownership => ownership.glider_id === glider.id))
-    }
-
     function displayTowPilotByAirplaneId(airplaneId: number) {
         const activeTowAirplane = currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === airplaneId);
         const towPilot = activeTowAirplane?.tow_pilot_id ? getMemberById(activeTowAirplane.tow_pilot_id) : null;
         return towPilot ? getMemberDisplayValue(towPilot) : "";
+    }
+
+    function onFieldResponsibleChanged(newValue: MemberSchema | null) {
+        if (!action) {
+            return
+        }
+
+        if (newValue?.id === field_responsible_id) {
+            return
+        }
+
+        if (field_responsible_id) {
+            dispatch(createEvent({
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                type: "responsible_cfi_unassigned",
+                payload: {
+                    action_id: action?.id,
+                    field_responsible_id
+                }
+            }))
+        }
+
+        dispatch(
+            updateAction({
+                actionId: action.id,
+                updatePayload: {
+                    ...action,
+                    field_responsible_id: newValue?.id
+                }
+            })
+        )
+
+        if (newValue?.id) {
+            dispatch(createEvent({
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                type: "responsible_cfi_assigned",
+                payload: {
+                    action_id: action?.id,
+                    field_responsible_id: newValue?.id,
+                }
+            }))
+        }
+    }
+
+    function onResponsibleCfiChanged(newValue: MemberSchema | null) {
+        if (!action) {
+            return
+        }
+
+        if (newValue?.id === responsible_cfi_id) {
+            return
+        }
+
+        if (responsible_cfi_id) {
+            dispatch(createEvent({
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                type: "responsible_cfi_unassigned",
+                payload: {
+                    action_id: action?.id,
+                    responsible_cfi_id
+                }
+            }))
+        }
+
+        dispatch(
+            updateAction({
+                actionId: action.id,
+                updatePayload: {
+                    ...action,
+                    responsible_cfi_id: newValue?.id
+                }
+            })
+        )
+
+        if (newValue?.id) {
+            dispatch(createEvent({
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                type: "responsible_cfi_assigned",
+                payload: {
+                    action_id: action?.id,
+                    responsible_cfi_id: newValue?.id,
+                }
+            }))
+        }
     }
 
     return (
@@ -145,6 +240,19 @@ export default function ActionConfigurationComponent() {
                 open={Boolean(editedActiveTowAirplaneId)}
                 onCancel={() => setEditedActiveTowAirplaneId(null)}
                 onSubmit={(towPilotId) => {
+                    dispatch(
+                        createEvent({
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-ignore
+                            type: "tow_airplane_activated",
+                            payload: {
+                                action_id: action?.id,
+                                tow_airplane_id: editedActiveTowAirplaneId,
+                                tow_pilot_id: towPilotId
+                            }
+                        })
+                    )
+
                     dispatch(
                         addActiveTowAirplane({
                             action_id: action.id,
@@ -163,15 +271,7 @@ export default function ActionConfigurationComponent() {
                                 id="field-responsible"
                                 options={getFieldResponsibleOptions()}
                                 value={(field_responsible_id ? getMemberById(field_responsible_id) : null) || null}
-                                onChange={(_, newValue) => dispatch(
-                                    updateAction({
-                                        actionId: action.id,
-                                        updatePayload: {
-                                            ...action,
-                                            field_responsible_id: newValue?.id
-                                        }
-                                    })
-                                )}
+                                onChange={(_, newValue) => onFieldResponsibleChanged(newValue)}
                                 getOptionLabel={(option) => getMemberDisplayValue(
                                     option,
                                 )}
@@ -194,15 +294,7 @@ export default function ActionConfigurationComponent() {
                                 id="responsible-cfi"
                                 options={getResponsibleCfiOptions()}
                                 value={(responsible_cfi_id ? getMemberById(responsible_cfi_id) : null) || null}
-                                onChange={(_, newValue) => dispatch(
-                                    updateAction({
-                                        actionId: action.id,
-                                        updatePayload: {
-                                            ...action,
-                                            responsible_cfi_id: newValue?.id
-                                        }
-                                    })
-                                )}
+                                onChange={(_, newValue) => onResponsibleCfiChanged(newValue)}
                                 getOptionLabel={(option) => getMemberDisplayValue(
                                     option,
                                 )}
@@ -218,36 +310,7 @@ export default function ActionConfigurationComponent() {
                         </FormControl>
                     </FormGroup>
                 </Grid>
-                <Grid item xs={2}>
-                    <FormGroup>
-                        <FormControl>
-                            <Autocomplete
-                                id="instruction-glider"
-                                options={getInstructionGliderOptions()}
-                                value={(instruction_glider_id ? glidersStoreState.gliders?.find((glider) => glider.id === instruction_glider_id) : null) || null}
-                                onChange={(_, newValue) => dispatch(
-                                    updateAction({
-                                        actionId: action.id,
-                                        updatePayload: {
-                                            ...action,
-                                            instruction_glider_id: newValue?.id
-                                        }
-                                    })
-                                )}
-                                getOptionLabel={(option) => getGliderDisplayValue(option)}
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            label={t("INSTRUCTION_GLIDER")}
-                                        />
-                                    )
-                                }}
-                            />
-                        </FormControl>
-                    </FormGroup>
-                </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={6}>
                     <FormGroup>
                         <FormControl>
                             <InputLabel id="active-tow-airplanes-label">{t("ACTIVE_TOW_AIRPLANES")}</InputLabel>
@@ -269,7 +332,8 @@ export default function ActionConfigurationComponent() {
                                     <MenuItem key={towAirplane.id} value={towAirplane.id}>
                                         <Checkbox
                                             checked={(currentActionStoreState?.activeTowAirplanes?.map((activeTowAirplane) => activeTowAirplane.airplane_id) || []).indexOf(towAirplane.id) > -1}/>
-                                        <ListItemText primary={towAirplane.call_sign} secondary={displayTowPilotByAirplaneId(towAirplane.id)}/>
+                                        <ListItemText primary={towAirplane.call_sign}
+                                                      secondary={displayTowPilotByAirplaneId(towAirplane.id)}/>
                                     </MenuItem>
                                 ))}
                             </Select>

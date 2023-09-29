@@ -56,7 +56,6 @@ export const TEXTS_HEBREW = {
     ACTION_NOT_SELECTED_MESSAGE: "יש לבחור פעולה על מנת להתחיל.",
     ACTION_NOT_SELECTED_TITLE: "לא נבחרה פעולה",
     QUIT_ACTION: "צא מהפעולה",
-    INSTRUCTION_GLIDER: "דאון ההדרכה",
     ACTIVE_TOW_AIRPLANES: "מטוסים גוררים פעילים",
     SELECT_TOW_PILOT: "בחר טייס גורר",
     ACTION_NOT_FULLY_CONFIGURED_TITLE: "נא להגדיר את הפעולה",
@@ -69,6 +68,7 @@ export const TEXTS_HEBREW = {
     SELF_LAUNCH: "המראה עצמית",
     CREW: "צוות",
     TOW_PILOT_CANNOT_TOW_HIMSELF: "לא ניתן לשבץ טייס גורר כגורר של עצמו",
+    FLIGHTS: "טיסות",
 }
 
 

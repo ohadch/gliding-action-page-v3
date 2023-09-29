@@ -78,7 +78,7 @@ export default function DashboardPage() {
 
 
     const isFullyConfigured = () => {
-        return action && action.field_responsible_id && action.responsible_cfi_id && action.instruction_glider_id && ((currentActionStoreState.activeTowAirplanes?.length || 0) > 0)
+        return action && action.field_responsible_id && action.responsible_cfi_id && ((currentActionStoreState.activeTowAirplanes?.length || 0) > 0)
     }
     const flightsInTowState = flights?.filter((flight) => flight.state === "Tow");
     const flightsInAnyFlightState = flights?.filter((flight) => isFlightActive(flight));
@@ -300,6 +300,7 @@ export default function DashboardPage() {
                     // @ts-ignore
                     type: "flight_landed",
                     payload: {
+                        action_id: action?.id,
                         flight_id: flightId,
                     }
                 }))))
@@ -373,6 +374,7 @@ export default function DashboardPage() {
                         // @ts-ignore
                         type: "flight_took_off",
                         payload: {
+                            action_id: action?.id,
                             flight_id: startTowDialogFlight.id,
                         }
                     }))
@@ -427,6 +429,7 @@ export default function DashboardPage() {
                         // @ts-ignore
                         type: "flight_tow_released",
                         payload: {
+                            action_id: action?.id,
                             flight_id: endTowDialogFlight.id,
                         }
                     }))
@@ -461,7 +464,9 @@ export default function DashboardPage() {
                     value={shownFlightStates}
                     onChange={(event) => handleFlightStateChange(event)}
                     input={<OutlinedInput label="Tag"/>}
-                    renderValue={(selected) => selected.map((value) => t(value.toUpperCase())).join(', ')}
+                    renderValue={(selected) => {
+                        return selected.map((value) => `${t(value.toUpperCase())} (${flights?.filter((flight) => flight.state === value).length || 0})`).join(", ")
+                    }}
                     MenuProps={MenuProps}
                     style={{
                         width: "100%",
@@ -471,7 +476,12 @@ export default function DashboardPage() {
                     {ORDERED_FLIGHT_STATES.map((state) => (
                         <MenuItem key={state} value={state}>
                             <Checkbox checked={shownFlightStates.indexOf(state) > -1}/>
-                            <ListItemText primary={t(state.toUpperCase())}/>
+                            <ListItemText
+                                primary={t(state.toUpperCase())}
+                                secondary={
+                                    `${flights?.filter((flight) => flight.state === state).length || 0} ${t("FLIGHTS")}`
+                                }
+                            />
                         </MenuItem>
                     ))}
                 </Select>
@@ -482,7 +492,7 @@ export default function DashboardPage() {
     function renderTopBar() {
         return (
             <Grid container mb={2} spacing={1}>
-                <Grid item xs={1}>
+                <Grid item xs={2}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -495,10 +505,10 @@ export default function DashboardPage() {
                         {t("NEW_FLIGHT")}
                     </Button>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={3.5}>
                     {renderFlightStatesFilter()}
                 </Grid>
-                <Grid item xs={8}>
+                <Grid item xs={6.5}>
                     <ActionConfigurationComponent/>
                 </Grid>
             </Grid>
@@ -514,10 +524,6 @@ export default function DashboardPage() {
 
         if (!action?.responsible_cfi_id) {
             missingConfigurations.push(t("RESPONSIBLE_CFI"))
-        }
-
-        if (!action?.instruction_glider_id) {
-            missingConfigurations.push(t("INSTRUCTION_GLIDER"))
         }
 
         if ((currentActionStoreState.activeTowAirplanes?.length || 0) === 0) {
