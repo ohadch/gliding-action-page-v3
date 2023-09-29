@@ -1,13 +1,10 @@
 import enum
 
 
-class AircraftTypeId(enum.Enum):
-    TouringGlider = 1
-    SelfLaunch = 2
-    DualSeat = 3
-    SingleSeat = 4
-    MainTowAirplane = 5
-    SecondaryTowAirplane = 6
+class GliderType(enum.Enum):
+    Regular = "regular"
+    Touring = "touring"
+    SelfLaunch = "self_launch"
 
 
 class PayersType(enum.Enum):

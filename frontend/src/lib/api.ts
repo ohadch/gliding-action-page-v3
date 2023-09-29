@@ -783,8 +783,7 @@ export interface components {
       call_sign: string;
       /** Num Seats */
       num_seats: number;
-      /** Type */
-      type: number;
+      type: components["schemas"]["GliderType"];
     };
     /** GliderOwnerCreateSchema */
     GliderOwnerCreateSchema: {
@@ -824,8 +823,7 @@ export interface components {
       call_sign: string;
       /** Num Seats */
       num_seats: number;
-      /** Type */
-      type: number;
+      type: components["schemas"]["GliderType"];
     };
     /** GliderSearchSchema */
     GliderSearchSchema: {
@@ -833,17 +831,20 @@ export interface components {
       call_sign?: string | null;
       /** Num Seats */
       num_seats?: number | null;
-      /** Type */
-      type?: number | null;
+      type?: components["schemas"]["GliderType"] | null;
     };
+    /**
+     * GliderType
+     * @enum {string}
+     */
+    GliderType: "regular" | "touring" | "self_launch";
     /** GliderUpdateSchema */
     GliderUpdateSchema: {
       /** Call Sign */
       call_sign?: string | null;
       /** Num Seats */
       num_seats?: number | null;
-      /** Type */
-      type?: number | null;
+      type?: components["schemas"]["GliderType"] | null;
     };
     /** HTTPValidationError */
     HTTPValidationError: {
@@ -1005,8 +1006,6 @@ export interface components {
     TowAirplaneCreateSchema: {
       /** Call Sign */
       call_sign: string;
-      /** Type */
-      type: number;
     };
     /** TowAirplaneSchema */
     TowAirplaneSchema: {
@@ -1014,22 +1013,16 @@ export interface components {
       id: number;
       /** Call Sign */
       call_sign: string;
-      /** Type */
-      type: number;
     };
     /** TowAirplaneSearchSchema */
     TowAirplaneSearchSchema: {
       /** Call Sign */
       call_sign?: string | null;
-      /** Type */
-      type?: number | null;
     };
     /** TowAirplaneUpdateSchema */
     TowAirplaneUpdateSchema: {
       /** Call Sign */
       call_sign?: string | null;
-      /** Type */
-      type?: number | null;
     };
     /**
      * TowType
