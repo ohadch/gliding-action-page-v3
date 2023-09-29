@@ -56,7 +56,7 @@ class NotificationsConsumer:
         try:
             handler = notification_handler_factory(notification=notification)
             self._logger.info(
-                f"Sending notification {notification.id} to recipient: {notification.recipient_member.email}, "
+                f"Sending notification {notification.id} with type {notification.type} to recipient: {notification.recipient_member.email}, "
                 f"handler: {handler.__class__.__name__}"
             )
             handler.send()

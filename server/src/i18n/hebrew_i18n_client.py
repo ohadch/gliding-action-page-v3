@@ -67,13 +67,14 @@ class HebrewI18nClient(I18nClient):
         tow_pilot: Member,
         tow_airplane: TowAirplane,
         action: Action,
+        flights: List[Flight],
         values_str: str,
     ) -> str:
         return f"""
         <table dir="rtl">
                         <tr>שלום,</tr>
                         <tr></tr>
-                        <tr>בתאריך {action.date.strftime('%Y-%m-%d')} ביצעת {len(action.flights)} טיסות במטוס {tow_airplane.call_sign}.</tr>
+                        <tr>בתאריך {action.date.strftime('%Y-%m-%d')} ביצעת {len(flights)} טיסות במטוס {tow_airplane.call_sign}.</tr>
                         <tr></tr>
                         {values_str}
                         <tr></tr>
