@@ -68,6 +68,7 @@ export const TEXTS_HEBREW = {
     SELECT_TOW_TYPE: "בחר גובה גרירה",
     SELF_LAUNCH: "המראה עצמית",
     CREW: "צוות",
+    TOW_PILOT_CANNOT_TOW_HIMSELF: "לא ניתן לשבץ טייס גורר כגורר של עצמו",
 }
 
 

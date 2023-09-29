@@ -71,10 +71,21 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
 
     const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
 
+    const getTowPilotByAirplaneId = (airplaneId: number) => {
+        const activeTowAirplane = activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === airplaneId);
+        return activeTowAirplane?.tow_pilot_id || null;
+    }
+
 
     const busyTowAirplaneIds = flights?.filter((flight) => flight.state === "Tow").map((flight) => flight.tow_airplane_id) || [];
     const availableTowAirplanes = towAirplanesStoreState.towAirplanes?.filter((towAirplane) => {
-        return !busyTowAirplaneIds.includes(towAirplane.id);
+        if (busyTowAirplaneIds.includes(towAirplane.id)) {
+            return false;
+        }
+
+        const towPilotId = getTowPilotByAirplaneId(towAirplane.id);
+
+        return ![flight.pilot_1_id, flight.pilot_2_id].filter(Boolean).includes(towPilotId);
     }).filter((towAirplane) => activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === towAirplane.id)) || [];
 
     const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>(
@@ -88,6 +99,7 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
         const activeTowAirplane = activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === towAirplaneId);
         return activeTowAirplane?.tow_pilot_id || null;
     }, [towAirplaneId, activeTowAirplanes])();
+
     const [selfLaunch, setSelfLaunch] = useState<boolean>(false);
 
     useEffect(() => {
