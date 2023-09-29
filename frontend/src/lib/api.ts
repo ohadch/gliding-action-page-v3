@@ -583,6 +583,8 @@ export interface components {
     };
     /** EventCreateSchema */
     EventCreateSchema: {
+      /** Action Id */
+      action_id: number;
       type: components["schemas"]["EventType"];
       payload: components["schemas"]["EventPayloadSchema-Input"];
     };
@@ -590,8 +592,6 @@ export interface components {
     "EventPayloadSchema-Input": {
       /** Flight Id */
       flight_id?: number | null;
-      /** Action Id */
-      action_id?: number | null;
       /** Field Responsible Id */
       field_responsible_id?: number | null;
       /** Responsible Cfi Id */
@@ -607,8 +607,6 @@ export interface components {
     "EventPayloadSchema-Output": {
       /** Flight Id */
       flight_id: number | null;
-      /** Action Id */
-      action_id: number | null;
       /** Field Responsible Id */
       field_responsible_id: number | null;
       /** Responsible Cfi Id */
@@ -624,6 +622,8 @@ export interface components {
     EventSchema: {
       /** Id */
       id: number;
+      /** Action Id */
+      action_id: number;
       type: components["schemas"]["EventType"];
       state: components["schemas"]["EventState"];
       payload: components["schemas"]["EventPayloadSchema-Output"];
@@ -937,6 +937,8 @@ export interface components {
     };
     /** NotificationCreateSchema */
     NotificationCreateSchema: {
+      /** Action Id */
+      action_id: number;
       /** Recipient Member Id */
       recipient_member_id: number;
       payload: components["schemas"]["NotificationPayloadSchema"];
@@ -957,6 +959,8 @@ export interface components {
     NotificationSchema: {
       /** Id */
       id: number;
+      /** Action Id */
+      action_id: number;
       /**
        * Sent At
        * Format: date-time

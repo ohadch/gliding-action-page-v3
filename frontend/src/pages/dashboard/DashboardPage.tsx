@@ -295,16 +295,17 @@ export default function DashboardPage() {
             case "Landed":
                 updatePayload.landing_at = now;
 
-                promises.push(new Promise(() => dispatch(createEvent({
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    type: "flight_landed",
-                    payload: {
-                        action_id: action?.id,
-                        flight_id: flightId,
-                        field_responsible_id: action?.field_responsible_id,
-                    }
-                }))))
+                if (action?.id) {
+                    promises.push(new Promise(() => dispatch(createEvent({
+                        action_id: action.id,
+                        type: "flight_landed",
+                        payload: {
+
+                            flight_id: flightId,
+                            field_responsible_id: action?.field_responsible_id,
+                        }
+                    }))))
+                }
 
                 break;
             default:
@@ -370,16 +371,18 @@ export default function DashboardPage() {
                         flightId: startTowDialogFlight?.id,
                         updatePayload: flight,
                     }))
-                    dispatch(createEvent({
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-ignore
-                        type: "flight_took_off",
-                        payload: {
-                            action_id: action?.id,
-                            flight_id: startTowDialogFlight.id,
-                            field_responsible_id: action?.field_responsible_id,
-                        }
-                    }))
+
+                    if (action?.id) {
+                        dispatch(createEvent({
+                            action_id: action.id,
+                            type: "flight_took_off",
+                            payload: {
+                                flight_id: startTowDialogFlight.id,
+                                field_responsible_id: action?.field_responsible_id,
+                            }
+                        }))
+                    }
+
                     setStartTowDialogFlight(null)
                 }}
             />
@@ -426,16 +429,18 @@ export default function DashboardPage() {
                         flightId: endTowDialogFlight?.id,
                         updatePayload: flight,
                     }))
-                    dispatch(createEvent({
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-ignore
-                        type: "flight_tow_released",
-                        payload: {
-                            action_id: action?.id,
-                            flight_id: endTowDialogFlight.id,
-                            field_responsible_id: action?.field_responsible_id,
-                        }
-                    }))
+
+                    if (action?.id) {
+                        dispatch(createEvent({
+                            action_id: action.id,
+                            type: "flight_tow_released",
+                            payload: {
+                                flight_id: endTowDialogFlight.id,
+                                field_responsible_id: action?.field_responsible_id,
+                            }
+                        }))
+                    }
+
                     setEndTowDialogFlight(null)
                 }}
             />
