@@ -179,7 +179,7 @@ export default function DashboardPage() {
             return;
         }
 
-        const glider = getGliderById(flight.glider_id);
+        const glider = flight.glider_id ? getGliderById(flight.glider_id) : null;
 
         if (flight.state === state) {
             return;
