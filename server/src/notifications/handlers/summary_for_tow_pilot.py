@@ -14,12 +14,6 @@ class FlightSummaryForPilotNotificationHandler(NotificationHandler):
         subject = i18n.get_flight_summary_for_pilot_email_message_subject(flight=flight)
         message = i18n.get_flight_summary_for_pilot_email_message(flight=flight)
 
-        email_client.send_email(
-            to_email=notification.recipient_member.email,
-            subject=subject,
-            html_content=message,
-        )
-
     def _send_via_console(self, notification: Notification) -> None:
         payload = NotificationPayloadSchema(**notification.payload)
         flight_id = payload.flight_ids[0]
