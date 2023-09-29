@@ -461,7 +461,9 @@ export default function DashboardPage() {
                     value={shownFlightStates}
                     onChange={(event) => handleFlightStateChange(event)}
                     input={<OutlinedInput label="Tag"/>}
-                    renderValue={(selected) => selected.map((value) => t(value.toUpperCase())).join(', ')}
+                    renderValue={(selected) => {
+                        return selected.map((value) => `${t(value.toUpperCase())} (${flights?.filter((flight) => flight.state === value).length || 0})`).join(", ")
+                    }}
                     MenuProps={MenuProps}
                     style={{
                         width: "100%",
@@ -471,7 +473,12 @@ export default function DashboardPage() {
                     {ORDERED_FLIGHT_STATES.map((state) => (
                         <MenuItem key={state} value={state}>
                             <Checkbox checked={shownFlightStates.indexOf(state) > -1}/>
-                            <ListItemText primary={t(state.toUpperCase())}/>
+                            <ListItemText
+                                primary={t(state.toUpperCase())}
+                                secondary={
+                                    `${flights?.filter((flight) => flight.state === state).length || 0} ${t("FLIGHTS")}`
+                                }
+                            />
                         </MenuItem>
                     ))}
                 </Select>
@@ -495,10 +502,10 @@ export default function DashboardPage() {
                         {t("NEW_FLIGHT")}
                     </Button>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={3.5}>
                     {renderFlightStatesFilter()}
                 </Grid>
-                <Grid item xs={7}>
+                <Grid item xs={6.5}>
                     <ActionConfigurationComponent/>
                 </Grid>
             </Grid>

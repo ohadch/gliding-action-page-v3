@@ -68,6 +68,7 @@ export const TEXTS_HEBREW = {
     SELF_LAUNCH: "המראה עצמית",
     CREW: "צוות",
     TOW_PILOT_CANNOT_TOW_HIMSELF: "לא ניתן לשבץ טייס גורר כגורר של עצמו",
+    FLIGHTS: "טיסות",
 }
 
 
