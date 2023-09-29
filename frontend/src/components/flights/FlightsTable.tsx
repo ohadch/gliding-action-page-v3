@@ -143,7 +143,9 @@ export default function FlightsTable(props: FlightsTableProps) {
                                     align="right">{flight.tow_type && getTowTypeDisplayValue(flight.tow_type)}
                                 </TableCell>
                                 <TableCell align="right">
-                                    <FlightDuration flight={flight}/>
+                                    {(flight.state !== "Draft") && (
+                                        <FlightDuration flight={flight}/>
+                                    )}
                                 </TableCell>
                                 <TableCell align="right">
                                     <Tooltip title={t("EDIT_FLIGHT")}

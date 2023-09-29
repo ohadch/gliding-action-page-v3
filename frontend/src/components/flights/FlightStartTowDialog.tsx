@@ -174,10 +174,6 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
     }
 
     const isSubmitEnabled = () => {
-        if (selfLaunch) {
-            return !towAirplaneId && !towPilotId;
-        }
-
         const conditions: boolean[] = [
             Boolean(towAirplaneId),
             Boolean(towPilotId),
