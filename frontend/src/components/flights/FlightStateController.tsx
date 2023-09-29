@@ -44,6 +44,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
     const {label, color} = STATE_BUTTON_CONFIGS[flight.state];
     const flights = useSelector((state: RootState) => state.currentAction.flights);
     const {towAirplanes} = useSelector((state: RootState) => state.towAirplanes);
+    const {gliders} = useSelector((state: RootState) => state.gliders);
     const {activeTowAirplanes} = useSelector((state: RootState) => state.currentAction);
 
     const flightsInTowState = flights?.filter((flight) => flight.state === "Tow") || [];
@@ -60,6 +61,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
     }
 
     const getTowAirplaneById = (id: number) => towAirplanes?.find((towAirplane) => towAirplane.id === id);
+    const getGliderById = (id: number) => gliders?.find((glider) => glider.id === id);
 
     return (
         <Grid sx={{
@@ -71,7 +73,12 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                     color={color}
                     disabled={!goToPreviousStateEnabled()}
                     onClick={() => {
-                        if ((flight.state === "Inflight") && (flight.tow_airplane_id) && (!isTowAirplaneAvailable(flight.tow_airplane_id))) {
+                        if (
+                            (flight.state === "Inflight")
+                            && (flight.tow_airplane_id)
+                            && (!isTowAirplaneAvailable(flight.tow_airplane_id))
+                            && (flight.glider_id && (getGliderById(flight.glider_id)?.type === "regular"))
+                        ) {
                             const towAirplane = getTowAirplaneById(flight.tow_airplane_id)
 
                             if (towAirplane) {
@@ -98,7 +105,11 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                     color={color}
                     disabled={!goToNextStateEnabled()}
                     onClick={() => {
-                        if ((flight.state === "Draft") && (availableTowAirplanes.length === 0)) {
+                        if (
+                            (flight.state === "Draft")
+                            && (availableTowAirplanes.length === 0)
+                            && (flight.glider_id && (getGliderById(flight.glider_id)?.type === "regular"))
+                        ) {
                             alert(t("NO_TOW_AIRPLANES_AVAILABLE"));
                             return;
                         }
