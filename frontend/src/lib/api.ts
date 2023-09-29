@@ -504,8 +504,6 @@ export interface components {
       field_responsible_id?: number | null;
       /** Responsible Cfi Id */
       responsible_cfi_id?: number | null;
-      /** Instruction Glider Id */
-      instruction_glider_id?: number | null;
     };
     /** ActionSchema */
     ActionSchema: {
@@ -522,8 +520,6 @@ export interface components {
       field_responsible_id: number | null;
       /** Responsible Cfi Id */
       responsible_cfi_id: number | null;
-      /** Instruction Glider Id */
-      instruction_glider_id: number | null;
     };
     /** ActionSearchSchema */
     ActionSearchSchema: {
@@ -535,8 +531,6 @@ export interface components {
       field_responsible_id?: number | null;
       /** Responsible Cfi Id */
       responsible_cfi_id?: number | null;
-      /** Instruction Glider Id */
-      instruction_glider_id?: number | null;
     };
     /** ActionUpdateSchema */
     ActionUpdateSchema: {
@@ -548,8 +542,6 @@ export interface components {
       field_responsible_id?: number | null;
       /** Responsible Cfi Id */
       responsible_cfi_id?: number | null;
-      /** Instruction Glider Id */
-      instruction_glider_id?: number | null;
     };
     /** ActiveTowAirplaneCreateSchema */
     ActiveTowAirplaneCreateSchema: {
@@ -659,7 +651,7 @@ export interface components {
      * EventType
      * @enum {string}
      */
-    EventType: "flight_landed" | "flight_took_off" | "flight_tow_released" | "action_closed" | "responsible_cfi_assigned" | "field_responsible_assigned" | "instruction_glider_assigned" | "tow_airplane_activated" | "tow_airplane_deactivated";
+    EventType: "flight_landed" | "flight_took_off" | "flight_tow_released" | "action_closed" | "responsible_cfi_assigned" | "field_responsible_assigned" | "tow_airplane_activated" | "tow_airplane_deactivated";
     /** EventUpdateSchema */
     EventUpdateSchema: {
       type: components["schemas"]["EventType"] | null;

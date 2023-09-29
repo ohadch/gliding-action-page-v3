@@ -59,8 +59,6 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
         const member = getMemberById(id);
         return member ? getMemberDisplayValue(
             member,
-            membersStoreState.membersRoles?.filter((role) => role.member_id === member.id) || [],
-            true
         ) : "";
     }
 

@@ -78,7 +78,7 @@ export default function DashboardPage() {
 
 
     const isFullyConfigured = () => {
-        return action && action.field_responsible_id && action.responsible_cfi_id && action.instruction_glider_id && ((currentActionStoreState.activeTowAirplanes?.length || 0) > 0)
+        return action && action.field_responsible_id && action.responsible_cfi_id && ((currentActionStoreState.activeTowAirplanes?.length || 0) > 0)
     }
     const flightsInTowState = flights?.filter((flight) => flight.state === "Tow");
     const flightsInAnyFlightState = flights?.filter((flight) => isFlightActive(flight));
@@ -514,10 +514,6 @@ export default function DashboardPage() {
 
         if (!action?.responsible_cfi_id) {
             missingConfigurations.push(t("RESPONSIBLE_CFI"))
-        }
-
-        if (!action?.instruction_glider_id) {
-            missingConfigurations.push(t("INSTRUCTION_GLIDER"))
         }
 
         if ((currentActionStoreState.activeTowAirplanes?.length || 0) === 0) {
