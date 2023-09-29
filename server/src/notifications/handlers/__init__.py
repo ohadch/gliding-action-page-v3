@@ -3,11 +3,15 @@ from src.notifications.handlers.flight_summary_for_pilot_notification_handler im
     FlightSummaryForPilotNotificationHandler,
 )
 from src.notifications.handlers.notification_handler import NotificationHandler
+from src.notifications.handlers.summary_for_tow_pilot import (
+    SummaryForTowPilotNotificationHandler,
+)
 from src.utils.enums import NotificationType
 
 
 NOTIFICATION_NAME_TO_CLASS_MAP = {
     NotificationType.FlightSummaryForPilot: FlightSummaryForPilotNotificationHandler,
+    NotificationType.SummaryForTowPilot: SummaryForTowPilotNotificationHandler,
 }
 
 

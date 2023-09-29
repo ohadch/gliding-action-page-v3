@@ -941,7 +941,7 @@ export interface components {
       action_id: number;
       /** Recipient Member Id */
       recipient_member_id: number;
-      payload: components["schemas"]["NotificationPayloadSchema"];
+      payload: components["schemas"]["NotificationPayloadSchema-Input"];
       type: components["schemas"]["NotificationType"];
       method?: components["schemas"]["NotificationMethod"] | null;
     };
@@ -951,9 +951,22 @@ export interface components {
      */
     NotificationMethod: "console" | "email";
     /** NotificationPayloadSchema */
-    NotificationPayloadSchema: {
-      /** Flight Ids */
-      flight_ids: number[];
+    "NotificationPayloadSchema-Input": {
+      /** Flight Id */
+      flight_id?: number | null;
+      /** Tow Pilot Id */
+      tow_pilot_id?: number | null;
+      /** Tow Airplane Id */
+      tow_airplane_id?: number | null;
+    };
+    /** NotificationPayloadSchema */
+    "NotificationPayloadSchema-Output": {
+      /** Flight Id */
+      flight_id: number | null;
+      /** Tow Pilot Id */
+      tow_pilot_id: number | null;
+      /** Tow Airplane Id */
+      tow_airplane_id: number | null;
     };
     /** NotificationSchema */
     NotificationSchema: {
@@ -974,14 +987,14 @@ export interface components {
       recipient_member_id: number;
       method: components["schemas"]["NotificationMethod"];
       type: components["schemas"]["NotificationType"];
-      payload: components["schemas"]["NotificationPayloadSchema"];
+      payload: components["schemas"]["NotificationPayloadSchema-Output"];
       state: components["schemas"]["NotificationState"];
     };
     /** NotificationSearchSchema */
     NotificationSearchSchema: {
       /** Recipient Member Id */
       recipient_member_id?: number | null;
-      payload?: components["schemas"]["NotificationPayloadSchema"] | null;
+      payload?: components["schemas"]["NotificationPayloadSchema-Input"] | null;
       type?: components["schemas"]["NotificationType"] | null;
       method?: components["schemas"]["NotificationMethod"] | null;
     };
@@ -994,12 +1007,12 @@ export interface components {
      * NotificationType
      * @enum {string}
      */
-    NotificationType: "FlightSummaryForPilot" | "DailySummaryForObserver" | "DailySummaryForTowPilot" | "DailySummaryForCfi";
+    NotificationType: "FlightSummaryForPilot" | "DailySummaryForObserver" | "SummaryForTowPilot" | "SummaryForCfi";
     /** NotificationUpdateSchema */
     NotificationUpdateSchema: {
       /** Recipient Member Id */
       recipient_member_id?: number | null;
-      payload?: components["schemas"]["NotificationPayloadSchema"] | null;
+      payload?: components["schemas"]["NotificationPayloadSchema-Input"] | null;
       type?: components["schemas"]["NotificationType"] | null;
       method?: components["schemas"]["NotificationMethod"] | null;
     };

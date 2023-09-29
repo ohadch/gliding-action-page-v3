@@ -2,8 +2,7 @@ import abc
 import logging
 import os
 
-from src import Notification, Flight
-from src.database import SessionLocal
+from src import Notification
 from src.notifications.types import NotificationPayloadSchema
 from src.utils.enums import NotificationMethod
 
@@ -47,21 +46,6 @@ class NotificationHandler(abc.ABC):
     def _send_via_console(self, notification: Notification) -> None:
         pass
 
-    @staticmethod
-    def _get_flight(notification: Notification):
-        """
-        Get flight from notification
-        :param notification: The notification
-        """
-        payload = NotificationPayloadSchema(**notification.payload)
-        flight_id = payload.flight_ids[0]
-        session = SessionLocal()
-        flight = session.query(Flight).get(flight_id)
-
-        if not flight:
-            raise ValueError(f"Invalid flight id: {flight_id}")
-
-        if not flight.take_off_at or not flight.landing_at:
-            raise ValueError(f"Flight {flight_id} is not finished yet")
-
-        return flight
+    @property
+    def _payload(self) -> NotificationPayloadSchema:
+        return NotificationPayloadSchema(**self._notification.payload)

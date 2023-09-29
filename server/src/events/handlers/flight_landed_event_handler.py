@@ -31,7 +31,7 @@ class FlightLandedEventHandler(EventHandler):
                         recipient_member_id=flight.pilot_1_id,
                         type=NotificationType.FlightSummaryForPilot.value,
                         payload=NotificationPayloadSchema(
-                            flight_ids=[flight.id]
+                            flight_id=flight.id
                         ).model_dump(),
                     )
                 )
@@ -46,7 +46,7 @@ class FlightLandedEventHandler(EventHandler):
                         recipient_member_id=flight.pilot_2_id,
                         type=NotificationType.FlightSummaryForPilot.value,
                         payload=NotificationPayloadSchema(
-                            flight_ids=[flight.id]
+                            flight_id=flight.id
                         ).model_dump(),
                     )
                 )

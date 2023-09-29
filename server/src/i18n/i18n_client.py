@@ -1,7 +1,7 @@
 import abc
 from typing import List, Dict, Any
 
-from src import Flight
+from src import Flight, Member, Action, TowAirplane
 from src.utils.common import stringify_duration
 
 
@@ -15,12 +15,28 @@ class I18nClient(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_summary_for_tow_pilot_email_message_subject(self, flight: Flight) -> str:
+    def get_summary_for_tow_pilot_email_message_subject(
+        self,
+        tow_pilot: Member,
+        tow_airplane: TowAirplane,
+        action: Action,
+        flights: List[Flight],
+    ) -> str:
         pass
 
     @abc.abstractmethod
     def format_flight_summary_for_pilot_email_message_template(
         self, flight: Flight, values_str: str
+    ) -> str:
+        pass
+
+    @abc.abstractmethod
+    def format_summary_for_tow_pilot_email_message_template(
+        self,
+        tow_pilot: Member,
+        tow_airplane: TowAirplane,
+        action: Action,
+        values_str: str,
     ) -> str:
         pass
 
@@ -105,6 +121,22 @@ class I18nClient(abc.ABC):
 
         return self.format_flight_summary_for_pilot_email_message_template(
             flight=flight, values_str=values_str
+        )
+
+    def get_summary_for_tow_pilot_email_message(
+        self,
+        tow_pilot: Member,
+        tow_airplane: TowAirplane,
+        action: Action,
+        flights: List[Flight],
+    ) -> str:
+        flights_table_html = self.create_flights_table_html(flights=flights)
+
+        return self.format_summary_for_tow_pilot_email_message_template(
+            tow_pilot=tow_pilot,
+            tow_airplane=tow_airplane,
+            action=action,
+            values_str=flights_table_html,
         )
 
     def create_flights_table_html(self, flights: List[Flight]):

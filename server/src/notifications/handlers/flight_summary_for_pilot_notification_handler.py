@@ -1,7 +1,8 @@
-from src import Notification
+from src import Notification, Flight
+from src.database import SessionLocal
 from src.emails.email_client import EmailClient
 from src.i18n import i18n_client_factory
-from src.notifications.handlers import NotificationHandler
+from src.notifications.handlers.notification_handler import NotificationHandler
 from src.notifications.types import NotificationPayloadSchema
 
 
@@ -22,9 +23,26 @@ class FlightSummaryForPilotNotificationHandler(NotificationHandler):
 
     def _send_via_console(self, notification: Notification) -> None:
         payload = NotificationPayloadSchema(**notification.payload)
-        flight_id = payload.flight_ids[0]
+        flight_id = payload.flight_id
 
         subject = f"Summary for flight {flight_id} of member {notification.recipient_member.email}"
         message = f"Flight {flight_id} has landed."
 
         print(f"{subject}/{message}")
+
+    def _get_flight(self, notification: Notification):
+        """
+        Get flight from notification
+        :param notification: The notification
+        """
+        flight_id = self._payload.flight_id
+        session = SessionLocal()
+        flight = session.query(Flight).get(flight_id)
+
+        if not flight:
+            raise ValueError(f"Invalid flight id: {flight_id}")
+
+        if not flight.take_off_at or not flight.landing_at:
+            raise ValueError(f"Flight {flight_id} is not finished yet")
+
+        return flight
