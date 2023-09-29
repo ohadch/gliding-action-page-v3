@@ -255,6 +255,17 @@ export default function DashboardPage() {
                 }
 
                 if ((!flight.tow_airplane_id || !flight.tow_pilot_id) && (glider?.type !== "touring")) {
+                    if (glider?.type === "regular") {
+                        if (availableTowAirplanes.length === 1) {
+                            const towPilotId = availableTowAirplanes[0].tow_pilot_id;
+                            if ([flight.pilot_1_id, flight.pilot_2_id].filter(Boolean).includes(towPilotId)) {
+                                const towPilot = membersStoreState.members?.find((member) => member.id === availableTowAirplanes[0].tow_pilot_id)
+                                alert(`${t("TOW_PILOT_CANNOT_TOW_HIMSELF")}: ${towPilot && getMemberDisplayValue(towPilot)}`);
+                                return;
+                            }
+                        }
+                    }
+
                     setStartTowDialogFlight(flight);
                     return;
                 }

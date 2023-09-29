@@ -132,6 +132,12 @@ export default function ActionConfigurationComponent() {
             .filter(glider => glider.num_seats == 2 && !glidersStoreState.ownerships?.some(ownership => ownership.glider_id === glider.id))
     }
 
+    function displayTowPilotByAirplaneId(airplaneId: number) {
+        const activeTowAirplane = currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === airplaneId);
+        const towPilot = activeTowAirplane?.tow_pilot_id ? getMemberById(activeTowAirplane.tow_pilot_id) : null;
+        return towPilot ? getMemberDisplayValue(towPilot) : "";
+    }
+
     return (
         <>
             {editedActiveTowAirplaneId && <EditActiveTowAirplanesDialog
@@ -263,7 +269,7 @@ export default function ActionConfigurationComponent() {
                                     <MenuItem key={towAirplane.id} value={towAirplane.id}>
                                         <Checkbox
                                             checked={(currentActionStoreState?.activeTowAirplanes?.map((activeTowAirplane) => activeTowAirplane.airplane_id) || []).indexOf(towAirplane.id) > -1}/>
-                                        <ListItemText primary={towAirplane.call_sign}/>
+                                        <ListItemText primary={towAirplane.call_sign} secondary={displayTowPilotByAirplaneId(towAirplane.id)}/>
                                     </MenuItem>
                                 ))}
                             </Select>

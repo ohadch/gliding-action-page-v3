@@ -154,7 +154,7 @@ export default function FlightCreationWizardDialog({
             }
 
             if (glider.num_seats === 2) {
-                if (!payersType) {
+                if (pilot1Id && pilot2Id) {
                     return setPayersType("BothPilots")
                 }
             }
