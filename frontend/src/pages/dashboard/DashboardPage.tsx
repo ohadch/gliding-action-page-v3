@@ -300,6 +300,7 @@ export default function DashboardPage() {
                     // @ts-ignore
                     type: "flight_landed",
                     payload: {
+                        action_id: action?.id,
                         flight_id: flightId,
                     }
                 }))))
@@ -373,6 +374,7 @@ export default function DashboardPage() {
                         // @ts-ignore
                         type: "flight_took_off",
                         payload: {
+                            action_id: action?.id,
                             flight_id: startTowDialogFlight.id,
                         }
                     }))
@@ -427,6 +429,7 @@ export default function DashboardPage() {
                         // @ts-ignore
                         type: "flight_tow_released",
                         payload: {
+                            action_id: action?.id,
                             flight_id: endTowDialogFlight.id,
                         }
                     }))

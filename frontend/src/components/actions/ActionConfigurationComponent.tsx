@@ -84,6 +84,19 @@ export default function ActionConfigurationComponent() {
             const activationId = currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === removedTowAirplaneId)?.id
             if (activationId) {
                 dispatch(
+                    createEvent({
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        type: "tow_airplane_deactivated",
+                        payload: {
+                            action_id: action?.id,
+                            tow_airplane_id: removedTowAirplaneId,
+                            tow_pilot_id: currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === removedTowAirplaneId)?.tow_pilot_id
+                        }
+                    })
+                )
+
+                dispatch(
                     deleteActiveTowAirplane(activationId)
                 )
             }
@@ -147,6 +160,7 @@ export default function ActionConfigurationComponent() {
                 // @ts-ignore
                 type: "responsible_cfi_unassigned",
                 payload: {
+                    action_id: action?.id,
                     field_responsible_id
                 }
             }))
@@ -168,6 +182,7 @@ export default function ActionConfigurationComponent() {
                 // @ts-ignore
                 type: "responsible_cfi_assigned",
                 payload: {
+                    action_id: action?.id,
                     field_responsible_id: newValue?.id,
                 }
             }))
@@ -189,6 +204,7 @@ export default function ActionConfigurationComponent() {
                 // @ts-ignore
                 type: "responsible_cfi_unassigned",
                 payload: {
+                    action_id: action?.id,
                     responsible_cfi_id
                 }
             }))
@@ -210,6 +226,7 @@ export default function ActionConfigurationComponent() {
                 // @ts-ignore
                 type: "responsible_cfi_assigned",
                 payload: {
+                    action_id: action?.id,
                     responsible_cfi_id: newValue?.id,
                 }
             }))
@@ -223,6 +240,19 @@ export default function ActionConfigurationComponent() {
                 open={Boolean(editedActiveTowAirplaneId)}
                 onCancel={() => setEditedActiveTowAirplaneId(null)}
                 onSubmit={(towPilotId) => {
+                    dispatch(
+                        createEvent({
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-ignore
+                            type: "tow_airplane_activated",
+                            payload: {
+                                action_id: action?.id,
+                                tow_airplane_id: editedActiveTowAirplaneId,
+                                tow_pilot_id: towPilotId
+                            }
+                        })
+                    )
+
                     dispatch(
                         addActiveTowAirplane({
                             action_id: action.id,

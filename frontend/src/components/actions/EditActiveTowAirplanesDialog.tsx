@@ -56,8 +56,6 @@ export default function EditActiveTowAirplaneDialog({towAirplaneId, open, onSubm
         const member = getMemberById(id);
         return member ? getMemberDisplayValue(
             member,
-            membersStoreState.membersRoles?.filter((role) => role.member_id === member.id) || [],
-            true
         ) : "";
     }
 
