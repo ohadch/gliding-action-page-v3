@@ -67,6 +67,7 @@ export const TEXTS_HEBREW = {
     DISPATCH_FLIGHT: "שגר טיסה",
     SELECT_TOW_TYPE: "בחר גובה גרירה",
     SELF_LAUNCH: "המראה עצמית",
+    CREW: "צוות",
 }
 
 

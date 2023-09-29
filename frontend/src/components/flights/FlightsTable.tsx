@@ -20,7 +20,7 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {deleteFlight} from "../../store/actions/currentAction.ts";
-import {FlightCreateSchema, FlightState, FlightUpdateSchema} from "../../lib/types.ts";
+import {FlightCreateSchema, FlightSchema, FlightState, FlightUpdateSchema} from "../../lib/types.ts";
 import FlightStateController from "./FlightStateController.tsx";
 import FlightDuration from "./FlightDuration.tsx";
 
@@ -66,8 +66,6 @@ export default function FlightsTable(props: FlightsTableProps) {
         const glider = getGliderById(id);
         return glider ? getGliderDisplayValue(
             glider,
-            glidersStoreState.ownerships?.filter((ownership) => ownership.glider_id === id) || [],
-            true
         ) : "";
     }
 
@@ -89,6 +87,20 @@ export default function FlightsTable(props: FlightsTableProps) {
         dispatch(deleteFlight(id));
     }
 
+    function renderCrew(flight: FlightSchema) {
+        const pilot1 = flight.pilot_1_id && displayMember(flight.pilot_1_id)
+        const pilot2 = flight.pilot_2_id && displayMember(flight.pilot_2_id)
+
+        return [pilot1, pilot2].filter((crew) => crew).join(", ")
+    }
+
+    function renderTowAirplane(flight: FlightSchema) {
+        const towAirplane = flight.tow_airplane_id && displayTowAirplane(flight.tow_airplane_id);
+        const towPilot = flight.tow_pilot_id && displayMember(flight.tow_pilot_id);
+
+        return towAirplane && towPilot ? `${towAirplane} (${towPilot})` : null;
+    }
+
     return (
         <>
             <TableContainer component={Paper}>
@@ -98,10 +110,8 @@ export default function FlightsTable(props: FlightsTableProps) {
                             <TableCell align="right"></TableCell>
                             <TableCell align="right"><strong>{t("GLIDER")}</strong></TableCell>
                             <TableCell align="right"><strong>{t("FLIGHT_TYPE")}</strong></TableCell>
-                            <TableCell align="right"><strong>{t("PILOT_1")}</strong></TableCell>
-                            <TableCell align="right"><strong>{t("PILOT_2")}</strong></TableCell>
+                            <TableCell align="right"><strong>{t("CREW")}</strong></TableCell>
                             <TableCell align="right"><strong>{t("TOW_AIRPLANE")}</strong></TableCell>
-                            <TableCell align="right"><strong>{t("TOW_PILOT")}</strong></TableCell>
                             <TableCell align="right"><strong>{t("TOW_TYPE")}</strong></TableCell>
                             <TableCell align="right"><strong>{t("DURATION")}</strong></TableCell>
                             <TableCell align="right"></TableCell>
@@ -128,16 +138,11 @@ export default function FlightsTable(props: FlightsTableProps) {
                                     align="right">{flight.flight_type && getFlightTypeDisplayValue(flight.flight_type)}
                                 </TableCell>
                                 <TableCell
-                                    align="right">{flight.pilot_1_id && displayMember(flight.pilot_1_id)}
+                                    align="right">
+                                    {renderCrew(flight)}
                                 </TableCell>
                                 <TableCell
-                                    align="right">{flight.pilot_2_id && displayMember(flight.pilot_2_id)}
-                                </TableCell>
-                                <TableCell
-                                    align="right">{flight.tow_airplane_id && displayTowAirplane(flight.tow_airplane_id)}
-                                </TableCell>
-                                <TableCell
-                                    align="right">{flight.tow_pilot_id && displayMember(flight.tow_pilot_id)}
+                                    align="right">{renderTowAirplane(flight)}
                                 </TableCell>
                                 <TableCell
                                     align="right">{flight.tow_type && getTowTypeDisplayValue(flight.tow_type)}
