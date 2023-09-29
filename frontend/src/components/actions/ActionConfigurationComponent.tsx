@@ -82,16 +82,15 @@ export default function ActionConfigurationComponent() {
             setEditedActiveTowAirplaneId(addedTowAirplaneId)
         } else if (removedTowAirplaneId) {
             const activationId = currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === removedTowAirplaneId)?.id
-            if (activationId) {
+            if (action?.id && activationId) {
                 dispatch(
                     createEvent({
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-ignore
+                        action_id: action.id,
                         type: "tow_airplane_deactivated",
                         payload: {
-                            action_id: action?.id,
                             tow_airplane_id: removedTowAirplaneId,
-                            tow_pilot_id: currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === removedTowAirplaneId)?.tow_pilot_id
+                            tow_pilot_id: currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === removedTowAirplaneId)?.tow_pilot_id,
+                            field_responsible_id: action?.field_responsible_id,
                         }
                     })
                 )
@@ -158,9 +157,9 @@ export default function ActionConfigurationComponent() {
             dispatch(createEvent({
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
+                action_id: action.id,
                 type: "responsible_cfi_unassigned",
                 payload: {
-                    action_id: action?.id,
                     field_responsible_id
                 }
             }))
@@ -178,11 +177,9 @@ export default function ActionConfigurationComponent() {
 
         if (newValue?.id) {
             dispatch(createEvent({
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
+                action_id: action.id,
                 type: "responsible_cfi_assigned",
                 payload: {
-                    action_id: action?.id,
                     field_responsible_id: newValue?.id,
                 }
             }))
@@ -200,12 +197,11 @@ export default function ActionConfigurationComponent() {
 
         if (responsible_cfi_id) {
             dispatch(createEvent({
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
+                action_id: action.id,
                 type: "responsible_cfi_unassigned",
                 payload: {
-                    action_id: action?.id,
-                    responsible_cfi_id
+                    responsible_cfi_id,
+                    field_responsible_id: action?.field_responsible_id,
                 }
             }))
         }
@@ -222,12 +218,11 @@ export default function ActionConfigurationComponent() {
 
         if (newValue?.id) {
             dispatch(createEvent({
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
+                action_id: action.id,
                 type: "responsible_cfi_assigned",
                 payload: {
-                    action_id: action?.id,
                     responsible_cfi_id: newValue?.id,
+                    field_responsible_id: action?.field_responsible_id,
                 }
             }))
         }
@@ -242,13 +237,12 @@ export default function ActionConfigurationComponent() {
                 onSubmit={(towPilotId) => {
                     dispatch(
                         createEvent({
-                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                            // @ts-ignore
+                            action_id: action.id,
                             type: "tow_airplane_activated",
                             payload: {
-                                action_id: action?.id,
                                 tow_airplane_id: editedActiveTowAirplaneId,
-                                tow_pilot_id: towPilotId
+                                tow_pilot_id: towPilotId,
+                                field_responsible_id: action?.field_responsible_id,
                             }
                         })
                     )
@@ -257,7 +251,7 @@ export default function ActionConfigurationComponent() {
                         addActiveTowAirplane({
                             action_id: action.id,
                             airplane_id: editedActiveTowAirplaneId,
-                            tow_pilot_id: towPilotId
+                            tow_pilot_id: towPilotId,
                         })
                     )
                     setEditedActiveTowAirplaneId(null)

@@ -9,6 +9,7 @@ from src.utils.enums import NotificationMethod, NotificationType, NotificationSt
 
 class NotificationSchema(BaseModel):
     id: int
+    action_id: int
     sent_at: datetime.datetime
     num_sending_attempts: int
     last_attempt_at: Optional[datetime.datetime]
@@ -22,6 +23,7 @@ class NotificationSchema(BaseModel):
 
 
 class NotificationCreateSchema(BaseModel):
+    action_id: int
     recipient_member_id: int
     payload: NotificationPayloadSchema
     type: NotificationType

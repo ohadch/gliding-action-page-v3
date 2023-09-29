@@ -12,6 +12,7 @@ class Notification(Base):
     __tablename__ = "notifications"
 
     id = Column(Integer, primary_key=True, index=True)
+    action_id = Column(Integer, ForeignKey("actions.id"), nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.datetime.utcnow)
     sent_at = Column(DateTime, nullable=True)
     num_sending_attempts = Column(Integer, nullable=False, default=0)
@@ -23,3 +24,4 @@ class Notification(Base):
     state = Column(String, nullable=False, default=NotificationState.PENDING.value)
 
     recipient_member = relationship("Member")
+    action = relationship("Action")
