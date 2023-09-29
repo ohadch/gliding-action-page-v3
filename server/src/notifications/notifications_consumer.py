@@ -59,7 +59,7 @@ class NotificationsConsumer:
                 f"Sending notification {notification.id} to recipient: {notification.recipient_member.email}, "
                 f"handler: {handler.__class__.__name__}"
             )
-            handler.send_to_recipient(notification=notification)
+            handler.send()
             notification.sent_at = datetime.datetime.utcnow()
             notification.state = NotificationState.SENT.value
         except Exception as e:

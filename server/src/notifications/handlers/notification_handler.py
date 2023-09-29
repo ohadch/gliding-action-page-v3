@@ -1,12 +1,67 @@
 import abc
+import logging
+import os
 
-from src import Notification
+from src import Notification, Flight
+from src.database import SessionLocal
+from src.notifications.types import NotificationPayloadSchema
+from src.utils.enums import NotificationMethod
+
+
+DEFAULT_NOTIFICATION_METHOD = NotificationMethod(
+    os.environ["DEFAULT_NOTIFICATION_METHOD"]
+)
 
 
 class NotificationHandler(abc.ABC):
     def __init__(self, notification: Notification):
         self._notification = notification
+        self._logger = logging.getLogger(__name__)
+
+    def send(
+        self,
+    ) -> None:
+        notification_manual_method = (
+            NotificationMethod(self._notification.method)
+            if self._notification.method
+            else None
+        )
+        notification_method = notification_manual_method or DEFAULT_NOTIFICATION_METHOD
+
+        self._logger.info(
+            f"Sending notification {self._notification.id} to recipient: {self._notification.recipient_member.email}, "
+            f"method: {notification_method}"
+        )
+        if notification_method is NotificationMethod.EMAIL:
+            return self._send_via_email(notification=self._notification)
+        elif notification_method is NotificationMethod.CONSOLE:
+            return self._send_via_console(notification=self._notification)
+        else:
+            raise ValueError(f"Invalid notification method: {notification_method}")
 
     @abc.abstractmethod
-    def send_to_recipient(self, notification: Notification) -> None:
+    def _send_via_email(self, notification: Notification) -> None:
         pass
+
+    @abc.abstractmethod
+    def _send_via_console(self, notification: Notification) -> None:
+        pass
+
+    @staticmethod
+    def _get_flight(notification: Notification):
+        """
+        Get flight from notification
+        :param notification: The notification
+        """
+        payload = NotificationPayloadSchema(**notification.payload)
+        flight_id = payload.flight_ids[0]
+        session = SessionLocal()
+        flight = session.query(Flight).get(flight_id)
+
+        if not flight:
+            raise ValueError(f"Invalid flight id: {flight_id}")
+
+        if not flight.take_off_at or not flight.landing_at:
+            raise ValueError(f"Flight {flight_id} is not finished yet")
+
+        return flight
