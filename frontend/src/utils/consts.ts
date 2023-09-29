@@ -64,6 +64,10 @@ export const TEXTS_HEBREW = {
     MISSING_CONFIGURATIONS: "הגדרות חסרות",
     NO_TOW_AIRPLANES_AVAILABLE: "אין מטוסים גוררים זמינים",
     TOW_AIRPLANE_NOT_AVAILABLE: "המטוס הגורר לא זמין",
+    DISPATCH_FLIGHT: "שגר טיסה",
+    SELECT_TOW_TYPE: "בחר גובה גרירה",
+    SELF_LAUNCH: "המראה עצמית",
+    CREW: "צוות",
 }
 
 

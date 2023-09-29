@@ -5,10 +5,7 @@ from sqlalchemy.orm import Session
 import logging
 
 from src import MemberRole, TowAirplane, Glider, Member, Action, GliderOwner
-from src.utils.enums import (
-    Role,
-    AircraftTypeId,
-)
+from src.utils.enums import Role, GliderType
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +30,7 @@ class SeedDataGenerator:
         self,
         call_sign: str,
         num_seats: int,
-        type_: AircraftTypeId,
+        type_: GliderType,
         owners: list[Member],
         id_: Optional[int] = None,
     ):
@@ -209,7 +206,7 @@ class SeedDataGenerator:
         self._create_glider(
             call_sign="4X-GAA",
             num_seats=1,
-            type_=AircraftTypeId.SingleSeat.value,
+            type_=GliderType.Regular.value,
             owners=[],
         )
 
@@ -217,7 +214,7 @@ class SeedDataGenerator:
         self._create_glider(
             call_sign="4X-GAB",
             num_seats=2,
-            type_=AircraftTypeId.DualSeat.value,
+            type_=GliderType.Regular.value,
             owners=[],
         )
 
@@ -225,7 +222,7 @@ class SeedDataGenerator:
         self._create_glider(
             call_sign="4X-GAC",
             num_seats=1,
-            type_=AircraftTypeId.SingleSeat.value,
+            type_=GliderType.Regular.value,
             owners=[member1],
         )
 
@@ -233,7 +230,7 @@ class SeedDataGenerator:
         self._create_glider(
             call_sign="4X-GAD",
             num_seats=2,
-            type_=AircraftTypeId.DualSeat.value,
+            type_=GliderType.Regular.value,
             owners=[member2, member3],
         )
 
@@ -241,7 +238,7 @@ class SeedDataGenerator:
         self._create_glider(
             call_sign="4X-GME",
             num_seats=1,
-            type_=AircraftTypeId.TouringGlider.value,
+            type_=GliderType.Touring.value,
             owners=[member1, member3],
         )
 
@@ -249,20 +246,18 @@ class SeedDataGenerator:
         self._create_glider(
             call_sign="4X-GMF",
             num_seats=1,
-            type_=AircraftTypeId.SelfLaunch.value,
+            type_=GliderType.SelfLaunch.value,
             owners=[],
         )
 
         # Main tow plane
         self._create_tow_airplane(
             call_sign="4X-CAA",
-            type=AircraftTypeId.MainTowAirplane.value,
         )
 
         # Secondary tow plane
         self._create_tow_airplane(
             call_sign="4X-CAB",
-            type=AircraftTypeId.SecondaryTowAirplane.value,
         )
 
         # Action

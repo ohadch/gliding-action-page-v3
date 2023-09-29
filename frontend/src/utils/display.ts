@@ -1,7 +1,7 @@
 import {
     FlightType,
     GliderOwnerSchema,
-    GliderSchema, MemberRoleSchema,
+    GliderSchema, GliderType, MemberRoleSchema,
     MemberSchema, PayersType, PaymentMethod, Role,
     TowAirplaneSchema, TowType,
 } from "../lib/types.ts";
@@ -131,6 +131,21 @@ export function getRoleDisplayValue(role: Role) {
     }
 }
 
+
+export function getGliderTypeDisplayValue(type: GliderType) {
+    switch (type) {
+        case "regular":
+            return "רגיל"
+        case "self_launch":
+            return "מתאים להמראה עצמית"
+        case "touring":
+            return "טורינג"
+        default:
+            throw new Error(`Unknown glider type: ${type}`)
+    }
+}
+
+
 /**
  * Returns the display value of a glider
  * @param glider - The glider to display
@@ -145,8 +160,16 @@ export function getGliderDisplayValue(
     const numSeats = glider.num_seats > 1 ? `דו-מושבי` : `חד מושבי`;
     const ownership = ownerships && ownerships.length > 0 ? "פרטי" : "מועדון";
 
+    const longSegments = [numSeats, ownership]
+
+    if (glider.type !== "regular") {
+        longSegments.push(getGliderTypeDisplayValue(glider.type))
+    }
+
+    const longStr = longSegments.join("/")
+
     return long && ownerships
-        ? `${glider.call_sign} (${numSeats}/${ownership})`
+        ? `${glider.call_sign} (${longStr})`
         : glider.call_sign
 }
 
