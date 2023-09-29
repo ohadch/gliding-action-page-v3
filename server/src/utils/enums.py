@@ -90,8 +90,8 @@ class EventState(enum.Enum):
 class NotificationType(enum.Enum):
     FlightSummaryForPilot = "FlightSummaryForPilot"
     DailySummaryForObserver = "DailySummaryForObserver"
-    DailySummaryForTowPilot = "DailySummaryForTowPilot"
-    DailySummaryForCfi = "DailySummaryForCfi"
+    SummaryForTowPilot = "SummaryForTowPilot"
+    SummaryForCfi = "SummaryForCfi"
 
 
 class Language(enum.Enum):

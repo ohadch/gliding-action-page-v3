@@ -53,7 +53,7 @@ class EventsConsumer:
         """
         try:
             handler = event_handler_factory(event=event)
-            self._logger.info(f"Handling event {event.id}")
+            self._logger.info(f"Handling event {event.id} with type {event.type}")
             handler.handle(event=event)
             event.handled_at = datetime.datetime.utcnow()
             event.state = EventState.HANDLED.value

@@ -1,37 +1,29 @@
-import os
-
 from src import Notification
-
-from src.notifications.handlers.console import console_notification_handler_factory
-from src.notifications.handlers.email import email_notification_handler_factory
-from src.notifications.handlers.notification_handler import NotificationHandler
-from src.utils.enums import NotificationMethod
-
-DEFAULT_NOTIFICATION_METHOD = NotificationMethod(
-    os.environ["DEFAULT_NOTIFICATION_METHOD"]
+from src.notifications.handlers.flight_summary_for_pilot_notification_handler import (
+    FlightSummaryForPilotNotificationHandler,
 )
+from src.notifications.handlers.notification_handler import NotificationHandler
+from src.notifications.handlers.summary_for_tow_pilot import (
+    SummaryForTowPilotNotificationHandler,
+)
+from src.utils.enums import NotificationType
 
 
-def notification_handler_factory(
-    notification: Notification,
-) -> NotificationHandler:
+NOTIFICATION_NAME_TO_CLASS_MAP = {
+    NotificationType.FlightSummaryForPilot: FlightSummaryForPilotNotificationHandler,
+    NotificationType.SummaryForTowPilot: SummaryForTowPilotNotificationHandler,
+}
+
+
+def notification_handler_factory(notification: Notification) -> NotificationHandler:
     """
     Notification handler factory
-    :param notification: The notification    :return:  handler
+    :param notification: Notification
+    :return: NotificationHandler
     """
-    notification_manual_method = (
-        NotificationMethod(notification.method) if notification.method else None
-    )
-    notification_method = notification_manual_method or DEFAULT_NOTIFICATION_METHOD
-
     try:
-        return {
-            NotificationMethod.EMAIL: lambda: email_notification_handler_factory(
-                notification=notification
-            ),
-            NotificationMethod.CONSOLE: lambda: console_notification_handler_factory(
-                notification=notification
-            ),
-        }[notification_method]()
+        return NOTIFICATION_NAME_TO_CLASS_MAP[NotificationType(notification.type)](
+            notification=notification,
+        )
     except KeyError:
-        raise ValueError(f"Invalid notification method: {notification_method}")
+        raise ValueError(f"Unsupported notification type: {notification.type}")

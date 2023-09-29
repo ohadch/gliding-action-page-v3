@@ -1,12 +1,11 @@
-from src import Flight
+from typing import List
+
+from src import Flight, Member, Action, TowAirplane
 from src.i18n.i18n_client import I18nClient
 from src.utils.common import stringify_duration
 
 
 class HebrewI18nClient(I18nClient):
-    def get_flight_summary_for_pilot_email_subject(self) -> str:
-        pass
-
     def translate(self, key: str) -> str:
         return {
             "GLIDER": "דאון",
@@ -63,9 +62,41 @@ class HebrewI18nClient(I18nClient):
                     </table>
         """
 
+    def format_summary_for_tow_pilot_email_message_template(
+        self,
+        tow_pilot: Member,
+        tow_airplane: TowAirplane,
+        action: Action,
+        flights: List[Flight],
+        values_str: str,
+    ) -> str:
+        return f"""
+        <table dir="rtl">
+                        <tr>שלום,</tr>
+                        <tr></tr>
+                        <tr>בתאריך {action.date.strftime('%Y-%m-%d')} ביצעת {len(flights)} טיסות במטוס {tow_airplane.call_sign}.</tr>
+                        <tr></tr>
+                        {values_str}
+                        <tr></tr>
+                        <tr>תודה,</tr>
+                        <tr>מרכז הדאיה מגידו</tr>
+                    </table>
+        """
+
     def get_flight_summary_for_pilot_email_message_subject(self, flight: Flight) -> str:
         duration_str = stringify_duration(
             start_time=flight.take_off_at, end_time=flight.landing_at
         )
 
         return f"טיסתך בדאון {flight.glider.call_sign} נמשכה {duration_str} שעות"
+
+    def get_summary_for_tow_pilot_email_message_subject(
+        self,
+        tow_pilot: Member,
+        tow_airplane: TowAirplane,
+        action: Action,
+        flights: List[Flight],
+    ) -> str:
+        date_str = action.date.strftime("%Y-%m-%d")
+
+        return f"ביצעת {len(flights)} טיסות במטוס {tow_airplane.call_sign} בתאריך {date_str}"
