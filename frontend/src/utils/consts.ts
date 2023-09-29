@@ -65,6 +65,7 @@ export const TEXTS_HEBREW = {
     NO_TOW_AIRPLANES_AVAILABLE: "אין מטוסים גוררים זמינים",
     TOW_AIRPLANE_NOT_AVAILABLE: "המטוס הגורר לא זמין",
     DISPATCH_FLIGHT: "שגר טיסה",
+    SELECT_TOW_TYPE: "בחר גובה גרירה",
 }
 
 

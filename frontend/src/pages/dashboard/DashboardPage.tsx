@@ -173,12 +173,13 @@ export default function DashboardPage() {
         }
     });
 
-    function onFlightStateUpdated(flightId: number, state: FlightState) {
+    function onFlightStateUpdated(flightId: number, state: FlightState): undefined {
         const flight = flights?.find((flight) => flight.id === flightId);
-
         if (!flight) {
             return;
         }
+
+        const glider = getGliderById(flight.glider_id);
 
         if (flight.state === state) {
             return;
@@ -206,7 +207,7 @@ export default function DashboardPage() {
                     (flight.state === "Inflight")
                     && (flight.tow_airplane_id)
                     && (!isTowAirplaneAvailable(flight.tow_airplane_id))
-                    && (flight.glider_id && (getGliderById(flight.glider_id)?.type === "regular"))
+                    && (glider?.type === "regular")
                 ) {
                     const towAirplane = getTowAirplaneById(flight.tow_airplane_id)
 
@@ -219,10 +220,24 @@ export default function DashboardPage() {
                 if (
                     (flight.state === "Draft")
                     && (availableTowAirplanes.length === 0)
-                    && (flight.glider_id && (getGliderById(flight.glider_id)?.type === "regular"))
+                    && (glider?.type === "regular")
                 ) {
                     alert(t("NO_TOW_AIRPLANES_AVAILABLE"));
                     return;
+                }
+
+                if (
+                    (flight.state === "Draft")
+                    && (glider?.type === "touring")
+                ) {
+                    return onFlightStateUpdated(flightId, "Inflight")
+                }
+
+                if (
+                    (flight.state === "Inflight")
+                    && (glider?.type === "touring")
+                ) {
+                    return onFlightStateUpdated(flightId, "Draft")
                 }
 
                 if (getBusyEntitiesFromFlight(flight)) {
@@ -232,12 +247,14 @@ export default function DashboardPage() {
                     if (hasBusyEntities) {
                         const busyEntitiesString = Object.values(busyEntities).flat().join(", ")
 
-                        return alert(`${t("FLIGHT_HAS_BUSY_ENTITIES_ALERT")}: ${busyEntitiesString}`)
+                        alert(`${t("FLIGHT_HAS_BUSY_ENTITIES_ALERT")}: ${busyEntitiesString}`)
+                        return;
                     }
                 }
 
-                if (!flight.tow_airplane_id || !flight.tow_pilot_id) {
-                    return setStartTowDialogFlight(flight);
+                if ((!flight.tow_airplane_id || !flight.tow_pilot_id) && (glider?.type !== "touring")) {
+                    setStartTowDialogFlight(flight);
+                    return;
                 }
 
                 if (!flight.take_off_at) {
@@ -247,12 +264,17 @@ export default function DashboardPage() {
                 updatePayload.tow_release_at = null;
                 break;
             case "Inflight":
-                if (!flight.tow_type) {
-                    return setEndTowDialogFlight(flight);
+                if (!flight.tow_type && (glider?.type !== "touring")) {
+                    setEndTowDialogFlight(flight);
+                    return;
                 }
+                if (!flight.take_off_at) {
+                    updatePayload.take_off_at = now;
+                }
+
                 updatePayload.landing_at = null;
 
-                if (!flight.tow_release_at) {
+                if (!flight.tow_release_at && (glider?.type !== "touring")) {
                     updatePayload.tow_release_at = now;
                 }
 
@@ -281,7 +303,7 @@ export default function DashboardPage() {
             }))
         }))
 
-        return Promise.all(promises)
+        Promise.all(promises).then()
     }
 
     function renderEditFlightDialog() {

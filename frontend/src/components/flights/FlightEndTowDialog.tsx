@@ -121,7 +121,7 @@ export default function FlightEndTowDialog({flight, open, onCancel, onSubmit}: F
                 display: "flex",
                 justifyContent: "space-between",
             }}>
-                <div>{t("CREATE_FLIGHT")}</div>
+                <div>{t("SELECT_TOW_TYPE")}</div>
                 <div style={{
                     display: "flex",
                     justifyContent: "flex-end",
