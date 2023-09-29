@@ -482,7 +482,7 @@ export default function DashboardPage() {
     function renderTopBar() {
         return (
             <Grid container mb={2} spacing={1}>
-                <Grid item xs={1}>
+                <Grid item xs={2}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -498,7 +498,7 @@ export default function DashboardPage() {
                 <Grid item xs={3}>
                     {renderFlightStatesFilter()}
                 </Grid>
-                <Grid item xs={8}>
+                <Grid item xs={7}>
                     <ActionConfigurationComponent/>
                 </Grid>
             </Grid>

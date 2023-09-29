@@ -10,9 +10,6 @@ from src.events.handlers.flight_took_off_event_handler import (
 from src.events.handlers.flight_tow_released_event_handler import (
     FlightTookOffEventHandler,
 )
-from src.events.handlers.instruction_glider_assigned_event_handler import (
-    InstructionGliderAssignedEventHandler,
-)
 from src.events.handlers.responsible_cfi_assigned_event_handler import (
     ResponsibleCfiAssignedEventHandler,
 )
@@ -30,7 +27,6 @@ EVENT_NAME_TO_CLASS_MAP = {
     EventType.FLIGHT_TOW_RELEASED: FlightTowReleasedEventHandler,
     EventType.FLIGHT_LANDED: FlightLandedEventHandler,
     EventType.FIELD_RESPONSIBLE_ASSIGNED: FieldResponsibleAssignedEventHandler,
-    EventType.INSTRUCTION_GLIDER_ASSIGNED: InstructionGliderAssignedEventHandler,
     EventType.RESPONSIBLE_CFI_ASSIGNED: ResponsibleCfiAssignedEventHandler,
     EventType.TOW_AIRPLANE_ACTIVATED: TowAirplaneActivatedEventHandler,
     EventType.TOW_AIRPLANE_DEACTIVATED: TowAirplaneDeactivatedEventHandler,

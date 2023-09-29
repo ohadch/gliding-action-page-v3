@@ -10,7 +10,6 @@ class ActionSchema(BaseModel):
     closed_at: Optional[datetime] = None
     field_responsible_id: Optional[int] = None
     responsible_cfi_id: Optional[int] = None
-    instruction_glider_id: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -20,7 +19,6 @@ class ActionCreateSchema(BaseModel):
     closed_at: Optional[datetime]
     field_responsible_id: Optional[int] = None
     responsible_cfi_id: Optional[int] = None
-    instruction_glider_id: Optional[int] = None
 
 
 class ActionUpdateSchema(BaseModel):
@@ -28,7 +26,6 @@ class ActionUpdateSchema(BaseModel):
     closed_at: Optional[datetime] = None
     field_responsible_id: Optional[int] = None
     responsible_cfi_id: Optional[int] = None
-    instruction_glider_id: Optional[int] = None
 
 
 class ActionSearchSchema(ActionUpdateSchema):

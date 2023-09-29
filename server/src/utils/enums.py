@@ -74,7 +74,6 @@ class EventType(enum.Enum):
     ACTION_CLOSED = "action_closed"
     RESPONSIBLE_CFI_ASSIGNED = "responsible_cfi_assigned"
     FIELD_RESPONSIBLE_ASSIGNED = "field_responsible_assigned"
-    INSTRUCTION_GLIDER_ASSIGNED = "instruction_glider_assigned"
     TOW_AIRPLANE_ACTIVATED = "tow_airplane_activated"
     TOW_AIRPLANE_DEACTIVATED = "tow_airplane_deactivated"
 
