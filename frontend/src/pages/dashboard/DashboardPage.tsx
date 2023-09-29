@@ -235,7 +235,9 @@ export default function DashboardPage() {
 
                 if (
                     (flight.state === "Inflight")
-                    && (glider?.type === "touring")
+                    && (
+                        (glider?.type === "touring") || (glider?.type === "self_launch" && !flight.tow_type)
+                    )
                 ) {
                     return onFlightStateUpdated(flightId, "Draft")
                 }
