@@ -302,6 +302,7 @@ export default function DashboardPage() {
                     payload: {
                         action_id: action?.id,
                         flight_id: flightId,
+                        field_responsible_id: action?.field_responsible_id,
                     }
                 }))))
 
@@ -376,6 +377,7 @@ export default function DashboardPage() {
                         payload: {
                             action_id: action?.id,
                             flight_id: startTowDialogFlight.id,
+                            field_responsible_id: action?.field_responsible_id,
                         }
                     }))
                     setStartTowDialogFlight(null)
@@ -431,6 +433,7 @@ export default function DashboardPage() {
                         payload: {
                             action_id: action?.id,
                             flight_id: endTowDialogFlight.id,
+                            field_responsible_id: action?.field_responsible_id,
                         }
                     }))
                     setEndTowDialogFlight(null)
