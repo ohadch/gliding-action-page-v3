@@ -23,6 +23,7 @@ import {
     fetchActiveTowAirplanes
 } from "../../store/actions/currentAction.ts";
 import {createEvent} from "../../store/actions/event.ts";
+import {MemberSchema} from "../../lib/types.ts";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -131,6 +132,90 @@ export default function ActionConfigurationComponent() {
         return towPilot ? getMemberDisplayValue(towPilot) : "";
     }
 
+    function onFieldResponsibleChanged(newValue: MemberSchema | null) {
+        if (!action) {
+            return
+        }
+
+        if (newValue?.id === field_responsible_id) {
+            return
+        }
+
+        if (field_responsible_id) {
+            dispatch(createEvent({
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                type: "responsible_cfi_unassigned",
+                payload: {
+                    field_responsible_id
+                }
+            }))
+        }
+
+        dispatch(
+            updateAction({
+                actionId: action.id,
+                updatePayload: {
+                    ...action,
+                    field_responsible_id: newValue?.id
+                }
+            })
+        )
+
+        if (newValue?.id) {
+            dispatch(createEvent({
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                type: "responsible_cfi_assigned",
+                payload: {
+                    field_responsible_id: newValue?.id,
+                }
+            }))
+        }
+    }
+
+    function onResponsibleCfiChanged(newValue: MemberSchema | null) {
+        if (!action) {
+            return
+        }
+
+        if (newValue?.id === responsible_cfi_id) {
+            return
+        }
+
+        if (responsible_cfi_id) {
+            dispatch(createEvent({
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                type: "responsible_cfi_unassigned",
+                payload: {
+                    responsible_cfi_id
+                }
+            }))
+        }
+
+        dispatch(
+            updateAction({
+                actionId: action.id,
+                updatePayload: {
+                    ...action,
+                    responsible_cfi_id: newValue?.id
+                }
+            })
+        )
+
+        if (newValue?.id) {
+            dispatch(createEvent({
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                type: "responsible_cfi_assigned",
+                payload: {
+                    responsible_cfi_id: newValue?.id,
+                }
+            }))
+        }
+    }
+
     return (
         <>
             {editedActiveTowAirplaneId && <EditActiveTowAirplanesDialog
@@ -156,26 +241,7 @@ export default function ActionConfigurationComponent() {
                                 id="field-responsible"
                                 options={getFieldResponsibleOptions()}
                                 value={(field_responsible_id ? getMemberById(field_responsible_id) : null) || null}
-                                onChange={(_, newValue) => {
-                                    dispatch(
-                                        updateAction({
-                                            actionId: action.id,
-                                            updatePayload: {
-                                                ...action,
-                                                field_responsible_id: newValue?.id
-                                            }
-                                        })
-                                    )
-
-                                    dispatch(createEvent({
-                                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                        // @ts-ignore
-                                        type: "field_responsible_assigned",
-                                        payload: {
-                                            field_responsible_id: newValue?.id,
-                                        }
-                                    }))
-                                }}
+                                onChange={(_, newValue) => onFieldResponsibleChanged(newValue)}
                                 getOptionLabel={(option) => getMemberDisplayValue(
                                     option,
                                 )}
@@ -198,26 +264,7 @@ export default function ActionConfigurationComponent() {
                                 id="responsible-cfi"
                                 options={getResponsibleCfiOptions()}
                                 value={(responsible_cfi_id ? getMemberById(responsible_cfi_id) : null) || null}
-                                onChange={(_, newValue) => {
-                                    dispatch(
-                                        updateAction({
-                                            actionId: action.id,
-                                            updatePayload: {
-                                                ...action,
-                                                responsible_cfi_id: newValue?.id
-                                            }
-                                        })
-                                    )
-
-                                    dispatch(createEvent({
-                                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                        // @ts-ignore
-                                        type: "responsible_cfi_assigned",
-                                        payload: {
-                                            responsible_cfi_id: newValue?.id,
-                                        }
-                                    }))
-                                }}
+                                onChange={(_, newValue) => onResponsibleCfiChanged(newValue)}
                                 getOptionLabel={(option) => getMemberDisplayValue(
                                     option,
                                 )}

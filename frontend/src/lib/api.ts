@@ -651,7 +651,7 @@ export interface components {
      * EventType
      * @enum {string}
      */
-    EventType: "flight_landed" | "flight_took_off" | "flight_tow_released" | "action_closed" | "responsible_cfi_assigned" | "field_responsible_assigned" | "tow_airplane_activated" | "tow_airplane_deactivated";
+    EventType: "flight_landed" | "flight_took_off" | "flight_tow_released" | "action_closed" | "responsible_cfi_assigned" | "responsible_cfi_unassigned" | "field_responsible_assigned" | "field_responsible_unassigned" | "tow_airplane_activated" | "tow_airplane_deactivated";
     /** EventUpdateSchema */
     EventUpdateSchema: {
       type: components["schemas"]["EventType"] | null;
