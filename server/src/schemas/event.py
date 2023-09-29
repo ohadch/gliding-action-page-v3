@@ -9,6 +9,7 @@ from src.utils.enums import EventType, EventState
 
 class EventSchema(BaseModel):
     id: int
+    action_id: int
     type: EventType
     state: EventState
     payload: EventPayloadSchema
@@ -20,6 +21,7 @@ class EventSchema(BaseModel):
 
 
 class EventCreateSchema(BaseModel):
+    action_id: int
     type: EventType
     payload: EventPayloadSchema
 
