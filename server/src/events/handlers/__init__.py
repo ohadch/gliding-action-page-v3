@@ -3,6 +3,9 @@ from src.events.handlers.event_handler import EventHandler
 from src.events.handlers.field_responsible_assigned_event_handler import (
     FieldResponsibleAssignedEventHandler,
 )
+from src.events.handlers.field_responsible_unassigned_event_handler import (
+    FieldResponsibleUnassignedEventHandler,
+)
 from src.events.handlers.flight_landed_event_handler import FlightLandedEventHandler
 from src.events.handlers.flight_took_off_event_handler import (
     FlightTowReleasedEventHandler,
@@ -12,6 +15,9 @@ from src.events.handlers.flight_tow_released_event_handler import (
 )
 from src.events.handlers.responsible_cfi_assigned_event_handler import (
     ResponsibleCfiAssignedEventHandler,
+)
+from src.events.handlers.responsible_cfi_unassigned_event_handler import (
+    ResponsibleCfiUnassignedEventHandler,
 )
 from src.events.handlers.tow_airplane_activated_event_handler import (
     TowAirplaneActivatedEventHandler,
@@ -27,7 +33,9 @@ EVENT_NAME_TO_CLASS_MAP = {
     EventType.FLIGHT_TOW_RELEASED: FlightTowReleasedEventHandler,
     EventType.FLIGHT_LANDED: FlightLandedEventHandler,
     EventType.FIELD_RESPONSIBLE_ASSIGNED: FieldResponsibleAssignedEventHandler,
+    EventType.FIELD_RESPONSIBLE_UNASSIGNED: FieldResponsibleUnassignedEventHandler,
     EventType.RESPONSIBLE_CFI_ASSIGNED: ResponsibleCfiAssignedEventHandler,
+    EventType.RESPONSIBLE_CFI_UNASSIGNED: ResponsibleCfiUnassignedEventHandler,
     EventType.TOW_AIRPLANE_ACTIVATED: TowAirplaneActivatedEventHandler,
     EventType.TOW_AIRPLANE_DEACTIVATED: TowAirplaneDeactivatedEventHandler,
 }
