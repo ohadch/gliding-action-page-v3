@@ -185,7 +185,7 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
                 display: "flex",
                 justifyContent: "space-between",
             }}>
-                <div>{t("CREATE_FLIGHT")}</div>
+                <div>{t("DISPATCH_FLIGHT")}</div>
                 <div style={{
                     display: "flex",
                     justifyContent: "flex-end",

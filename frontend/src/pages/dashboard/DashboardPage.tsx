@@ -83,7 +83,7 @@ export default function DashboardPage() {
     const flightsInTowState = flights?.filter((flight) => flight.state === "Tow");
     const flightsInAnyFlightState = flights?.filter((flight) => isFlightActive(flight));
     const busyGliders = useCallback((currentFlight: FlightSchema) => flightsInAnyFlightState?.filter(flight => flight.id !== currentFlight.id).map((flight) => flight.glider_id).filter(Boolean) || [] as number[], [flightsInAnyFlightState])
-    const busyTowAirplanes = useCallback((currentFlight: FlightSchema) => flightsInTowState?.filter(flight => flight.id !== currentFlight.id).map((flight) => flight.tow_airplane_id).filter(Boolean) || [] as number [], [flightsInTowState]);
+    const busyTowAirplanesForFlight = useCallback((currentFlight: FlightSchema) => flightsInTowState?.filter(flight => flight.id !== currentFlight.id).map((flight) => flight.tow_airplane_id).filter(Boolean) || [] as number [], [flightsInTowState]);
     const busyGliderPilots = useCallback(
         (currentFlight: FlightSchema) => flightsInAnyFlightState?.filter(flight => flight.id !== currentFlight.id).map((flight) => [flight.pilot_1_id, flight.pilot_2_id])
             .flat()
@@ -92,6 +92,13 @@ export default function DashboardPage() {
     );
     const busyTowPilots = useCallback((currentFlight: FlightSchema) => flightsInTowState?.filter(flight => flight.id !== currentFlight.id).map((flight) => flight.tow_pilot_id).filter(Boolean) || [] as number[], [flightsInTowState]);
     const busyMembers = useCallback((currentFlight: FlightSchema) => [...busyGliderPilots(currentFlight), ...busyTowPilots(currentFlight)], [busyGliderPilots, busyTowPilots]);
+    const busyTowAirplaneIds = flightsInTowState?.map((flight) => flight.tow_airplane_id) || [];
+    const availableTowAirplanes = currentActionStoreState.activeTowAirplanes?.filter((towAirplane) => !busyTowAirplaneIds?.includes(towAirplane.airplane_id)) || [];
+
+    const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
+    const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
+    const isTowAirplaneAvailable = (towAirplaneId: number) => availableTowAirplanes?.find((towAirplane) => towAirplane.airplane_id === towAirplaneId);
+
 
     /**
      * Returns a tuple of [hasBusyEntities, busyEntities]
@@ -123,7 +130,7 @@ export default function DashboardPage() {
             busyEntities.gliders.push(getGliderDisplayValue(glider))
         }
 
-        if (flight.tow_airplane_id && busyTowAirplanes(flight).includes(flight.tow_airplane_id)) {
+        if (flight.tow_airplane_id && busyTowAirplanesForFlight(flight).includes(flight.tow_airplane_id)) {
             const towAirplane = towAirplanesStoreState.towAirplanes.find((towAirplane) => towAirplane.id === flight.tow_airplane_id)
             if (!towAirplane) {
                 throw new Error(`Tow airplane with id ${flight.tow_airplane_id} not found`)
@@ -156,7 +163,7 @@ export default function DashboardPage() {
         }
 
         return busyEntities
-    }, [busyGliders, busyTowAirplanes, busyMembers, membersStoreState.members, glidersStoreState.gliders, towAirplanesStoreState.towAirplanes])
+    }, [busyGliders, busyTowAirplanesForFlight, busyMembers, membersStoreState.members, glidersStoreState.gliders, towAirplanesStoreState.towAirplanes])
 
     useEffect(() => {
         if (!flights && !fetchingFlightsInProgress && action) {
@@ -195,6 +202,29 @@ export default function DashboardPage() {
                 updatePayload.tow_pilot_id = null;
                 break;
             case "Tow":
+                if (
+                    (flight.state === "Inflight")
+                    && (flight.tow_airplane_id)
+                    && (!isTowAirplaneAvailable(flight.tow_airplane_id))
+                    && (flight.glider_id && (getGliderById(flight.glider_id)?.type === "regular"))
+                ) {
+                    const towAirplane = getTowAirplaneById(flight.tow_airplane_id)
+
+                    if (towAirplane) {
+                        alert(`${t("TOW_AIRPLANE_NOT_AVAILABLE")}: ${getTowAirplaneDisplayValue(towAirplane)}`);
+                        return;
+                    }
+                }
+
+                if (
+                    (flight.state === "Draft")
+                    && (availableTowAirplanes.length === 0)
+                    && (flight.glider_id && (getGliderById(flight.glider_id)?.type === "regular"))
+                ) {
+                    alert(t("NO_TOW_AIRPLANES_AVAILABLE"));
+                    return;
+                }
+
                 if (getBusyEntitiesFromFlight(flight)) {
                     const busyEntities = getBusyEntitiesFromFlight(flight)
                     const hasBusyEntities = Object.values(busyEntities).some((entities) => entities.length > 0)
@@ -440,7 +470,6 @@ export default function DashboardPage() {
         )
     }
 
-
     function renderActionNotConfigured() {
         const missingConfigurations = [];
 
@@ -479,7 +508,6 @@ export default function DashboardPage() {
         )
     }
 
-
     function renderFlightsTable() {
         if (!isFullyConfigured()) {
             return renderActionNotConfigured()
@@ -514,7 +542,6 @@ export default function DashboardPage() {
             </Grid>
         )
     }
-
 
     function renderContent() {
         return (
