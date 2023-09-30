@@ -306,6 +306,17 @@ export default function FlightCreationWizardDialog({
         return initialOptions;
     }
 
+    function isSoloFlightButtonVisible() {
+        return (
+            pilot1Id
+            && !pilot2Id
+            && !isSoloFlightOfPrivatePilot
+            && flightType !== "MembersGuest"
+            && flightType !== "ClubGuest"
+            && flightType !== "Instruction"
+        )
+    }
+
     function renderInput(inputName: RenderedInputName) {
         switch (inputName) {
             case RenderedInputName.GLIDER:
@@ -369,7 +380,9 @@ export default function FlightCreationWizardDialog({
                     <FormGroup>
                         <FormControl>
                             <Grid container alignItems="center">
-                                <Grid item xs={7} ml={1}>
+                                <Grid item xs={
+                                    isSoloFlightButtonVisible() ? 7 : 12
+                                } ml={1}>
                                     <Autocomplete
                                         id="pilot2"
                                         options={getPilot2Options().filter((member) => !isMemberBusy(member.id))}
@@ -390,7 +403,8 @@ export default function FlightCreationWizardDialog({
                                         )}
                                     />
                                 </Grid>
-                                <Grid item xs={4}>
+                                {isSoloFlightButtonVisible() && (
+                                    <Grid item xs={4}>
                                     <Button
                                         variant={"text"}
                                         onClick={() => setIsSoloFlightOfPrivatePilot(!isSoloFlightOfPrivatePilot)}
@@ -399,6 +413,7 @@ export default function FlightCreationWizardDialog({
                                         {t("SOLO_FLIGHT")}?
                                     </Button>
                                 </Grid>
+                                )}
                             </Grid>
                         </FormControl>
                     </FormGroup>
