@@ -160,7 +160,18 @@ export default function FlightsTable(props: FlightsTableProps) {
                                         </IconButton>
                                     </Tooltip>
                                     <Tooltip title={t("DUPLICATE_FLIGHT")}>
-                                        <IconButton aria-label="duplicate" onClick={() => setDuplicateFlight(flight)}>
+                                        <IconButton aria-label="duplicate" onClick={() => setDuplicateFlight({
+                                            action_id: flight.action_id,
+                                            state: "Draft",
+                                            glider_id: flight.glider_id,
+                                            pilot_1_id: flight.pilot_1_id,
+                                            pilot_2_id: flight.pilot_2_id,
+                                            payers_type: flight.payers_type,
+                                            payment_method: flight.payment_method,
+                                            payment_receiver_id: flight.payment_receiver_id,
+                                            flight_type: flight.flight_type,
+                                            paying_member_id: flight.paying_member_id,
+                                        })}>
                                             <ContentCopyIcon/>
                                         </IconButton>
                                     </Tooltip>
