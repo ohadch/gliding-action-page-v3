@@ -70,6 +70,7 @@ export const TEXTS_HEBREW = {
     TOW_PILOT_CANNOT_TOW_HIMSELF: "לא ניתן לשבץ טייס גורר כגורר של עצמו",
     FLIGHTS: "טיסות",
     CANNOT_DEACTIVATE_TOW_AIRPLANE_DURING_TOW: "לא ניתן לעדכן מטוס גורר במהלך גרירה",
+    CONFIRM_FLIGHT_STATE_CHANGE_TO_PREVIOUS: "האם אתה בטוח שברצונך להחזיר את הטיסה לשלב הקודם?",
 }
 
 
