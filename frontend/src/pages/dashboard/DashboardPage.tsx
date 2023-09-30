@@ -15,7 +15,7 @@ import {useCallback, useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
-import {createFlight, fetchFlights, updateFlight} from "../../store/actions/currentAction.ts";
+import {createFlight, deleteFlight, fetchFlights, updateFlight} from "../../store/actions/currentAction.ts";
 import FlightCreationWizardDialog from "../../components/flights/FlightCreationWizardDialog.tsx";
 import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
 import EditFlightDetailsDialog from "../../components/flights/EditFlightDetailsDialog.tsx";
@@ -32,6 +32,7 @@ import Typography from "@mui/material/Typography";
 import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import AddIcon from "@mui/icons-material/Add";
+import {updateAction} from "../../store/actions/action.ts";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -58,7 +59,7 @@ export default function DashboardPage() {
     const [editFlightDetailsDialogOpen, setEditFlightDetailsDialogOpen] = useState<boolean>(false);
     const [startTowDialogFlight, setStartTowDialogFlight] = useState<FlightSchema | null>(null);
     const [endTowDialogFlight, setEndTowDialogFlight] = useState<FlightSchema | null>(null);
-    const [shownFlightStates, setShownFlightStates] = useState<FlightState[]>(["Draft", "Tow", "Inflight"]);
+    const [shownFlightStates, setShownFlightStates] = useState<FlightState[]>(action?.closed_at ? ["Landed"] : ["Draft", "Tow", "Inflight"]);
     const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
 
 
@@ -464,6 +465,34 @@ export default function DashboardPage() {
         );
     };
 
+    const handleActionClosed = () => {
+        if (!action) {
+            return;
+        }
+
+        if (!confirm(t("CLOSE_ACTION_CONFIRMATION"))) {
+            return;
+        }
+
+        const draftFlights = flights?.filter((flight) => flight.state === "Draft") || [];
+
+        draftFlights.forEach((flight) => dispatch(deleteFlight(flight.id)));
+
+        dispatch(
+            updateAction({
+                actionId: action.id,
+                updatePayload: {
+                    ...action,
+                    closed_at: moment().utcOffset(0, true).set({
+                        date: moment(action?.date).date(),
+                        month: moment(action?.date).month(),
+                        year: moment(action?.date).year(),
+                    }).toISOString()
+                }
+            })
+        )
+    }
+
     function renderFlightStatesFilter() {
         return (
             <FormControl style={{
@@ -472,6 +501,7 @@ export default function DashboardPage() {
             }} disabled={!isFullyConfigured()}>
                 <InputLabel id="flight-state-select-label">{t("FLIGHT_STATES")}</InputLabel>
                 <Select
+                    disabled={Boolean(action?.closed_at)}
                     labelId="flight-state-select-label"
                     id="flight-state-select"
                     multiple
@@ -510,7 +540,7 @@ export default function DashboardPage() {
                     <Button
                         variant="contained"
                         color="primary"
-                        disabled={!isFullyConfigured()}
+                        disabled={!isFullyConfigured() || Boolean(action?.closed_at)}
                         style={{
                             height: "100%",
                             width: "100%",
@@ -518,7 +548,7 @@ export default function DashboardPage() {
                             fontWeight: "bold",
                         }}
                         onClick={() => setFlightCreationWizardDialogOpen(true)}>
-                        <AddIcon />
+                        <AddIcon/>
                         {t("NEW_FLIGHT")}
                     </Button>
                 </Grid>
@@ -566,6 +596,38 @@ export default function DashboardPage() {
         )
     }
 
+    const activeFlightsExist = flights?.some((flight) => (flight.state === "Tow") || (flight.state === "Inflight"));
+
+    function renderCloseActionButton() {
+        return (
+            <Grid
+                pt={2}
+                container
+                sx={{
+                    alignItems: "center",
+                    textAlign: "center",
+                }}
+            >
+                <Grid item xs={2}/>
+                <Grid item xs={8}>
+                    <Button
+                        variant="contained"
+                        color="error"
+                        disabled={activeFlightsExist}
+                        onClick={() => handleActionClosed()}
+                        size={"large"}
+                        sx={{
+                            fontSize: "1.5rem",
+                        }}
+                    >
+                        {t("CLOSE_ACTION")}
+                    </Button>
+                </Grid>
+                <Grid item xs={2}/>
+            </Grid>
+        )
+    }
+
     function renderFlightsTable() {
         if (!isFullyConfigured()) {
             return renderActionNotConfigured()
@@ -606,6 +668,7 @@ export default function DashboardPage() {
             <Grid>
                 {renderTopBar()}
                 {renderFlightsTable()}
+                {!action?.closed_at && renderCloseActionButton()}
             </Grid>
         )
     }
