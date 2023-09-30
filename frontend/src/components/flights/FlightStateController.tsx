@@ -57,13 +57,13 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
     }
 
     return (
-        <Grid sx={{
-            display: "flex",
-            justifyContent: "center",
+        <Grid container xs={8} sx={{
+            textAlign: "center",
         }}>
-            {
-                goToPreviousStateVisible() && (
-                    <Grid>
+            <Grid item xs={2}>
+                {
+                    goToPreviousStateVisible() && (
+
                         <IconButton
                             color={color}
                             disabled={!goToPreviousStateEnabled()}
@@ -71,10 +71,10 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                         >
                             <ArrowRightIcon/>
                         </IconButton>
-                    </Grid>
-                )
-            }
-            <Grid>
+                    )
+                }
+            </Grid>
+            <Grid item xs={8}>
                 <Button
                     variant="text"
                     color={color}
@@ -82,9 +82,10 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                     {t(label)}
                 </Button>
             </Grid>
-            {
-                goToNextStateVisible() && (
-                    <Grid>
+            <Grid item xs={2}>
+                {
+                    goToNextStateVisible() && (
+
                         <IconButton
                             color={color}
                             disabled={!goToNextStateEnabled()}
@@ -92,9 +93,10 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                         >
                             <ArrowLeftIcon/>
                         </IconButton>
-                    </Grid>
-                )
-            }
+
+                    )
+                }
+            </Grid>
         </Grid>
     );
 }
