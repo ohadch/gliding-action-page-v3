@@ -71,6 +71,7 @@ export const TEXTS_HEBREW = {
     FLIGHTS: "טיסות",
     CANNOT_DEACTIVATE_TOW_AIRPLANE_DURING_TOW: "לא ניתן לעדכן מטוס גורר במהלך גרירה",
     CONFIRM_FLIGHT_STATE_CHANGE_TO_PREVIOUS: "האם אתה בטוח שברצונך להחזיר את הטיסה לשלב הקודם?",
+    DEACTIVATE_TOW_AIRPLANE_CONFIRMATION: "האם אתה בטוח שברצונך להפסיק את הפעלת את המטוס הגורר?",
 }
 
 
