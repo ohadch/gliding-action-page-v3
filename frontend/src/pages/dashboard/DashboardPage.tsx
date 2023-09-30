@@ -515,6 +515,7 @@ export default function DashboardPage() {
                             height: "100%",
                             width: "100%",
                             fontSize: "1.5rem",
+                            fontWeight: "bold",
                         }}
                         onClick={() => setFlightCreationWizardDialogOpen(true)}>
                         <AddIcon />
