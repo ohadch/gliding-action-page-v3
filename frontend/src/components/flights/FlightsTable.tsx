@@ -14,7 +14,7 @@ import {
     getGliderDisplayValue,
     getMemberDisplayValue, getTowTypeDisplayValue
 } from "../../utils/display.ts";
-import {Tooltip} from "@mui/material";
+import {Tooltip, useTheme} from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -41,6 +41,7 @@ export default function FlightsTable(props: FlightsTableProps) {
     const {setEditedFlight, setDuplicateFlight, onFlightStateUpdated, shownFlightStates} = props;
     const {t} = useTranslation();
     const dispatch = useAppDispatch();
+    const theme = useTheme()
 
     const {flights} = useSelector((state: RootState) => state.currentAction);
     const membersStoreState = useSelector((state: RootState) => state.members)
@@ -126,7 +127,12 @@ export default function FlightsTable(props: FlightsTableProps) {
                         {shownAndSortedFlights().map((flight) => (
                             <TableRow
                                 key={flight.id}
-                                sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                sx={{
+                                    '&:last-child td, &:last-child th': {border: 0},
+                                    '&:hover': {
+                                        backgroundColor: theme.palette.action.hover,
+                                    }
+                            }}
                             >
                                 <TableCell component="th" scope="row">
                                     {flight && (

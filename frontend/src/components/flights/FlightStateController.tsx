@@ -68,7 +68,13 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                         <IconButton
                             color={color}
                             disabled={!goToPreviousStateEnabled()}
-                            onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) - 1])}
+                            onClick={() => {
+                                if (!confirm(t("CONFIRM_FLIGHT_STATE_CHANGE_TO_PREVIOUS"))) {
+                                    return;
+                                }
+
+                                onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) - 1])
+                            }}
                         >
                             <ArrowForwardIcon/>
                         </IconButton>
@@ -82,6 +88,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                     sx={{
                         fontSize: "1.1rem",
                         fontWeight: "bold",
+                        width: "100%",
                     }}
                 >
                     {t(label)}

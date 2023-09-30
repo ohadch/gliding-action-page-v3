@@ -96,6 +96,15 @@ export default function ActionConfigurationComponent() {
 
             const activationId = currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === removedTowAirplaneId)?.id
             if (action?.id && activationId) {
+                const removedTowAirplane = towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === removedTowAirplaneId)
+                const removedTowPilot = getMemberById(currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === removedTowAirplaneId)?.tow_pilot_id || 0)
+
+                if (removedTowAirplane && removedTowPilot) {
+                    if (!confirm(`${t("DEACTIVATE_TOW_AIRPLANE_CONFIRMATION")} ${getTowAirplaneDisplayValue(removedTowAirplane)} (${getMemberDisplayValue(removedTowPilot)})`)) {
+                        return
+                    }
+                }
+
                 dispatch(
                     createEvent({
                         action_id: action.id,
@@ -158,6 +167,10 @@ export default function ActionConfigurationComponent() {
     }
 
     function onFieldResponsibleChanged(newValue: MemberSchema | null) {
+        if (!confirm(t("UPDATE_FIELD_RESPONSIBLE_CONFIRMATION"))) {
+            return
+        }
+
         if (!action) {
             return
         }
@@ -200,6 +213,10 @@ export default function ActionConfigurationComponent() {
     }
 
     function onResponsibleCfiChanged(newValue: MemberSchema | null) {
+        if (!confirm(t("UPDATE_RESPONSIBLE_CFI_CONFIRMATION"))) {
+            return
+        }
+
         if (!action) {
             return
         }
