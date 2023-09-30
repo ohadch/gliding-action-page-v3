@@ -197,7 +197,6 @@ export default function DashboardPage() {
             year: moment(action?.date).year(),
         }).toISOString();
 
-
         const promises = [];
 
         switch (state) {
