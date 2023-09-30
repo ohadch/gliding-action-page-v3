@@ -28,6 +28,7 @@ class FlightLandedEventHandler(EventHandler):
                 notifications.append(
                     Notification(
                         action_id=event.action_id,
+                        originator_event_id=event.id,
                         recipient_member_id=flight.pilot_1_id,
                         type=NotificationType.FlightSummaryForPilot.value,
                         payload=NotificationPayloadSchema(
@@ -43,6 +44,7 @@ class FlightLandedEventHandler(EventHandler):
                 notifications.append(
                     Notification(
                         action_id=event.action_id,
+                        originator_event_id=event.id,
                         recipient_member_id=flight.pilot_2_id,
                         type=NotificationType.FlightSummaryForPilot.value,
                         payload=NotificationPayloadSchema(
