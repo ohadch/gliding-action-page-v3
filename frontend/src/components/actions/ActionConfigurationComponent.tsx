@@ -167,6 +167,10 @@ export default function ActionConfigurationComponent() {
     }
 
     function onFieldResponsibleChanged(newValue: MemberSchema | null) {
+        if (!confirm(t("UPDATE_FIELD_RESPONSIBLE_CONFIRMATION"))) {
+            return
+        }
+
         if (!action) {
             return
         }
