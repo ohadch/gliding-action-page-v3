@@ -15,7 +15,7 @@ import {useCallback, useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
-import {createFlight, fetchFlights, updateFlight} from "../../store/actions/currentAction.ts";
+import {createFlight, deleteFlight, fetchFlights, updateFlight} from "../../store/actions/currentAction.ts";
 import FlightCreationWizardDialog from "../../components/flights/FlightCreationWizardDialog.tsx";
 import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
 import EditFlightDetailsDialog from "../../components/flights/EditFlightDetailsDialog.tsx";
@@ -32,6 +32,7 @@ import Typography from "@mui/material/Typography";
 import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import AddIcon from "@mui/icons-material/Add";
+import {updateAction} from "../../store/actions/action.ts";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -464,6 +465,33 @@ export default function DashboardPage() {
         );
     };
 
+    const handleActionClosed = () => {
+        if (!action) {
+            return;
+        }
+
+        if (!confirm(t("CLOSE_ACTION_CONFIRMATION"))) {
+            return;
+        }
+
+        const draftFlights = flights?.filter((flight) => flight.state === "Draft") || [];
+
+        draftFlights.forEach((flight) => dispatch(deleteFlight(flight.id)));
+
+        dispatch(
+            updateAction({
+                actionId: action.id,
+                updatePayload: {
+                    closed_at: moment().utcOffset(0, true).set({
+                        date: moment(action?.date).date(),
+                        month: moment(action?.date).month(),
+                        year: moment(action?.date).year(),
+                    }).toISOString()
+                }
+            })
+        )
+    }
+
     function renderFlightStatesFilter() {
         return (
             <FormControl style={{
@@ -578,13 +606,13 @@ export default function DashboardPage() {
                     textAlign: "center",
                 }}
             >
-                <Grid item xs={2} />
+                <Grid item xs={2}/>
                 <Grid item xs={8}>
                     <Button
                         variant="contained"
                         color="error"
                         disabled={activeFlightsExist}
-                        onClick={() => alert("TODO")}
+                        onClick={() => handleActionClosed()}
                         size={"large"}
                         sx={{
                             fontSize: "1.5rem",
@@ -593,7 +621,7 @@ export default function DashboardPage() {
                         {t("CLOSE_ACTION")}
                     </Button>
                 </Grid>
-                <Grid item xs={2} />
+                <Grid item xs={2}/>
             </Grid>
         )
     }
