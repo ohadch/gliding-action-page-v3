@@ -293,6 +293,7 @@ export default function ActionConfigurationComponent() {
                         <FormControl>
                             <Autocomplete
                                 id="field-responsible"
+                                disabled={Boolean(action?.closed_at)}
                                 options={getFieldResponsibleOptions()}
                                 value={(field_responsible_id ? getMemberById(field_responsible_id) : null) || null}
                                 onChange={(_, newValue) => onFieldResponsibleChanged(newValue)}
@@ -316,6 +317,7 @@ export default function ActionConfigurationComponent() {
                         <FormControl>
                             <Autocomplete
                                 id="responsible-cfi"
+                                disabled={Boolean(action?.closed_at)}
                                 options={getResponsibleCfiOptions()}
                                 value={(responsible_cfi_id ? getMemberById(responsible_cfi_id) : null) || null}
                                 onChange={(_, newValue) => onResponsibleCfiChanged(newValue)}
@@ -339,6 +341,7 @@ export default function ActionConfigurationComponent() {
                         <FormControl>
                             <InputLabel id="active-tow-airplanes-label">{t("ACTIVE_TOW_AIRPLANES")}</InputLabel>
                             <Select
+                                disabled={Boolean(action?.closed_at)}
                                 labelId="active-tow-airplanes-label"
                                 id="active-tow-airplanes"
                                 multiple

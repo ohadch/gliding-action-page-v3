@@ -75,6 +75,9 @@ export const TEXTS_HEBREW = {
     UPDATE_RESPONSIBLE_CFI_CONFIRMATION: "האם אתה בטוח שברצונך לשנות את המדריך האחראי?",
     UPDATE_FIELD_RESPONSIBLE_CONFIRMATION: "האם אתה בטוח שברצונך לשנות את האחראי בשדה?",
     CLOSE_ACTION: "סגירת הפעולה",
+    ACTION_CLOSED_TITLE: "הינך צופה בפעולה שנסגרה!",
+    ACTION_CLOSED_MESSAGE: "יש לשים לב שמתאפשרת עריכת נתונים חלקית בלבד.",
+    CLOSE_ACTION_CONFIRMATION: "האם אתה בטוח שברצונך לסגור את הפעולה?",
 }
 
 

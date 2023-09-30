@@ -16,7 +16,7 @@ import {
     Alert,
     AlertTitle,
     Button,
-    Card,
+    Card, Grid,
     ListItemButton,
     ListItemIcon,
     ListItemText,
@@ -159,6 +159,23 @@ export default function App() {
                         <Button onClick={() => setSelectActionDialogOpen(true)}>
                             {t("SELECT_ACTION")}
                         </Button>
+                    </Alert>
+                </Card>
+            </Typography>
+        )
+    }
+
+    function renderActionClosedMessage() {
+        return (
+            <Typography variant="h4" component="h4">
+                <Card>
+                    <Alert severity="warning" sx={{
+                        height: "100%",
+                    }}>
+                        <AlertTitle>
+                            <strong>{t("ACTION_CLOSED_TITLE")}</strong>
+                        </AlertTitle>
+                        {t("ACTION_CLOSED_MESSAGE")}
                     </Alert>
                 </Card>
             </Typography>
@@ -320,6 +337,15 @@ export default function App() {
                     >
                         <Toolbar/>
                         <Container maxWidth="xl" sx={{mt: 4, mb: 4}}>
+
+                            {
+                                action?.closed_at && (
+                                    <Grid mb={2}>
+                                        {renderActionClosedMessage()}
+                                    </Grid>
+                                )
+                            }
+
                             {renderContent()}
                         </Container>
                     </Box>

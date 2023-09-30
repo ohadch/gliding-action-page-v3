@@ -59,7 +59,7 @@ export default function DashboardPage() {
     const [editFlightDetailsDialogOpen, setEditFlightDetailsDialogOpen] = useState<boolean>(false);
     const [startTowDialogFlight, setStartTowDialogFlight] = useState<FlightSchema | null>(null);
     const [endTowDialogFlight, setEndTowDialogFlight] = useState<FlightSchema | null>(null);
-    const [shownFlightStates, setShownFlightStates] = useState<FlightState[]>(["Draft", "Tow", "Inflight"]);
+    const [shownFlightStates, setShownFlightStates] = useState<FlightState[]>(action?.closed_at ? ["Landed"] : ["Draft", "Tow", "Inflight"]);
     const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
 
 
@@ -482,6 +482,7 @@ export default function DashboardPage() {
             updateAction({
                 actionId: action.id,
                 updatePayload: {
+                    ...action,
                     closed_at: moment().utcOffset(0, true).set({
                         date: moment(action?.date).date(),
                         month: moment(action?.date).month(),
@@ -500,6 +501,7 @@ export default function DashboardPage() {
             }} disabled={!isFullyConfigured()}>
                 <InputLabel id="flight-state-select-label">{t("FLIGHT_STATES")}</InputLabel>
                 <Select
+                    disabled={Boolean(action?.closed_at)}
                     labelId="flight-state-select-label"
                     id="flight-state-select"
                     multiple
@@ -538,7 +540,7 @@ export default function DashboardPage() {
                     <Button
                         variant="contained"
                         color="primary"
-                        disabled={!isFullyConfigured()}
+                        disabled={!isFullyConfigured() || Boolean(action?.closed_at)}
                         style={{
                             height: "100%",
                             width: "100%",
@@ -666,7 +668,7 @@ export default function DashboardPage() {
             <Grid>
                 {renderTopBar()}
                 {renderFlightsTable()}
-                {renderCloseActionButton()}
+                {!action?.closed_at && renderCloseActionButton()}
             </Grid>
         )
     }

@@ -5,6 +5,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import {ORDERED_FLIGHT_STATES} from "../../utils/consts.ts";
 import IconButton from "@mui/material/IconButton";
+import {useSelector} from "react-redux";
+import {RootState} from "../../store";
 
 export interface FlightStateControllerProps {
     flight: FlightSchema,
@@ -39,6 +41,7 @@ const STATE_BUTTON_CONFIGS: Record<FlightState, StateButtonConfig> = {
 export default function FlightStateController({flight, onStateUpdated}: FlightStateControllerProps) {
     const {t} = useTranslation();
     const {label, color} = STATE_BUTTON_CONFIGS[flight.state];
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
 
     function goToPreviousStateEnabled() {
         return ORDERED_FLIGHT_STATES.indexOf(flight.state) > 0;
@@ -67,7 +70,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
 
                         <IconButton
                             color={color}
-                            disabled={!goToPreviousStateEnabled()}
+                            disabled={!goToPreviousStateEnabled() || Boolean(action?.closed_at)}
                             onClick={() => {
                                 if (!confirm(t("CONFIRM_FLIGHT_STATE_CHANGE_TO_PREVIOUS"))) {
                                     return;
@@ -85,6 +88,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                 <Button
                     variant="contained"
                     color={color}
+                    disabled={Boolean(action?.closed_at)}
                     sx={{
                         fontSize: "1.1rem",
                         fontWeight: "bold",
@@ -100,7 +104,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
 
                         <IconButton
                             color={color}
-                            disabled={!goToNextStateEnabled()}
+                            disabled={!goToNextStateEnabled() || Boolean(action?.closed_at)}
                             onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) + 1])}
                         >
                             <ArrowBackIcon/>
