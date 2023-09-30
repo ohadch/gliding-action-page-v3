@@ -88,6 +88,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                     sx={{
                         fontSize: "1.1rem",
                         fontWeight: "bold",
+                        width: "100%",
                     }}
                 >
                     {t(label)}
