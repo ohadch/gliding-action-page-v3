@@ -32,6 +32,11 @@ export interface FlightsTableProps {
 }
 
 
+const textCellStyle = {
+    fontSize: "1.2rem",
+}
+
+
 export default function FlightsTable(props: FlightsTableProps) {
     const {setEditedFlight, setDuplicateFlight, onFlightStateUpdated, shownFlightStates} = props;
     const {t} = useTranslation();
@@ -107,14 +112,14 @@ export default function FlightsTable(props: FlightsTableProps) {
                 <Table sx={{minWidth: 650}} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell align="right"></TableCell>
-                            <TableCell align="right"><strong>{t("GLIDER")}</strong></TableCell>
-                            <TableCell align="right"><strong>{t("FLIGHT_TYPE")}</strong></TableCell>
-                            <TableCell align="right"><strong>{t("CREW")}</strong></TableCell>
-                            <TableCell align="right"><strong>{t("TOW_AIRPLANE")}</strong></TableCell>
-                            <TableCell align="right"><strong>{t("TOW_TYPE")}</strong></TableCell>
-                            <TableCell align="right"><strong>{t("DURATION")}</strong></TableCell>
-                            <TableCell align="right"></TableCell>
+                            <TableCell align="right" style={textCellStyle}></TableCell>
+                            <TableCell align="right" style={textCellStyle}><strong>{t("GLIDER")}</strong></TableCell>
+                            <TableCell align="right" style={textCellStyle}><strong>{t("FLIGHT_TYPE")}</strong></TableCell>
+                            <TableCell align="right" style={textCellStyle}><strong>{t("CREW")}</strong></TableCell>
+                            <TableCell align="right" style={textCellStyle}><strong>{t("TOW_AIRPLANE")}</strong></TableCell>
+                            <TableCell align="right" style={textCellStyle}><strong>{t("TOW_TYPE")}</strong></TableCell>
+                            <TableCell align="right" style={textCellStyle}><strong>{t("DURATION")}</strong></TableCell>
+                            <TableCell align="right" style={textCellStyle}></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -131,28 +136,27 @@ export default function FlightsTable(props: FlightsTableProps) {
                                         />
                                     )}
                                 </TableCell>
-                                <TableCell
-                                    align="right">{flight.glider_id && displayGlider(flight.glider_id)}
+                                <TableCell align="right" style={textCellStyle}>
+                                    {flight.glider_id && displayGlider(flight.glider_id)}
                                 </TableCell>
-                                <TableCell
-                                    align="right">{flight.flight_type && getFlightTypeDisplayValue(flight.flight_type)}
+                                <TableCell align="right" style={textCellStyle}>
+                                    {flight.flight_type && getFlightTypeDisplayValue(flight.flight_type)}
                                 </TableCell>
-                                <TableCell
-                                    align="right">
+                                <TableCell align="right" style={textCellStyle}>
                                     {renderCrew(flight)}
                                 </TableCell>
-                                <TableCell
-                                    align="right">{renderTowAirplane(flight)}
+                                <TableCell align="right" style={textCellStyle}>
+                                    {renderTowAirplane(flight)}
                                 </TableCell>
-                                <TableCell
-                                    align="right">{flight.tow_type && getTowTypeDisplayValue(flight.tow_type)}
+                                <TableCell align="right" style={textCellStyle}>
+                                    {flight.tow_type && getTowTypeDisplayValue(flight.tow_type)}
                                 </TableCell>
-                                <TableCell align="right">
+                                <TableCell align="right" style={textCellStyle}>
                                     {(flight.state !== "Draft") && (
                                         <FlightDuration flight={flight}/>
                                     )}
                                 </TableCell>
-                                <TableCell align="right">
+                                <TableCell align="right" style={textCellStyle}>
                                     <Tooltip title={t("EDIT_FLIGHT")}
                                              onClick={() => setEditedFlight(flight.id, flight)}>
                                         <IconButton aria-label="edit">
