@@ -38,12 +38,12 @@ class HebrewI18nClient(I18nClient):
             "Check": "צ׳ק",
             "CreditCard": "כרטיס אשראי",
             "Bit": "ביט",
-            "AIRPLANE_1000": "גרירת מטוס לגובה 1000 רגל",
-            "AIRPLANE_1500": "גרירת מטוס לגובה 1500 רגל",
-            "AIRPLANE_2000": "גרירת מטוס לגובה 2000 רגל",
-            "AIRPLANE_2500": "גרירת מטוס לגובה 2500 רגל",
-            "AIRPLANE_3000": "גרירת מטוס לגובה 3000 רגל",
-            "AIRPLANE_3500": "גרירת מטוס לגובה 3500 רגל",
+            "AIRPLANE_1000": "1000 רגל",
+            "AIRPLANE_1500": "1500 רגל",
+            "AIRPLANE_2000": "2000 רגל",
+            "AIRPLANE_2500": "2500 רגל",
+            "AIRPLANE_3000": "3000 רגל",
+            "AIRPLANE_3500": "3500 רגל",
         }.get(key, key)
 
     def format_flight_summary_for_pilot_email_message_template(
@@ -68,7 +68,7 @@ class HebrewI18nClient(I18nClient):
         tow_airplane: TowAirplane,
         action: Action,
         flights: List[Flight],
-        values_str: str,
+        flights_table_html: str,
     ) -> str:
         return f"""
         <table dir="rtl">
@@ -76,7 +76,7 @@ class HebrewI18nClient(I18nClient):
                         <tr></tr>
                         <tr>בתאריך {action.date.strftime('%Y-%m-%d')} ביצעת {len(flights)} טיסות במטוס {tow_airplane.call_sign}.</tr>
                         <tr></tr>
-                        {values_str}
+                        {flights_table_html}
                         <tr></tr>
                         <tr>תודה,</tr>
                         <tr>מרכז הדאיה מגידו</tr>
@@ -99,4 +99,4 @@ class HebrewI18nClient(I18nClient):
     ) -> str:
         date_str = action.date.strftime("%Y-%m-%d")
 
-        return f"ביצעת {len(flights)} טיסות במטוס {tow_airplane.call_sign} בתאריך {date_str}"
+        return f"ביצעת {len(flights)} גרירות במטוס {tow_airplane.call_sign} בתאריך {date_str}"

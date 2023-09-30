@@ -144,7 +144,11 @@ export default function FlightEndTowDialog({flight, open, onCancel, onSubmit}: F
                             ...flight,
                             state: "Inflight",
                             tow_type: towType,
-                            tow_release_at: flight.tow_release_at || moment().utcOffset(0, true).toISOString()
+                            tow_release_at: flight.tow_release_at || moment().utcOffset(0, true).set({
+                                date: moment(action?.date).date(),
+                                month: moment(action?.date).month(),
+                                year: moment(action?.date).year(),
+                            }).toISOString(),
                         })}>
                         {t("CONFIRM")}
                     </Button>

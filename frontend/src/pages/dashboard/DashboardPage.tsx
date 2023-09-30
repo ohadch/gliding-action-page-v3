@@ -31,6 +31,7 @@ import ActionConfigurationComponent from "../../components/actions/ActionConfigu
 import Typography from "@mui/material/Typography";
 import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
+import AddIcon from "@mui/icons-material/Add";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -190,7 +191,12 @@ export default function DashboardPage() {
             state
         }
 
-        const now = moment().utcOffset(0, true).toISOString();
+        // The time is now's time, but the date is the action's date
+        const now = moment().utcOffset(0, true).set({
+            date: moment(action?.date).date(),
+            month: moment(action?.date).month(),
+            year: moment(action?.date).year(),
+        }).toISOString();
 
         const promises = [];
 
@@ -507,9 +513,12 @@ export default function DashboardPage() {
                         disabled={!isFullyConfigured()}
                         style={{
                             height: "100%",
-                            width: "100%"
+                            width: "100%",
+                            fontSize: "1.5rem",
+                            fontWeight: "bold",
                         }}
                         onClick={() => setFlightCreationWizardDialogOpen(true)}>
+                        <AddIcon />
                         {t("NEW_FLIGHT")}
                     </Button>
                 </Grid>
