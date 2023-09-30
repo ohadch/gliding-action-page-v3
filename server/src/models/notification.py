@@ -22,6 +22,8 @@ class Notification(Base):
     type = Column(String, nullable=False)
     payload = Column(JSON, nullable=False)
     state = Column(String, nullable=False, default=NotificationState.PENDING.value)
+    originator_event_id = Column(Integer, ForeignKey("events.id"), nullable=True)
 
     recipient_member = relationship("Member")
     action = relationship("Action")
+    originator_event = relationship("Event", foreign_keys=[originator_event_id])

@@ -22,6 +22,7 @@ class TowAirplaneDeactivatedEventHandler(EventHandler):
             notifications.append(
                 Notification(
                     action_id=event.action_id,
+                    event_id=event.id,
                     recipient_member_id=payload.tow_pilot_id,
                     type=NotificationType.SummaryForTowPilot.value,
                     payload=NotificationPayloadSchema(
