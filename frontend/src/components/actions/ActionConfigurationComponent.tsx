@@ -81,6 +81,19 @@ export default function ActionConfigurationComponent() {
         if (addedTowAirplaneId) {
             setEditedActiveTowAirplaneId(addedTowAirplaneId)
         } else if (removedTowAirplaneId) {
+            const towAirplaneInTowFlight = currentActionStoreState?.flights?.find((flight) => flight.tow_airplane_id === removedTowAirplaneId && flight.state === "Tow")
+
+            if (towAirplaneInTowFlight) {
+                const towAirplane = towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === removedTowAirplaneId)
+
+                if (!towAirplane) {
+                    return
+                }
+
+                alert(`${t("CANNOT_DEACTIVATE_TOW_AIRPLANE_DURING_TOW")}: ${getTowAirplaneDisplayValue(towAirplane)}`)
+                return
+            }
+
             const activationId = currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === removedTowAirplaneId)?.id
             if (action?.id && activationId) {
                 dispatch(
