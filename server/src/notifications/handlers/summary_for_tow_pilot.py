@@ -34,6 +34,12 @@ class SummaryForTowPilotNotificationHandler(NotificationHandler):
             .all()
         )
 
+        if not flights:
+            self._logger.info(
+                f"No flights for tow pilot {tow_pilot.id} on {action.date}, not sending email"
+            )
+            return
+
         subject = i18n.get_summary_for_tow_pilot_email_message_subject(
             tow_pilot=tow_pilot,
             tow_airplane=tow_airplane,
