@@ -238,7 +238,11 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
                                     state: "Inflight",
                                     tow_airplane_id: null,
                                     tow_pilot_id: null,
-                                    take_off_at: flight.take_off_at || moment().utcOffset(0, true).toISOString(),
+                                    take_off_at: flight.take_off_at || moment().utcOffset(0, true).set({
+                                        date: moment(action?.date).date(),
+                                        month: moment(action?.date).month(),
+                                        year: moment(action?.date).year(),
+                                    }).toISOString(),
                                     tow_type: null
                                 })
                             }
@@ -248,7 +252,11 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
                                 state: "Tow",
                                 tow_airplane_id: towAirplaneId,
                                 tow_pilot_id: towPilotId,
-                                take_off_at: flight.take_off_at || moment().utcOffset(0, true).toISOString(),
+                                take_off_at: flight.take_off_at || moment().utcOffset(0, true).set({
+                                    date: moment(action?.date).date(),
+                                    month: moment(action?.date).month(),
+                                    year: moment(action?.date).year(),
+                                }).toISOString(),
                                 tow_type: null
                             })
                         }}>
