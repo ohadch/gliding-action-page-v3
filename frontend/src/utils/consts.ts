@@ -74,6 +74,7 @@ export const TEXTS_HEBREW = {
     DEACTIVATE_TOW_AIRPLANE_CONFIRMATION: "האם אתה בטוח שברצונך להפסיק את הפעלת את המטוס הגורר?",
     UPDATE_RESPONSIBLE_CFI_CONFIRMATION: "האם אתה בטוח שברצונך לשנות את המדריך האחראי?",
     UPDATE_FIELD_RESPONSIBLE_CONFIRMATION: "האם אתה בטוח שברצונך לשנות את האחראי בשדה?",
+    CLOSE_ACTION: "סגירת הפעולה",
 }
 
 

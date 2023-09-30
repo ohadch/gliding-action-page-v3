@@ -518,7 +518,7 @@ export default function DashboardPage() {
                             fontWeight: "bold",
                         }}
                         onClick={() => setFlightCreationWizardDialogOpen(true)}>
-                        <AddIcon />
+                        <AddIcon/>
                         {t("NEW_FLIGHT")}
                     </Button>
                 </Grid>
@@ -566,6 +566,38 @@ export default function DashboardPage() {
         )
     }
 
+    const activeFlightsExist = flights?.some((flight) => (flight.state === "Tow") || (flight.state === "Inflight"));
+
+    function renderCloseActionButton() {
+        return (
+            <Grid
+                pt={2}
+                container
+                sx={{
+                    alignItems: "center",
+                    textAlign: "center",
+                }}
+            >
+                <Grid item xs={2} />
+                <Grid item xs={8}>
+                    <Button
+                        variant="contained"
+                        color="error"
+                        disabled={activeFlightsExist}
+                        onClick={() => alert("TODO")}
+                        size={"large"}
+                        sx={{
+                            fontSize: "1.5rem",
+                        }}
+                    >
+                        {t("CLOSE_ACTION")}
+                    </Button>
+                </Grid>
+                <Grid item xs={2} />
+            </Grid>
+        )
+    }
+
     function renderFlightsTable() {
         if (!isFullyConfigured()) {
             return renderActionNotConfigured()
@@ -606,6 +638,7 @@ export default function DashboardPage() {
             <Grid>
                 {renderTopBar()}
                 {renderFlightsTable()}
+                {renderCloseActionButton()}
             </Grid>
         )
     }
