@@ -1,8 +1,8 @@
 import {useTranslation} from "react-i18next";
 import {Button, Grid} from "@mui/material";
 import {FlightSchema, FlightState} from "../../lib/types.ts";
-import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import {ORDERED_FLIGHT_STATES} from "../../utils/consts.ts";
 import IconButton from "@mui/material/IconButton";
 
@@ -59,6 +59,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
     return (
         <Grid container sx={{
             textAlign: "center",
+            alignItems: "center",
         }}>
             <Grid item xs={2}>
                 {
@@ -69,15 +70,19 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                             disabled={!goToPreviousStateEnabled()}
                             onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) - 1])}
                         >
-                            <ArrowRightIcon/>
+                            <ArrowForwardIcon/>
                         </IconButton>
                     )
                 }
             </Grid>
             <Grid item xs={8}>
                 <Button
-                    variant="text"
+                    variant="contained"
                     color={color}
+                    sx={{
+                        fontSize: "1.25rem",
+                        fontWeight: "bold",
+                    }}
                 >
                     {t(label)}
                 </Button>
@@ -91,7 +96,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                             disabled={!goToNextStateEnabled()}
                             onClick={() => onStateUpdated(flight.id, ORDERED_FLIGHT_STATES[ORDERED_FLIGHT_STATES.indexOf(flight.state) + 1])}
                         >
-                            <ArrowLeftIcon/>
+                            <ArrowBackIcon/>
                         </IconButton>
 
                     )
