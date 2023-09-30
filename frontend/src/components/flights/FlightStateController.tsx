@@ -57,7 +57,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
     }
 
     return (
-        <Grid container xs={8} sx={{
+        <Grid container sx={{
             textAlign: "center",
         }}>
             <Grid item xs={2}>

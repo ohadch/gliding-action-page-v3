@@ -31,6 +31,7 @@ import ActionConfigurationComponent from "../../components/actions/ActionConfigu
 import Typography from "@mui/material/Typography";
 import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
+import AddIcon from "@mui/icons-material/Add";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -512,9 +513,11 @@ export default function DashboardPage() {
                         disabled={!isFullyConfigured()}
                         style={{
                             height: "100%",
-                            width: "100%"
+                            width: "100%",
+                            fontSize: "1.5rem",
                         }}
                         onClick={() => setFlightCreationWizardDialogOpen(true)}>
+                        <AddIcon />
                         {t("NEW_FLIGHT")}
                     </Button>
                 </Grid>
