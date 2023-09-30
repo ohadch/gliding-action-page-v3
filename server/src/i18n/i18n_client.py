@@ -37,7 +37,7 @@ class I18nClient(abc.ABC):
         tow_airplane: TowAirplane,
         action: Action,
         flights: List[Flight],
-        values_str: str,
+        flights_table_html: str,
     ) -> str:
         pass
 
@@ -131,14 +131,31 @@ class I18nClient(abc.ABC):
         action: Action,
         flights: List[Flight],
     ) -> str:
-        flights_table_html = self.create_flights_table_html(flights=flights)
+        """
+        Get summary for tow pilot email message
+        :param tow_pilot: tow pilot
+        :param tow_airplane: tow airplane
+        :param action: action
+        :param flights: flights
+        """
+        flights_table_html = self.create_flights_table_html(
+            flights=flights,
+            headers=[
+                "take_off_at",
+                "airplane",
+                "tow_type",
+                "glider",
+                "pilot1",
+                "pilot2",
+            ],
+        )
 
         return self.format_summary_for_tow_pilot_email_message_template(
             tow_pilot=tow_pilot,
             tow_airplane=tow_airplane,
             action=action,
             flights=flights,
-            values_str=flights_table_html,
+            flights_table_html=flights_table_html,
         )
 
     def create_flights_table_html(
