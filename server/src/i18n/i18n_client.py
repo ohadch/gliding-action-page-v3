@@ -1,5 +1,5 @@
 import abc
-from typing import List, Dict, Any
+from typing import List, Optional
 
 from src import Flight, Member, Action, TowAirplane
 from src.utils.common import stringify_duration
@@ -141,21 +141,33 @@ class I18nClient(abc.ABC):
             values_str=flights_table_html,
         )
 
-    def create_flights_table_html(self, flights: List[Flight]):
+    def create_flights_table_html(
+        self, flights: List[Flight], headers: Optional[List[str]] = None
+    ) -> str:
+        """
+        Create flights table html
+        :param flights: flights to be displayed
+        :param headers: headers to be displayed. If None, default headers will be used
+        :return: flights table html
+        """
         headers = {
-            "take_off_at": self.translate("TAKE_OFF_TIME"),
-            "landing_at": self.translate("LANDING_TIME"),
-            "glider": self.translate("GLIDER"),
-            "pilot1": self.translate("PILOT_1"),
-            "pilot2": self.translate("PILOT_2"),
-            "tow_pilot": self.translate("TOW_PILOT"),
-            "airplane": self.translate("TOW_AIRPLANE"),
-            "flight_type": self.translate("FLIGHT_TYPE"),
-            "tow_type": self.translate("TOW_TYPE"),
-            "payers_type": self.translate("PAYERS_TYPE"),
-            "payment_method": self.translate("PAYMENT_METHOD"),
-            "payment_receiver": self.translate("PAYMENT_RECEIVER"),
-            "duration": self.translate("FLIGHT_DURATION"),
+            k: v
+            for k, v in {
+                "take_off_at": self.translate("TAKE_OFF_TIME"),
+                "landing_at": self.translate("LANDING_TIME"),
+                "glider": self.translate("GLIDER"),
+                "pilot1": self.translate("PILOT_1"),
+                "pilot2": self.translate("PILOT_2"),
+                "tow_pilot": self.translate("TOW_PILOT"),
+                "airplane": self.translate("TOW_AIRPLANE"),
+                "flight_type": self.translate("FLIGHT_TYPE"),
+                "tow_type": self.translate("TOW_TYPE"),
+                "payers_type": self.translate("PAYERS_TYPE"),
+                "payment_method": self.translate("PAYMENT_METHOD"),
+                "payment_receiver": self.translate("PAYMENT_RECEIVER"),
+                "duration": self.translate("FLIGHT_DURATION"),
+            }.items()
+            if k in headers
         }
 
         items = [
@@ -189,15 +201,6 @@ class I18nClient(abc.ABC):
             )
         ]
 
-        return self.create_table_from_json_array(
-            headers=headers,
-            items=items,
-        )
-
-    @staticmethod
-    def create_table_from_json_array(
-        headers: Dict[str, str], items: List[Dict[str, Any]]
-    ):
         if len(headers) == 0:
             raise ValueError("headers must not be empty")
 
