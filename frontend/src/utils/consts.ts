@@ -69,6 +69,7 @@ export const TEXTS_HEBREW = {
     CREW: "צוות",
     TOW_PILOT_CANNOT_TOW_HIMSELF: "לא ניתן לשבץ טייס גורר כגורר של עצמו",
     FLIGHTS: "טיסות",
+    CANNOT_DEACTIVATE_TOW_AIRPLANE_DURING_TOW: "לא ניתן לעדכן מטוס גורר במהלך גרירה",
 }
 
 
