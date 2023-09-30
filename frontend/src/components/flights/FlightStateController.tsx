@@ -80,7 +80,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                     variant="contained"
                     color={color}
                     sx={{
-                        fontSize: "1.25rem",
+                        fontSize: "1.1rem",
                         fontWeight: "bold",
                     }}
                 >
