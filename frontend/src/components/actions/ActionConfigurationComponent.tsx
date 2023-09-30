@@ -209,6 +209,10 @@ export default function ActionConfigurationComponent() {
     }
 
     function onResponsibleCfiChanged(newValue: MemberSchema | null) {
+        if (!confirm(t("UPDATE_RESPONSIBLE_CFI_CONFIRMATION"))) {
+            return
+        }
+
         if (!action) {
             return
         }
