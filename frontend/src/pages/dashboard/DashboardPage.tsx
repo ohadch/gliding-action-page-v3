@@ -190,7 +190,13 @@ export default function DashboardPage() {
             state
         }
 
-        const now = moment().utcOffset(0, true).toISOString();
+        // The time is now's time, but the date is the action's date
+        const now = moment().utcOffset(0, true).set({
+            date: moment(action?.date).date(),
+            month: moment(action?.date).month(),
+            year: moment(action?.date).year(),
+        }).toISOString();
+
 
         const promises = [];
 
