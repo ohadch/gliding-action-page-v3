@@ -2,7 +2,7 @@
 
 A system for managing gliding actions.
 
-<img width="1542" alt="image" src="https://github.com/ohadch/gliding-action-page-v3/assets/17769668/8e4832d6-7f92-499b-9067-bfbf79d40340">
+<img width="1725" alt="image" src="https://github.com/ohadch/gliding-action-page-v3/assets/17769668/b4a696e5-712d-4834-b25c-def4ddeb4c30">
 
 ## Local Development
 
