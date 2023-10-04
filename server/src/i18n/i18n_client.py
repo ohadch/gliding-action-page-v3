@@ -1,8 +1,11 @@
 import abc
-from typing import List, Optional
+from typing import List, Optional, Tuple
+
+import pandas as pd
 
 from src import Flight, Member, Action, TowAirplane
 from src.utils.common import stringify_duration
+from itertools import groupby
 
 
 class I18nClient(abc.ABC):
@@ -26,7 +29,11 @@ class I18nClient(abc.ABC):
 
     @abc.abstractmethod
     def format_flight_summary_for_pilot_email_message_template(
-        self, flight: Flight, values_str: str
+        self,
+        member: Member,
+        flight: Flight,
+        flight_details_html: str,
+        flights_by_glider: List[Tuple[str, int, str, str]],
     ) -> str:
         pass
 
@@ -37,11 +44,13 @@ class I18nClient(abc.ABC):
         tow_airplane: TowAirplane,
         action: Action,
         flights: List[Flight],
-        flights_table_html: str,
+        html: str,
     ) -> str:
         pass
 
-    def get_flight_summary_for_pilot_email_message(self, flight: Flight) -> str:
+    def get_flight_summary_for_pilot_email_message(
+        self, member: Member, flight: Flight, flights_in_action: List[Flight]
+    ) -> str:
         duration_str = stringify_duration(
             start_time=flight.take_off_at, end_time=flight.landing_at
         )
@@ -107,7 +116,7 @@ class I18nClient(abc.ABC):
             },
         ]
 
-        values_str = "\n".join(
+        flight_details_html = "\n".join(
             [
                 f"""
                     <tr>
@@ -120,8 +129,32 @@ class I18nClient(abc.ABC):
             ]
         )
 
+        flights_by_glider: List[Tuple[str, int, str, str]] = []
+
+        for glider_call_sign, glider_flights in groupby(
+            sorted(flights_in_action, key=lambda flight_: flight_.take_off_at),
+            lambda f: f.glider.call_sign,
+        ):
+            glider_flights = list(glider_flights)
+            flights_by_glider.append(
+                (
+                    glider_call_sign,
+                    len(glider_flights),
+                    stringify_duration(
+                        start_time=glider_flights[0].take_off_at,
+                        end_time=glider_flights[-1].landing_at,
+                    ),
+                    self.create_flights_table_html(
+                        flights=glider_flights,
+                    ),
+                )
+            )
+
         return self.format_flight_summary_for_pilot_email_message_template(
-            flight=flight, values_str=values_str
+            member=member,
+            flight=flight,
+            flight_details_html=flight_details_html,
+            flights_by_glider=flights_by_glider,
         )
 
     def get_summary_for_tow_pilot_email_message(
@@ -155,90 +188,83 @@ class I18nClient(abc.ABC):
             tow_airplane=tow_airplane,
             action=action,
             flights=flights,
-            flights_table_html=flights_table_html,
+            html=flights_table_html,
         )
 
     def create_flights_table_html(
         self, flights: List[Flight], headers: Optional[List[str]] = None
     ) -> str:
-        """
-        Create flights table html
-        :param flights: flights to be displayed
-        :param headers: headers to be displayed. If None, default headers will be used
-        :return: flights table html
-        """
-        headers = {
-            k: v
-            for k, v in {
-                "take_off_at": self.translate("TAKE_OFF_TIME"),
-                "landing_at": self.translate("LANDING_TIME"),
-                "glider": self.translate("GLIDER"),
-                "pilot1": self.translate("PILOT_1"),
-                "pilot2": self.translate("PILOT_2"),
-                "tow_pilot": self.translate("TOW_PILOT"),
-                "airplane": self.translate("TOW_AIRPLANE"),
-                "flight_type": self.translate("FLIGHT_TYPE"),
-                "tow_type": self.translate("TOW_TYPE"),
-                "payers_type": self.translate("PAYERS_TYPE"),
-                "payment_method": self.translate("PAYMENT_METHOD"),
-                "payment_receiver": self.translate("PAYMENT_RECEIVER"),
-                "duration": self.translate("FLIGHT_DURATION"),
-            }.items()
-            if k in headers
-        }
-
-        items = [
-            {
-                "take_off_at": flight.take_off_at.strftime("%H:%M:%S")
-                if flight.take_off_at
-                else None,
-                "landing_at": flight.landing_at.strftime("%H:%M:%S")
-                if flight.landing_at
-                else None,
-                "glider": flight.glider.call_sign if flight.glider else None,
-                "pilot1": flight.pilot_1.full_name if flight.pilot_1 else None,
-                "pilot2": flight.pilot_2.full_name if flight.pilot_2 else None,
-                "tow_pilot": flight.tow_pilot.full_name if flight.tow_pilot else None,
-                "airplane": flight.tow_airplane.call_sign
-                if flight.tow_airplane
-                else None,
-                "flight_type": self.translate(flight.flight_type),
-                "tow_type": self.translate(flight.tow_type),
-                "payers_type": self.translate(flight.payers_type),
-                "payment_method": self.translate(flight.payment_method),
-                "payment_receiver": flight.payment_receiver.full_name
-                if flight.payment_receiver
-                else None,
-                "duration": stringify_duration(
-                    start_time=flight.take_off_at, end_time=flight.landing_at
-                ),
-            }
-            for flight in sorted(
-                flights, key=lambda f: f.take_off_at if f.take_off_at else ""
-            )
-        ]
-
-        if len(headers) == 0:
-            raise ValueError("headers must not be empty")
-
-        headers_str = "".join(
-            [f"<th>{display_name}</th>" for display_name in headers.values()]
-        )
-
-        items_str = "".join(
+        # Convert the list of Flight objects into a DataFrame
+        df = pd.DataFrame(
             [
-                f'''<tr>{"".join([f"""<td>{item.get(key, "")}</td>""" for key in headers])}</tr>'''
-                for item in items
+                {
+                    "take_off_at": flight.take_off_at,
+                    "landing_at": flight.landing_at,
+                    "glider": flight.glider.call_sign,
+                    "pilot_1": flight.pilot_1.full_name if flight.pilot_1 else None,
+                    "pilot_2": flight.pilot_2.full_name if flight.pilot_2 else None,
+                    "tow_pilot": flight.tow_pilot.full_name
+                    if flight.tow_pilot
+                    else None,
+                    "airplane": flight.tow_airplane.call_sign
+                    if flight.tow_airplane
+                    else None,
+                    "flight_type": self.translate(flight.flight_type),
+                    "tow_type": self.translate(flight.tow_type),
+                    "payers_type": self.translate(flight.payers_type),
+                    "payment_method": self.translate(flight.payment_method),
+                    "payment_receiver": flight.payment_receiver.full_name
+                    if flight.payment_receiver
+                    else None,
+                    "flight_duration": stringify_duration(
+                        start_time=flight.take_off_at, end_time=flight.landing_at
+                    ),
+                }
+                for flight in flights
             ]
         )
 
-        return f"""
-            <table border="1" style="border-collapse: collapse;">
-                <thead>
-                    <tr>{headers_str}</tr>
-                </thead>
-                <tbody>
-                    {items_str}
-                </tbody>
-            </table>
-        """
+        if headers:
+            df = df[headers]
+
+        # Format date-time columns
+        date_time_columns = ["take_off_at", "landing_at"]
+        df[date_time_columns] = df[date_time_columns].apply(
+            lambda x: x.dt.strftime("%H:%M:%S") if not x.isna().any() else None
+        )
+
+        # Customize column names
+        column_names = {
+            "take_off_at": self.translate("TAKE_OFF_TIME"),
+            "landing_at": self.translate("LANDING_TIME"),
+            "glider": self.translate("GLIDER"),
+            "pilot_1": self.translate("PILOT_1"),
+            "pilot_2": self.translate("PILOT_2"),
+            "tow_pilot": self.translate("TOW_PILOT"),
+            "airplane": self.translate("TOW_AIRPLANE"),
+            "flight_type": self.translate("FLIGHT_TYPE"),
+            "tow_type": self.translate("TOW_TYPE"),
+            "payers_type": self.translate("PAYERS_TYPE"),
+            "payment_method": self.translate("PAYMENT_METHOD"),
+            "payment_receiver": self.translate("PAYMENT_RECEIVER"),
+            "flight_duration": self.translate("FLIGHT_DURATION"),
+        }
+
+        if headers:
+            df = df[headers]
+
+        # Sort the DataFrame by the 'take_off_at' column
+        df = df.sort_values(by=["take_off_at"])
+
+        # Drop na columns
+        df = df.dropna(axis=1, how="all")
+
+        # Rename DataFrame columns
+        df = df.rename(columns=column_names)
+
+        # Convert the DataFrame to an HTML table
+        html_table = df.to_html(
+            index=False, escape=False, classes="table table-bordered table-hover"
+        )
+
+        return html_table

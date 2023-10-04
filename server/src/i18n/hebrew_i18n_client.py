@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from src import Flight, Member, Action, TowAirplane
 from src.i18n.i18n_client import I18nClient
@@ -47,16 +47,55 @@ class HebrewI18nClient(I18nClient):
         }.get(key, key)
 
     def format_flight_summary_for_pilot_email_message_template(
-        self, flight: Flight, values_str: str
+        self,
+        member: Member,
+        flight: Flight,
+        flight_details_html: str,
+        flights_by_glider: List[Tuple[str, int, str, str]],
     ) -> str:
+        flights_by_gliders_html = "".join(
+            [
+                f"""
+            <ul style="list-style-type:none;">
+                <li>
+                    <strong>דאון:</strong>
+                    {glider_call_sign}
+                </li>
+                <li>
+                    <strong>מספר טיסות:</strong>
+                    {num_flights_in_glider}
+                </li>
+                <li>
+                    <strong>זמן טיסה כולל:</strong>
+                    {glider_flights_duration} (שעות:דקות:שניות)
+                </li>
+            </ul>
+            <tr>
+                <td colspan="2">{glider_flights_html}</td>
+            </tr>
+            """
+                for glider_call_sign, num_flights_in_glider, glider_flights_duration, glider_flights_html in flights_by_glider
+            ]
+        )
+
+        daily_summary_html = (
+            f"""
+            <tr>סיכום טיסות יומי לפי דאונים:</tr>
+            <tr></tr>
+            {flights_by_gliders_html}
+            """
+            if len(flights_by_glider) > 1
+            else ""
+        )
         return f"""
         <table dir="rtl">
-                        <tr>שלום,</tr>
+                        <tr>שלום {member.full_name},</tr>
                         <tr></tr>
                         <tr>מצורף סיכום לטיסתך מתאריך {flight.take_off_at.strftime('%Y-%m-%d')}.</tr>
                         <tr></tr>
-                        {values_str}
+                        {flight_details_html}
                         <tr></tr>
+                        {daily_summary_html}
                         <tr>מקווים שנהנית,</tr>
                         <tr>מרכז הדאיה מגידו</tr>
                     </table>
@@ -68,7 +107,7 @@ class HebrewI18nClient(I18nClient):
         tow_airplane: TowAirplane,
         action: Action,
         flights: List[Flight],
-        flights_table_html: str,
+        html: str,
     ) -> str:
         return f"""
         <table dir="rtl">
@@ -76,7 +115,7 @@ class HebrewI18nClient(I18nClient):
                         <tr></tr>
                         <tr>בתאריך {action.date.strftime('%Y-%m-%d')} ביצעת {len(flights)} טיסות במטוס {tow_airplane.call_sign}.</tr>
                         <tr></tr>
-                        {flights_table_html}
+                        {html}
                         <tr></tr>
                         <tr>תודה,</tr>
                         <tr>מרכז הדאיה מגידו</tr>
