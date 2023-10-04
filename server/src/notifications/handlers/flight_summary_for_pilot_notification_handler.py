@@ -6,11 +6,19 @@ from src.notifications.handlers.notification_handler import NotificationHandler
 class FlightSummaryForPilotNotificationHandler(NotificationHandler):
     def _send_via_email(self) -> None:
         flight = self._get_flight()
+        session = SessionLocal()
+        member = self._notification.recipient_member
+        flights_in_action = session.query(Flight).filter(
+            (Flight.action_id == flight.action_id)
+            & ((Flight.pilot_1 == member) | (Flight.pilot_2 == member))
+        )
 
         subject = self._i18n.get_flight_summary_for_pilot_email_message_subject(
             flight=flight
         )
-        message = self._i18n.get_flight_summary_for_pilot_email_message(flight=flight)
+        message = self._i18n.get_flight_summary_for_pilot_email_message(
+            member=member, flight=flight, flights_in_action=flights_in_action
+        )
 
         self._email_client.send_email(
             to_email=self._notification.recipient_member.email,
