@@ -4,6 +4,12 @@ A system for managing gliding actions.
 
 <img width="1725" alt="image" src="https://github.com/ohadch/gliding-action-page-v3/assets/17769668/b4a696e5-712d-4834-b25c-def4ddeb4c30">
 
+## Quick Setup
+
+```bash
+docker-compose up -d
+```
+
 ## Local Development
 
 ### Prepare the local machine
