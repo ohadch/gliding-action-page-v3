@@ -20,7 +20,8 @@ RUN pip install -r requirements.txt
 COPY . /app
 
 # Make port 8000 available to the world outside this container
-EXPOSE 8000
+EXPOSE 9001
 
 # Entrypoint
-ENTRYPOINT ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+RUN chmod +x /app/entrypoint.sh
+CMD ["/app/entrypoint.sh"]

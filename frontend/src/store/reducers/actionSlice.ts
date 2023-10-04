@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit'
-import {ActionsStoreState} from "../@types/InitialData.ts";
-import {fetchActions, updateAction} from "../actions/action.ts";
+import {ActionsStoreState} from "../types/InitialData";
+import {fetchActions, updateAction} from "../actions/action";
 
 const initialState: ActionsStoreState = {
     actions: undefined,

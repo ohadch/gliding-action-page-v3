@@ -6,22 +6,18 @@ services:
     build:
       context: server
       dockerfile: Dockerfile
+    environment:
+      - MIGRATE_ON_START=true
+      - SQLALCHEMY_DB_URI=postgresql://postgres:postgres@db:5432/postgres
     ports:
-      - "8000:8000"
-    depends_on:
-      - db
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
+      - "9001:9001"
 
   client:
     build:
-      context: client
+      context: frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "5173:5173"
 
   db:
     image: postgres:14-alpine

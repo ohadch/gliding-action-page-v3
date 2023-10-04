@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {TowAirplaneSchema} from "../../lib/types.ts";
-import {TowAirplanesStoreState} from "../@types/InitialData.ts";
+import {TowAirplanesStoreState} from "../types/InitialData.ts";
 import {fetchTowAirplanes} from "../actions/towAirplane.ts";
 
 const initialState: TowAirplanesStoreState = {

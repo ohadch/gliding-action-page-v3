@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {GliderOwnerSchema, GliderSchema} from "../../lib/types.ts";
-import {GlidersStoreState} from "../@types/InitialData.ts";
+import {GlidersStoreState} from "../types/InitialData.ts";
 import {fetchGliderOwners, fetchGliders} from "../actions/glider.ts";
 
 const initialState: GlidersStoreState = {
