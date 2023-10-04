@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {EventSchema} from "../../lib/types.ts";
-import {EventsStoreState} from "../@types/InitialData.ts";
+import {EventsStoreState} from "../types/InitialData.ts";
 import {createEvent, fetchEvents} from "../actions/event.ts";
 
 const initialState: EventsStoreState = {

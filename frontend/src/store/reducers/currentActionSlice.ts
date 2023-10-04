@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit'
-import {CurrentActionStoreState} from "../@types/InitialData.ts";
+import {CurrentActionStoreState} from "../types/InitialData.ts";
 import {CacheService} from "../../utils/cache.ts";
 import {CACHE_KEY_ACTION} from "../../utils/consts.ts";
 import {

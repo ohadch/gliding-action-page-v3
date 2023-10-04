@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit'
-import {MembersStoreState} from "../@types/InitialData.ts";
+import {MembersStoreState} from "../types/InitialData.ts";
 import {fetchMembers, fetchMembersRoles} from "../actions/member.ts";
 
 const initialState: MembersStoreState = {

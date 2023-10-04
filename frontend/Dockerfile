@@ -23,4 +23,4 @@ RUN yarn build
 EXPOSE 3000
 
 # Start the app
-CMD [ "yarn", "preview", "--host", "--port", "3000" ]
+CMD [ "yarn", "preview", "--host", "--port", "5173" ]
