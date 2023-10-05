@@ -184,7 +184,7 @@ export default function ActionConfigurationComponent() {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
                 action_id: action.id,
-                type: "responsible_cfi_unassigned",
+                type: "field_responsible_unassigned",
                 payload: {
                     field_responsible_id
                 }
@@ -204,7 +204,7 @@ export default function ActionConfigurationComponent() {
         if (newValue?.id) {
             dispatch(createEvent({
                 action_id: action.id,
-                type: "responsible_cfi_assigned",
+                type: "field_responsible_assigned",
                 payload: {
                     field_responsible_id: newValue?.id,
                 }

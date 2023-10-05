@@ -86,7 +86,6 @@ export default function EventsTable() {
         return `${glider?.call_sign} (${pilot1}${pilot2 ? `, ${pilot2}` : ""})${towAirplane ? `, ${towAirplane}` : ""}`
     }
 
-
     function renderPayload(event: EventSchema) {
         switch (event.type) {
             case "flight_took_off":

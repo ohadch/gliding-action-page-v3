@@ -145,10 +145,10 @@ export default function App() {
             element: React.lazy(() => import('./pages/dashboard/DashboardPage.tsx')),
         },
         {
-            name: t("MONITORING"),
-            path: "/monitoring",
+            name: t("EVENTS"),
+            path: "/events",
             icon: <LegendToggle/>,
-            element: React.lazy(() => import('./pages/monitoring/MonitoringPage.tsx')),
+            element: React.lazy(() => import('./pages/events/EventsPage.tsx')),
         }
     ]
 
@@ -303,17 +303,19 @@ export default function App() {
                                 {ROUTES
                                     .filter((route) => route.icon)
                                     .map((route) => (
-                                        <ListItemButton
-                                            key={route.path}
-                                            component="a"
-                                            href={route.path}
-                                            selected={pathname === route.path}
-                                        >
-                                            <ListItemIcon>
-                                                {route.icon}
-                                            </ListItemIcon>
-                                            <ListItemText primary={route.name}/>
-                                        </ListItemButton>
+                                        <Tooltip title={route.name}>
+                                            <ListItemButton
+                                                key={route.path}
+                                                component="a"
+                                                href={route.path}
+                                                selected={pathname === route.path}
+                                            >
+                                                <ListItemIcon>
+                                                    {route.icon}
+                                                </ListItemIcon>
+                                                <ListItemText primary={route.name}/>
+                                            </ListItemButton>
+                                        </Tooltip>
                                     ))}
                                 <Divider/>
                                 <ListItemButton

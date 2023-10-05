@@ -109,6 +109,7 @@ export const TEXTS_HEBREW = {
     TYPE: "סוג",
     AUTHOR: "יוצר",
     DATA: "נתונים",
+    EVENTS: "אירועים",
 }
 
 
