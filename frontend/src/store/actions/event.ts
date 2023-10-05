@@ -8,27 +8,6 @@ import {EventCreateSchema, EventSchema} from "../../lib/types.ts";
 const {POST} = createClient<paths>({baseUrl: API_HOST});
 
 
-export const fetchEvents = createAsyncThunk<EventSchema[], void, { rejectValue: string }
->(
-    'events/fetchEvents',
-    async (_, thunkAPI) => {
-        const {data, error} = await POST("/events/search", {
-            params: {
-                query: {
-                    page: 1,
-                    page_size: 1000,
-                },
-            },
-        });
-
-        if (error) {
-            return thunkAPI.rejectWithValue("Error fetching events");
-        }
-
-        return data;
-    }
-)
-
 export const createEvent = createAsyncThunk<EventSchema, EventCreateSchema, { rejectValue: string }
 >(
     'events/createEvent',

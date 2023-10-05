@@ -639,8 +639,10 @@ export interface components {
     };
     /** EventSearchSchema */
     EventSearchSchema: {
-      type: components["schemas"]["EventType"] | null;
-      payload: components["schemas"]["EventPayloadSchema-Input"] | null;
+      type?: components["schemas"]["EventType"] | null;
+      payload?: components["schemas"]["EventPayloadSchema-Input"] | null;
+      /** Action Id */
+      action_id?: number | null;
     };
     /**
      * EventState
@@ -654,8 +656,8 @@ export interface components {
     EventType: "flight_landed" | "flight_took_off" | "flight_tow_released" | "action_closed" | "responsible_cfi_assigned" | "responsible_cfi_unassigned" | "field_responsible_assigned" | "field_responsible_unassigned" | "tow_airplane_activated" | "tow_airplane_deactivated";
     /** EventUpdateSchema */
     EventUpdateSchema: {
-      type: components["schemas"]["EventType"] | null;
-      payload: components["schemas"]["EventPayloadSchema-Input"] | null;
+      type?: components["schemas"]["EventType"] | null;
+      payload?: components["schemas"]["EventPayloadSchema-Input"] | null;
     };
     /** FlightCreateSchema */
     FlightCreateSchema: {

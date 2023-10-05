@@ -27,6 +27,7 @@ export interface CurrentActionStoreState extends BaseInitialState {
     fetchingFlightsInProgress: boolean;
     activeTowAirplanes?: ActiveTowAirplaneSchema[];
     flights?: FlightSchema[];
+    events?: EventSchema[];
 }
 
 export interface MembersStoreState extends BaseInitialState {
@@ -50,6 +51,5 @@ export interface TowAirplanesStoreState extends BaseInitialState {
 
 
 export interface EventsStoreState extends BaseInitialState {
-    events: EventSchema[] | undefined;
     initialState: boolean;
 }
