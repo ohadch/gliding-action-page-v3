@@ -110,6 +110,19 @@ export const TEXTS_HEBREW = {
     AUTHOR: "יוצר",
     DATA: "נתונים",
     EVENTS: "אירועים",
+    NOTIFICATIONS: "הודעות",
+    RECIPIENT_NAME: "שם הנמען",
+    RECIPIENT_EMAIL: "אימייל הנמען",
+    SENT_AT: "זמן שליחה",
+    STATUS: "סטטוס",
+    FLIGHTSUMMARYFORPILOT: "סיכום הטיסה לטייס דאון",
+    DAILYSUMMARYFOROBSERVER: "סיכום טיסות למפקח",
+    SUMMARYFORTOWPILOT: "סיכום טיסות לטייס גורר",
+    SUMMARYFORCFI: "סיכום טיסות למדריך",
+    PENDING: "ממתין לשליחה",
+    BEING_HANDLED: "בטיפול",
+    SENT: "נשלח",
+    FAILED: "נכשל",
 }
 
 

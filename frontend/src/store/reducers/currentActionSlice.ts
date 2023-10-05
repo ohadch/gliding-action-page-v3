@@ -7,10 +7,10 @@ import {
     createFlight, deleteActiveTowAirplane,
     deleteFlight,
     fetchActiveTowAirplanes, fetchEvents,
-    fetchFlights, updateActiveTowAirplane,
+    fetchFlights, fetchNotifications, updateActiveTowAirplane,
     updateFlight
 } from "../actions/currentAction.ts";
-import {EventSchema} from "../../lib/types.ts";
+import {EventSchema, NotificationSchema} from "../../lib/types.ts";
 
 const initialState: CurrentActionStoreState = {
     actionId: CacheService.getNumber(CACHE_KEY_ACTION),
@@ -133,6 +133,17 @@ export const currentActionSlice = createSlice({
                 state.events = event.payload.sort((a, b) => a.id - b.id)
             })
             .addCase(fetchEvents.rejected, (state, event) => {
+                state.fetchInProgress = false
+                state.error = event.error.message
+            })
+            .addCase(fetchNotifications.pending, (state) => {
+                state.fetchInProgress = true
+            })
+            .addCase(fetchNotifications.fulfilled, (state, event: PayloadAction<NotificationSchema[]>) => {
+                state.fetchInProgress = false
+                state.notifications = event.payload.sort((a, b) => a.id - b.id)
+            })
+            .addCase(fetchNotifications.rejected, (state, event) => {
                 state.fetchInProgress = false
                 state.error = event.error.message
             })

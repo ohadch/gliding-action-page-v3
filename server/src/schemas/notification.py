@@ -10,14 +10,16 @@ from src.utils.enums import NotificationMethod, NotificationType, NotificationSt
 class NotificationSchema(BaseModel):
     id: int
     action_id: int
-    sent_at: datetime.datetime
+    created_at: datetime.datetime
+    sent_at: Optional[datetime.datetime] = None
     num_sending_attempts: int
-    last_attempt_at: Optional[datetime.datetime]
+    last_sending_attempt_at: Optional[datetime.datetime] = None
     recipient_member_id: int
-    method: NotificationMethod
+    method: Optional[NotificationMethod] = None
     type: NotificationType
     payload: NotificationPayloadSchema
     state: NotificationState
+    originator_event_id: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -38,4 +40,4 @@ class NotificationUpdateSchema(BaseModel):
 
 
 class NotificationSearchSchema(NotificationUpdateSchema):
-    pass
+    action_id: Optional[int] = None

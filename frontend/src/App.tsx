@@ -24,7 +24,6 @@ import {
 } from "@mui/material";
 import {Route, Routes, useLocation} from "react-router-dom";
 import Brightness4Icon from '@mui/icons-material/Brightness4';
-import BadgeIcon from '@mui/icons-material/Badge';
 import i18n from "i18next";
 import {initReactI18next, useTranslation} from "react-i18next";
 import SelectActionDialog from "./components/actions/SelectActionDialog.tsx";
@@ -40,7 +39,7 @@ import {
 import {fetchActiveTowAirplanes, fetchFlights} from "./store/actions/currentAction.ts";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
-import {LegendToggle} from "@mui/icons-material";
+import {ConnectingAirports, Email, LegendToggle} from "@mui/icons-material";
 
 const DRAWER_WIDTH = 240;
 
@@ -141,7 +140,7 @@ export default function App() {
         {
             name: t("DASHBOARD"),
             path: "/",
-            icon: <BadgeIcon/>,
+            icon: <ConnectingAirports/>,
             element: React.lazy(() => import('./pages/dashboard/DashboardPage.tsx')),
         },
         {
@@ -149,6 +148,12 @@ export default function App() {
             path: "/events",
             icon: <LegendToggle/>,
             element: React.lazy(() => import('./pages/events/EventsPage.tsx')),
+        },
+        {
+            name: t("NOTIFICATIONS"),
+            path: "/notifications",
+            icon: <Email/>,
+            element: React.lazy(() => import('./pages/notifications/NotificationsPage.tsx')),
         }
     ]
 

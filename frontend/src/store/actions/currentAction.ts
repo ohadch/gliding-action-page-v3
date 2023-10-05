@@ -7,7 +7,7 @@ import {
     ActiveTowAirplaneSchema, ActiveTowAirplaneUpdateSchema, EventSchema,
     FlightCreateSchema,
     FlightSchema,
-    FlightUpdateSchema
+    FlightUpdateSchema, NotificationSchema
 } from "../../lib/types.ts";
 
 
@@ -17,7 +17,7 @@ const {POST, PUT, DELETE} = createClient<paths>({baseUrl: API_HOST});
 
 export const fetchActiveTowAirplanes = createAsyncThunk<ActiveTowAirplaneSchema[], number, { rejectValue: string }
 >(
-    'actions/fetchActiveTowAirplanes',
+    'currentAction/fetchActiveTowAirplanes',
     async (actionId, thunkAPI) => {
         const {data, error} = await POST("/active_tow_airplanes/search", {
             body: {
@@ -41,7 +41,7 @@ export const fetchActiveTowAirplanes = createAsyncThunk<ActiveTowAirplaneSchema[
 
 export const fetchFlights = createAsyncThunk<FlightSchema[], number, { rejectValue: string }
 >(
-    'actions/fetchFlights',
+    'currentAction/fetchFlights',
     async (actionId, thunkAPI) => {
         const {data, error} = await POST("/flights/search", {
             body: {
@@ -65,7 +65,7 @@ export const fetchFlights = createAsyncThunk<FlightSchema[], number, { rejectVal
 
 export const createFlight = createAsyncThunk<FlightSchema, { createPayload: FlightCreateSchema }, { rejectValue: string }
 >(
-    'actions/createFlight',
+    'currentAction/createFlight',
     async ({ createPayload}, thunkAPI) => {
         const {data, error} = await POST("/flights", {
             body: {
@@ -83,7 +83,7 @@ export const createFlight = createAsyncThunk<FlightSchema, { createPayload: Flig
 
 export const deleteFlight = createAsyncThunk<number, number, { rejectValue: string }
 >(
-    'actions/deleteFlight',
+    'currentAction/deleteFlight',
     async (flightId, thunkAPI) => {
         const {error} = await DELETE("/flights/{id_}", {
             params: {
@@ -104,7 +104,7 @@ export const deleteFlight = createAsyncThunk<number, number, { rejectValue: stri
 
 export const updateFlight = createAsyncThunk<FlightSchema, { flightId: number, updatePayload: FlightUpdateSchema }, { rejectValue: string }
 >(
-    'actions/updateFlight',
+    'currentAction/updateFlight',
     async ({flightId, updatePayload}, thunkAPI) => {
         const {data, error} = await PUT("/flights/{id_}", {
             body: {
@@ -128,7 +128,7 @@ export const updateFlight = createAsyncThunk<FlightSchema, { flightId: number, u
 
 export const addActiveTowAirplane = createAsyncThunk<ActiveTowAirplaneSchema, ActiveTowAirplaneCreateSchema, { rejectValue: string }
 >(
-    'actions/addActiveTowAirplane',
+    'currentAction/addActiveTowAirplane',
     async (body, thunkAPI) => {
         const {data, error} = await POST("/active_tow_airplanes", {
             body,
@@ -145,7 +145,7 @@ export const addActiveTowAirplane = createAsyncThunk<ActiveTowAirplaneSchema, Ac
 
 export const updateActiveTowAirplane = createAsyncThunk<ActiveTowAirplaneSchema, { activationId: number, body: ActiveTowAirplaneUpdateSchema }, { rejectValue: string }
 >(
-    'actions/updateActiveTowAirplane',
+    'currentAction/updateActiveTowAirplane',
     async ({activationId, body}, thunkAPI) => {
         const {data, error} = await PUT("/active_tow_airplanes/{id_}", {
             body,
@@ -166,7 +166,7 @@ export const updateActiveTowAirplane = createAsyncThunk<ActiveTowAirplaneSchema,
 
 export const deleteActiveTowAirplane = createAsyncThunk<number, number, { rejectValue: string }
 >(
-    'actions/deleteActiveTowAirplane',
+    'currentAction/deleteActiveTowAirplane',
     async (activationId, thunkAPI) => {
         const {error} = await DELETE("/active_tow_airplanes/{id_}", {
             params: {
@@ -187,7 +187,7 @@ export const deleteActiveTowAirplane = createAsyncThunk<number, number, { reject
 
 export const fetchEvents = createAsyncThunk<EventSchema[], {actionId: number}, { rejectValue: string }
 >(
-    'events/fetchEvents',
+    'currentAction/fetchEvents',
     async ({
                 actionId,
            }, thunkAPI) => {
@@ -205,6 +205,32 @@ export const fetchEvents = createAsyncThunk<EventSchema[], {actionId: number}, {
 
         if (error) {
             return thunkAPI.rejectWithValue("Error fetching events");
+        }
+
+        return data
+    }
+)
+
+export const fetchNotifications = createAsyncThunk<NotificationSchema[], {actionId: number}, { rejectValue: string }
+>(
+    'currentAction/fetchNotifications',
+    async ({
+                actionId,
+    }, thunkAPI) => {
+        const {data, error} = await POST("/notifications/search", {
+            params: {
+                query: {
+                    page: 1,
+                    page_size: 3000,
+                },
+            },
+            body: {
+                action_id: actionId,
+            }
+        });
+
+        if (error) {
+            return thunkAPI.rejectWithValue("Error fetching notifications");
         }
 
         return data

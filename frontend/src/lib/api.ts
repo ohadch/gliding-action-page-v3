@@ -999,6 +999,8 @@ export interface components {
       payload?: components["schemas"]["NotificationPayloadSchema-Input"] | null;
       type?: components["schemas"]["NotificationType"] | null;
       method?: components["schemas"]["NotificationMethod"] | null;
+      /** Action Id */
+      action_id?: number | null;
     };
     /**
      * NotificationState
