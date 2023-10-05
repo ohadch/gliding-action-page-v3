@@ -185,19 +185,17 @@ export const deleteActiveTowAirplane = createAsyncThunk<number, number, { reject
 )
 
 
-export const fetchEvents = createAsyncThunk<EventSchema[], {actionId: number, page: number, pageSize: number}, { rejectValue: string }
+export const fetchEvents = createAsyncThunk<EventSchema[], {actionId: number}, { rejectValue: string }
 >(
     'events/fetchEvents',
     async ({
                 actionId,
-                page,
-                pageSize,
            }, thunkAPI) => {
         const {data, error} = await POST("/events/search", {
             params: {
                 query: {
-                    page,
-                    page_size: pageSize,
+                    page: 1,
+                    page_size: 3000,
                 },
             },
             body: {
@@ -209,6 +207,6 @@ export const fetchEvents = createAsyncThunk<EventSchema[], {actionId: number, pa
             return thunkAPI.rejectWithValue("Error fetching events");
         }
 
-        return data;
+        return data
     }
 )

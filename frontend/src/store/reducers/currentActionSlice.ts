@@ -130,7 +130,7 @@ export const currentActionSlice = createSlice({
             })
             .addCase(fetchEvents.fulfilled, (state, event: PayloadAction<EventSchema[]>) => {
                 state.fetchInProgress = false
-                state.events = event.payload
+                state.events = event.payload.sort((a, b) => a.id - b.id)
             })
             .addCase(fetchEvents.rejected, (state, event) => {
                 state.fetchInProgress = false
