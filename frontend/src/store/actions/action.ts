@@ -8,15 +8,15 @@ import {ActionSchema, ActionUpdateSchema} from "../../lib/types.ts";
 const {POST, PUT} = createClient<paths>({baseUrl: API_HOST});
 
 
-export const fetchActions = createAsyncThunk<ActionSchema[], void, { rejectValue: string }
+export const fetchActions = createAsyncThunk<{ page: number, pageSize: number, actions: ActionSchema[] }, {page: number, pageSize: number}, { rejectValue: string }
 >(
     'actions/fetchActions',
-    async (_, thunkAPI) => {
+    async ({page, pageSize}, thunkAPI) => {
         const {data, error} = await POST("/actions/search", {
             params: {
                 query: {
-                    page: 1,
-                    page_size: 20,
+                    page,
+                    page_size: pageSize,
                 },
             },
         });
@@ -25,7 +25,11 @@ export const fetchActions = createAsyncThunk<ActionSchema[], void, { rejectValue
             return thunkAPI.rejectWithValue("Error fetching actions");
         }
 
-        return data;
+        return {
+            page,
+            pageSize,
+            actions: data,
+        };
     }
 )
 

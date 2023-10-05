@@ -13,6 +13,8 @@ export interface BaseInitialState {
 
 
 export interface ActionsStoreState extends BaseInitialState {
+    page: number;
+    pageSize: number;
     actions: ActionSchema[] | undefined;
     initialState: boolean;
 }
