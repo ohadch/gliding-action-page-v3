@@ -40,7 +40,7 @@ import {
 import {fetchActiveTowAirplanes, fetchFlights} from "./store/actions/currentAction.ts";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
-import {LegendToggle} from "@mui/icons-material";
+import {Email, LegendToggle} from "@mui/icons-material";
 
 const DRAWER_WIDTH = 240;
 
@@ -149,6 +149,12 @@ export default function App() {
             path: "/events",
             icon: <LegendToggle/>,
             element: React.lazy(() => import('./pages/events/EventsPage.tsx')),
+        },
+        {
+            name: t("NOTIFICATIONS"),
+            path: "/notifications",
+            icon: <Email/>,
+            element: React.lazy(() => import('./pages/notifications/NotificationsPage.tsx')),
         }
     ]
 

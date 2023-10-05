@@ -3,7 +3,7 @@ import {
     ActiveTowAirplaneSchema, FlightSchema, GliderOwnerSchema,
     GliderSchema, MemberRoleSchema,
     MemberSchema, EventSchema,
-    TowAirplaneSchema,
+    TowAirplaneSchema, NotificationSchema,
 } from "../../lib/types.ts";
 
 export interface BaseInitialState {
@@ -28,6 +28,7 @@ export interface CurrentActionStoreState extends BaseInitialState {
     activeTowAirplanes?: ActiveTowAirplaneSchema[];
     flights?: FlightSchema[];
     events?: EventSchema[];
+    notifications?: NotificationSchema[];
 }
 
 export interface MembersStoreState extends BaseInitialState {
