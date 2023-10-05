@@ -3,6 +3,8 @@ import {ActionsStoreState} from "../types/InitialData";
 import {fetchActions, updateAction} from "../actions/action";
 
 const initialState: ActionsStoreState = {
+    page: 1,
+    pageSize: 10,
     actions: undefined,
     fetchInProgress: false,
     initialState: true,
@@ -19,7 +21,10 @@ export const actionsSlice = createSlice({
             })
             .addCase(fetchActions.fulfilled, (state, action) => {
                 state.fetchInProgress = false
-                state.actions = action.payload
+                const {page, pageSize, actions} = action.payload
+                state.actions = actions
+                state.page = page
+                state.pageSize = pageSize
             })
             .addCase(fetchActions.rejected, (state, action) => {
                 state.fetchInProgress = false

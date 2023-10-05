@@ -78,6 +78,23 @@ export const TEXTS_HEBREW = {
     ACTION_CLOSED_TITLE: "הינך צופה בפעולה שנסגרה!",
     ACTION_CLOSED_MESSAGE: "יש לשים לב שמתאפשרת עריכת נתונים חלקית בלבד.",
     CLOSE_ACTION_CONFIRMATION: "האם אתה בטוח שברצונך לסגור את הפעולה?",
+    ID: "מספר זיהוי",
+    DATE: "תאריך",
+    WEEKDAY: "יום בשבוע",
+    SUNDAY: "ראשון",
+    MONDAY: "שני",
+    TUESDAY: "שלישי",
+    WEDNESDAY: "רביעי",
+    THURSDAY: "חמישי",
+    FRIDAY: "שישי",
+    SATURDAY: "שבת",
+    IS_CLOSED: "סגורה",
+    YES: "כן",
+    NO: "לא",
+    CONFIRM_ACTION_CHANGE: "בבקשה אשר את שינוי הפעולה לפעולה הבאה",
+    GO_TO_NEXT_PAGE: "עבור לעמוד הבא",
+    GO_TO_PREVIOUS_PAGE: "חזור לעמוד הקודם",
+    PAGE: "עמוד",
 }
 
 
