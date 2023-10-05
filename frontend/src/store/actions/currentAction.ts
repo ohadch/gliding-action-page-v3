@@ -4,7 +4,7 @@ import {paths} from "../../lib/api.ts";
 import {API_HOST} from "../../utils/consts.ts";
 import {
     ActiveTowAirplaneCreateSchema,
-    ActiveTowAirplaneSchema, ActiveTowAirplaneUpdateSchema,
+    ActiveTowAirplaneSchema, ActiveTowAirplaneUpdateSchema, EventSchema,
     FlightCreateSchema,
     FlightSchema,
     FlightUpdateSchema
@@ -181,5 +181,32 @@ export const deleteActiveTowAirplane = createAsyncThunk<number, number, { reject
         }
 
         return activationId;
+    }
+)
+
+
+export const fetchEvents = createAsyncThunk<EventSchema[], {actionId: number}, { rejectValue: string }
+>(
+    'events/fetchEvents',
+    async ({
+                actionId,
+           }, thunkAPI) => {
+        const {data, error} = await POST("/events/search", {
+            params: {
+                query: {
+                    page: 1,
+                    page_size: 3000,
+                },
+            },
+            body: {
+                action_id: actionId,
+            }
+        });
+
+        if (error) {
+            return thunkAPI.rejectWithValue("Error fetching events");
+        }
+
+        return data
     }
 )

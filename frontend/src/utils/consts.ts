@@ -95,6 +95,21 @@ export const TEXTS_HEBREW = {
     GO_TO_NEXT_PAGE: "עבור לעמוד הבא",
     GO_TO_PREVIOUS_PAGE: "חזור לעמוד הקודם",
     PAGE: "עמוד",
+    FLIGHT_LANDED: "טיסה נחתה",
+    FLIGHT_TOOK_OFF: "טיסה המריאה",
+    FLIGHT_TOW_RELEASED: "סיום גרירה",
+    ACTION_CLOSED: "הפעולה נסגרה",
+    RESPONSIBLE_CFI_ASSIGNED: "מדריך אחראי הוקצה",
+    RESPONSIBLE_CFI_UNASSIGNED: "מדריך אחראי הוסר",
+    FIELD_RESPONSIBLE_ASSIGNED: "אחראי בשדה הוקצה",
+    FIELD_RESPONSIBLE_UNASSIGNED: "אחראי בשדה הוסר",
+    TOW_AIRPLANE_ACTIVATED: "מטוס גורר הופעל",
+    TOW_AIRPLANE_DEACTIVATED: "מטוס גורר שוחרר",
+    CREATED_AT: "זמן יצירה",
+    TYPE: "סוג",
+    AUTHOR: "יוצר",
+    DATA: "נתונים",
+    EVENTS: "אירועים",
 }
 
 

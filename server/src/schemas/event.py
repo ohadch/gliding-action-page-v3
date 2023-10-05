@@ -27,9 +27,9 @@ class EventCreateSchema(BaseModel):
 
 
 class EventUpdateSchema(BaseModel):
-    type: Optional[EventType]
-    payload: Optional[EventPayloadSchema]
+    type: Optional[EventType] = None
+    payload: Optional[EventPayloadSchema] = None
 
 
 class EventSearchSchema(EventUpdateSchema):
-    pass
+    action_id: Optional[int] = None

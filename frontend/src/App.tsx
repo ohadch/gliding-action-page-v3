@@ -40,6 +40,7 @@ import {
 import {fetchActiveTowAirplanes, fetchFlights} from "./store/actions/currentAction.ts";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
+import {LegendToggle} from "@mui/icons-material";
 
 const DRAWER_WIDTH = 240;
 
@@ -142,6 +143,12 @@ export default function App() {
             path: "/",
             icon: <BadgeIcon/>,
             element: React.lazy(() => import('./pages/dashboard/DashboardPage.tsx')),
+        },
+        {
+            name: t("EVENTS"),
+            path: "/events",
+            icon: <LegendToggle/>,
+            element: React.lazy(() => import('./pages/events/EventsPage.tsx')),
         }
     ]
 
@@ -296,17 +303,19 @@ export default function App() {
                                 {ROUTES
                                     .filter((route) => route.icon)
                                     .map((route) => (
-                                        <ListItemButton
-                                            key={route.path}
-                                            component="a"
-                                            href={route.path}
-                                            selected={pathname === route.path}
-                                        >
-                                            <ListItemIcon>
-                                                {route.icon}
-                                            </ListItemIcon>
-                                            <ListItemText primary={route.name}/>
-                                        </ListItemButton>
+                                        <Tooltip title={route.name}>
+                                            <ListItemButton
+                                                key={route.path}
+                                                component="a"
+                                                href={route.path}
+                                                selected={pathname === route.path}
+                                            >
+                                                <ListItemIcon>
+                                                    {route.icon}
+                                                </ListItemIcon>
+                                                <ListItemText primary={route.name}/>
+                                            </ListItemButton>
+                                        </Tooltip>
                                     ))}
                                 <Divider/>
                                 <ListItemButton

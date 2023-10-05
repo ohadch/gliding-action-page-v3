@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {CurrentActionStoreState} from "../types/InitialData.ts";
 import {CacheService} from "../../utils/cache.ts";
 import {CACHE_KEY_ACTION} from "../../utils/consts.ts";
@@ -6,10 +6,11 @@ import {
     addActiveTowAirplane,
     createFlight, deleteActiveTowAirplane,
     deleteFlight,
-    fetchActiveTowAirplanes,
+    fetchActiveTowAirplanes, fetchEvents,
     fetchFlights, updateActiveTowAirplane,
     updateFlight
 } from "../actions/currentAction.ts";
+import {EventSchema} from "../../lib/types.ts";
 
 const initialState: CurrentActionStoreState = {
     actionId: CacheService.getNumber(CACHE_KEY_ACTION),
@@ -123,6 +124,17 @@ export const currentActionSlice = createSlice({
             .addCase(deleteActiveTowAirplane.rejected, (state, action) => {
                 state.fetchingActiveTowAirplanesInProgress = false
                 state.error = action.error.message
+            })
+            .addCase(fetchEvents.pending, (state) => {
+                state.fetchInProgress = true
+            })
+            .addCase(fetchEvents.fulfilled, (state, event: PayloadAction<EventSchema[]>) => {
+                state.fetchInProgress = false
+                state.events = event.payload.sort((a, b) => a.id - b.id)
+            })
+            .addCase(fetchEvents.rejected, (state, event) => {
+                state.fetchInProgress = false
+                state.error = event.error.message
             })
     }
 })
