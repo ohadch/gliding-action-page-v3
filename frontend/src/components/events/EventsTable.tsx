@@ -13,14 +13,19 @@ import TableRow from "@mui/material/TableRow";
 import TableContainer from "@mui/material/TableContainer";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import {fetchEvents} from "../../store/actions/currentAction.ts";
+import {fetchEvents, fetchFlights} from "../../store/actions/currentAction.ts";
 import {getMemberDisplayValue} from "../../utils/display.ts";
 import {fetchMembers} from "../../store/actions/member.ts";
+import {EventSchema, EventType} from "../../lib/types.ts";
+import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
+import {fetchGliders} from "../../store/actions/glider.ts";
 
 export default function EventsTable() {
     const dispatch = useAppDispatch();
-    const {events, fetchInProgress, actionId} = useSelector((state: RootState) => state.currentAction)
+    const {flights, events, fetchInProgress, actionId} = useSelector((state: RootState) => state.currentAction)
     const membersStoreState = useSelector((state: RootState) => state.members)
+    const glidersStoreState = useSelector((state: RootState) => state.gliders)
+    const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
 
     const {
         t
@@ -36,6 +41,18 @@ export default function EventsTable() {
         if (!membersStoreState.members && !membersStoreState.fetchInProgress) {
             dispatch(fetchMembers());
         }
+
+        if (!towAirplanesStoreState.towAirplanes && !towAirplanesStoreState.fetchInProgress) {
+            dispatch(fetchTowAirplanes());
+        }
+
+        if (!glidersStoreState.gliders && !glidersStoreState.fetchInProgress) {
+            dispatch(fetchGliders());
+        }
+
+        if (!flights && !fetchInProgress && actionId) {
+            dispatch(fetchFlights(actionId));
+        }
     });
 
     const getMemberById = useCallback((id: number) => membersStoreState.members?.find((member) => member.id === id), [membersStoreState.members]);
@@ -44,6 +61,55 @@ export default function EventsTable() {
         return member ? getMemberDisplayValue(
             member,
         ) : "";
+    }
+
+    function renderTowAirplane(towAirplaneId: number, towPilotId: number) {
+        const towAirplane = towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === towAirplaneId);
+        const towPilot = getMemberById(towPilotId);
+
+        return `${towAirplane?.call_sign} (${towPilot ? getMemberDisplayValue(towPilot) : ""})`
+    }
+
+    function renderFlight(flight_id: number, eventType: EventType) {
+        const flight = flights?.find((flight) => flight.id === flight_id);
+
+        if (!flight) {
+            return null;
+        }
+
+        const glider = glidersStoreState.gliders?.find((glider) => glider.id === flight.glider_id);
+        const pilot1 = flight.pilot_1_id && displayMember(flight.pilot_1_id);
+        const pilot2 = flight.pilot_2_id && displayMember(flight.pilot_2_id);
+        const towAirplane = (eventType === "flight_took_off" || eventType === "flight_tow_released") && (flight.tow_airplane_id && flight.tow_pilot_id) ? renderTowAirplane(flight.tow_airplane_id, flight.tow_pilot_id)
+            : null;
+
+        return `${glider?.call_sign} (${pilot1}${pilot2 ? `, ${pilot2}` : ""})${towAirplane ? `, ${towAirplane}` : ""}`
+    }
+
+
+    function renderPayload(event: EventSchema) {
+        switch (event.type) {
+            case "flight_took_off":
+                return event.payload.flight_id ? renderFlight(event.payload.flight_id, event.type) : null;
+            case "flight_landed":
+                return event.payload.flight_id ? renderFlight(event.payload.flight_id, event.type) : null;
+            case "flight_tow_released":
+                return event.payload.flight_id ? renderFlight(event.payload.flight_id, event.type) : null;
+            case "responsible_cfi_assigned":
+                return event.payload.field_responsible_id ? displayMember(event.payload.field_responsible_id) : null;
+            case "responsible_cfi_unassigned":
+                return event.payload.field_responsible_id ? displayMember(event.payload.field_responsible_id) : null;
+            case "field_responsible_assigned":
+                return event.payload.field_responsible_id ? displayMember(event.payload.field_responsible_id) : null;
+            case "field_responsible_unassigned":
+                return event.payload.field_responsible_id ? displayMember(event.payload.field_responsible_id) : null;
+            case "tow_airplane_activated":
+                return event.payload.tow_airplane_id && event.payload.tow_pilot_id ? renderTowAirplane(event.payload.tow_airplane_id, event.payload.tow_pilot_id) : null;
+            case "tow_airplane_deactivated":
+                return event.payload.tow_airplane_id && event.payload.tow_pilot_id ? renderTowAirplane(event.payload.tow_airplane_id, event.payload.tow_pilot_id) : null;
+            default:
+                return null;
+        }
     }
 
     return (
@@ -61,6 +127,7 @@ export default function EventsTable() {
                             <TableCell align="right">{t("ID")}</TableCell>
                             <TableCell align="right">{t("CREATED_AT")}</TableCell>
                             <TableCell align="right">{t("TYPE")}</TableCell>
+                            <TableCell align="right">{t("DATA")}</TableCell>
                             <TableCell align="right">{t("AUTHOR")}</TableCell>
                         </TableRow>
                     </TableHead>
@@ -72,7 +139,12 @@ export default function EventsTable() {
                             >
                                 <TableCell align="right">{event.id}</TableCell>
                                 <TableCell align="right">{event.created_at}</TableCell>
-                                <TableCell align="right">{event.type}</TableCell>
+                                <TableCell align="right">{
+                                    t(event.type.toUpperCase())
+                                }</TableCell>
+                                <TableCell align="right">{
+                                    renderPayload(event)
+                                }</TableCell>
                                 <TableCell align="right">{
                                     event.payload.field_responsible_id && displayMember(event.payload.field_responsible_id)
                                 }</TableCell>
