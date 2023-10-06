@@ -33,6 +33,8 @@ import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import AddIcon from "@mui/icons-material/Add";
 import {updateAction} from "../../store/actions/action.ts";
+import ActionSummaryGeneratorWizardDialog from "../../components/actions/ActionSummaryGeneratorWizardDialog.tsx";
+import {Summarize} from "@mui/icons-material";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -47,6 +49,7 @@ const MenuProps = {
 
 export default function DashboardPage() {
     const [flightCreationWizardDialogOpen, setFlightCreationWizardDialogOpen] = useState<boolean>(false);
+    const [summaryGeneratorWizardDialogOpen, setSummaryGeneratorWizardDialogOpen] = useState<boolean>(false);
     const {t} = useTranslation();
     const {flights, fetchingFlightsInProgress} = useSelector((state: RootState) => state.currentAction);
     const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
@@ -421,6 +424,17 @@ export default function DashboardPage() {
         )
     }
 
+    function renderSummaryGeneratorWizardDialog() {
+        return (
+            <ActionSummaryGeneratorWizardDialog
+                open={Boolean(summaryGeneratorWizardDialogOpen)}
+                onClose={() => {
+                    setSummaryGeneratorWizardDialogOpen(false);
+                }}
+            />
+        )
+    }
+
     function renderEndTowDialog() {
         if (!endTowDialogFlight?.id) {
             return
@@ -600,31 +614,36 @@ export default function DashboardPage() {
 
     function renderCloseActionButton() {
         return (
-            <Grid
-                pt={2}
-                container
+            <Button
+                variant="contained"
+                color="error"
+                disabled={activeFlightsExist || Boolean(action?.closed_at)}
+                onClick={() => handleActionClosed()}
+                size={"large"}
                 sx={{
-                    alignItems: "center",
-                    textAlign: "center",
+                    fontSize: "1.5rem",
                 }}
             >
-                <Grid item xs={2}/>
-                <Grid item xs={8}>
-                    <Button
-                        variant="contained"
-                        color="error"
-                        disabled={activeFlightsExist}
-                        onClick={() => handleActionClosed()}
-                        size={"large"}
-                        sx={{
-                            fontSize: "1.5rem",
-                        }}
-                    >
-                        {t("CLOSE_ACTION")}
-                    </Button>
-                </Grid>
-                <Grid item xs={2}/>
-            </Grid>
+                {t("CLOSE_ACTION")}
+            </Button>
+        )
+    }
+
+    function renderOpenSummaryGeneratorButton() {
+        return (
+            <Button
+                variant="contained"
+                color="success"
+                onClick={() => setSummaryGeneratorWizardDialogOpen(true)}
+                size={"large"}
+                sx={{
+                    fontSize: "1.5rem",
+                    marginLeft: "1rem",
+                }}
+            >
+                <Summarize />
+                {t("OPEN_SUMMARY_GENERATOR")}
+            </Button>
         )
     }
 
@@ -636,6 +655,7 @@ export default function DashboardPage() {
         return (
             <Grid container>
                 <FlightsTable
+                    flights={flights || []}
                     shownFlightStates={shownFlightStates}
                     setDuplicateFlight={(flight) => {
                         setEditFlightDetailsDialogOpen(true);
@@ -663,12 +683,29 @@ export default function DashboardPage() {
         )
     }
 
+    function renderQuickActions() {
+        return (
+            <Grid
+                pt={2}
+                sx={{
+                    textAlign: "center",
+                    alignItems: "center",
+                    display: "flex",
+                    justifyContent: "center",
+                }}
+            >
+                {renderOpenSummaryGeneratorButton()}
+                {renderCloseActionButton()}
+            </Grid>
+        )
+    }
+
     function renderContent() {
         return (
             <Grid>
                 {renderTopBar()}
                 {renderFlightsTable()}
-                {!action?.closed_at && renderCloseActionButton()}
+                {renderQuickActions()}
             </Grid>
         )
     }
@@ -679,6 +716,7 @@ export default function DashboardPage() {
             {renderStartTowDialog()}
             {renderEndTowDialog()}
             {renderFlightCreationWizardDialog()}
+            {renderSummaryGeneratorWizardDialog()}
 
             {renderContent()}
         </>
