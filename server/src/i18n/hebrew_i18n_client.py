@@ -113,7 +113,7 @@ class HebrewI18nClient(I18nClient):
         <table dir="rtl">
                         <tr>שלום {tow_pilot.full_name},</tr>
                         <tr></tr>
-                        <tr>בתאריך {action.date.strftime('%Y-%m-%d')} ביצעת {len(flights)} טיסות במטוס {tow_airplane.call_sign}.</tr>
+                        <tr>בתאריך {action.date.strftime('%Y-%m-%d')} ביצעת {len(flights)} גרירות במטוס הגורר {tow_airplane.call_sign}.</tr>
                         <tr></tr>
                         {html}
                         <tr></tr>
