@@ -1,10 +1,17 @@
 from src import Member, TowAirplane, Action, Flight
 from src.notifications.handlers.notification_handler import NotificationHandler
+from src.utils.enums import FlightState
 
 
 class SummaryForTowPilotNotificationHandler(NotificationHandler):
     def _send_via_email(self) -> None:
         tow_pilot, tow_airplane, action, flights = self._get_properties()
+
+        if len(flights) == 0:
+            self._logger.warning(
+                f"No flights for {tow_pilot.full_name} on {action.date} on {tow_airplane.call_sign}, not sending email"
+            )
+            return
 
         subject = self._i18n.get_summary_for_tow_pilot_email_message_subject(
             tow_pilot=tow_pilot,
@@ -57,5 +64,9 @@ class SummaryForTowPilotNotificationHandler(NotificationHandler):
             )
             .all()
         )
+
+        flights = [
+            flight for flight in flights if flight.state == FlightState.Landed.value
+        ]
 
         return tow_pilot, tow_airplane, action, flights

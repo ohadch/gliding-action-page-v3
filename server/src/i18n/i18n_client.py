@@ -224,14 +224,19 @@ class I18nClient(abc.ABC):
             ]
         )
 
-        if headers:
-            df = df[headers]
+        # Sort the DataFrame by the 'take_off_at' column
+        df = df.sort_values(by=["take_off_at"])
 
         # Format date-time columns
-        date_time_columns = ["take_off_at", "landing_at"]
+        date_time_columns = [
+            col for col in ["take_off_at", "landing_at"] if col in df.columns
+        ]
         df[date_time_columns] = df[date_time_columns].apply(
             lambda x: x.dt.strftime("%H:%M:%S") if not x.isna().any() else None
         )
+
+        if headers:
+            df = df[[h for h in headers if h in df.columns]]
 
         # Customize column names
         column_names = {
@@ -251,10 +256,7 @@ class I18nClient(abc.ABC):
         }
 
         if headers:
-            df = df[headers]
-
-        # Sort the DataFrame by the 'take_off_at' column
-        df = df.sort_values(by=["take_off_at"])
+            df = df[[h for h in headers if h in df.columns]]
 
         # Drop na columns
         df = df.dropna(axis=1, how="all")

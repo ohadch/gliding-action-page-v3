@@ -95,9 +95,9 @@ export default function EventsTable() {
             case "flight_tow_released":
                 return event.payload.flight_id ? renderFlight(event.payload.flight_id, event.type) : null;
             case "responsible_cfi_assigned":
-                return event.payload.field_responsible_id ? displayMember(event.payload.field_responsible_id) : null;
+                return event.payload.responsible_cfi_id ? displayMember(event.payload.responsible_cfi_id) : null;
             case "responsible_cfi_unassigned":
-                return event.payload.field_responsible_id ? displayMember(event.payload.field_responsible_id) : null;
+                return event.payload.responsible_cfi_id ? displayMember(event.payload.responsible_cfi_id) : null;
             case "field_responsible_assigned":
                 return event.payload.field_responsible_id ? displayMember(event.payload.field_responsible_id) : null;
             case "field_responsible_unassigned":

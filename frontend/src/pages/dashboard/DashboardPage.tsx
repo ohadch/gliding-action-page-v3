@@ -287,7 +287,7 @@ export default function DashboardPage() {
                 updatePayload.tow_release_at = null;
                 break;
             case "Inflight":
-                if (!flight.tow_type && (glider?.type !== "touring")) {
+                if (!flight.tow_type && ((glider?.type === "regular")  || (glider?.type === "self_launch" && flight.tow_type))) {
                     setEndTowDialogFlight(flight);
                     return;
                 }

@@ -84,7 +84,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                     )
                 }
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={6} mr={2} ml={1}>
                 <Button
                     variant="contained"
                     color={color}
