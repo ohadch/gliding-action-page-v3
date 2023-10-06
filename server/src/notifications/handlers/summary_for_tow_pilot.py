@@ -1,5 +1,6 @@
 from src import Member, TowAirplane, Action, Flight
 from src.notifications.handlers.notification_handler import NotificationHandler
+from src.utils.enums import FlightState
 
 
 class SummaryForTowPilotNotificationHandler(NotificationHandler):
@@ -57,5 +58,9 @@ class SummaryForTowPilotNotificationHandler(NotificationHandler):
             )
             .all()
         )
+
+        flights = [
+            flight for flight in flights if flight.state != FlightState.Draft.value
+        ]
 
         return tow_pilot, tow_airplane, action, flights
