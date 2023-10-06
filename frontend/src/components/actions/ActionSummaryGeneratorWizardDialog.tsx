@@ -10,7 +10,7 @@ import {
     TextField,
 } from "@mui/material";
 import {useCallback, useEffect, useState} from "react";
-import {GliderSchema} from "../../lib/types.ts";
+import {FlightSchema, GliderSchema} from "../../lib/types.ts";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
@@ -170,6 +170,17 @@ export default function ActionSummaryGeneratorWizardDialog({
         return initialOptions.filter((member) => gliderPilotsInAction.some((pilotId) => pilotId === member.id));
     }
 
+    const getTowPilots = () => {
+        const initialOptions = membersStoreState.members || [];
+
+        const towPilotsInAction = currentActionStoreState.flights
+            ?.filter((flight) => flight.tow_pilot_id)
+            .map((flight) => flight.tow_pilot_id)
+            .filter(Boolean) || [] as number[];
+
+        return initialOptions.filter((member) => towPilotsInAction.some((pilotId) => pilotId === member.id));
+    }
+
     function renderInput(inputName: RenderedInputName) {
         switch (inputName) {
             case RenderedInputName.REPORT_TYPE:
@@ -275,7 +286,7 @@ export default function ActionSummaryGeneratorWizardDialog({
                         <FormControl>
                             <Autocomplete
                                 id="towPilot"
-                                options={membersStoreState.members || []}
+                                options={getTowPilots()}
                                 value={towPilotId ? getMemberById(towPilotId) : null}
                                 onChange={(_, newValue) => setTowPilotId(newValue?.id)}
                                 getOptionLabel={(option) => getMemberDisplayValue(
@@ -310,31 +321,7 @@ export default function ActionSummaryGeneratorWizardDialog({
         }
 
         const flights = getFlightsByGliderPilot()
-        const durations = flights
-            .filter((flight) => flight.take_off_at)
-            .filter((flight) => flight.state !== "Draft")
-            .map((flight) => ({
-                startTime: flight.take_off_at as string,
-                endTime: flight.landing_at || undefined,
-            }));
-
-        return (
-            <Grid>
-                <Grid>
-                    <strong>{t("NUM_FLIGHTS")}</strong>: {flights.length}
-                </Grid>
-                <Grid>
-                    <strong>{t("TOTAL_DURATION")}</strong>: <Duration durations={durations}/> ({t("HOURS_MINUTES_SECONDS")})
-                </Grid>
-                <Grid>
-                    <FlightsTable flights={flights} shownFlightStates={[
-                        "Tow",
-                        "Inflight",
-                        "Landed",
-                    ]} />
-                </Grid>
-            </Grid>
-        )
+        return renderFlightsSummary(flights);
     }
 
     function renderGliderReport() {
@@ -343,6 +330,19 @@ export default function ActionSummaryGeneratorWizardDialog({
         }
 
         const flights = currentActionStoreState.flights?.filter((flight) => flight.glider_id === gliderId) || [];
+        return renderFlightsSummary(flights);
+    }
+
+    function renderTowPilotReport() {
+        if (!towPilotId) {
+            return null;
+        }
+
+        const flights = currentActionStoreState.flights?.filter((flight) => flight.tow_pilot_id === towPilotId) || [];
+        return renderFlightsSummary(flights, false);
+    }
+
+    function renderFlightsSummary(flights: FlightSchema[], includeTotalDuration = true) {
         const durations = flights
             .filter((flight) => flight.take_off_at)
             .filter((flight) => flight.state !== "Draft")
@@ -356,9 +356,9 @@ export default function ActionSummaryGeneratorWizardDialog({
                 <Grid>
                     <strong>{t("NUM_FLIGHTS")}</strong>: {flights.length}
                 </Grid>
-                <Grid>
+                {includeTotalDuration && <Grid>
                     <strong>{t("TOTAL_DURATION")}</strong>: <Duration durations={durations}/> ({t("HOURS_MINUTES_SECONDS")})
-                </Grid>
+                </Grid>}
                 <Grid>
                     <FlightsTable flights={flights} shownFlightStates={[
                         "Tow",
@@ -366,18 +366,6 @@ export default function ActionSummaryGeneratorWizardDialog({
                         "Landed",
                     ]} />
                 </Grid>
-            </Grid>
-        )
-    }
-
-    function renderTowPilotReport() {
-        if (!towPilotId) {
-            return null;
-        }
-
-        return (
-            <Grid>
-                Tow pilot report
             </Grid>
         )
     }
