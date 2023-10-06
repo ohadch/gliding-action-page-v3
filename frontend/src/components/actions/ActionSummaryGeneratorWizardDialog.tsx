@@ -21,6 +21,7 @@ import {
     getGliderDisplayValue,
     getMemberDisplayValue,
 } from "../../utils/display.ts";
+import Duration from "../common/Duration.tsx";
 
 enum RenderedInputName {
     REPORT_TYPE = "REPORT_TYPE",
@@ -307,9 +308,22 @@ export default function ActionSummaryGeneratorWizardDialog({
             return null;
         }
 
+        const flights = getFlightsByGliderPilot();
+        const durations = flights
+            .filter((flight) => flight.take_off_at)
+            .map((flight) => ({
+                startTime: flight.take_off_at as string,
+                endTime: flight.landing_at || undefined,
+            }));
+
         return (
             <Grid>
-                Glider pilot report
+                <Grid>
+                    <strong>{t("NUM_FLIGHTS")}</strong>: {flights.length}
+                </Grid>
+                <Grid>
+                    <strong>{t("TOTAL_DURATION")}</strong>: <Duration durations={durations}/> ({t("HOURS_MINUTES_SECONDS")})
+                </Grid>
             </Grid>
         )
     }
@@ -404,6 +418,13 @@ export default function ActionSummaryGeneratorWizardDialog({
         )
     }
 
+    function getFlightsByGliderPilot() {
+        if (!currentActionStoreState.flights) {
+            return [];
+        }
+
+        return currentActionStoreState.flights.filter((flight) => flight.pilot_1_id === gliderPilotId || flight.pilot_2_id === gliderPilotId);
+    }
 
     function onClear() {
         setGliderId(null);

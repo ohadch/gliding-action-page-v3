@@ -127,6 +127,9 @@ export const TEXTS_HEBREW = {
     GLIDER_PILOT: "טייס דאון",
     GENERATE_SUMMARY: 'הפקת דו״ח סיכום',
     REPORT_TYPE: 'סוג דו״ח',
+    NUM_FLIGHTS: 'מספר טיסות',
+    TOTAL_DURATION: 'זמן טיסה כולל',
+    HOURS_MINUTES_SECONDS: 'שניות:דקות:שעות',
 }
 
 
