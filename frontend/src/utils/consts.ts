@@ -123,6 +123,10 @@ export const TEXTS_HEBREW = {
     BEING_HANDLED: "בטיפול",
     SENT: "נשלח",
     FAILED: "נכשל",
+    OPEN_SUMMARY_GENERATOR: 'הפקת דו״ח',
+    GLIDER_PILOT: "טייס דאון",
+    GENERATE_SUMMARY: 'הפקת דו״ח סיכום',
+    REPORT_TYPE: 'סוג דו״ח',
 }
 
 
