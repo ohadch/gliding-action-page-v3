@@ -111,7 +111,7 @@ class HebrewI18nClient(I18nClient):
     ) -> str:
         return f"""
         <table dir="rtl">
-                        <tr>שלום,</tr>
+                        <tr>שלום {tow_pilot.full_name},</tr>
                         <tr></tr>
                         <tr>בתאריך {action.date.strftime('%Y-%m-%d')} ביצעת {len(flights)} טיסות במטוס {tow_airplane.call_sign}.</tr>
                         <tr></tr>
