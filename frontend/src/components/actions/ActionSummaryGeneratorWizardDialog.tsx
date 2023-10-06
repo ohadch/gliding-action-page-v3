@@ -22,6 +22,7 @@ import {
     getMemberDisplayValue,
 } from "../../utils/display.ts";
 import Duration from "../common/Duration.tsx";
+import FlightsTable from "../flights/FlightsTable.tsx";
 
 enum RenderedInputName {
     REPORT_TYPE = "REPORT_TYPE",
@@ -308,9 +309,10 @@ export default function ActionSummaryGeneratorWizardDialog({
             return null;
         }
 
-        const flights = getFlightsByGliderPilot();
+        const flights = getFlightsByGliderPilot()
         const durations = flights
             .filter((flight) => flight.take_off_at)
+            .filter((flight) => flight.state !== "Draft")
             .map((flight) => ({
                 startTime: flight.take_off_at as string,
                 endTime: flight.landing_at || undefined,
@@ -323,6 +325,13 @@ export default function ActionSummaryGeneratorWizardDialog({
                 </Grid>
                 <Grid>
                     <strong>{t("TOTAL_DURATION")}</strong>: <Duration durations={durations}/> ({t("HOURS_MINUTES_SECONDS")})
+                </Grid>
+                <Grid>
+                    <FlightsTable flights={flights} shownFlightStates={[
+                        "Tow",
+                        "Inflight",
+                        "Landed",
+                    ]} />
                 </Grid>
             </Grid>
         )
@@ -418,13 +427,13 @@ export default function ActionSummaryGeneratorWizardDialog({
         )
     }
 
-    function getFlightsByGliderPilot() {
+    const getFlightsByGliderPilot = useCallback(() => {
         if (!currentActionStoreState.flights) {
             return [];
         }
 
         return currentActionStoreState.flights.filter((flight) => flight.pilot_1_id === gliderPilotId || flight.pilot_2_id === gliderPilotId);
-    }
+    }, [currentActionStoreState.flights, gliderPilotId]);
 
     function onClear() {
         setGliderId(null);

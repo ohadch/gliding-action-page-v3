@@ -10,7 +10,7 @@ import {RootState} from "../../store";
 
 export interface FlightStateControllerProps {
     flight: FlightSchema,
-    onStateUpdated: (flightId: number, state: FlightState) => void;
+    onStateUpdated?: (flightId: number, state: FlightState) => void;
 }
 
 interface StateButtonConfig {
@@ -66,7 +66,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
         }}>
             <Grid item xs={2}>
                 {
-                    goToPreviousStateVisible() && (
+                    onStateUpdated && goToPreviousStateVisible() && (
 
                         <IconButton
                             color={color}
@@ -100,7 +100,7 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
             </Grid>
             <Grid item xs={2}>
                 {
-                    goToNextStateVisible() && (
+                    onStateUpdated && goToNextStateVisible() && (
 
                         <IconButton
                             color={color}

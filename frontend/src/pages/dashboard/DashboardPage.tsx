@@ -655,6 +655,7 @@ export default function DashboardPage() {
         return (
             <Grid container>
                 <FlightsTable
+                    flights={flights || []}
                     shownFlightStates={shownFlightStates}
                     setDuplicateFlight={(flight) => {
                         setEditFlightDetailsDialogOpen(true);
