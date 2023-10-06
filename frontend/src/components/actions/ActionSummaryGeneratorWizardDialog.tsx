@@ -41,12 +41,12 @@ enum ReportType {
 
 export interface ActionSummaryGeneratorWizardDialogProps {
     open: boolean
-    onCancel: () => void
+    onClose: () => void
 }
 
 export default function ActionSummaryGeneratorWizardDialog({
                                                                open,
-                                                               onCancel,
+                                                               onClose,
                                                            }: ActionSummaryGeneratorWizardDialogProps) {
     const dispatch = useAppDispatch();
     const membersStoreState = useSelector((state: RootState) => state.members)
@@ -181,6 +181,28 @@ export default function ActionSummaryGeneratorWizardDialog({
         return initialOptions.filter((member) => towPilotsInAction.some((pilotId) => pilotId === member.id));
     }
 
+    const getGliders = () => {
+        const initialOptions = glidersStoreState.gliders || [];
+
+        const glidersInAction = currentActionStoreState.flights
+            ?.filter((flight) => flight.glider_id)
+            .map((flight) => flight.glider_id)
+            .filter(Boolean) || [] as number[];
+
+        return initialOptions.filter((glider) => glidersInAction.some((gliderId) => gliderId === glider.id));
+    }
+
+    const getTowAirplanes = () => {
+        const initialOptions = towAirplanesStoreState.towAirplanes || [];
+
+        const towAirplanesInAction = currentActionStoreState.flights
+            ?.filter((flight) => flight.tow_airplane_id)
+            .map((flight) => flight.tow_airplane_id)
+            .filter(Boolean) || [] as number[];
+
+        return initialOptions.filter((towAirplane) => towAirplanesInAction.some((towAirplaneId) => towAirplaneId === towAirplane.id));
+    }
+
     function renderInput(inputName: RenderedInputName) {
         switch (inputName) {
             case RenderedInputName.REPORT_TYPE:
@@ -208,7 +230,7 @@ export default function ActionSummaryGeneratorWizardDialog({
                         <FormControl>
                             <Autocomplete
                                 id="glider"
-                                options={glidersStoreState.gliders || []}
+                                options={getGliders()}
                                 value={gliderId ? getGliderById(gliderId) : null}
                                 onChange={(_, newValue) => setGliderId(newValue?.id)}
                                 getOptionLabel={(option: GliderSchema) => getGliderDisplayValue(
@@ -262,7 +284,7 @@ export default function ActionSummaryGeneratorWizardDialog({
                         <FormControl>
                             <Autocomplete
                                 id="towAirplane"
-                                options={towAirplanesStoreState.towAirplanes || []}
+                                options={getTowAirplanes()}
                                 value={towAirplaneId ? getTowAirplaneById(towAirplaneId) : null}
                                 onChange={(_, newValue) => setTowAirplaneId(newValue?.id)}
                                 getOptionLabel={(option) => option.call_sign}
@@ -375,11 +397,8 @@ export default function ActionSummaryGeneratorWizardDialog({
             return null;
         }
 
-        return (
-            <Grid>
-                Tow airplane report
-            </Grid>
-        )
+        const flights = currentActionStoreState.flights?.filter((flight) => flight.tow_airplane_id === towAirplaneId) || [];
+        return renderFlightsSummary(flights, false);
     }
 
     function renderSummaryContent() {
@@ -471,9 +490,9 @@ export default function ActionSummaryGeneratorWizardDialog({
                 }}>
                     <Button onClick={() => {
                         onClear();
-                        onCancel()
+                        onClose()
                     }}>
-                        {t("CANCEL")}
+                        {t("CLOSE")}
                     </Button>
                     <Button onClick={() => {
                         if (!confirm(t("CLEAR_CONFIRMATION"))) {

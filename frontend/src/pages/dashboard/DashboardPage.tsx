@@ -428,7 +428,7 @@ export default function DashboardPage() {
         return (
             <ActionSummaryGeneratorWizardDialog
                 open={Boolean(summaryGeneratorWizardDialogOpen)}
-                onCancel={() => {
+                onClose={() => {
                     setSummaryGeneratorWizardDialogOpen(false);
                 }}
             />

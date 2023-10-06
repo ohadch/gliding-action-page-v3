@@ -46,7 +46,7 @@ export const TEXTS_HEBREW = {
     DRAFT: "בהכנה",
     TOW: "בגרירה",
     INFLIGHT: "בטיסה",
-    LANDED: "לאחר נחיתה",
+    LANDED: "נחתה",
     DURATION: "משך",
     FLIGHT_STATE: "שלב טיסה",
     FLIGHT_STATES: "שלבי טיסה",
@@ -130,6 +130,7 @@ export const TEXTS_HEBREW = {
     NUM_FLIGHTS: 'מספר טיסות',
     TOTAL_DURATION: 'זמן טיסה כולל',
     HOURS_MINUTES_SECONDS: 'שניות:דקות:שעות',
+    CLOSE: 'סגור',
 }
 
 

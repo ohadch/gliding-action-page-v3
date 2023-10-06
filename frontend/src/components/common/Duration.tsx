@@ -31,7 +31,6 @@ export default function Duration({ durations }: DurationProps) {
                 month: moment(action?.date).month(),
                 date: moment(action?.date).date(),
               })
-              .utcOffset(0, true);
 
         return accumulator + end.diff(start);
       }, 0);

@@ -107,6 +107,12 @@ export default function FlightsTable(props: FlightsTableProps) {
         return towAirplane && towPilot ? `${towAirplane} (${towPilot})` : null;
     }
 
+    const displayTime = (time: string) => new Date(time).toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+    })
+
     return (
         <>
             <TableContainer component={Paper}>
@@ -121,6 +127,12 @@ export default function FlightsTable(props: FlightsTableProps) {
                             <TableCell align="right"
                                        style={textCellStyle}><strong>{t("TOW_AIRPLANE")}</strong></TableCell>
                             <TableCell align="right" style={textCellStyle}><strong>{t("TOW_TYPE")}</strong></TableCell>
+                            <TableCell align="right"
+                                       style={textCellStyle}><strong>{t("TAKE_OFF_TIME")}</strong></TableCell>
+                            {shownFlightStates?.includes("Landed") && (
+                                <TableCell align="right"
+                                       style={textCellStyle}><strong>{t("LANDING_TIME")}</strong></TableCell>
+                            )}
                             <TableCell align="right" style={textCellStyle}><strong>{t("DURATION")}</strong></TableCell>
                             <TableCell align="right" style={textCellStyle}></TableCell>
                         </TableRow>
@@ -159,6 +171,16 @@ export default function FlightsTable(props: FlightsTableProps) {
                                 <TableCell align="right" style={textCellStyle}>
                                     {flight.tow_type && getTowTypeDisplayValue(flight.tow_type)}
                                 </TableCell>
+                                <TableCell align="right" style={textCellStyle}>
+                                    {flight.take_off_at && displayTime(flight.take_off_at)}
+                                </TableCell>
+                                {
+                                    shownFlightStates?.includes("Landed") && (
+                                        <TableCell align="right" style={textCellStyle}>
+                                            {flight.landing_at && displayTime(flight.landing_at)}
+                                        </TableCell>
+                                    )
+                                }
                                 <TableCell align="right" style={textCellStyle}>
                                     {(flight.state !== "Draft") && (
                                         <FlightDuration flight={flight}/>
