@@ -3,6 +3,7 @@ import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
 import {updateAction} from "../../store/actions/action.ts";
+import {createEvent} from "../../store/actions/event.ts";
 
 export default function SettingsPage() {
     const {t} = useTranslation();
@@ -33,6 +34,16 @@ export default function SettingsPage() {
                                             updatePayload: {
                                                 ...action,
                                                 closed_at: null
+                                            }
+                                        })
+                                    )
+
+                                    dispatch(
+                                        createEvent({
+                                            action_id: action.id,
+                                            type: "action_reopened",
+                                            payload: {
+                                                field_responsible_id: action?.field_responsible_id,
                                             }
                                         })
                                     )

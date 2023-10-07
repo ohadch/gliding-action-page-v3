@@ -1,4 +1,6 @@
 from src import Event
+from src.events.handlers.action_closed_event_handler import ActionClosedEventHandler
+from src.events.handlers.action_reopened_event_handler import ActionReopenedEventHandler
 from src.events.handlers.event_handler import EventHandler
 from src.events.handlers.field_responsible_assigned_event_handler import (
     FieldResponsibleAssignedEventHandler,
@@ -38,6 +40,8 @@ EVENT_NAME_TO_CLASS_MAP = {
     EventType.RESPONSIBLE_CFI_UNASSIGNED: ResponsibleCfiUnassignedEventHandler,
     EventType.TOW_AIRPLANE_ACTIVATED: TowAirplaneActivatedEventHandler,
     EventType.TOW_AIRPLANE_DEACTIVATED: TowAirplaneDeactivatedEventHandler,
+    EventType.ACTION_CLOSED: ActionClosedEventHandler,
+    EventType.ACTION_REOPENED: ActionReopenedEventHandler,
 }
 
 
