@@ -35,6 +35,7 @@ import AddIcon from "@mui/icons-material/Add";
 import {updateAction} from "../../store/actions/action.ts";
 import ActionSummaryGeneratorWizardDialog from "../../components/actions/ActionSummaryGeneratorWizardDialog.tsx";
 import {Summarize} from "@mui/icons-material";
+import FlightSettlePaymentWizardDialog from "../../components/flights/FlightSettlePaymentWizardDialog.tsx";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -62,6 +63,7 @@ export default function DashboardPage() {
     const [editFlightDetailsDialogOpen, setEditFlightDetailsDialogOpen] = useState<boolean>(false);
     const [startTowDialogFlight, setStartTowDialogFlight] = useState<FlightSchema | null>(null);
     const [endTowDialogFlight, setEndTowDialogFlight] = useState<FlightSchema | null>(null);
+    const [settlePaymentDialogFlight, setSettlePaymentDialogFlight] = useState<FlightSchema | null>(null);
     const [shownFlightStates, setShownFlightStates] = useState<FlightState[]>(action?.closed_at ? ["Landed"] : ["Draft", "Tow", "Inflight"]);
     const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
 
@@ -299,7 +301,7 @@ export default function DashboardPage() {
                     }
                 }
 
-                if (!flight.tow_type && ((glider?.type === "regular")  || (glider?.type === "self_launch" && flight.tow_type))) {
+                if (!flight.tow_type && ((glider?.type === "regular") || (glider?.type === "self_launch" && flight.tow_type))) {
                     setEndTowDialogFlight(flight);
                     return;
                 }
@@ -378,6 +380,13 @@ export default function DashboardPage() {
         )
     }
 
+    function onAdvancedEdit(flight: FlightCreateSchema) {
+        setEditedFlightId(null)
+        setFlightCreationWizardDialogOpen(false);
+        setEditedFlightData(flight)
+        setEditFlightDetailsDialogOpen(true);
+    }
+
     function renderStartTowDialog() {
         if (!startTowDialogFlight?.id) {
             return
@@ -426,12 +435,7 @@ export default function DashboardPage() {
                     setFlightCreationWizardDialogOpen(false);
                     setEditedFlightData(null)
                 }}
-                onAdvancedEdit={(flight) => {
-                    setEditedFlightId(null)
-                    setFlightCreationWizardDialogOpen(false);
-                    setEditedFlightData(flight)
-                    setEditFlightDetailsDialogOpen(true);
-                }}
+                onAdvancedEdit={(flight) => onAdvancedEdit(flight)}
             />
         )
     }
@@ -442,6 +446,27 @@ export default function DashboardPage() {
                 open={Boolean(summaryGeneratorWizardDialogOpen)}
                 onClose={() => {
                     setSummaryGeneratorWizardDialogOpen(false);
+                }}
+            />
+        )
+    }
+
+    function renderSettlePaymentWizardDialog() {
+        if (!settlePaymentDialogFlight) {
+            return null;
+        }
+
+        return (
+            <FlightSettlePaymentWizardDialog
+                open={Boolean(settlePaymentDialogFlight)}
+                onClose={() => setSettlePaymentDialogFlight(null)}
+                flight={settlePaymentDialogFlight}
+                onSubmit={(flight) => {
+                    dispatch(updateFlight({
+                        flightId: settlePaymentDialogFlight?.id,
+                        updatePayload: flight,
+                    }))
+                    setSettlePaymentDialogFlight(null)
                 }}
             />
         )
@@ -663,7 +688,7 @@ export default function DashboardPage() {
                     marginLeft: "1rem",
                 }}
             >
-                <Summarize />
+                <Summarize/>
                 {t("OPEN_SUMMARY_GENERATOR")}
             </Button>
         )
@@ -700,6 +725,7 @@ export default function DashboardPage() {
                         })
                     }}
                     onFlightStateUpdated={onFlightStateUpdated}
+                    onSettlePayment={(flight) => setSettlePaymentDialogFlight(flight)}
                 />
             </Grid>
         )
@@ -739,6 +765,7 @@ export default function DashboardPage() {
             {renderEndTowDialog()}
             {renderFlightCreationWizardDialog()}
             {renderSummaryGeneratorWizardDialog()}
+            {renderSettlePaymentWizardDialog()}
 
             {renderContent()}
         </>
