@@ -134,6 +134,7 @@ export const TEXTS_HEBREW = {
     SETTINGS: 'הגדרות',
     CONFIRM_ACTION_REOPEN: 'האם אתה בטוח שברצונך לפתוח מחדש את הפעולה?',
     REOPEN_ACTION: 'פתיחה מחדש של הפעולה',
+    ACTION_REOPENED_TITLE: 'הפעולה נפתחה מחדש',
 }
 
 

@@ -114,6 +114,10 @@ export default function EventsTable() {
     function getFilteredEvents() {
         // Filter out events that their flight does not exist
         return events?.filter((event) => {
+            if ((event.type === "action_closed") || event.type === "action_reopened") {
+                return true;
+            }
+
             const flight = flights?.find((flight) => flight.id === event.payload.flight_id);
             return Boolean(flight);
         }) || [];
