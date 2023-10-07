@@ -131,6 +131,9 @@ export const TEXTS_HEBREW = {
     TOTAL_DURATION: 'זמן טיסה כולל',
     HOURS_MINUTES_SECONDS: 'שניות:דקות:שעות',
     CLOSE: 'סגור',
+    SETTINGS: 'הגדרות',
+    CONFIRM_ACTION_REOPEN: 'האם אתה בטוח שברצונך לפתוח מחדש את הפעולה?',
+    REOPEN_ACTION: 'פתיחה מחדש של הפעולה',
 }
 
 
