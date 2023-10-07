@@ -111,6 +111,14 @@ export default function EventsTable() {
         }
     }
 
+    function getFilteredEvents() {
+        // Filter out events that their flight does not exist
+        return events?.filter((event) => {
+            const flight = flights?.find((flight) => flight.id === event.payload.flight_id);
+            return Boolean(flight);
+        }) || [];
+    }
+
     return (
         <Grid
             sx={{
@@ -131,7 +139,7 @@ export default function EventsTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {events?.map((event) => (
+                        {getFilteredEvents().map((event) => (
                             <TableRow
                                 key={event.id}
                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}

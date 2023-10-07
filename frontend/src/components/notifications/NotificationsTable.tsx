@@ -73,8 +73,15 @@ export default function NotificationsTable() {
             case "pending":
                 return (
                     <Chip
-                        color="warning"
+                        color="info"
                         label={t("PENDING")}
+                    />
+                )
+            case "being_handled":
+                return (
+                    <Chip
+                        color="primary"
+                        label={t("BEING_HANDLED")}
                     />
                 )
             case "sent":
@@ -135,16 +142,16 @@ export default function NotificationsTable() {
                                     {notification.id}
                                 </TableCell>
                                 <TableCell align="right">
-                                    {displayMember(notification.recipient_member_id)}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {displayMemberEmail(notification.recipient_member_id)}
+                                    {notification.sent_at}
                                 </TableCell>
                                 <TableCell align="right">
                                     {t(notification.type.toUpperCase())}
                                 </TableCell>
                                 <TableCell align="right">
-                                    {notification.sent_at}
+                                    {displayMember(notification.recipient_member_id)}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {displayMemberEmail(notification.recipient_member_id)}
                                 </TableCell>
                                 <TableCell align="right">
                                     {JSON.stringify(notification.payload)}
