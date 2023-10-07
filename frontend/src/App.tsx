@@ -36,7 +36,7 @@ import {
     setCurrentActionId,
     setFlights
 } from "./store/reducers/currentActionSlice.ts";
-import {fetchActiveTowAirplanes, fetchFlights} from "./store/actions/currentAction.ts";
+import {fetchActiveTowAirplanes, fetchEvents, fetchFlights, fetchNotifications} from "./store/actions/currentAction.ts";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {ConnectingAirports, Email, LegendToggle} from "@mui/icons-material";
@@ -253,6 +253,8 @@ export default function App() {
                         dispatch(setCurrentActionId(actionId))
                         dispatch(fetchActiveTowAirplanes(actionId))
                         dispatch(fetchFlights(actionId))
+                        dispatch(fetchEvents({actionId}))
+                        dispatch(fetchNotifications({actionId}))
                     }}
                 />
                 <Box sx={{display: 'flex'}}>

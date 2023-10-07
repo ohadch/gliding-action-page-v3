@@ -73,8 +73,15 @@ export default function NotificationsTable() {
             case "pending":
                 return (
                     <Chip
-                        color="warning"
+                        color="info"
                         label={t("PENDING")}
+                    />
+                )
+            case "being_handled":
+                return (
+                    <Chip
+                        color="primary"
+                        label={t("BEING_HANDLED")}
                     />
                 )
             case "sent":
