@@ -142,16 +142,16 @@ export default function NotificationsTable() {
                                     {notification.id}
                                 </TableCell>
                                 <TableCell align="right">
-                                    {displayMember(notification.recipient_member_id)}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {displayMemberEmail(notification.recipient_member_id)}
+                                    {notification.sent_at}
                                 </TableCell>
                                 <TableCell align="right">
                                     {t(notification.type.toUpperCase())}
                                 </TableCell>
                                 <TableCell align="right">
-                                    {notification.sent_at}
+                                    {displayMember(notification.recipient_member_id)}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {displayMemberEmail(notification.recipient_member_id)}
                                 </TableCell>
                                 <TableCell align="right">
                                     {JSON.stringify(notification.payload)}
