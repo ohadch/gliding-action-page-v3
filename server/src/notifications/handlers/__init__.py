@@ -1,4 +1,7 @@
 from src import Notification
+from src.notifications.handlers.daily_summary_for_observer_notification_handler import (
+    DailySummaryForObserverNotificationHandler,
+)
 from src.notifications.handlers.flight_summary_for_pilot_notification_handler import (
     FlightSummaryForPilotNotificationHandler,
 )
@@ -12,6 +15,7 @@ from src.utils.enums import NotificationType
 NOTIFICATION_NAME_TO_CLASS_MAP = {
     NotificationType.FlightSummaryForPilot: FlightSummaryForPilotNotificationHandler,
     NotificationType.SummaryForTowPilot: SummaryForTowPilotNotificationHandler,
+    NotificationType.DailySummaryForObserver: DailySummaryForObserverNotificationHandler,
 }
 
 

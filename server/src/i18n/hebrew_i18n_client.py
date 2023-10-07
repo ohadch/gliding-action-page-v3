@@ -139,3 +139,49 @@ class HebrewI18nClient(I18nClient):
         date_str = action.date.strftime("%Y-%m-%d")
 
         return f"ביצעת {len(flights)} גרירות במטוס {tow_airplane.call_sign} בתאריך {date_str}"
+
+    def get_daily_summary_for_observer_email_message_subject(
+        self,
+        action: Action,
+    ) -> str:
+        date_str = action.date.strftime("%Y-%m-%d")
+
+        return f"סיכום פעולת הדאיה מתאריך {date_str}"
+
+    def format_daily_summary_for_observer_email_message_template(
+        self,
+        observer: Member,
+        action: Action,
+        flights: List[Flight],
+        flights_html: str,
+    ) -> str:
+        date_str = action.date.strftime("%Y-%m-%d")
+
+        return f"""
+        <table dir="rtl">
+            <tr>שלום {observer.full_name},</tr>
+            <tr></tr>
+            <tr>מצורף סיכום לפעולת הדאיה מתאריך {date_str}.</tr>
+            <tr></tr>
+            {flights_html}
+            <tr></tr>
+            <tr>הודעה זאת נשלחת אלייך מכיוון שאתה מסומן ברשימת מדווחי הפעולה של המועדון.</tr>
+            <tr></tr>
+            <tr>תודה,</tr>
+            <tr>מרכז הדאיה מגידו</tr>
+        </table>
+        """
+
+    def get_daily_summary_for_observer_email_message(
+        self, observer: Member, action: Action, flights: List[Flight]
+    ) -> str:
+        flights_html = self.create_flights_table_html(
+            flights=flights,
+        )
+
+        return self.format_daily_summary_for_observer_email_message_template(
+            observer=observer,
+            action=action,
+            flights=flights,
+            flights_html=flights_html,
+        )
