@@ -23,6 +23,7 @@ import {deleteFlight} from "../../store/actions/currentAction.ts";
 import {FlightCreateSchema, FlightSchema, FlightState, FlightUpdateSchema} from "../../lib/types.ts";
 import FlightStateController from "./FlightStateController.tsx";
 import FlightDuration from "./FlightDuration.tsx";
+import {Payment} from "@mui/icons-material";
 
 export interface FlightsTableProps {
     flights: FlightSchema[];
@@ -30,11 +31,12 @@ export interface FlightsTableProps {
     setDuplicateFlight?: (flight: FlightCreateSchema) => void;
     onFlightStateUpdated?: (flightId: number, state: FlightState) => void;
     shownFlightStates?: FlightState[];
+    onSettlePayment?: (flight: FlightSchema) => void;
 }
 
 
 export default function FlightsTable(props: FlightsTableProps) {
-    const {flights, setEditedFlight, setDuplicateFlight, onFlightStateUpdated, shownFlightStates} = props;
+    const {flights, onSettlePayment, setEditedFlight, setDuplicateFlight, onFlightStateUpdated, shownFlightStates} = props;
 
     const textCellStyle = {
         fontSize: setEditedFlight && setDuplicateFlight ? "1.1rem" : "1rem",
@@ -113,6 +115,14 @@ export default function FlightsTable(props: FlightsTableProps) {
         hour12: false
     })
 
+    const settlePaymentButtonVisible = (flight: FlightSchema) => {
+        if (flight.flight_type !== "ClubGuest") {
+            return false;
+        }
+
+        return !((flight.paying_member_id) || (flight.payment_method && flight.payment_receiver_id));
+    }
+
     return (
         <>
             <TableContainer component={Paper}>
@@ -131,7 +141,7 @@ export default function FlightsTable(props: FlightsTableProps) {
                                        style={textCellStyle}><strong>{t("TAKE_OFF_TIME")}</strong></TableCell>
                             {shownFlightStates?.includes("Landed") && (
                                 <TableCell align="right"
-                                       style={textCellStyle}><strong>{t("LANDING_TIME")}</strong></TableCell>
+                                           style={textCellStyle}><strong>{t("LANDING_TIME")}</strong></TableCell>
                             )}
                             <TableCell align="right" style={textCellStyle}><strong>{t("DURATION")}</strong></TableCell>
                             <TableCell align="right" style={textCellStyle}></TableCell>
@@ -215,6 +225,17 @@ export default function FlightsTable(props: FlightsTableProps) {
                                                 <DeleteIcon/>
                                             </IconButton>
                                         </Tooltip>)}
+                                    {onSettlePayment && settlePaymentButtonVisible(flight) && (
+                                        <Tooltip title={t("SETTLE_PAYMENT")} onClick={() => alert("TODO")}>
+                                            <IconButton
+                                                aria-label="settle_payment"
+                                                color={"warning"}
+                                                onClick={() => onSettlePayment(flight)}
+                                            >
+                                                <Payment/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    )}
                                 </TableCell>
                             </TableRow>
                         ))}

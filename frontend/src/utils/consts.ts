@@ -135,6 +135,8 @@ export const TEXTS_HEBREW = {
     CONFIRM_ACTION_REOPEN: 'האם אתה בטוח שברצונך לפתוח מחדש את הפעולה?',
     REOPEN_ACTION: 'פתיחה מחדש של הפעולה',
     ACTION_REOPENED: 'הפעולה נפתחה מחדש',
+    SETTLE_PAYMENT: 'הסדר תשלום',
+    PAYMENT_BY_CLUB_MEMBER: 'חבר מועדון משלם על הטיסה',
 }
 
 
