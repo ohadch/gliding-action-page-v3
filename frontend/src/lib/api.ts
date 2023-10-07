@@ -653,7 +653,7 @@ export interface components {
      * EventType
      * @enum {string}
      */
-    EventType: "flight_landed" | "flight_took_off" | "flight_tow_released" | "action_closed" | "responsible_cfi_assigned" | "responsible_cfi_unassigned" | "field_responsible_assigned" | "field_responsible_unassigned" | "tow_airplane_activated" | "tow_airplane_deactivated";
+    EventType: "flight_landed" | "flight_took_off" | "flight_tow_released" | "action_closed" | "action_reopened" | "responsible_cfi_assigned" | "responsible_cfi_unassigned" | "field_responsible_assigned" | "field_responsible_unassigned" | "tow_airplane_activated" | "tow_airplane_deactivated";
     /** EventUpdateSchema */
     EventUpdateSchema: {
       type?: components["schemas"]["EventType"] | null;
@@ -977,20 +977,24 @@ export interface components {
       /** Action Id */
       action_id: number;
       /**
-       * Sent At
+       * Created At
        * Format: date-time
        */
-      sent_at: string;
+      created_at: string;
+      /** Sent At */
+      sent_at: string | null;
       /** Num Sending Attempts */
       num_sending_attempts: number;
-      /** Last Attempt At */
-      last_attempt_at: string | null;
+      /** Last Sending Attempt At */
+      last_sending_attempt_at: string | null;
       /** Recipient Member Id */
       recipient_member_id: number;
-      method: components["schemas"]["NotificationMethod"];
+      method: components["schemas"]["NotificationMethod"] | null;
       type: components["schemas"]["NotificationType"];
       payload: components["schemas"]["NotificationPayloadSchema-Output"];
       state: components["schemas"]["NotificationState"];
+      /** Originator Event Id */
+      originator_event_id: number | null;
     };
     /** NotificationSearchSchema */
     NotificationSearchSchema: {

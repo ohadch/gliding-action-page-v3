@@ -72,6 +72,7 @@ class EventType(enum.Enum):
     FLIGHT_TOOK_OFF = "flight_took_off"
     FLIGHT_TOW_RELEASED = "flight_tow_released"
     ACTION_CLOSED = "action_closed"
+    ACTION_REOPENED = "action_reopened"
     RESPONSIBLE_CFI_ASSIGNED = "responsible_cfi_assigned"
     RESPONSIBLE_CFI_UNASSIGNED = "responsible_cfi_unassigned"
     FIELD_RESPONSIBLE_ASSIGNED = "field_responsible_assigned"

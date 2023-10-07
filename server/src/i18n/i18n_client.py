@@ -48,6 +48,40 @@ class I18nClient(abc.ABC):
     ) -> str:
         pass
 
+    @abc.abstractmethod
+    def get_daily_summary_for_observer_email_message_subject(
+        self,
+        action: Action,
+    ) -> str:
+        pass
+
+    @abc.abstractmethod
+    def format_daily_summary_for_observer_email_message_template(
+        self,
+        observer: Member,
+        action: Action,
+        flights: List[Flight],
+        flights_by_glider: List[Tuple[str, int, str, str]],
+    ) -> str:
+        pass
+
+    def get_daily_summary_for_observer_email_message(
+        self,
+        observer: Member,
+        action: Action,
+        flights: List[Flight],
+    ) -> str:
+        flights_by_glider: List[
+            Tuple[str, int, str, str]
+        ] = self._group_flights_by_glider(flights=flights)
+
+        return self.format_daily_summary_for_observer_email_message_template(
+            observer=observer,
+            action=action,
+            flights=flights,
+            flights_by_glider=flights_by_glider,
+        )
+
     def get_flight_summary_for_pilot_email_message(
         self, member: Member, flight: Flight, flights_in_action: List[Flight]
     ) -> str:
@@ -129,10 +163,24 @@ class I18nClient(abc.ABC):
             ]
         )
 
+        flights_by_glider: List[
+            Tuple[str, int, str, str]
+        ] = self._group_flights_by_glider(flights=flights_in_action)
+
+        return self.format_flight_summary_for_pilot_email_message_template(
+            member=member,
+            flight=flight,
+            flight_details_html=flight_details_html,
+            flights_by_glider=flights_by_glider,
+        )
+
+    def _group_flights_by_glider(
+        self, flights: List[Flight]
+    ) -> List[Tuple[str, int, str, str]]:
         flights_by_glider: List[Tuple[str, int, str, str]] = []
 
         for glider_call_sign, glider_flights in groupby(
-            sorted(flights_in_action, key=lambda flight_: flight_.take_off_at),
+            sorted(flights, key=lambda flight_: flight_.take_off_at),
             lambda f: f.glider.call_sign,
         ):
             glider_flights = list(glider_flights)
@@ -150,12 +198,7 @@ class I18nClient(abc.ABC):
                 )
             )
 
-        return self.format_flight_summary_for_pilot_email_message_template(
-            member=member,
-            flight=flight,
-            flight_details_html=flight_details_html,
-            flights_by_glider=flights_by_glider,
-        )
+        return flights_by_glider
 
     def get_summary_for_tow_pilot_email_message(
         self,

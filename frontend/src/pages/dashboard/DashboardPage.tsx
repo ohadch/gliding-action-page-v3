@@ -517,6 +517,16 @@ export default function DashboardPage() {
                 }
             })
         )
+
+        dispatch(
+            createEvent({
+                action_id: action.id,
+                type: "action_closed",
+                payload: {
+                    field_responsible_id: action?.field_responsible_id,
+                }
+            })
+        )
     }
 
     function renderFlightStatesFilter() {
