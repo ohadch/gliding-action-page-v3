@@ -316,19 +316,17 @@ export default function App() {
                                 {ROUTES
                                     .filter((route) => route.icon)
                                     .map((route) => (
-                                        <Tooltip title={route.name}>
-                                            <ListItemButton
-                                                key={route.path}
-                                                component="a"
-                                                href={route.path}
-                                                selected={pathname === route.path}
-                                            >
-                                                <ListItemIcon>
-                                                    {route.icon}
-                                                </ListItemIcon>
-                                                <ListItemText primary={route.name}/>
-                                            </ListItemButton>
-                                        </Tooltip>
+                                        <ListItemButton
+                                            key={route.path}
+                                            component="a"
+                                            href={route.path}
+                                            selected={pathname === route.path}
+                                        >
+                                            <ListItemIcon>
+                                                {route.icon}
+                                            </ListItemIcon>
+                                            <ListItemText primary={route.name}/>
+                                        </ListItemButton>
                                     ))}
                                 <Divider/>
                                 <ListItemButton
