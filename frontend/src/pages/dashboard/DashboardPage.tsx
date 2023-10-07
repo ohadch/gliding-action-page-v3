@@ -108,7 +108,7 @@ export default function DashboardPage() {
     /**
      * Returns a tuple of [hasBusyEntities, busyEntities]
      */
-    const getBusyEntitiesFromFlight = useCallback((flight: FlightSchema) => {
+    const getBusyEntitiesFromFlight = useCallback((flight: FlightSchema, includeTowAirplanesAndPilots = true) => {
         if (!membersStoreState.members) {
             throw new Error("Members not loaded")
         }
@@ -117,7 +117,7 @@ export default function DashboardPage() {
             throw new Error("Gliders not loaded")
         }
 
-        if (!towAirplanesStoreState.towAirplanes) {
+        if (includeTowAirplanesAndPilots && !towAirplanesStoreState.towAirplanes) {
             throw new Error("Tow airplanes not loaded")
         }
 
@@ -135,8 +135,8 @@ export default function DashboardPage() {
             busyEntities.gliders.push(getGliderDisplayValue(glider))
         }
 
-        if (flight.tow_airplane_id && busyTowAirplanesForFlight(flight).includes(flight.tow_airplane_id)) {
-            const towAirplane = towAirplanesStoreState.towAirplanes.find((towAirplane) => towAirplane.id === flight.tow_airplane_id)
+        if (includeTowAirplanesAndPilots && flight.tow_airplane_id && busyTowAirplanesForFlight(flight).includes(flight.tow_airplane_id)) {
+            const towAirplane = towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === flight.tow_airplane_id)
             if (!towAirplane) {
                 throw new Error(`Tow airplane with id ${flight.tow_airplane_id} not found`)
             }
@@ -159,7 +159,7 @@ export default function DashboardPage() {
             busyEntities.members.push(getMemberDisplayValue(member))
         }
 
-        if (flight.tow_pilot_id && busyMembers(flight).includes(flight.tow_pilot_id)) {
+        if (includeTowAirplanesAndPilots && flight.tow_pilot_id && busyMembers(flight).includes(flight.tow_pilot_id)) {
             const member = membersStoreState.members.find((member) => member.id === flight.tow_pilot_id)
             if (!member) {
                 throw new Error(`Member with id ${flight.tow_pilot_id} not found`)
@@ -287,6 +287,18 @@ export default function DashboardPage() {
                 updatePayload.tow_release_at = null;
                 break;
             case "Inflight":
+                if (getBusyEntitiesFromFlight(flight, false)) {
+                    const busyEntities = getBusyEntitiesFromFlight(flight)
+                    const hasBusyEntities = Object.values(busyEntities).some((entities) => entities.length > 0)
+
+                    if (hasBusyEntities) {
+                        const busyEntitiesString = Object.values(busyEntities).flat().join(", ")
+
+                        alert(`${t("FLIGHT_HAS_BUSY_ENTITIES_ALERT")}: ${busyEntitiesString}`)
+                        return;
+                    }
+                }
+
                 if (!flight.tow_type && ((glider?.type === "regular")  || (glider?.type === "self_launch" && flight.tow_type))) {
                     setEndTowDialogFlight(flight);
                     return;
