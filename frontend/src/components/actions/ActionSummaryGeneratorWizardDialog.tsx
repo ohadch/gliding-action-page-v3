@@ -152,11 +152,13 @@ export default function ActionSummaryGeneratorWizardDialog({
 
         const pilot1sInAction = currentActionStoreState.flights
             ?.filter((flight) => flight.pilot_1_id)
+            .filter((flight) => flight.state !== "Draft")
             .map((flight) => flight.pilot_1_id)
             .filter(Boolean) || [] as number[];
 
         const pilot2sInAction = currentActionStoreState.flights
             ?.filter((flight) => flight.pilot_2_id)
+            .filter((flight) => flight.state !== "Draft")
             .map((flight) => flight.pilot_2_id)
             .filter(Boolean) || [] as number[];
 
@@ -175,6 +177,7 @@ export default function ActionSummaryGeneratorWizardDialog({
 
         const towPilotsInAction = currentActionStoreState.flights
             ?.filter((flight) => flight.tow_pilot_id)
+            .filter((flight) => flight.state !== "Draft")
             .map((flight) => flight.tow_pilot_id)
             .filter(Boolean) || [] as number[];
 
@@ -186,6 +189,7 @@ export default function ActionSummaryGeneratorWizardDialog({
 
         const glidersInAction = currentActionStoreState.flights
             ?.filter((flight) => flight.glider_id)
+            .filter((flight) => flight.state !== "Draft")
             .map((flight) => flight.glider_id)
             .filter(Boolean) || [] as number[];
 
@@ -197,6 +201,7 @@ export default function ActionSummaryGeneratorWizardDialog({
 
         const towAirplanesInAction = currentActionStoreState.flights
             ?.filter((flight) => flight.tow_airplane_id)
+            .filter((flight) => flight.state !== "Draft")
             .map((flight) => flight.tow_airplane_id)
             .filter(Boolean) || [] as number[];
 
@@ -351,7 +356,10 @@ export default function ActionSummaryGeneratorWizardDialog({
             return null;
         }
 
-        const flights = currentActionStoreState.flights?.filter((flight) => flight.glider_id === gliderId) || [];
+        const flights = currentActionStoreState
+            .flights?.filter((flight) => flight.state !== "Draft")
+            .filter((flight) => flight.glider_id === gliderId) || [];
+
         return renderFlightsSummary(flights);
     }
 
@@ -360,7 +368,10 @@ export default function ActionSummaryGeneratorWizardDialog({
             return null;
         }
 
-        const flights = currentActionStoreState.flights?.filter((flight) => flight.tow_pilot_id === towPilotId) || [];
+        const flights = currentActionStoreState
+            .flights?.filter((flight) => flight.state !== "Draft")
+            .filter((flight) => flight.tow_pilot_id === towPilotId) || [];
+
         return renderFlightsSummary(flights, false);
     }
 
@@ -397,7 +408,10 @@ export default function ActionSummaryGeneratorWizardDialog({
             return null;
         }
 
-        const flights = currentActionStoreState.flights?.filter((flight) => flight.tow_airplane_id === towAirplaneId) || [];
+        const flights = currentActionStoreState
+            .flights?.filter((flight) => flight.state !== "Draft")
+            .filter((flight) => flight.tow_airplane_id === towAirplaneId) || [];
+
         return renderFlightsSummary(flights, false);
     }
 
@@ -460,7 +474,9 @@ export default function ActionSummaryGeneratorWizardDialog({
             return [];
         }
 
-        return currentActionStoreState.flights.filter((flight) => flight.pilot_1_id === gliderPilotId || flight.pilot_2_id === gliderPilotId);
+        return currentActionStoreState.flights
+            .filter((flight) => flight.state !== "Draft")
+            .filter((flight) => flight.pilot_1_id === gliderPilotId || flight.pilot_2_id === gliderPilotId);
     }, [currentActionStoreState.flights, gliderPilotId]);
 
     function onClear() {
