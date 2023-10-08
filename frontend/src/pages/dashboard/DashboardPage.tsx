@@ -658,6 +658,7 @@ export default function DashboardPage() {
     }
 
     const activeFlightsExist = flights?.some((flight) => (flight.state === "Tow") || (flight.state === "Inflight"));
+    const nonFlightsExist = flights?.some((flight) => flight.state !== "Draft");
 
     const isCloseActionDisabled = () => {
         const clubGuestFlights = flights?.filter((flight) => flight.flight_type === "ClubGuest") || [];
@@ -701,6 +702,7 @@ export default function DashboardPage() {
                 variant="contained"
                 color="success"
                 onClick={() => setSummaryGeneratorWizardDialogOpen(true)}
+                disabled={!nonFlightsExist}
                 size={"large"}
                 sx={{
                     fontSize: "1.5rem",
