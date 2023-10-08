@@ -659,12 +659,31 @@ export default function DashboardPage() {
 
     const activeFlightsExist = flights?.some((flight) => (flight.state === "Tow") || (flight.state === "Inflight"));
 
+    const isCloseActionDisabled = () => {
+        const clubGuestFlights = flights?.filter((flight) => flight.flight_type === "ClubGuest") || [];
+
+        const isFlightPaymentSettled = (flight: FlightSchema) => {
+            if (flight.flight_type !== "ClubGuest") {
+                return true;
+            }
+
+            return Boolean(
+                (flight.paying_member_id) || (flight.payment_method && flight.payment_receiver_id)
+            )
+        }
+
+        const clubGuestFlightsWithUnsettledPaymentsExist = clubGuestFlights
+            .some((flight) => !isFlightPaymentSettled(flight))
+
+        return activeFlightsExist || Boolean(action?.closed_at) || clubGuestFlightsWithUnsettledPaymentsExist
+    }
+
     function renderCloseActionButton() {
         return (
             <Button
                 variant="contained"
                 color="error"
-                disabled={activeFlightsExist || Boolean(action?.closed_at)}
+                disabled={isCloseActionDisabled()}
                 onClick={() => handleActionClosed()}
                 size={"large"}
                 sx={{
