@@ -137,6 +137,8 @@ export const TEXTS_HEBREW = {
     ACTION_REOPENED: 'הפעולה נפתחה מחדש',
     SETTLE_PAYMENT: 'הסדר תשלום',
     PAYMENT_BY_CLUB_MEMBER: 'חבר מועדון משלם על הטיסה',
+    FLIGHTS_WITH_UNSETTLED_PAYMENTS_TITLE: 'קיימות טיסות עם תשלומים שלא הוסדרו',
+    FLIGHTS_WITH_UNSETTLED_PAYMENTS_MESSAGE: 'יש להסדיר את התשלומים על מנת לאפשר את סגירת הפעולה.',
 }
 
 

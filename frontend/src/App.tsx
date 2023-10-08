@@ -200,7 +200,24 @@ export default function App() {
         )
     }
 
-    function renderContent() {
+    function renderFlightsWithUnsettledPaymentsExistMessage() {
+        return (
+            <Typography variant="h4" component="h4">
+                <Card>
+                    <Alert severity="warning" sx={{
+                        height: "100%",
+                    }}>
+                        <AlertTitle>
+                            <strong>{t("FLIGHTS_WITH_UNSETTLED_PAYMENTS_TITLE")}</strong>
+                        </AlertTitle>
+                        {t("FLIGHTS_WITH_UNSETTLED_PAYMENTS_MESSAGE")}
+                    </Alert>
+                </Card>
+            </Typography>
+        )
+    }
+
+    function renderRoutes() {
         if (!action) {
             return renderActionNotSelectedMessage()
         }
@@ -241,6 +258,10 @@ export default function App() {
             </Button>
         )
     }
+
+    const flightsWithUnsettlePayments = useSelector((state: RootState) => state.currentAction.flights?.filter((flight) => (
+        !(flight.paying_member_id || (flight.payment_method && flight.payment_receiver_id))
+    ))) || []
 
     return (
         <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -366,7 +387,15 @@ export default function App() {
                                 )
                             }
 
-                            {renderContent()}
+                            {
+                                flightsWithUnsettlePayments.length > 0 && (
+                                    <Grid mb={2}>
+                                        {renderFlightsWithUnsettledPaymentsExistMessage()}
+                                    </Grid>
+                                )
+                            }
+
+                            {renderRoutes()}
                         </Container>
                     </Box>
                 </Box>
