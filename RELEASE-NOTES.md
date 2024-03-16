@@ -1,5 +1,11 @@
 # Gliding Action Page Release Notes
 
+## v3.0.0rc1
+
+### Bug Fixes
+
+- The UI does not show alert for non-guest flights that have unsettled payments.
+
 ## v3.0.0rc0
 
 First conceptual version of the Gliding Action Page.
