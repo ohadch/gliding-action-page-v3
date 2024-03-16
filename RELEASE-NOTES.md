@@ -36,6 +36,10 @@ The user can:
 - Generate a report for a glider
 - Generate a report for a glider pilot
 
+##### Action Selection
+
+At any time, the user can select a different action to manage.
+
 #### Flights Management
 
 In addition for the configuration section, the dashboard page has a section for managing the flights.
