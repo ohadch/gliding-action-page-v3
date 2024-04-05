@@ -1,12 +1,14 @@
+# This has to be at the top always
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import logging
 import threading
 
-from dotenv import load_dotenv
 
 from src.events.events_consumer import EventsConsumer
 from src.notifications.notifications_consumer import NotificationsConsumer
-
-load_dotenv()
 
 import uvicorn
 
