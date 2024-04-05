@@ -16,7 +16,7 @@ docker-compose up -d
 
 Run the DB:
 ```bash
-docker-compose -f docker-compose.yml up -d db
+docker-compose up -d db
 ```
 
 Install the server's env:
