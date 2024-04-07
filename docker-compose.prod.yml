@@ -38,8 +38,8 @@ services:
   nginx:
     image: nginx
     ports:
-      - "8800:80"
-      - "4433:443"
+      - "80:80"
+      - "433:443"
     # environment:
     #   - CERTBOT_EMAIL=youremail@gmail.com
     volumes:
