@@ -72,3 +72,12 @@ make migrate
 # Rollback last migration
 make rollback
 ```
+
+
+## Deployment
+
+### Configure HTTPS
+
+To configure HTTPS, you need to create a certificate and key file and place them in the `server/certs` folder.
+
+Please note that `*.key` and `*.crt` files are ignored by git.

@@ -1,5 +1,11 @@
 # Gliding Action Page Release Notes
 
+## v3.0.0rc2
+
+### Enhancements
+
+- This release adds Nginx to the project in order to serve the server in https.
+
 ## v3.0.0rc1
 
 ### Bug Fixes
