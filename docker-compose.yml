@@ -9,6 +9,8 @@ services:
     environment:
       - MIGRATE_ON_START=true
       - SQLALCHEMY_DB_URI=postgresql://postgres:postgres@db:5432/postgres
+    volumes:
+      - ./server/.env:/app/.env
     ports:
       - "9001:9001"
 
@@ -18,6 +20,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5173:5173"
+    volumes:
+      - ./frontend/.env:/app/.env
 
   db:
     image: postgres:14-alpine
