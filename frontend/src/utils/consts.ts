@@ -1,6 +1,6 @@
 import {FlightState, FlightType, PayersType, PaymentMethod, TowType} from "../lib/types.ts";
 
-export const VITE_API_HOST = import.meta.env.VITE_API_HOST;
+export const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:9001';
 
 
 export const CACHE_KEY_ACTION = 'action';
