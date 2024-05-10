@@ -20,8 +20,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5173:5173"
-    volumes:
-      - ./frontend/.env:/app/.env
 
   db:
     image: postgres:14-alpine
