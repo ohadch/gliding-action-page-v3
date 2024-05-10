@@ -6,3 +6,5 @@ data.db
 db.sqlite3
 *.pyc
 volumes/
+*.key
+*.crt

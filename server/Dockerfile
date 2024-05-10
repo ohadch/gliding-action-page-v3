@@ -3,10 +3,6 @@ FROM python:3.11
 # Install dependencies
 RUN pip install --upgrade pip
 
-# Prepare the environment
-RUN apt-get update -y
-RUN apt-get install ffmpeg libsm6 libxext6  -y
-
 # Set the working directory to /app
 WORKDIR /app
 

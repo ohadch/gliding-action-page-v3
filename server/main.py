@@ -45,4 +45,6 @@ if __name__ == "__main__":
     ).start()
 
     # Uvicorn thread
-    uvicorn.run("src:app", host="0.0.0.0", port=settings.port, reload=True)
+    uvicorn.run(
+        "src:app", host="0.0.0.0", port=settings.port, reload=True, proxy_headers=True
+    )

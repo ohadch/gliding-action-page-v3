@@ -1,5 +1,12 @@
 # Gliding Action Page Release Notes
 
+## v3.0.0rc2
+
+### Enhancements
+
+- Adds Nginx to the project in order to serve the server in https.
+- Adds .env file to the frontend in order to configure the server url.
+
 ## v3.0.0rc1
 
 ### Bug Fixes
