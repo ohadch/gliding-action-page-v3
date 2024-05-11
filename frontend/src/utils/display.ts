@@ -46,8 +46,6 @@ export function getPaymentMethodDisplayValue(paymentMethod: PaymentMethod) {
 
 export function getTowTypeDisplayValue(towType: TowType) {
     switch (towType) {
-        case "AIRPLANE_1000":
-            return "מטוס 1000"
         case "AIRPLANE_1500":
             return "מטוס 1500"
         case "AIRPLANE_2000":
@@ -58,6 +56,8 @@ export function getTowTypeDisplayValue(towType: TowType) {
             return "מטוס 3000"
         case "AIRPLANE_3500":
             return "מטוס 3500"
+        case "AIRPLANE_4000":
+            return "מטוס 4000"
         default:
             throw new Error(`Unknown tow type: ${towType}`)
     }
