@@ -6,6 +6,7 @@
 
 - Adds Nginx to the project in order to serve the server in https.
 - Adds .env file to the frontend in order to configure the server url.
+- Removes the `AIRPLANE_1000` Tow Type and adds the `AIRPLANE_4000` Tow Type.
 
 ## v3.0.0rc1
 

@@ -153,12 +153,12 @@ export const SUPPORTED_FLIGHT_TYPES : FlightType[] = [
 ]
 
 export const SUPPORTED_TOW_TYPES: TowType[] = [
-    "AIRPLANE_1000",
     "AIRPLANE_1500",
     "AIRPLANE_2000",
     "AIRPLANE_2500",
     "AIRPLANE_3000",
     "AIRPLANE_3500",
+    "AIRPLANE_4000"
 ]
 
 export const SUPPORTED_PAYMENT_METHODS: PaymentMethod[] = [

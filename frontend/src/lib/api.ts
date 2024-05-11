@@ -1065,7 +1065,7 @@ export interface components {
      * TowType
      * @enum {string}
      */
-    TowType: "AIRPLANE_1000" | "AIRPLANE_1500" | "AIRPLANE_2000" | "AIRPLANE_2500" | "AIRPLANE_3000" | "AIRPLANE_3500";
+    TowType: "AIRPLANE_1500" | "AIRPLANE_2000" | "AIRPLANE_2500" | "AIRPLANE_3000" | "AIRPLANE_3500" | "AIRPLANE_4000";
     /** ValidationError */
     ValidationError: {
       /** Location */
