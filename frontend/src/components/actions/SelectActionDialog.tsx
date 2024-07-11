@@ -3,10 +3,10 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-    Button, Grid, Tooltip,
+    Button, Grid, Tooltip, TextField,
 
 } from "@mui/material";
-import {useEffect} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
@@ -35,6 +35,7 @@ export default function SelectActionDialog({open, onQuitAction, onClose, onActio
     const dispatch = useAppDispatch();
     const {fetchInProgress, actions, page, pageSize} = useSelector((state: RootState) => state.actions)
     const {actionId: currentActionId} = useSelector((state: RootState) => state.currentAction)
+    const [searchText, setSearchText] = useState("")
 
     const {
         t
@@ -49,9 +50,13 @@ export default function SelectActionDialog({open, onQuitAction, onClose, onActio
         }
     });
 
-    const sortedActions = [...(actions || [])].sort((a, b) => {
-        return moment(a.date).isBefore(moment(b.date)) ? -1 : 1;
-    });
+    const filteredAndSortedActions = useMemo(() => {
+        return actions
+            ?.filter(action => action.date.includes(searchText))
+            .sort((a, b) => {
+                return moment(a.date).isBefore(moment(b.date)) ? -1 : 1;
+            });
+    }, [actions, searchText]);
 
     return (
         <Dialog open={open}>
@@ -65,6 +70,20 @@ export default function SelectActionDialog({open, onQuitAction, onClose, onActio
                     gap: 2,
                 }}
             >
+                <Grid
+                    container
+                    sx={{
+                        gap: 2,
+                    }}
+                >
+                    <Grid item xs={6}>
+                        <TextField
+                            label={t("SEARCH_BY_DATE")}
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                        />
+                    </Grid>
+                </Grid>
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
@@ -77,7 +96,7 @@ export default function SelectActionDialog({open, onQuitAction, onClose, onActio
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {sortedActions?.map((action) => (
+                            {filteredAndSortedActions?.map((action) => (
                                 <TableRow
                                     key={action.id}
                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
