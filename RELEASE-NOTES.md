@@ -1,5 +1,11 @@
 # Gliding Action Page Release Notes
 
+## v3.0.0rc3
+
+### Bug Fixes
+
+- The actions in the action selection dialog in the UI are now sorted by their date.
+
 ## v3.0.0rc2
 
 ### Enhancements

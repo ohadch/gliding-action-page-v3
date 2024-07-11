@@ -49,6 +49,10 @@ export default function SelectActionDialog({open, onQuitAction, onClose, onActio
         }
     });
 
+    const sortedActions = [...(actions || [])].sort((a, b) => {
+        return moment(a.date).isBefore(moment(b.date)) ? -1 : 1;
+    });
+
     return (
         <Dialog open={open}>
             <DialogTitle>
@@ -73,7 +77,7 @@ export default function SelectActionDialog({open, onQuitAction, onClose, onActio
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {actions?.map((action) => (
+                            {sortedActions?.map((action) => (
                                 <TableRow
                                     key={action.id}
                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
