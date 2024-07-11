@@ -6,7 +6,7 @@ import {
     Button, Grid, Tooltip, TextField,
 
 } from "@mui/material";
-import React, {useEffect, useMemo, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
