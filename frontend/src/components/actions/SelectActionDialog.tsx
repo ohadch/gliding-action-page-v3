@@ -74,6 +74,7 @@ export default function SelectActionDialog({open, onQuitAction, onClose, onActio
                     container
                     sx={{
                         gap: 2,
+                        marginTop: 2,
                     }}
                 >
                     <Grid item xs={6}>
