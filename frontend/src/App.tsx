@@ -40,7 +40,6 @@ import {fetchActiveTowAirplanes, fetchEvents, fetchFlights, fetchNotifications} 
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {ConnectingAirports, Email, LegendToggle, Settings} from "@mui/icons-material";
-import {FlightType} from "./lib/types.ts";
 
 const DRAWER_WIDTH = 240;
 
@@ -261,10 +260,8 @@ export default function App() {
     }
 
     const flightsWithUnsettlePayments = useSelector((state: RootState) => state.currentAction.flights?.filter((flight) => {
-        const alwaysSettledFlightTypes: FlightType[] = ["ClubGuest", "MembersGuest"]
-
-        // If the flight is not a guest flight, then the payment is always settled
-        if (flight.flight_type && !alwaysSettledFlightTypes.includes(flight.flight_type)) {
+        // Only ClubGuest flights require payment settlement
+        if (flight.flight_type !== "ClubGuest") {
             return false
         }
 

@@ -9,6 +9,7 @@
 ### Bug Fixes
 
 - The actions in the action selection dialog in the UI are now sorted by their date.
+- Only flights of club guests require payment settlement.
 
 ## v3.0.0rc2
 
