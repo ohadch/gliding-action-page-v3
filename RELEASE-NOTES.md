@@ -1,5 +1,11 @@
 # Gliding Action Page Release Notes
 
+## v3.0.1
+
+### Bug Fixes
+
+- Fixes an issue that caused the selected action to be reset when the user navigates between the pages.
+
 ## v3.0.0
 
 ### New Features
