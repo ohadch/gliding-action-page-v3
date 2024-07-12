@@ -2,6 +2,10 @@
 
 ## v3.0.0rc3
 
+### New Features
+
+- Separate tables by state in the flights page.
+
 ### Bug Fixes
 
 - The actions in the action selection dialog in the UI are now sorted by their date.

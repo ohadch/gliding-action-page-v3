@@ -715,15 +715,22 @@ export default function DashboardPage() {
         )
     }
 
-    function renderFlightsTable() {
-        if (!isFullyConfigured()) {
-            return renderActionNotConfigured()
-        }
+    function renderFlightsTable(
+        state: FlightState,
+        flights: FlightSchema[]
+    ) {
+        function renderTable() {
+            if (flights.length === 0) {
+                return (
+                    <Typography variant="h6" component="h6">
+                        {t("NO_FLIGHTS_IN_THIS_STATE")}.
+                    </Typography>
+                )
+            }
 
-        return (
-            <Grid container>
+            return (
                 <FlightsTable
-                    flights={flights || []}
+                    flights={flights}
                     shownFlightStates={shownFlightStates}
                     setDuplicateFlight={(flight) => {
                         setEditFlightDetailsDialogOpen(true);
@@ -748,6 +755,76 @@ export default function DashboardPage() {
                     onFlightStateUpdated={onFlightStateUpdated}
                     onSettlePayment={(flight) => setSettlePaymentDialogFlight(flight)}
                 />
+            )
+        }
+
+        return (
+            <Grid mt={1}>
+                <Grid>
+                    <Typography variant="h5" component="h5" sx={{fontWeight: "bold"}}>
+                        {t(state.toUpperCase())}: {flights.length} {t("FLIGHTS")}
+                    </Typography>
+                </Grid>
+                <Grid mt={0.5}>
+                    {renderTable()}
+                </Grid>
+            </Grid>
+        )
+    }
+
+    function renderFlightsTables() {
+        if (!isFullyConfigured()) {
+            return renderActionNotConfigured()
+        }
+
+        return (
+            <Grid container>
+                <Grid item xs={12}>
+                    {
+                        shownFlightStates.includes("Draft") && renderFlightsTable(
+                            t("DRAFT_FLIGHTS"),
+                            flights?.filter((flight) => flight.state === "Draft").sort((a, b) => {
+                                return a.id < b.id ? 1 : -1
+                            }) || []
+                        )
+                    }
+                    {
+                        shownFlightStates.includes("Tow") && renderFlightsTable(
+                            t("TOW_FLIGHTS"),
+                            flights?.filter((flight) => flight.state === "Tow").sort((a, b) => {
+                                if (!a.take_off_at || !b.take_off_at) {
+                                    return 0
+                                }
+
+                                return new Date(a.take_off_at) < new Date(b.take_off_at) ? 1 : -1
+                            }) || []
+                        )
+                    }
+                    {
+                        shownFlightStates.includes("Inflight") && renderFlightsTable(
+                            t("INFLIGHT_FLIGHTS"),
+                            flights?.filter((flight) => flight.state === "Inflight").sort((a, b) => {
+                                if (!a.take_off_at || !b.take_off_at) {
+                                    return 0
+                                }
+
+                                return new Date(a.take_off_at) < new Date(b.take_off_at) ? 1 : -1
+                            }) || []
+                        )
+                    }
+                    {
+                        shownFlightStates.includes("Landed") && renderFlightsTable(
+                            t("LANDED_FLIGHTS"),
+                            flights?.filter((flight) => flight.state === "Landed").sort((a, b) => {
+                                if (!a.landing_at || !b.landing_at) {
+                                    return 0
+                                }
+
+                                return new Date(a.landing_at) < new Date(b.landing_at) ? 1 : -1
+                            }) || []
+                        )
+                    }
+                </Grid>
             </Grid>
         )
     }
@@ -773,7 +850,7 @@ export default function DashboardPage() {
         return (
             <Grid>
                 {renderTopBar()}
-                {renderFlightsTable()}
+                {renderFlightsTables()}
                 {renderQuickActions()}
             </Grid>
         )

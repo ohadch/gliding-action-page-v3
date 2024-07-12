@@ -139,6 +139,11 @@ export const TEXTS_HEBREW = {
     PAYMENT_BY_CLUB_MEMBER: 'חבר מועדון משלם על הטיסה',
     FLIGHTS_WITH_UNSETTLED_PAYMENTS_TITLE: 'קיימות טיסות עם תשלומים שלא הוסדרו',
     FLIGHTS_WITH_UNSETTLED_PAYMENTS_MESSAGE: 'יש להסדיר את התשלומים על מנת לאפשר את סגירת הפעולה.',
+    DRAFT_FLIGHTS: 'בהכנה',
+    TOW_FLIGHTS: 'בגרירה',
+    INFLIGHT_FLIGHTS: 'בטיסה',
+    LANDED_FLIGHTS: 'נחתו',
+    NO_FLIGHTS_IN_THIS_STATE: 'אין טיסות במצב זה'
 }
 
 
