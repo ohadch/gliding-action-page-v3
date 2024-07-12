@@ -1,6 +1,6 @@
 # Gliding Action Page Release Notes
 
-## v3.0.0rc3
+## v3.0.0
 
 ### New Features
 
