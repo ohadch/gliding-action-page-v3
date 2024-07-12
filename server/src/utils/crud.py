@@ -37,6 +37,8 @@ class GenericModelCrud(
         self,
         db: Session,
         filters: Optional[TModelSearchSchema] = None,
+        order_by: Optional[str] = None,
+        ascending: bool = True,
         page: int = 1,
         page_size: Optional[int] = None,
     ) -> List[TModel]:
@@ -44,13 +46,17 @@ class GenericModelCrud(
         Return a list of items.
         :param db: Database session
         :param filters: Filters to apply
+        :param order_by: Order by field
+        :param ascending: Ascending order
         :param page: Page number
         :param page_size: Page size
         :return: List of items
         """
         settings = get_settings()
         filters_dict = filters.dict(exclude_none=True) if filters else {}
-        query = self.build_sqlalchemy_query_by_dict_filters(db=db, filters=filters_dict)
+        query = self.build_sqlalchemy_query_by_dict_filters(
+            db=db, filters=filters_dict, order_by=order_by, ascending=ascending
+        )
         response = paginate(
             query=query, page=page, page_size=page_size or settings.default_page_size
         )
@@ -113,12 +119,18 @@ class GenericModelCrud(
         db.commit()
 
     def build_sqlalchemy_query_by_dict_filters(
-        self, db: Session, filters: Dict[str, Any]
+        self,
+        db: Session,
+        filters: Dict[str, Any],
+        order_by: Optional[str] = None,
+        ascending: bool = True,
     ) -> Query:
         """
         Build a SQLAlchemy query by a dict of filters.
         :param db: Database session
         :param filters: Filters to apply
+        :param order_by: Order by field
+        :param ascending: Ascending order
         :return: SQLAlchemy query
         """
         query = db.query(self.model)
@@ -132,5 +144,12 @@ class GenericModelCrud(
                 query = query.filter(getattr(self.model, key).in_(value))
             else:
                 query = query.filter(getattr(self.model, key) == value)
+
+        if order_by:
+            query = query.order_by(
+                getattr(self.model, order_by).asc()
+                if ascending
+                else getattr(self.model, order_by).desc()
+            )
 
         return query
