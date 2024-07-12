@@ -319,7 +319,6 @@ export default function ActionSummaryGeneratorWizardDialog({
                                 getOptionLabel={(option) => getMemberDisplayValue(
                                     option,
                                     membersStoreState.membersRoles?.filter((role) => role.member_id === option.id) || [],
-                                    true
                                 )}
                                 open={autocompleteOpen}
                                 onOpen={() => setAutocompleteOpen(true)}

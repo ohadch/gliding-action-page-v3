@@ -75,7 +75,6 @@ export default function FlightCreationWizardDialog({
         return member ? getMemberDisplayValue(
             member,
             membersStoreState.membersRoles?.filter((role) => role.member_id === member.id) || [],
-            true
         ) : "";
     }
 
@@ -359,7 +358,6 @@ export default function FlightCreationWizardDialog({
                                 getOptionLabel={(option) => getMemberDisplayValue(
                                     option,
                                     membersStoreState.membersRoles?.filter((role) => role.member_id === option.id) || [],
-                                    true
                                 )}
                                 open={autocompleteOpen}
                                 onOpen={() => setAutocompleteOpen(true)}
@@ -391,7 +389,6 @@ export default function FlightCreationWizardDialog({
                                         getOptionLabel={(option) => getMemberDisplayValue(
                                             option,
                                             membersStoreState.membersRoles?.filter((role) => role.member_id === option.id) || [],
-                                            true
                                         )}
                                         open={autocompleteOpen}
                                         onOpen={() => setAutocompleteOpen(true)}

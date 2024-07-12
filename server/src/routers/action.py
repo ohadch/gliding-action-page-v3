@@ -47,6 +47,8 @@ async def search(
         filters=filters,
         page=page,
         page_size=page_size or settings.default_page_size,
+        order_by="date",
+        ascending=True,
     )
     return items
 

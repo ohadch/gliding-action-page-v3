@@ -1,11 +1,23 @@
 # Gliding Action Page Release Notes
 
+## v3.0.0
+
+### New Features
+
+- Separate tables by state in the flights page.
+
+### Bug Fixes
+
+- The actions in the action selection dialog in the UI are now sorted by their date.
+- Only flights of club guests require payment settlement.
+
 ## v3.0.0rc2
 
 ### Enhancements
 
 - Adds Nginx to the project in order to serve the server in https.
 - Adds .env file to the frontend in order to configure the server url.
+- Removes the `AIRPLANE_1000` Tow Type and adds the `AIRPLANE_4000` Tow Type.
 
 ## v3.0.0rc1
 

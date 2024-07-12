@@ -139,6 +139,11 @@ export const TEXTS_HEBREW = {
     PAYMENT_BY_CLUB_MEMBER: 'חבר מועדון משלם על הטיסה',
     FLIGHTS_WITH_UNSETTLED_PAYMENTS_TITLE: 'קיימות טיסות עם תשלומים שלא הוסדרו',
     FLIGHTS_WITH_UNSETTLED_PAYMENTS_MESSAGE: 'יש להסדיר את התשלומים על מנת לאפשר את סגירת הפעולה.',
+    DRAFT_FLIGHTS: 'בהכנה',
+    TOW_FLIGHTS: 'בגרירה',
+    INFLIGHT_FLIGHTS: 'בטיסה',
+    LANDED_FLIGHTS: 'נחתו',
+    NO_FLIGHTS_IN_THIS_STATE: 'אין טיסות במצב זה'
 }
 
 
@@ -153,12 +158,12 @@ export const SUPPORTED_FLIGHT_TYPES : FlightType[] = [
 ]
 
 export const SUPPORTED_TOW_TYPES: TowType[] = [
-    "AIRPLANE_1000",
     "AIRPLANE_1500",
     "AIRPLANE_2000",
     "AIRPLANE_2500",
     "AIRPLANE_3000",
     "AIRPLANE_3500",
+    "AIRPLANE_4000"
 ]
 
 export const SUPPORTED_PAYMENT_METHODS: PaymentMethod[] = [

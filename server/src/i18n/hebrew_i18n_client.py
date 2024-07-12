@@ -38,12 +38,12 @@ class HebrewI18nClient(I18nClient):
             "Check": "צ׳ק",
             "CreditCard": "כרטיס אשראי",
             "Bit": "ביט",
-            "AIRPLANE_1000": "1000 רגל",
             "AIRPLANE_1500": "1500 רגל",
             "AIRPLANE_2000": "2000 רגל",
             "AIRPLANE_2500": "2500 רגל",
             "AIRPLANE_3000": "3000 רגל",
             "AIRPLANE_3500": "3500 רגל",
+            "AIRPLANE_4000": "4000 רגל",
         }.get(key, key)
 
     def format_flight_summary_for_pilot_email_message_template(
