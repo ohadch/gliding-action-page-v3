@@ -4,7 +4,8 @@ export const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:9001'
 
 
 export const CACHE_KEY_ACTION = 'action';
-export const CACHE_KEY_ACTIONS = 'actions';
+export const CACHE_KEY_ACTION_PAGE = 'actions_page';
+export const CACHE_KEY_ACTION_PAGE_SIZE = 'actions_page_size';
 export const CACHE_KEY_THEME = 'theme';
 
 
