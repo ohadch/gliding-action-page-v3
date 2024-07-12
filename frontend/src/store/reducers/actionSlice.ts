@@ -2,13 +2,13 @@ import {createSlice} from '@reduxjs/toolkit'
 import {ActionsStoreState} from "../types/InitialData";
 import {fetchActions, updateAction} from "../actions/action";
 import {CacheService} from "../../utils/cache.ts";
-import {CACHE_KEY_ACTIONS} from "../../utils/consts.ts";
+import {CACHE_KEY_ACTION_PAGE, CACHE_KEY_ACTION_PAGE_SIZE} from "../../utils/consts.ts";
 
 const initialState: ActionsStoreState = {
-    page: 1,
-    pageSize: 10,
+    page: CacheService.getNumber(CACHE_KEY_ACTION_PAGE) || 1,
+    pageSize: CacheService.getNumber(CACHE_KEY_ACTION_PAGE_SIZE) || 10,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    actions: CacheService.get(CACHE_KEY_ACTIONS) ? JSON.parse(CacheService.get(CACHE_KEY_ACTIONS)!) : undefined,
+    actions: undefined,
     fetchInProgress: false,
     initialState: true,
 }
@@ -26,7 +26,8 @@ export const actionsSlice = createSlice({
                 state.fetchInProgress = false
                 const {page, pageSize, actions} = action.payload
                 state.actions = actions
-                CacheService.set(CACHE_KEY_ACTIONS, JSON.stringify(actions))
+                CacheService.set(CACHE_KEY_ACTION_PAGE, `${page}`)
+                CacheService.set(CACHE_KEY_ACTION_PAGE_SIZE, `${pageSize}`)
                 state.page = page
                 state.pageSize = pageSize
             })
