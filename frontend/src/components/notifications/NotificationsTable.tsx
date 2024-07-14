@@ -22,6 +22,7 @@ import {fetchGliders} from "../../store/actions/glider.ts";
 import {NotificationState} from "../../lib/types.ts";
 import IconButton from "@mui/material/IconButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import {updateNotification} from "../../store/actions/notification.ts";
 
 export default function NotificationsTable() {
     const dispatch = useAppDispatch();
@@ -144,7 +145,20 @@ export default function NotificationsTable() {
                                         <Tooltip title={t("RESEND_NOTIFICATION")}>
                                             <IconButton
                                                 onClick={() => {
-                                                    // dispatch(retryNotification(notification.id))
+                                                    if (!confirm(t("RESEND_NOTIFICATION_CONFIRMATION"))) {
+                                                        return;
+                                                    }
+
+                                                    dispatch(
+                                                        updateNotification({
+                                                            notificationId: notification.id,
+                                                            updatePayload: {
+                                                                state: "pending",
+                                                                num_sending_attempts: 0,
+                                                                last_sending_attempt_at: null,
+                                                            },
+                                                        })
+                                                    );
                                                 }}
                                             >
                                                 <RefreshIcon/>

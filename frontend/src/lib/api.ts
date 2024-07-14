@@ -1003,6 +1003,11 @@ export interface components {
       payload?: components["schemas"]["NotificationPayloadSchema-Input"] | null;
       type?: components["schemas"]["NotificationType"] | null;
       method?: components["schemas"]["NotificationMethod"] | null;
+      state?: components["schemas"]["NotificationState"] | null;
+      /** Num Sending Attempts */
+      num_sending_attempts?: number | null;
+      /** Last Sending Attempt At */
+      last_sending_attempt_at?: string | null;
       /** Action Id */
       action_id?: number | null;
     };
@@ -1023,6 +1028,11 @@ export interface components {
       payload?: components["schemas"]["NotificationPayloadSchema-Input"] | null;
       type?: components["schemas"]["NotificationType"] | null;
       method?: components["schemas"]["NotificationMethod"] | null;
+      state?: components["schemas"]["NotificationState"] | null;
+      /** Num Sending Attempts */
+      num_sending_attempts?: number | null;
+      /** Last Sending Attempt At */
+      last_sending_attempt_at?: string | null;
     };
     /**
      * PayersType

@@ -37,6 +37,9 @@ class NotificationUpdateSchema(BaseModel):
     payload: Optional[NotificationPayloadSchema] = None
     type: Optional[NotificationType] = None
     method: Optional[NotificationMethod] = None
+    state: Optional[NotificationState] = None
+    num_sending_attempts: Optional[int] = None
+    last_sending_attempt_at: Optional[datetime.datetime] = None
 
 
 class NotificationSearchSchema(NotificationUpdateSchema):

@@ -11,6 +11,7 @@ import {
     updateFlight
 } from "../actions/currentAction.ts";
 import {EventSchema, NotificationSchema} from "../../lib/types.ts";
+import {updateNotification} from "../actions/notification.ts";
 
 const initialState: CurrentActionStoreState = {
     actionId: CacheService.getNumber(CACHE_KEY_ACTION),
@@ -146,6 +147,17 @@ export const currentActionSlice = createSlice({
             .addCase(fetchNotifications.rejected, (state, event) => {
                 state.fetchInProgress = false
                 state.error = event.error.message
+            })
+            .addCase(updateNotification.pending, (state) => {
+                state.fetchInProgress = true
+            })
+            .addCase(updateNotification.fulfilled, (state, action) => {
+                state.fetchInProgress = false
+                state.notifications = state.notifications?.map(notification => notification.id === action.payload.id ? action.payload : notification)
+            })
+            .addCase(updateNotification.rejected, (state, notification) => {
+                state.fetchInProgress = false
+                state.error = notification.error.message
             })
     }
 })
