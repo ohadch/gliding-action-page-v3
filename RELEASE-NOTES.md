@@ -1,5 +1,15 @@
 # Gliding Action Page Release Notes
 
+## v3.1.0
+
+### New Features
+
+- Adds a button in the notifications page in the UI to resend the notification in case it failed to send.
+
+### Enhancements
+
+- Adds the properties to the `NotificationUpdateSchema` in the backend in order to allow updating the state of the notification.
+
 ## v3.0.2
 
 ### Enhancements

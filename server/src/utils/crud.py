@@ -102,6 +102,7 @@ class GenericModelCrud(
             {
                 k: (v if not isinstance(v, Enum) else v.value)
                 for k, v in data.model_dump().items()
+                if k in data.model_fields_set
             }
         )
         db.commit()

@@ -1,6 +1,6 @@
 import {
     Chip,
-    Grid
+    Grid, Tooltip
 
 } from "@mui/material";
 import {useCallback, useEffect} from "react";
@@ -20,6 +20,9 @@ import {fetchMembers} from "../../store/actions/member.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import {fetchGliders} from "../../store/actions/glider.ts";
 import {NotificationState} from "../../lib/types.ts";
+import IconButton from "@mui/material/IconButton";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import {updateNotification} from "../../store/actions/notification.ts";
 
 export default function NotificationsTable() {
     const dispatch = useAppDispatch();
@@ -120,6 +123,7 @@ export default function NotificationsTable() {
                 <Table>
                     <TableHead>
                         <TableRow>
+                            <TableCell align="right"></TableCell>
                             <TableCell align="right">{t("STATUS")}</TableCell>
                             <TableCell align="right">{t("ID")}</TableCell>
                             <TableCell align="right">{t("SENT_AT")}</TableCell>
@@ -135,8 +139,37 @@ export default function NotificationsTable() {
                                 key={notification.id}
                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
                             >
+
                                 <TableCell align="right">
-                                    {renderState(notification.state)}
+                                    {notification.state === "failed" && (
+                                        <Tooltip title={t("RESEND_NOTIFICATION")}>
+                                            <IconButton
+                                                onClick={() => {
+                                                    if (!confirm(t("RESEND_NOTIFICATION_CONFIRMATION"))) {
+                                                        return;
+                                                    }
+
+                                                    dispatch(
+                                                        updateNotification({
+                                                            notificationId: notification.id,
+                                                            updatePayload: {
+                                                                state: "pending",
+                                                                num_sending_attempts: 0,
+                                                                last_sending_attempt_at: null,
+                                                            },
+                                                        })
+                                                    );
+                                                }}
+                                            >
+                                                <RefreshIcon/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    )}
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Grid>
+                                        {renderState(notification.state)}
+                                    </Grid>
                                 </TableCell>
                                 <TableCell align="right">
                                     {notification.id}

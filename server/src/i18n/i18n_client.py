@@ -283,10 +283,11 @@ class I18nClient(abc.ABC):
                     if flight.payment_receiver
                     else None,
                     "flight_duration": stringify_duration(
-                        start_time=flight.take_off_at, end_time=flight.landing_at
+                        total_duration=flight.landing_at - flight.take_off_at
                     ),
                 }
                 for flight in flights
+                if flight.take_off_at and flight.landing_at
             ]
         )
 
