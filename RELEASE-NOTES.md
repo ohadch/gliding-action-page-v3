@@ -6,6 +6,10 @@
 
 - Adds `pytest` to the project in order to run the tests.
 
+### Bug Fixes
+
+- Fixes a bug that caused the total duration that was sent for the glider in the emails to be incorrect.
+
 ## v3.0.1
 
 ### Bug Fixes

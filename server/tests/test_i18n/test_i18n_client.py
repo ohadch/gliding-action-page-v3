@@ -99,3 +99,39 @@ class TestGroupFlightsByGlider:
 
         # Then
         assert result == [("call_sign_1", 1, "01:00:00", "test")]
+
+    def test_when_there_are_two_flights_with_same_glider_then_return_list_with_one_element(
+        self,
+    ):
+        # Given
+        glider_1 = MagicMock(
+            id=1,
+            call_sign="call_sign_1",
+            num_seats=1,
+            type="type_1",
+        )
+
+        flights = [
+            MagicMock(
+                action_id=1,
+                state="state_1",
+                take_off_at=datetime.datetime(2021, 1, 1, 10, 0),
+                landing_at=datetime.datetime(2021, 1, 1, 11, 0),
+                glider=glider_1,
+            ),
+            MagicMock(
+                action_id=1,
+                state="state_1",
+                take_off_at=datetime.datetime(2021, 1, 1, 12, 0),
+                landing_at=datetime.datetime(2021, 1, 1, 13, 0),
+                glider=glider_1,
+            ),
+        ]
+
+        i18n_client = MockI18nClient()
+
+        # When
+        result = i18n_client._group_flights_by_glider(flights)
+
+        # Then
+        assert result == [("call_sign_1", 2, "02:00:00", "test")]

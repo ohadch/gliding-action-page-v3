@@ -1,4 +1,5 @@
 import abc
+import datetime
 from typing import List, Optional, Tuple
 
 import pandas as pd
@@ -86,7 +87,7 @@ class I18nClient(abc.ABC):
         self, member: Member, flight: Flight, flights_in_action: List[Flight]
     ) -> str:
         duration_str = stringify_duration(
-            start_time=flight.take_off_at, end_time=flight.landing_at
+            total_duration=flight.landing_at - flight.take_off_at
         )
 
         possible_values = [
@@ -184,19 +185,31 @@ class I18nClient(abc.ABC):
         """
         flights_by_glider: List[Tuple[str, int, str, str]] = []
 
+        # For each glider, calculate the number and total duration of all flights
         for glider_call_sign, glider_flights in groupby(
             sorted(flights, key=lambda flight_: flight_.take_off_at),
             lambda f: f.glider.call_sign,
         ):
             glider_flights = list(glider_flights)
+
+            # Calculate the total duration of all flights
+            total_duration = sum(
+                [
+                    (flight.landing_at - flight.take_off_at).total_seconds()
+                    for flight in glider_flights
+                ]
+            )
+
+            # Convert the total duration to a string
+            glider_flights_duration = stringify_duration(
+                total_duration=datetime.timedelta(seconds=total_duration)
+            )
+
             flights_by_glider.append(
                 (
                     glider_call_sign,
                     len(glider_flights),
-                    stringify_duration(
-                        start_time=glider_flights[0].take_off_at,
-                        end_time=glider_flights[-1].landing_at,
-                    ),
+                    glider_flights_duration,
                     self.create_flights_table_html(
                         flights=glider_flights,
                     ),
