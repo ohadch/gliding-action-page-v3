@@ -124,7 +124,7 @@ class HebrewI18nClient(I18nClient):
 
     def get_flight_summary_for_pilot_email_message_subject(self, flight: Flight) -> str:
         duration_str = stringify_duration(
-            start_time=flight.take_off_at, end_time=flight.landing_at
+            total_duration=flight.landing_at - flight.take_off_at
         )
 
         return f"טיסתך בדאון {flight.glider.call_sign} נמשכה {duration_str} שעות"

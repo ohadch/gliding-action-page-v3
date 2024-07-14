@@ -1,5 +1,16 @@
 # Gliding Action Page Release Notes
 
+## v3.0.2
+
+### Enhancements
+
+- Adds `pytest` to the project in order to run the tests.
+
+### Bug Fixes
+
+- Fixes a bug that caused the total duration that was sent for the glider in the emails to be incorrect.
+- Fixes a bug that cause emails to not be sent for gliders that have active flights.
+
 ## v3.0.1
 
 ### Bug Fixes
