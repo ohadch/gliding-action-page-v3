@@ -177,6 +177,11 @@ class I18nClient(abc.ABC):
     def _group_flights_by_glider(
         self, flights: List[Flight]
     ) -> List[Tuple[str, int, str, str]]:
+        """
+        Group flights by glider
+        :param flights: flights
+        :return: Lost of tuples (glider_call_sign, number_of_flights, total_duration_string, flights_table_html)
+        """
         flights_by_glider: List[Tuple[str, int, str, str]] = []
 
         for glider_call_sign, glider_flights in groupby(
