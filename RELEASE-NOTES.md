@@ -1,5 +1,11 @@
 # Gliding Action Page Release Notes
 
+## v3.0.2
+
+### Enhancements
+
+- Adds `pytest` to the project in order to run the tests.
+
 ## v3.0.1
 
 ### Bug Fixes
