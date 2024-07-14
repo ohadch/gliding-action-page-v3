@@ -185,6 +185,11 @@ class I18nClient(abc.ABC):
         """
         flights_by_glider: List[Tuple[str, int, str, str]] = []
 
+        # Include only flights that have both take_off_at and landing_at
+        flights = [
+            flight for flight in flights if flight.take_off_at and flight.landing_at
+        ]
+
         # For each glider, calculate the number and total duration of all flights
         for glider_call_sign, glider_flights in groupby(
             sorted(flights, key=lambda flight_: flight_.take_off_at),

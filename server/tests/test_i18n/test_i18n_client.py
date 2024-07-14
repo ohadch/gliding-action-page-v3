@@ -135,3 +135,37 @@ class TestGroupFlightsByGlider:
 
         # Then
         assert result == [("call_sign_1", 2, "02:00:00", "test")]
+
+    def test_that_only_flights_that_have_take_off_at_and_landing_at_are_included(self):
+        # Given
+        glider_1 = MagicMock(
+            id=1,
+            call_sign="call_sign_1",
+            num_seats=1,
+            type="type_1",
+        )
+
+        flights = [
+            MagicMock(
+                action_id=1,
+                state="state_1",
+                take_off_at=datetime.datetime(2021, 1, 1, 10, 0),
+                landing_at=None,
+                glider=glider_1,
+            ),
+            MagicMock(
+                action_id=1,
+                state="state_1",
+                take_off_at=None,
+                landing_at=datetime.datetime(2021, 1, 1, 13, 0),
+                glider=glider_1,
+            ),
+        ]
+
+        i18n_client = MockI18nClient()
+
+        # When
+        result = i18n_client._group_flights_by_glider(flights)
+
+        # Then
+        assert result == []
