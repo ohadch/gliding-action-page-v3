@@ -145,7 +145,8 @@ export const TEXTS_HEBREW = {
     TOW_FLIGHTS: 'בגרירה',
     INFLIGHT_FLIGHTS: 'בטיסה',
     LANDED_FLIGHTS: 'נחתו',
-    NO_FLIGHTS_IN_THIS_STATE: 'אין טיסות במצב זה'
+    NO_FLIGHTS_IN_THIS_STATE: 'אין טיסות במצב זה',
+    RESEND_NOTIFICATION: 'שלח מחדש',
 }
 
 
