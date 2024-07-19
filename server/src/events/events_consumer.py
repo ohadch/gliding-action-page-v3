@@ -1,6 +1,7 @@
 import datetime
 import logging
 import time
+import traceback
 from typing import Optional
 
 from src import Event
@@ -14,11 +15,12 @@ class EventsConsumer:
         self,
         interval_seconds: int = 10,
         backoff_after_num_attempts: int = 3,
+        session: SessionLocal = SessionLocal(),
     ):
         self._interval_seconds = interval_seconds
         self._backoff_after_num_attempts = backoff_after_num_attempts
         self._logger = logging.getLogger(__name__)
-        self._session = SessionLocal()
+        self._session = session
 
     def run(self):
         """
@@ -60,6 +62,7 @@ class EventsConsumer:
         except Exception as e:
             self._logger.exception(f"Failed to send event: {e}")
             event.state = EventState.FAILED.value
+            event.traceback = traceback.format_exc()
         finally:
             self._session.add(event)
             self._session.commit()

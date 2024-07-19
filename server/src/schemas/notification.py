@@ -20,6 +20,7 @@ class NotificationSchema(BaseModel):
     payload: NotificationPayloadSchema
     state: NotificationState
     originator_event_id: Optional[int] = None
+    traceback: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
