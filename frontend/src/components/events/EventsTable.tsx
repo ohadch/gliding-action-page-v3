@@ -1,5 +1,5 @@
 import {
-    Grid
+    Grid, Tooltip
 
 } from "@mui/material";
 import {useCallback, useEffect} from "react";
@@ -13,12 +13,15 @@ import TableRow from "@mui/material/TableRow";
 import TableContainer from "@mui/material/TableContainer";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import {fetchEvents, fetchFlights} from "../../store/actions/currentAction.ts";
+import {deleteFlight, fetchEvents, fetchFlights} from "../../store/actions/currentAction.ts";
 import {getMemberDisplayValue} from "../../utils/display.ts";
 import {fetchMembers} from "../../store/actions/member.ts";
 import {EventSchema, EventType} from "../../lib/types.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import {fetchGliders} from "../../store/actions/glider.ts";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import {deleteEvent} from "../../store/actions/event.ts";
 
 export default function EventsTable() {
     const dispatch = useAppDispatch();
@@ -123,6 +126,14 @@ export default function EventsTable() {
         }) || [];
     }
 
+    function onEventDelete(id: number) {
+        if (!confirm(t("DELETE_EVENT_CONFIRMATION"))) {
+            return;
+        }
+
+        dispatch(deleteEvent(id));
+    }
+
     return (
         <Grid
             sx={{
@@ -140,6 +151,7 @@ export default function EventsTable() {
                             <TableCell align="right">{t("TYPE")}</TableCell>
                             <TableCell align="right">{t("DATA")}</TableCell>
                             <TableCell align="right">{t("AUTHOR")}</TableCell>
+                            <TableCell align="right"></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -159,6 +171,13 @@ export default function EventsTable() {
                                 <TableCell align="right">{
                                     event.payload.field_responsible_id && displayMember(event.payload.field_responsible_id)
                                 }</TableCell>
+                                <TableCell>
+                                    <Tooltip title={t("DELETE_EVENT")} onClick={() => onEventDelete(event.id)}>
+                                            <IconButton aria-label="delete">
+                                                <DeleteIcon/>
+                                            </IconButton>
+                                        </Tooltip>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

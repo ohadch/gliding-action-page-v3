@@ -1,5 +1,11 @@
 # Gliding Action Page Release Notes
 
+## v3.1.2
+
+### Enhancements
+
+- Introduces the ability to delete events from the UI.
+
 ## v3.1.1
 
 ### Deprecations
