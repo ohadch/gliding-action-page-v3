@@ -5,7 +5,7 @@ import {API_HOST} from "../../utils/consts.ts";
 import {EventCreateSchema, EventSchema} from "../../lib/types.ts";
 
 
-const {POST} = createClient<paths>({baseUrl: API_HOST});
+const {POST, DELETE} = createClient<paths>({baseUrl: API_HOST});
 
 
 export const createEvent = createAsyncThunk<EventSchema, EventCreateSchema, { rejectValue: string }
@@ -21,5 +21,26 @@ export const createEvent = createAsyncThunk<EventSchema, EventCreateSchema, { re
         }
 
         return data;
+    }
+)
+
+
+export const deleteEvent = createAsyncThunk<number, number, { rejectValue: string }
+>(
+    'events/deleteEvent',
+    async (eventId, thunkAPI) => {
+        const {error} = await DELETE("/events/{id_}", {
+            params: {
+                path: {
+                    id_: eventId,
+                }
+            }
+        });
+
+        if (error) {
+            return thunkAPI.rejectWithValue("Error deleting event");
+        }
+
+        return eventId;
     }
 )
