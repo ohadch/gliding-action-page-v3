@@ -1,5 +1,15 @@
 # Gliding Action Page Release Notes
 
+## v3.2.0
+
+### Enhancements
+
+- In case of an error while handling an event or a notification, the error traceback is now saved in the database.
+
+### Migrations
+
+- Adds the `traceback` column to the `events` and `notifications` tables in the database.
+
 ## v3.1.2
 
 ### Enhancements

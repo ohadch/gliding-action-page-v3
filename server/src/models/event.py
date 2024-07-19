@@ -21,5 +21,6 @@ class Event(Base):
     )
     handled_at: datetime.datetime = Column(DateTime, nullable=True)
     num_handling_attempts: int = Column(Integer, nullable=False, default=0)
+    traceback = Column(String, nullable=True)
 
     action = relationship("Action")

@@ -14,8 +14,9 @@ class EventSchema(BaseModel):
     state: EventState
     payload: EventPayloadSchema
     created_at: datetime.datetime
-    handled_at: Optional[datetime.datetime]
+    handled_at: Optional[datetime.datetime] = None
     num_handling_attempts: int
+    traceback: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
