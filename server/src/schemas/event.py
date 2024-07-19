@@ -17,6 +17,7 @@ class EventSchema(BaseModel):
     handled_at: Optional[datetime.datetime] = None
     num_handling_attempts: int
     traceback: Optional[str] = None
+    is_deleted: bool = False
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -30,6 +31,7 @@ class EventCreateSchema(BaseModel):
 class EventUpdateSchema(BaseModel):
     type: Optional[EventType] = None
     payload: Optional[EventPayloadSchema] = None
+    is_deleted: Optional[bool] = None
 
 
 class EventSearchSchema(EventUpdateSchema):

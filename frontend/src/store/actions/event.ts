@@ -2,10 +2,10 @@ import {createAsyncThunk} from "@reduxjs/toolkit";
 import createClient from "openapi-fetch";
 import {paths} from "../../lib/api.ts";
 import {API_HOST} from "../../utils/consts.ts";
-import {EventCreateSchema, EventSchema} from "../../lib/types.ts";
+import {EventCreateSchema, EventSchema, EventUpdateSchema} from "../../lib/types.ts";
 
 
-const {POST, DELETE} = createClient<paths>({baseUrl: API_HOST});
+const {POST, PUT} = createClient<paths>({baseUrl: API_HOST});
 
 
 export const createEvent = createAsyncThunk<EventSchema, EventCreateSchema, { rejectValue: string }
@@ -25,11 +25,14 @@ export const createEvent = createAsyncThunk<EventSchema, EventCreateSchema, { re
 )
 
 
-export const deleteEvent = createAsyncThunk<number, number, { rejectValue: string }
+export const updateEvent = createAsyncThunk<EventSchema, { eventId: number, updatePayload: EventUpdateSchema }, { rejectValue: string }
 >(
-    'events/deleteEvent',
-    async (eventId, thunkAPI) => {
-        const {error} = await DELETE("/events/{id_}", {
+    'events/updateEvent',
+    async ({eventId, updatePayload}, thunkAPI) => {
+        const {data, error} = await PUT("/events/{id_}", {
+            body: {
+                ...updatePayload,
+            },
             params: {
                 path: {
                     id_: eventId,
@@ -38,9 +41,9 @@ export const deleteEvent = createAsyncThunk<number, number, { rejectValue: strin
         });
 
         if (error) {
-            return thunkAPI.rejectWithValue("Error deleting event");
+            return thunkAPI.rejectWithValue("Error updating event");
         }
 
-        return eventId;
+        return data;
     }
 )

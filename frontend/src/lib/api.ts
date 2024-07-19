@@ -636,11 +636,20 @@ export interface components {
       handled_at: string | null;
       /** Num Handling Attempts */
       num_handling_attempts: number;
+      /** Traceback */
+      traceback: string | null;
+      /**
+       * Is Deleted
+       * @default false
+       */
+      is_deleted: boolean;
     };
     /** EventSearchSchema */
     EventSearchSchema: {
       type?: components["schemas"]["EventType"] | null;
       payload?: components["schemas"]["EventPayloadSchema-Input"] | null;
+      /** Is Deleted */
+      is_deleted?: boolean | null;
       /** Action Id */
       action_id?: number | null;
     };
@@ -658,6 +667,8 @@ export interface components {
     EventUpdateSchema: {
       type?: components["schemas"]["EventType"] | null;
       payload?: components["schemas"]["EventPayloadSchema-Input"] | null;
+      /** Is Deleted */
+      is_deleted?: boolean | null;
     };
     /** FlightCreateSchema */
     FlightCreateSchema: {
@@ -995,6 +1006,8 @@ export interface components {
       state: components["schemas"]["NotificationState"];
       /** Originator Event Id */
       originator_event_id: number | null;
+      /** Traceback */
+      traceback: string | null;
     };
     /** NotificationSearchSchema */
     NotificationSearchSchema: {

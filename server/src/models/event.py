@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import Column, Integer, String, JSON, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, JSON, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
 from src.database import Base
@@ -22,5 +22,6 @@ class Event(Base):
     handled_at: datetime.datetime = Column(DateTime, nullable=True)
     num_handling_attempts: int = Column(Integer, nullable=False, default=0)
     traceback = Column(String, nullable=True)
+    is_deleted = Column(Boolean, default=False)
 
     action = relationship("Action")

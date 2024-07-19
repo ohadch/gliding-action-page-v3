@@ -1,5 +1,11 @@
 # Gliding Action Page Release Notes
 
+## v3.2.1
+
+### Migrations
+
+- Adds the `deleted_at` column to the `events` table in the database.
+
 ## v3.2.0
 
 ### Enhancements

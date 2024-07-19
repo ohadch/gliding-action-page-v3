@@ -12,7 +12,7 @@ import {
 } from "../actions/currentAction.ts";
 import {EventSchema, NotificationSchema} from "../../lib/types.ts";
 import {updateNotification} from "../actions/notification.ts";
-import {deleteEvent} from "../actions/event.ts";
+import {updateEvent} from "../actions/event.ts";
 
 const initialState: CurrentActionStoreState = {
     actionId: CacheService.getNumber(CACHE_KEY_ACTION),
@@ -138,14 +138,14 @@ export const currentActionSlice = createSlice({
                 state.fetchInProgress = false
                 state.error = event.error.message
             })
-            .addCase(deleteEvent.pending, (state) => {
+            .addCase(updateEvent.pending, (state) => {
                 state.fetchInProgress = true
             })
-            .addCase(deleteEvent.fulfilled, (state, action) => {
+            .addCase(updateEvent.fulfilled, (state, action) => {
                 state.fetchInProgress = false
-                state.events = state.events?.filter(event => event.id !== action.payload)
+                state.events = state.events?.map(event => event.id === action.payload.id ? action.payload : event)
             })
-            .addCase(deleteEvent.rejected, (state, event) => {
+            .addCase(updateEvent.rejected, (state, event) => {
                 state.fetchInProgress = false
                 state.error = event.error.message
             })
