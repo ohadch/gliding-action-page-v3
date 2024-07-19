@@ -36,7 +36,7 @@ export interface FlightsTableProps {
 
 
 export default function FlightsTable(props: FlightsTableProps) {
-    const {flights, onSettlePayment, setEditedFlight, setDuplicateFlight, onFlightStateUpdated, shownFlightStates} = props;
+    const {flights, onSettlePayment, setEditedFlight, setDuplicateFlight, onFlightStateUpdated} = props;
 
     const textCellStyle = {
         fontSize: setEditedFlight && setDuplicateFlight ? "1.1rem" : "1rem",
@@ -56,7 +56,6 @@ export default function FlightsTable(props: FlightsTableProps) {
         }
 
         return flights
-            .filter((flight) => !shownFlightStates || shownFlightStates.includes(flight.state))
             .sort((a, b) => {
                 if (!a || !b) {
                     return 0;
@@ -64,7 +63,7 @@ export default function FlightsTable(props: FlightsTableProps) {
 
                 return a.id - b.id;
             })
-    }, [flights, shownFlightStates])
+    }, [flights])
 
     const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
     const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
@@ -139,10 +138,8 @@ export default function FlightsTable(props: FlightsTableProps) {
                             <TableCell align="right" style={textCellStyle}><strong>{t("TOW_TYPE")}</strong></TableCell>
                             <TableCell align="right"
                                        style={textCellStyle}><strong>{t("TAKE_OFF_TIME")}</strong></TableCell>
-                            {shownFlightStates?.includes("Landed") && (
-                                <TableCell align="right"
+                            <TableCell align="right"
                                            style={textCellStyle}><strong>{t("LANDING_TIME")}</strong></TableCell>
-                            )}
                             <TableCell align="right" style={textCellStyle}><strong>{t("DURATION")}</strong></TableCell>
                             <TableCell align="right" style={textCellStyle}></TableCell>
                         </TableRow>
@@ -184,13 +181,9 @@ export default function FlightsTable(props: FlightsTableProps) {
                                 <TableCell align="right" style={textCellStyle}>
                                     {flight.take_off_at && displayTime(flight.take_off_at)}
                                 </TableCell>
-                                {
-                                    shownFlightStates?.includes("Landed") && (
-                                        <TableCell align="right" style={textCellStyle}>
-                                            {flight.landing_at && displayTime(flight.landing_at)}
-                                        </TableCell>
-                                    )
-                                }
+                                <TableCell align="right" style={textCellStyle}>
+                                    {flight.landing_at && displayTime(flight.landing_at)}
+                                </TableCell>
                                 <TableCell align="right" style={textCellStyle}>
                                     {(flight.state !== "Draft") && (
                                         <FlightDuration flight={flight}/>

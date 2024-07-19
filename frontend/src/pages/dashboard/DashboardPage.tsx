@@ -1,14 +1,7 @@
 import {
     Alert, AlertTitle,
     Button, Card,
-    Checkbox,
-    FormControl,
     Grid,
-    InputLabel, ListItemText,
-    MenuItem,
-    OutlinedInput,
-    Select,
-    SelectChangeEvent
 } from "@mui/material";
 import FlightsTable from "../../components/flights/FlightsTable.tsx";
 import {useCallback, useEffect, useState} from "react";
@@ -37,16 +30,6 @@ import ActionSummaryGeneratorWizardDialog from "../../components/actions/ActionS
 import {Summarize} from "@mui/icons-material";
 import FlightSettlePaymentWizardDialog from "../../components/flights/FlightSettlePaymentWizardDialog.tsx";
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-        },
-    },
-};
 
 export default function DashboardPage() {
     const [flightCreationWizardDialogOpen, setFlightCreationWizardDialogOpen] = useState<boolean>(false);
@@ -64,7 +47,7 @@ export default function DashboardPage() {
     const [startTowDialogFlight, setStartTowDialogFlight] = useState<FlightSchema | null>(null);
     const [endTowDialogFlight, setEndTowDialogFlight] = useState<FlightSchema | null>(null);
     const [settlePaymentDialogFlight, setSettlePaymentDialogFlight] = useState<FlightSchema | null>(null);
-    const [shownFlightStates, setShownFlightStates] = useState<FlightState[]>(action?.closed_at ? ["Landed"] : ["Draft", "Tow", "Inflight"]);
+    const shownFlightStates = action?.closed_at ? ["Landed"] : ORDERED_FLIGHT_STATES;
     const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
 
 
@@ -505,17 +488,6 @@ export default function DashboardPage() {
         )
     }
 
-    const handleFlightStateChange = (event: SelectChangeEvent<typeof shownFlightStates>) => {
-        const {
-            target: {value},
-        } = event;
-        setShownFlightStates(
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            typeof value === 'string' ? value.split(',') : value,
-        );
-    };
-
     const handleActionClosed = () => {
         if (!action) {
             return;
@@ -554,50 +526,10 @@ export default function DashboardPage() {
         )
     }
 
-    function renderFlightStatesFilter() {
-        return (
-            <FormControl style={{
-                width: "100%",
-                height: "100%",
-            }} disabled={!isFullyConfigured()}>
-                <InputLabel id="flight-state-select-label">{t("FLIGHT_STATES")}</InputLabel>
-                <Select
-                    disabled={Boolean(action?.closed_at)}
-                    labelId="flight-state-select-label"
-                    id="flight-state-select"
-                    multiple
-                    value={shownFlightStates}
-                    onChange={(event) => handleFlightStateChange(event)}
-                    input={<OutlinedInput label="Tag"/>}
-                    renderValue={(selected) => {
-                        return selected.map((value) => `${t(value.toUpperCase())} (${flights?.filter((flight) => flight.state === value).length || 0})`).join(", ")
-                    }}
-                    MenuProps={MenuProps}
-                    style={{
-                        width: "100%",
-                        height: "100%",
-                    }}
-                >
-                    {ORDERED_FLIGHT_STATES.map((state) => (
-                        <MenuItem key={state} value={state}>
-                            <Checkbox checked={shownFlightStates.indexOf(state) > -1}/>
-                            <ListItemText
-                                primary={t(state.toUpperCase())}
-                                secondary={
-                                    `${flights?.filter((flight) => flight.state === state).length || 0} ${t("FLIGHTS")}`
-                                }
-                            />
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-        )
-    }
-
     function renderTopBar() {
         return (
             <Grid container mb={2} spacing={1}>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                     <Button
                         variant="contained"
                         color="primary"
@@ -613,10 +545,7 @@ export default function DashboardPage() {
                         {t("NEW_FLIGHT")}
                     </Button>
                 </Grid>
-                <Grid item xs={3.5}>
-                    {renderFlightStatesFilter()}
-                </Grid>
-                <Grid item xs={6.5}>
+                <Grid item xs={9}>
                     <ActionConfigurationComponent/>
                 </Grid>
             </Grid>
@@ -731,7 +660,6 @@ export default function DashboardPage() {
             return (
                 <FlightsTable
                     flights={flights}
-                    shownFlightStates={shownFlightStates}
                     setDuplicateFlight={(flight) => {
                         setEditFlightDetailsDialogOpen(true);
                         setEditedFlightData({...flight})

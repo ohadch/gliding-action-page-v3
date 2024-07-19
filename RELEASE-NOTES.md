@@ -1,5 +1,11 @@
 # Gliding Action Page Release Notes
 
+## v3.1.1
+
+### Deprecations
+
+- Deletes the flight states filters as it was misleading and not useful.
+
 ## v3.1.0
 
 ### New Features
