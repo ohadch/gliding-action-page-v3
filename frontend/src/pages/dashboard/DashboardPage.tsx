@@ -515,15 +515,18 @@ export default function DashboardPage() {
             })
         )
 
-        dispatch(
-            createEvent({
-                action_id: action.id,
-                type: "action_closed",
-                payload: {
-                    field_responsible_id: action?.field_responsible_id,
-                }
-            })
-        )
+        if (confirm(t("CLOSE_ACTION_EVENT_CONFIRMATION"))) {
+            dispatch(
+                createEvent({
+                    action_id: action.id,
+                    type: "action_closed",
+                    payload: {
+                        field_responsible_id: action?.field_responsible_id,
+                    }
+                })
+            )
+        }
+
     }
 
     function renderTopBar() {

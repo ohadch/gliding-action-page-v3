@@ -38,15 +38,17 @@ export default function SettingsPage() {
                                         })
                                     )
 
-                                    dispatch(
-                                        createEvent({
-                                            action_id: action.id,
-                                            type: "action_reopened",
-                                            payload: {
-                                                field_responsible_id: action?.field_responsible_id,
-                                            }
-                                        })
-                                    )
+                                    if (confirm(t("REOPEN_ACTION_EVENT_CONFIRMATION"))) {
+                                        dispatch(
+                                            createEvent({
+                                                action_id: action.id,
+                                                type: "action_reopened",
+                                                payload: {
+                                                    field_responsible_id: action?.field_responsible_id,
+                                                }
+                                            })
+                                        )
+                                    }
                                 }}
                         >
                             {t("REOPEN_ACTION")}

@@ -13,7 +13,7 @@ import TableRow from "@mui/material/TableRow";
 import TableContainer from "@mui/material/TableContainer";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import {deleteFlight, fetchEvents, fetchFlights} from "../../store/actions/currentAction.ts";
+import {fetchEvents, fetchFlights} from "../../store/actions/currentAction.ts";
 import {getMemberDisplayValue} from "../../utils/display.ts";
 import {fetchMembers} from "../../store/actions/member.ts";
 import {EventSchema, EventType} from "../../lib/types.ts";
@@ -21,7 +21,7 @@ import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import {fetchGliders} from "../../store/actions/glider.ts";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {deleteEvent} from "../../store/actions/event.ts";
+import {updateEvent} from "../../store/actions/event.ts";
 
 export default function EventsTable() {
     const dispatch = useAppDispatch();
@@ -117,6 +117,11 @@ export default function EventsTable() {
     function getFilteredEvents() {
         // Filter out events that their flight does not exist
         return events?.filter((event) => {
+            // Filter out deleted events
+            if (event.is_deleted) {
+                return false;
+            }
+
             if ((event.type === "action_closed") || event.type === "action_reopened") {
                 return true;
             }
@@ -131,7 +136,14 @@ export default function EventsTable() {
             return;
         }
 
-        dispatch(deleteEvent(id));
+        dispatch(
+            updateEvent({
+                eventId: id,
+                updatePayload: {
+                    is_deleted: true,
+                }
+            })
+        )
     }
 
     return (
