@@ -6,6 +6,11 @@
 
 - Adds the `data_exported_at` column to the `actions` table in the database.
 - Adds the `ETL_SERVER_URL` environment variable to the backend in order to configure the ETL server URL.
+- Adds the `EtlClient` class to the backend in order to interact with the ETL server.
+
+### Dependencies
+
+- Adds the `requests==2.31.3` package to the backend.
 
 ## v3.2.1
 

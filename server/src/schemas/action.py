@@ -33,3 +33,7 @@ class ActionUpdateSchema(BaseModel):
 
 class ActionSearchSchema(ActionUpdateSchema):
     pass
+
+
+class ActionExportDataSchema(BaseModel):
+    force: Optional[bool] = False
