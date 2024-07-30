@@ -11,7 +11,6 @@ class Settings(BaseSettings):
     default_notification_method: str = "email"
     sendgrid_api_key: str
     sender_email: str
-    etl_server_url: str
 
 
 @lru_cache()
