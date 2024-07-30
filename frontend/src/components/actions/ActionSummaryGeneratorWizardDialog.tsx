@@ -493,32 +493,12 @@ export default function ActionSummaryGeneratorWizardDialog({
     return (
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        <Dialog open={open} maxWidth="xl">
+        <Dialog open={open} maxWidth="md" fullWidth>
             <DialogTitle sx={{
                 display: "flex",
                 justifyContent: "space-between",
             }}>
                 <div>{t("GENERATE_SUMMARY")}</div>
-                <div style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                }}>
-                    <Button onClick={() => {
-                        onClear();
-                        onClose()
-                    }}>
-                        {t("CLOSE")}
-                    </Button>
-                    <Button onClick={() => {
-                        if (!confirm(t("CLEAR_CONFIRMATION"))) {
-                            return
-                        }
-
-                        onClear()
-                    }}>
-                        {t("CLEAR")}
-                    </Button>
-                </div>
             </DialogTitle>
             <DialogContent>
                 {renderSummary()}
@@ -531,6 +511,16 @@ export default function ActionSummaryGeneratorWizardDialog({
                     {renderedInputName && renderInput(renderedInputName)}
                 </Grid>
             </DialogContent>
+            <Grid sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 1,
+                p: 2,
+            }}>
+                <Button onClick={onClose}>{t("CANCEL")}</Button>
+                <Button onClick={onClear}>{t("CLEAR")}</Button>
+                <Button>{t("SEND_EMAIL")}</Button>
+            </Grid>
         </Dialog>
     )
 }

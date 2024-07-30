@@ -10,6 +10,7 @@ class ActionSchema(BaseModel):
     closed_at: Optional[datetime] = None
     field_responsible_id: Optional[int] = None
     responsible_cfi_id: Optional[int] = None
+    data_exported_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -19,6 +20,7 @@ class ActionCreateSchema(BaseModel):
     closed_at: Optional[datetime]
     field_responsible_id: Optional[int] = None
     responsible_cfi_id: Optional[int] = None
+    data_exported_at: Optional[datetime] = None
 
 
 class ActionUpdateSchema(BaseModel):
@@ -26,6 +28,7 @@ class ActionUpdateSchema(BaseModel):
     closed_at: Optional[datetime] = None
     field_responsible_id: Optional[int] = None
     responsible_cfi_id: Optional[int] = None
+    data_exported_at: Optional[datetime] = None
 
 
 class ActionSearchSchema(ActionUpdateSchema):

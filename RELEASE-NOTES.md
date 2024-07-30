@@ -1,5 +1,11 @@
 # Gliding Action Page Release Notes
 
+## v3.3.0
+
+### Code Changes
+
+- Adds the `data_exported_at` column to the `actions` table in the database.
+
 ## v3.2.1
 
 ### Migrations

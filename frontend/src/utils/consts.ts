@@ -152,6 +152,7 @@ export const TEXTS_HEBREW = {
     NO_FLIGHTS_IN_THIS_STATE: 'אין טיסות במצב זה',
     RESEND_NOTIFICATION: 'שלח מחדש',
     RESEND_NOTIFICATION_CONFIRMATION: 'האם אתה בטוח שברצונך לשלוח מחדש את ההודעה?',
+    SEND_EMAIL: 'שלח מייל',
 }
 
 
