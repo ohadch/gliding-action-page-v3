@@ -8,7 +8,6 @@ from src.app import app
 
 from src.crud import ActionCrud
 from src.database import get_db
-from src.etl import EtlClient
 from src.schemas import (
     ActionSchema,
     ActionSearchSchema,
