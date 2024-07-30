@@ -71,6 +71,20 @@ async def create(data: ActionCreateSchema, db: Session = Depends(get_db)):
     )
 
 
+@app.post(
+    f"/{prefix}/{{id_}}/export",
+    tags=tags,
+    summary=f"Export {prefix}",
+)
+async def export(
+    db: Session = Depends(get_db),
+):
+    """
+    Export an action
+    :param db: Database session
+    """
+
+
 @app.get(
     f"/{prefix}/{{id_}}",
     tags=tags,
