@@ -6,6 +6,7 @@
 
 - Adds the `data_exported_at` column to the `actions` table in the database.
 - Adds the `ETL_SERVER_URL` environment variable to the backend in order to configure the ETL server URL.
+- Adds the `ActionDataExportRequested` event to the backend in order to request the ETL server to export the action data.
 
 ## v3.2.1
 

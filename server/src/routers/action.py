@@ -1,4 +1,3 @@
-import datetime
 from typing import List, Optional
 
 from fastapi import Depends, HTTPException
@@ -14,7 +13,6 @@ from src.schemas import (
     ActionCreateSchema,
     ActionUpdateSchema,
 )
-from src.schemas.action import ActionExportDataSchema
 from src.settings import Settings, get_settings
 
 crud = ActionCrud()
@@ -70,38 +68,6 @@ async def create(data: ActionCreateSchema, db: Session = Depends(get_db)):
     return await crud.create(
         db=db,
         data=data,
-    )
-
-
-@app.post(
-    f"/{prefix}/{{id_}}/export",
-    tags=tags,
-    summary=f"Export {prefix}",
-)
-async def export(
-    id_: int,
-    data: ActionExportDataSchema,
-    db: Session = Depends(get_db),
-):
-    """
-    Export an action
-    :param id_: Action ID
-    :param data: Data
-    :param db: Database session
-    """
-    action = await crud.get_by_id(db=db, id_=id_)
-    if not action:
-        raise HTTPException(status_code=404, detail=f"{prefix.title()} not found")
-
-    etl_client = EtlClient.from_env()
-    etl_client.export_data(db=db, data=data)
-
-    return crud.update(
-        db=db,
-        id_=id_,
-        data=ActionUpdateSchema(
-            data_exported_at=datetime.datetime.now(),
-        ),
     )
 
 
