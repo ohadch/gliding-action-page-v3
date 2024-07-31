@@ -58,7 +58,7 @@ export default function SettingsPage() {
     }
 
     function exportActionData(action: ActionSchema) {
-        if (!confirm(t("CONFIRM_ACTION_DATA_EXPORT"))) {
+        if (!confirm(`${t("CONFIRM_ACTION_DATA_EXPORT")} (${t("ACTION_DATE")}: ${new Date(action.date).toLocaleDateString()})`)) {
             return;
         }
 
@@ -136,8 +136,12 @@ export default function SettingsPage() {
                         </Grid>
                     </Grid>
                     <Grid item xs={12}>
-                        <h2>{t("DATA_EXPORT_EVENTS")}</h2>
-                        {renderActionDataExportRequestEventsTable()}
+                        <h2>{t("DATA_EXPORT_REQUEST_EVENTS")}</h2>
+                        {
+                            actionDataExportRequestedEvents.length === 0 ? (
+                                <p>{t("NO_DATA_EXPORT_REQUEST_EVENTS_FOR_ACTION")}.</p>
+                            ) : renderActionDataExportRequestEventsTable()
+                        }
                     </Grid>
                 </Grid>
             </Grid>

@@ -145,7 +145,7 @@ export const TEXTS_HEBREW = {
     ACTION_DATA_EXPORTED_AT: 'נתוני הפעולה יוצאו בתאריך',
     ACTION_DATA_NOT_YET_EXPORTED: 'נתוני הפעולה טרם יוצאו',
     ACTION_REOPENED: 'הפעולה נפתחה מחדש',
-    CONFIRM_ACTION_DATA_EXPORT: 'האם אתה בטוח שברצונך לבקש ייצוא נתוני הפעולה?',
+    CONFIRM_ACTION_DATA_EXPORT: 'האם אתה בטוח שברצונך לבקש את ייצוא נתוני הפעולה?',
     SETTLE_PAYMENT: 'הסדר תשלום',
     PAYMENT_BY_CLUB_MEMBER: 'חבר מועדון משלם על הטיסה',
     FLIGHTS_WITH_UNSETTLED_PAYMENTS_TITLE: 'קיימות טיסות עם תשלומים שלא הוסדרו',
@@ -157,6 +157,9 @@ export const TEXTS_HEBREW = {
     NO_FLIGHTS_IN_THIS_STATE: 'אין טיסות במצב זה',
     RESEND_NOTIFICATION: 'שלח מחדש',
     RESEND_NOTIFICATION_CONFIRMATION: 'האם אתה בטוח שברצונך לשלוח מחדש את ההודעה?',
+    DATA_EXPORT_REQUEST_EVENTS: 'בקשות ייצוא נתונים',
+    NO_DATA_EXPORT_REQUEST_EVENTS_FOR_ACTION: 'אין בקשות ייצוא נתונים עבור הפעולה',
+    ACTION_DATE: 'תאריך הפעולה',
 }
 
 

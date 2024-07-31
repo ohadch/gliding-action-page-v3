@@ -5,6 +5,8 @@
 ### New Features
 
 - Adds the `State` column to the `EventsTable` in the UI in order to show the state of the event.
+- Adds a button in the settings page to export the action data to the ETL server.
+- Adds an events table in the settings page in order to show the data export requests.
 
 ### Code Changes
 
