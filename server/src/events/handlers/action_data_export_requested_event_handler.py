@@ -3,10 +3,10 @@ import datetime
 from src import Event, Action
 from src.database import SessionLocal
 from src.etl.etl_client import EtlClient
-from src.events.handlers import EventHandler
+from src.events.handlers.event_handler import EventHandler
 
 
-class ActionDataExportRequestededEventHandler(EventHandler):
+class ActionDataExportRequestedEventHandler(EventHandler):
     def handle(self, event: Event) -> None:
         """
         Handles the action data export requested event.

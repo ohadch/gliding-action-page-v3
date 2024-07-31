@@ -2,6 +2,10 @@
 
 ## v3.3.0
 
+### New Features
+
+- Adds the `State` column to the `EventsTable` in the UI in order to show the state of the event.
+
 ### Code Changes
 
 - Adds the `data_exported_at` column to the `actions` table in the database.

@@ -1,7 +1,7 @@
 from src import Event
 from src.events.handlers.action_closed_event_handler import ActionClosedEventHandler
 from src.events.handlers.action_data_export_requested_event_handler import (
-    ActionDataExportRequestededEventHandler,
+    ActionDataExportRequestedEventHandler,
 )
 from src.events.handlers.action_reopened_event_handler import ActionReopenedEventHandler
 from src.events.handlers.event_handler import EventHandler
@@ -45,7 +45,7 @@ EVENT_NAME_TO_CLASS_MAP = {
     EventType.TOW_AIRPLANE_DEACTIVATED: TowAirplaneDeactivatedEventHandler,
     EventType.ACTION_CLOSED: ActionClosedEventHandler,
     EventType.ACTION_REOPENED: ActionReopenedEventHandler,
-    EventType.ACTION_DATA_EXPORT_REQUESTED: ActionDataExportRequestededEventHandler,
+    EventType.ACTION_DATA_EXPORT_REQUESTED: ActionDataExportRequestedEventHandler,
 }
 
 

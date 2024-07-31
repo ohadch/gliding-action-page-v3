@@ -1,5 +1,4 @@
 import {
-    Chip,
     Grid, Tooltip
 
 } from "@mui/material";
@@ -19,10 +18,10 @@ import {getMemberDisplayValue} from "../../utils/display.ts";
 import {fetchMembers} from "../../store/actions/member.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 import {fetchGliders} from "../../store/actions/glider.ts";
-import {NotificationState} from "../../lib/types.ts";
 import IconButton from "@mui/material/IconButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {updateNotification} from "../../store/actions/notification.ts";
+import NotificationStateChip from "../common/NotificationStateChip.tsx";
 
 export default function NotificationsTable() {
     const dispatch = useAppDispatch();
@@ -69,46 +68,6 @@ export default function NotificationsTable() {
     const displayMemberEmail = (id: number) => {
         const member = getMemberById(id);
         return member ? member.email : "";
-    }
-
-    function renderState(state: NotificationState) {
-        switch (state) {
-            case "pending":
-                return (
-                    <Chip
-                        color="info"
-                        label={t("PENDING")}
-                    />
-                )
-            case "being_handled":
-                return (
-                    <Chip
-                        color="primary"
-                        label={t("BEING_HANDLED")}
-                    />
-                )
-            case "sent":
-                return (
-                    <Chip
-                        color="success"
-                        label={t("SENT")}
-                    />
-                )
-            case "failed":
-                return (
-                    <Chip
-                        color="error"
-                        label={t("FAILED")}
-                    />
-                )
-            default:
-                return (
-                    <Chip
-                        color="error"
-                        label={t("UNKNOWN")}
-                    />
-                )
-        }
     }
 
     return (
@@ -168,7 +127,7 @@ export default function NotificationsTable() {
                                 </TableCell>
                                 <TableCell align="right">
                                     <Grid>
-                                        {renderState(notification.state)}
+                                        <NotificationStateChip state={notification.state}/>
                                     </Grid>
                                 </TableCell>
                                 <TableCell align="right">
