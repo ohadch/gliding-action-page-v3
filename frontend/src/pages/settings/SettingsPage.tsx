@@ -10,12 +10,23 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
+import {useEffect} from "react";
+import {fetchEvents} from "../../store/actions/currentAction.ts";
+import EventStateChip from "../../components/common/EventStateChip.tsx";
 
 export default function SettingsPage() {
     const {t} = useTranslation();
     const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
     const dispatch = useAppDispatch();
-    const events = useSelector((state: RootState) => state.currentAction.events) || [];
+    const {events, fetchInProgress} = useSelector((state: RootState) => state.currentAction) || [];
+
+    useEffect(() => {
+        if (!events && !fetchInProgress && action) {
+            dispatch(fetchEvents({
+                actionId: action.id,
+            }));
+        }
+    });
 
     function reopenAction(action: ActionSchema) {
         if (!confirm(t("CONFIRM_ACTION_REOPEN"))) {
@@ -70,17 +81,24 @@ export default function SettingsPage() {
                 payload: {}
             })
         )
+
+        dispatch(
+            fetchEvents({
+                actionId: action.id,
+            })
+        );
     }
 
-    const actionDataExportRequestedEvents = events.filter((event) => (
+    const actionDataExportRequestedEvents = events?.filter((event) => (
         event.type === "action_data_export_requested" && event.action_id === action?.id
-    ));
+    )) || [];
 
     function renderActionDataExportRequestEventsTable() {
         return (
             <Table>
                     <TableHead>
                         <TableRow>
+                            <TableCell align="right">{t("STATUS")}</TableCell>
                             <TableCell align="right">{t("ID")}</TableCell>
                             <TableCell align="right">{t("CREATED_AT")}</TableCell>
                             <TableCell align="right"></TableCell>
@@ -88,7 +106,10 @@ export default function SettingsPage() {
                     </TableHead>
                 <TableBody>
                     {actionDataExportRequestedEvents.map((event) => (
-                        <TableRow>
+                        <TableRow key={event.id}>
+                            <TableCell align="right">
+                                <EventStateChip state={event.state}/>
+                            </TableCell>
                             <TableCell align="right">{event.id}</TableCell>
                             <TableCell align="right">{event.created_at}</TableCell>
                         </TableRow>
@@ -120,22 +141,25 @@ export default function SettingsPage() {
                     <Grid item xs={12}>
                         {action && renderReopenActionButton(action)}
                     </Grid>
-                    <Grid item xs={4} sx={{
+                    <Grid item sx={{
                         display: "flex",
-                        flexDirection: "row",
+                        flexDirection: "column",
                     }}>
-                        <Grid item xs={6}>
-                            {action && action.data_exported_at ? (
-                                <p>{t("ACTION_EXPORTED_AT")}: {action.data_exported_at}</p>
-                            ) : (
-                                <p>{t("ACTION_DATA_NOT_YET_EXPORTED")}</p>
-                            )}
-                        </Grid>
-                        <Grid item xs={6}>
+                        <Grid>
                             {action && renderExportActionDataButton(action)}
                         </Grid>
-                    </Grid>
-                    <Grid item xs={12}>
+                        <Grid>
+                            {action && action.data_exported_at ? (
+                                <strong>
+                                    <p>{t("ACTION_EXPORTED_AT")}: {action.data_exported_at}</p>
+                                </strong>
+                                    ) : (
+                                    <p>{t("ACTION_DATA_NOT_YET_EXPORTED")}</p>
+                                    )}
+                                </Grid>
+
+                                </Grid>
+                                <Grid item xs={12}>
                         <h2>{t("DATA_EXPORT_REQUEST_EVENTS")}</h2>
                         {
                             actionDataExportRequestedEvents.length === 0 ? (

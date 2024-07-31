@@ -160,6 +160,7 @@ export const TEXTS_HEBREW = {
     DATA_EXPORT_REQUEST_EVENTS: 'בקשות ייצוא נתונים',
     NO_DATA_EXPORT_REQUEST_EVENTS_FOR_ACTION: 'אין בקשות ייצוא נתונים עבור הפעולה',
     ACTION_DATE: 'תאריך הפעולה',
+    ACTION_EXPORTED_AT: 'נתוני הפעולה יוצאו בתאריך',
 }
 
 
