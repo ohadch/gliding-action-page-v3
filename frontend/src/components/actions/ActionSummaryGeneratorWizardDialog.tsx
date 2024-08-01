@@ -384,11 +384,16 @@ export default function ActionSummaryGeneratorWizardDialog({
             }));
 
         return (
-            <Grid>
+            <Grid sx={{
+                    mt: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                }}>
                 <Grid>
                     <strong>{t("NUM_FLIGHTS")}</strong>: {flights.length}
                 </Grid>
-                {includeTotalDuration && <Grid>
+                {includeTotalDuration && <Grid item>
                     <strong>{t("TOTAL_DURATION")}</strong>: <Duration durations={durations}/> ({t("HOURS_MINUTES_SECONDS")})
                 </Grid>}
                 <Grid>
@@ -397,6 +402,14 @@ export default function ActionSummaryGeneratorWizardDialog({
                         "Inflight",
                         "Landed",
                     ]} />
+                </Grid>
+                <Grid sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                }}>
+                  <Button variant="contained" color="primary" size={"large"}>
+                    {t("SEND_EMAIL")}
+                  </Button>
                 </Grid>
             </Grid>
         )
