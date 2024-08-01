@@ -162,6 +162,11 @@ export const TEXTS_HEBREW = {
     ACTION_DATE: 'תאריך הפעולה',
     ACTION_EXPORTED_AT: 'נתוני הפעולה יוצאו בתאריך',
     SEND_EMAIL: "שליחה באימייל",
+    SEND: "שלח",
+    EMAIL_ADDRESS: "כתובת אימייל",
+    CONFIRM_SEND_EMAIL: "האם אתה בטוח שברצונך לשלוח אימייל",
+    SELECT_RECIPIENT: "בחר נמען",
+    RECIPIENT: "נמען",
 }
 
 
