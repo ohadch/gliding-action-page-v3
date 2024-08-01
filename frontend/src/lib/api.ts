@@ -504,6 +504,8 @@ export interface components {
       field_responsible_id?: number | null;
       /** Responsible Cfi Id */
       responsible_cfi_id?: number | null;
+      /** Data Exported At */
+      data_exported_at?: string | null;
     };
     /** ActionSchema */
     ActionSchema: {
@@ -520,6 +522,8 @@ export interface components {
       field_responsible_id: number | null;
       /** Responsible Cfi Id */
       responsible_cfi_id: number | null;
+      /** Data Exported At */
+      data_exported_at: string | null;
     };
     /** ActionSearchSchema */
     ActionSearchSchema: {
@@ -531,6 +535,8 @@ export interface components {
       field_responsible_id?: number | null;
       /** Responsible Cfi Id */
       responsible_cfi_id?: number | null;
+      /** Data Exported At */
+      data_exported_at?: string | null;
     };
     /** ActionUpdateSchema */
     ActionUpdateSchema: {
@@ -542,6 +548,8 @@ export interface components {
       field_responsible_id?: number | null;
       /** Responsible Cfi Id */
       responsible_cfi_id?: number | null;
+      /** Data Exported At */
+      data_exported_at?: string | null;
     };
     /** ActiveTowAirplaneCreateSchema */
     ActiveTowAirplaneCreateSchema: {
@@ -662,7 +670,7 @@ export interface components {
      * EventType
      * @enum {string}
      */
-    EventType: "flight_landed" | "flight_took_off" | "flight_tow_released" | "action_closed" | "action_reopened" | "responsible_cfi_assigned" | "responsible_cfi_unassigned" | "field_responsible_assigned" | "field_responsible_unassigned" | "tow_airplane_activated" | "tow_airplane_deactivated";
+    EventType: "flight_landed" | "flight_took_off" | "flight_tow_released" | "action_closed" | "action_reopened" | "responsible_cfi_assigned" | "responsible_cfi_unassigned" | "field_responsible_assigned" | "field_responsible_unassigned" | "tow_airplane_activated" | "tow_airplane_deactivated" | "action_data_export_requested";
     /** EventUpdateSchema */
     EventUpdateSchema: {
       type?: components["schemas"]["EventType"] | null;

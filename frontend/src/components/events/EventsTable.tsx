@@ -22,6 +22,7 @@ import {fetchGliders} from "../../store/actions/glider.ts";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {updateEvent} from "../../store/actions/event.ts";
+import EventStateChip from "../common/EventStateChip.tsx";
 
 export default function EventsTable() {
     const dispatch = useAppDispatch();
@@ -158,6 +159,7 @@ export default function EventsTable() {
                 <Table>
                     <TableHead>
                         <TableRow>
+                            <TableCell align="right">{t("STATE")}</TableCell>
                             <TableCell align="right">{t("ID")}</TableCell>
                             <TableCell align="right">{t("CREATED_AT")}</TableCell>
                             <TableCell align="right">{t("TYPE")}</TableCell>
@@ -172,6 +174,9 @@ export default function EventsTable() {
                                 key={event.id}
                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
                             >
+                                <TableCell align="right">
+                                    <EventStateChip state={event.state}/>
+                                </TableCell>
                                 <TableCell align="right">{event.id}</TableCell>
                                 <TableCell align="right">{event.created_at}</TableCell>
                                 <TableCell align="right">{

@@ -1,5 +1,19 @@
 # Gliding Action Page Release Notes
 
+## v3.3.0
+
+### New Features
+
+- Adds the `State` column to the `EventsTable` in the UI in order to show the state of the event.
+- Adds a button in the settings page to export the action data to the ETL server.
+- Adds an events table in the settings page in order to show the data export requests.
+
+### Code Changes
+
+- Adds the `data_exported_at` column to the `actions` table in the database.
+- Adds the `ETL_SERVER_URL` environment variable to the backend in order to configure the ETL server URL.
+- Adds the `ActionDataExportRequested` event to the backend in order to request the ETL server to export the action data.
+
 ## v3.2.1
 
 ### Migrations

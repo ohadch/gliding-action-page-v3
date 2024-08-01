@@ -79,6 +79,7 @@ class EventType(enum.Enum):
     FIELD_RESPONSIBLE_UNASSIGNED = "field_responsible_unassigned"
     TOW_AIRPLANE_ACTIVATED = "tow_airplane_activated"
     TOW_AIRPLANE_DEACTIVATED = "tow_airplane_deactivated"
+    ACTION_DATA_EXPORT_REQUESTED = "action_data_export_requested"
 
 
 class EventState(enum.Enum):

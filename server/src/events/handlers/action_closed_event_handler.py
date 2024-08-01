@@ -6,13 +6,11 @@ from typing import List
 from src import Event, Notification, MemberRole
 from src.database import SessionLocal
 from src.events.handlers.event_handler import EventHandler
-from src.events.types import EventPayloadSchema
 from src.utils.enums import NotificationType, Role
 
 
 class ActionClosedEventHandler(EventHandler):
     def handle(self, event: Event) -> None:
-        payload = EventPayloadSchema(**event.payload)
         session = SessionLocal()
 
         observer_member_roles: List[MemberRole] = (
