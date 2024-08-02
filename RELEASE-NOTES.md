@@ -10,7 +10,6 @@
 
 - The server reads the `ETL_SERVER_URL` correctly.
 
-
 ## v3.5.0
 
 This release introduces the ability to add comments to actions and flights.
