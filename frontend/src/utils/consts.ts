@@ -176,6 +176,9 @@ export const TEXTS_HEBREW = {
     NO_COMMENTS: "אין הערות",
     EDIT_COMMENT: "ערוך הערה",
     SAVE: "שמור",
+    UPDATED_AT: "זמן עדכון",
+    DELETE_COMMENT: "מחק הערה",
+    DELETE_COMMENT_CONFIRMATION: "האם אתה בטוח שברצונך למחוק את ההערה?",
 }
 
 

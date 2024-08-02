@@ -12,10 +12,12 @@ import {useSelector} from "react-redux";
 import {getMemberDisplayValue} from "../../utils/display.ts";
 import {RootState, useAppDispatch} from "../../store";
 import CommentEditDialog from "./CommentEditDialog.tsx";
-import {Button, Grid} from "@mui/material";
+import {Button, Grid, Tooltip} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {fetchComments} from "../../store/actions/currentAction.ts";
-import {createComment, updateComment} from "../../store/actions/comment.ts";
+import {createComment, deleteComment, updateComment} from "../../store/actions/comment.ts";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export interface CommentsTableProps {
     comments: CommentSchema[];
@@ -85,6 +87,28 @@ export default function CommentsTable(props: CommentsTableProps) {
         onEditCommentDialogClose()
     }
 
+    function onCommentDelete(commentId: number) {
+        if (!confirm(t("DELETE_COMMENT_CONFIRMATION"))) {
+            return;
+        }
+
+        if (!currentActionStoreState.actionId) {
+            return;
+        }
+
+        dispatch(
+            deleteComment(commentId)
+        )
+
+        dispatch(
+            fetchComments(
+                {
+                    actionId: currentActionStoreState.actionId,
+                }
+            )
+        )
+    }
+
     function renderCommentsTable() {
 
         if (comments.length === 0) {
@@ -118,7 +142,13 @@ export default function CommentsTable(props: CommentsTableProps) {
                                 </TableCell>
                                 <TableCell align="right">{comment.text}</TableCell>
                                 <TableCell align="right">{comment.updated_at}</TableCell>
-                                <TableCell align="right"></TableCell>
+                                <TableCell align="right">
+                                    <Tooltip title={t("DELETE_COMMENT")} onClick={() => onCommentDelete(comment.id)}>
+                                            <IconButton aria-label="delete">
+                                                <DeleteIcon/>
+                                            </IconButton>
+                                        </Tooltip>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

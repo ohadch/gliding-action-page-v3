@@ -1,6 +1,6 @@
 import {useTranslation} from "react-i18next";
 import {useState} from "react";
-import {Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, TextareaAutosize} from "@mui/material";
+import {Button, Dialog, DialogTitle, DialogContent, DialogActions, TextareaAutosize} from "@mui/material";
 
 export interface CommentEditDialogProps {
     initialText: string | null;
@@ -18,13 +18,6 @@ export default function CommentEditDialog(props: CommentEditDialogProps) {
         <Dialog open={open}>
             <DialogTitle>{t("EDIT_COMMENT")}</DialogTitle>
             <DialogContent>
-                {/*<TextField*/}
-                {/*    label={t("CONTENT")}*/}
-                {/*    multiline*/}
-                {/*    fullWidth*/}
-                {/*    value={initialText}*/}
-                {/*    onChange={(e) => setText(e.target.value)}*/}
-                {/*/>*/}
                 <TextareaAutosize
                     style={{width: "400px"}}
                     minRows={12}
