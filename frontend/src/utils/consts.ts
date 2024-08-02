@@ -170,6 +170,15 @@ export const TEXTS_HEBREW = {
     RECIPIENT: "נמען",
     EMAIL_SENT_SUCCESSFULLY: "האימייל נשלח בהצלחה",
     ERROR: "שגיאה",
+    COMMENTS: "הערות",
+    ADD_COMMENT: "הוסף הערה",
+    CONTENT: "תוכן",
+    NO_COMMENTS: "אין הערות",
+    EDIT_COMMENT: "ערוך הערה",
+    SAVE: "שמור",
+    UPDATED_AT: "זמן עדכון",
+    DELETE_COMMENT: "מחק הערה",
+    DELETE_COMMENT_CONFIRMATION: "האם אתה בטוח שברצונך למחוק את ההערה?",
 }
 
 

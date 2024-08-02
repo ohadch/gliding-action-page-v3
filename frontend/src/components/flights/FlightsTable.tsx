@@ -14,7 +14,7 @@ import {
     getGliderDisplayValue,
     getMemberDisplayValue, getTowTypeDisplayValue
 } from "../../utils/display.ts";
-import {Tooltip, useTheme} from "@mui/material";
+import {Badge, Tooltip, useTheme} from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -49,6 +49,7 @@ export default function FlightsTable(props: FlightsTableProps) {
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
+    const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
 
     const shownAndSortedFlights = useCallback(() => {
         if (!flights) {
@@ -122,6 +123,35 @@ export default function FlightsTable(props: FlightsTableProps) {
         return !((flight.paying_member_id) || (flight.payment_method && flight.payment_receiver_id));
     }
 
+    function renderEditFlightButton(flight: FlightSchema) {
+        const flightComments = currentActionStoreState.comments?.filter((comment) => comment.flight_id === flight.id);
+
+        function renderButton() {
+            if (!setEditedFlight) {
+                return
+            }
+
+            return (
+                <Tooltip title={t("EDIT_FLIGHT")}
+                         onClick={() => setEditedFlight(flight.id, flight)}>
+                    <IconButton aria-label="edit">
+                        <EditIcon/>
+                    </IconButton>
+                </Tooltip>
+            )
+        }
+
+        if (!flightComments || flightComments.length === 0) {
+            return renderButton();
+        }
+
+        return (
+            <Badge badgeContent={flightComments.length} color="error">
+                {renderButton()}
+            </Badge>
+        )
+    }
+
     return (
         <>
             <TableContainer component={Paper}>
@@ -139,7 +169,7 @@ export default function FlightsTable(props: FlightsTableProps) {
                             <TableCell align="right"
                                        style={textCellStyle}><strong>{t("TAKE_OFF_TIME")}</strong></TableCell>
                             <TableCell align="right"
-                                           style={textCellStyle}><strong>{t("LANDING_TIME")}</strong></TableCell>
+                                       style={textCellStyle}><strong>{t("LANDING_TIME")}</strong></TableCell>
                             <TableCell align="right" style={textCellStyle}><strong>{t("DURATION")}</strong></TableCell>
                             <TableCell align="right" style={textCellStyle}></TableCell>
                         </TableRow>
@@ -190,12 +220,7 @@ export default function FlightsTable(props: FlightsTableProps) {
                                     )}
                                 </TableCell>
                                 <TableCell align="right" style={textCellStyle}>
-                                    {setEditedFlight && (<Tooltip title={t("EDIT_FLIGHT")}
-                                                                  onClick={() => setEditedFlight(flight.id, flight)}>
-                                        <IconButton aria-label="edit">
-                                            <EditIcon/>
-                                        </IconButton>
-                                    </Tooltip>)}
+                                    {setEditedFlight && renderEditFlightButton(flight)}
                                     {setDuplicateFlight && (<Tooltip title={t("DUPLICATE_FLIGHT")}>
                                         <IconButton aria-label="duplicate" onClick={() => setDuplicateFlight({
                                             action_id: flight.action_id,

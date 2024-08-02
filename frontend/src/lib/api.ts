@@ -485,6 +485,54 @@ export interface paths {
      */
     delete: operations["delete_tow_airplanes__id___delete"];
   };
+  "/comments/search": {
+    /**
+     * Search comments
+     * @description Search comments
+     * :param page: Page number
+     * :param page_size: Page size
+     * :param filters: Filters
+     * :param db: Database session
+     * :param settings: Settings
+     * :return: List of comments
+     */
+    post: operations["search_comments_search_post"];
+  };
+  "/comments": {
+    /**
+     * Create comments
+     * @description Create comment
+     * :param data: Data
+     * :param db: Database session
+     */
+    post: operations["create_comments_post"];
+  };
+  "/comments/{id_}": {
+    /**
+     * Get comments by ID
+     * @description Read comment by ID
+     * :param id_: Comment ID
+     * :param db: Database session
+     * :return: Comment
+     */
+    get: operations["get_by_id_comments__id___get"];
+    /**
+     * Update comments
+     * @description Update comment
+     * :param id_: Comment ID
+     * :param data: Data to update
+     * :param db: Database session
+     * :return: Updated comment
+     */
+    put: operations["update_comments__id___put"];
+    /**
+     * Delete comments
+     * @description Delete comment
+     * :param id_: Comment ID
+     * :param db: Database session
+     */
+    delete: operations["delete_comments__id___delete"];
+  };
 }
 
 export type webhooks = Record<string, never>;
@@ -588,6 +636,44 @@ export interface components {
       tow_pilot_id?: number | null;
       /** Airplane Id */
       airplane_id?: number | null;
+    };
+    /** CommentCreateSchema */
+    CommentCreateSchema: {
+      /** Author Id */
+      author_id: number;
+      /** Action Id */
+      action_id: number;
+      /** Flight Id */
+      flight_id?: number | null;
+      /** Text */
+      text: string;
+    };
+    /** CommentSchema */
+    CommentSchema: {
+      /** Id */
+      id: number;
+      /** Author Id */
+      author_id: number;
+      /** Action Id */
+      action_id: number;
+      /** Flight Id */
+      flight_id: number | null;
+      /** Text */
+      text: string;
+      /** Created At */
+      created_at: string | null;
+      /** Updated At */
+      updated_at: string | null;
+    };
+    /** CommentSearchSchema */
+    CommentSearchSchema: {
+      /** Action Id */
+      action_id?: number | null;
+    };
+    /** CommentUpdateSchema */
+    CommentUpdateSchema: {
+      /** Text */
+      text: string | null;
     };
     /** EventCreateSchema */
     EventCreateSchema: {
@@ -2646,6 +2732,159 @@ export interface operations {
    * :param db: Database session
    */
   delete_tow_airplanes__id___delete: {
+    parameters: {
+      path: {
+        id_: number;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Search comments
+   * @description Search comments
+   * :param page: Page number
+   * :param page_size: Page size
+   * :param filters: Filters
+   * :param db: Database session
+   * :param settings: Settings
+   * :return: List of comments
+   */
+  search_comments_search_post: {
+    parameters: {
+      query?: {
+        page?: number;
+        page_size?: number | null;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["CommentSearchSchema"] | null;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CommentSchema"][];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Create comments
+   * @description Create comment
+   * :param data: Data
+   * :param db: Database session
+   */
+  create_comments_post: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CommentCreateSchema"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CommentSchema"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Get comments by ID
+   * @description Read comment by ID
+   * :param id_: Comment ID
+   * :param db: Database session
+   * :return: Comment
+   */
+  get_by_id_comments__id___get: {
+    parameters: {
+      path: {
+        id_: number;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CommentSchema"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Update comments
+   * @description Update comment
+   * :param id_: Comment ID
+   * :param data: Data to update
+   * :param db: Database session
+   * :return: Updated comment
+   */
+  update_comments__id___put: {
+    parameters: {
+      path: {
+        id_: number;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CommentUpdateSchema"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["CommentSchema"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Delete comments
+   * @description Delete comment
+   * :param id_: Comment ID
+   * :param db: Database session
+   */
+  delete_comments__id___delete: {
     parameters: {
       path: {
         id_: number;

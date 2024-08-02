@@ -8,3 +8,4 @@ from .glider_owner import *
 from .member import *
 from .member_role import *
 from .tow_airplane import *
+from .comment import *

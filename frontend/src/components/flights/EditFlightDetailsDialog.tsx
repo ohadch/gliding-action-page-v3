@@ -35,6 +35,8 @@ import {
 } from "../../utils/consts.ts";
 import {TimePicker} from "@mui/x-date-pickers";
 import moment from "moment";
+import CommentsTable from "../comments/CommentsTable.tsx";
+import {fetchComments} from "../../store/actions/currentAction.ts";
 
 export interface EditFlightDetailsDialogProps {
     flightId?: number | null
@@ -58,6 +60,8 @@ export default function EditFlightDetailsDialog({
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
     const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
+    const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
+    const currentFlightComments = currentActionStoreState.comments?.filter((comment) => comment.flight_id === flightId);
 
     const {
         t
@@ -81,6 +85,14 @@ export default function EditFlightDetailsDialog({
             dispatch(fetchTowAirplanes());
         }
     });
+
+    useEffect(() => {
+        if (!currentActionStoreState.comments && !currentActionStoreState.fetchInProgress && action?.id) {
+            dispatch(fetchComments({
+                actionId: action.id,
+            }));
+        }
+    })
 
     const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
     const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
@@ -134,6 +146,20 @@ export default function EditFlightDetailsDialog({
         );
     }
 
+    function renderFlightComments() {
+        if (!flightId) {
+            return null;
+        }
+
+        return (
+            <CommentsTable
+                comments={currentFlightComments || []}
+                flightId={flightId}
+            />
+        )
+    }
+
+
     if (!action) {
         return null;
     }
@@ -144,352 +170,370 @@ export default function EditFlightDetailsDialog({
         <Dialog open={open} maxWidth="xl">
             <DialogTitle>
                 {flightId ? t("EDIT_FLIGHT") : t("CREATE_FLIGHT")}
+                {flightId? ` (${t("ID")}: ${flightId})` : ""}
             </DialogTitle>
             <DialogContent>
-                <div style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    gap: 20,
-                    paddingTop: 10,
-                }}>
-                    <Grid sx={{
-                        width: 400,
+                <Grid
+                    sx={{
                         display: "flex",
                         flexDirection: "column",
-                        gap: 1,
-                    }}>
-                        <FormGroup>
-                            <FormControl>
-                                <Autocomplete
-                                    id="flight-type"
-                                    options={SUPPORTED_FLIGHT_TYPES}
-                                    value={flightType}
-                                    getOptionLabel={(option: FlightType) => getFlightTypeDisplayValue(option)}
-                                    onChange={(_, newValue) => setFlightType(newValue)}
-                                    renderInput={(params) => {
-                                        return (
-                                            <TextField
-                                                {...params}
-                                                label={t("FLIGHT_TYPE")}
-                                            />
-                                        )
-                                    }}
-                                />
-                            </FormControl>
-                        </FormGroup>
-                        <FormGroup>
-                            <FormControl>
-                                <Autocomplete
-                                    id="glider"
-                                    options={glidersStoreState.gliders || []}
-                                    value={gliderId ? getGliderById(gliderId) : null}
-                                    onChange={(_, newValue) => setGliderId(newValue?.id)}
-                                    getOptionLabel={(option: GliderSchema) => option.call_sign}
-                                    renderInput={(params) => {
-                                        return (
-                                            <TextField
-                                                {...params}
-                                                label={t("GLIDER")}
-                                            />
-                                        )
-                                    }}
-                                />
-                            </FormControl>
-                        </FormGroup>
-                        <FormGroup>
-                            <FormControl style={{
-                                direction: "ltr",
-                            }}>
-                                <TimePicker
-                                    label={t("TAKE_OFF_TIME")}
-                                    value={takeOffat ? moment(takeOffat) : null}
-                                    onChange={(newValue: moment.Moment | null) => {
-                                        if (!newValue) {
-                                            setTakeOffat(null);
-                                            return;
-                                        }
-
-                                        if (!action?.date) {
-                                            return;
-                                        }
-
-                                        // Remove the timezone
-                                        newValue.utcOffset(0, true);
-
-                                        const date = moment(action.date);
-                                        date.utcOffset(0, true);
-                                        date.set({
-                                            hour: newValue.hour(),
-                                            minute: newValue.minute(),
-                                            second: newValue.second(),
-                                        });
-                                        setTakeOffat(date);
-                                    }}
-                                />
-                            </FormControl>
-                        </FormGroup>
-                        <FormGroup>
-                            <FormControl style={{
-                                direction: "ltr",
-                            }}>
-                                <TimePicker
-                                    label={t("TOW_RELEASE_TIME")}
-                                    value={towReleaseAt ? moment(towReleaseAt) : null}
-                                    onChange={(newValue: moment.Moment | null) => {
-                                        if (!newValue) {
-                                            setTowReleaseAt(null);
-                                            return;
-                                        }
-
-                                        // Remove the timezone
-                                        newValue.utcOffset(0, true);
-
-                                        if (!action?.date) {
-                                            return;
-                                        }
-
-                                        const date = moment(action.date);
-                                        date.utcOffset(0, true);
-                                        date.set({
-                                            hour: newValue.hour(),
-                                            minute: newValue.minute(),
-                                            second: newValue.second(),
-                                        });
-                                        setTowReleaseAt(date);
-                                    }}
-                                />
-                            </FormControl>
-                        </FormGroup>
-                        <FormGroup>
-                            <FormControl style={{
-                                direction: "ltr",
-                            }}>
-                                <TimePicker
-                                    label={t("LANDING_TIME")}
-                                    value={landingAt ? moment(landingAt) : null}
-                                    onChange={(newValue: moment.Moment | null) => {
-                                        if (!newValue) {
-                                            setLandingAt(null);
-                                            return;
-                                        }
-
-                                        // Remove the timezone
-                                        newValue.utcOffset(0, true);
-
-                                        if (!action?.date) {
-                                            return;
-                                        }
-
-                                        const date = moment(action.date);
-                                        date.utcOffset(0, true);
-                                        date.set({
-                                            hour: newValue.hour(),
-                                            minute: newValue.minute(),
-                                            second: newValue.second(),
-                                        });
-                                        setLandingAt(date);
-                                    }}
-                                />
-                            </FormControl>
-                        </FormGroup>
-                    </Grid>
-                    <Grid sx={{
-                        width: 400,
+                    }}
+                >
+                    <Grid style={{
                         display: "flex",
-                        flexDirection: "column",
-                        gap: 1,
+                        justifyContent: "space-between",
+                        gap: 20,
+                        paddingTop: 10,
                     }}>
-                        <FormGroup>
-                            <FormControl>
-                                <Autocomplete
-                                    id="pilot-1"
-                                    options={getPilot1Options()}
-                                    value={pilot1Id ? getMemberById(pilot1Id) : null}
-                                    onChange={(_, newValue) => setPilot1Id(newValue?.id)}
-                                    getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
-                                    renderInput={(params) => {
-                                        return (
-                                            <TextField
-                                                {...params}
-                                                label={t("PILOT_1")}
-                                            />
-                                        )
-                                    }}
-                                />
-                            </FormControl>
-                        </FormGroup>
-                        <FormGroup>
-                            <FormControl>
-                                <Autocomplete
-                                    id="pilot-2"
-                                    options={getPilot2Options()}
-                                    value={pilot2Id ? getMemberById(pilot2Id) : null}
-                                    onChange={(_, newValue) => setPilot2Id(newValue?.id)}
-                                    getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
-                                    renderInput={(params) => {
-                                        return (
-                                            <TextField
-                                                {...params}
-                                                label={t("PILOT_2")}
-                                            />
-                                        )
-                                    }}
-                                />
-                            </FormControl>
-                        </FormGroup>
-                    </Grid>
-                    <Grid
-                        sx={{
+                        <Grid sx={{
                             width: 400,
                             display: "flex",
                             flexDirection: "column",
                             gap: 1,
-                        }}
-                    >
-                        <FormGroup>
-                            <FormControl>
-                                <Autocomplete
-                                    id="tow-airplane"
-                                    options={towAirplanesStoreState.towAirplanes || []}
-                                    value={towAirplaneId ? getTowAirplaneById(towAirplaneId) : null}
-                                    onChange={(_, newValue) => setTowAirplaneId(newValue?.id)}
-                                    getOptionLabel={(option: TowAirplaneSchema) => option.call_sign}
-                                    renderInput={(params) => {
-                                        return (
-                                            <TextField
-                                                {...params}
-                                                label={t("TOW_AIRPLANE")}
-                                            />
-                                        )
-                                    }}
-                                />
-                            </FormControl>
-                        </FormGroup>
-                        <FormGroup>
-                            <FormControl>
-                                <Autocomplete
-                                    id="tow-pilot"
-                                    options={getTowPilotOptions()}
-                                    value={towPilotId ? getMemberById(towPilotId) : null}
-                                    onChange={(_, newValue) => setTowPilotId(newValue?.id)}
-                                    getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
-                                    renderInput={(params) => {
-                                        return (
-                                            <TextField
-                                                {...params}
-                                                label={t("TOW_PILOT")}
-                                            />
-                                        )
-                                    }}
-                                />
-                            </FormControl>
-                        </FormGroup>
-                        <FormGroup>
-                            <FormControl>
-                                <Autocomplete
-                                    id="tow-type"
-                                    options={SUPPORTED_TOW_TYPES}
-                                    value={towType}
-                                    getOptionLabel={(option: TowType) => getTowTypeDisplayValue(option)}
-                                    onChange={(_, newValue) => setTowType(newValue)}
-                                    renderInput={(params) => {
-                                        return (
-                                            <TextField
-                                                {...params}
-                                                label={t("TOW_TYPE")}
-                                            />
-                                        )
-                                    }}
-                                />
-                            </FormControl>
-                        </FormGroup>
-                    </Grid>
-                    <Grid
-                        sx={{
+                        }}>
+                            <FormGroup>
+                                <FormControl>
+                                    <Autocomplete
+                                        id="flight-type"
+                                        options={SUPPORTED_FLIGHT_TYPES}
+                                        value={flightType}
+                                        getOptionLabel={(option: FlightType) => getFlightTypeDisplayValue(option)}
+                                        onChange={(_, newValue) => setFlightType(newValue)}
+                                        renderInput={(params) => {
+                                            return (
+                                                <TextField
+                                                    {...params}
+                                                    label={t("FLIGHT_TYPE")}
+                                                />
+                                            )
+                                        }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+                            <FormGroup>
+                                <FormControl>
+                                    <Autocomplete
+                                        id="glider"
+                                        options={glidersStoreState.gliders || []}
+                                        value={gliderId ? getGliderById(gliderId) : null}
+                                        onChange={(_, newValue) => setGliderId(newValue?.id)}
+                                        getOptionLabel={(option: GliderSchema) => option.call_sign}
+                                        renderInput={(params) => {
+                                            return (
+                                                <TextField
+                                                    {...params}
+                                                    label={t("GLIDER")}
+                                                />
+                                            )
+                                        }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+                            <FormGroup>
+                                <FormControl style={{
+                                    direction: "ltr",
+                                }}>
+                                    <TimePicker
+                                        label={t("TAKE_OFF_TIME")}
+                                        value={takeOffat ? moment(takeOffat) : null}
+                                        onChange={(newValue: moment.Moment | null) => {
+                                            if (!newValue) {
+                                                setTakeOffat(null);
+                                                return;
+                                            }
+
+                                            if (!action?.date) {
+                                                return;
+                                            }
+
+                                            // Remove the timezone
+                                            newValue.utcOffset(0, true);
+
+                                            const date = moment(action.date);
+                                            date.utcOffset(0, true);
+                                            date.set({
+                                                hour: newValue.hour(),
+                                                minute: newValue.minute(),
+                                                second: newValue.second(),
+                                            });
+                                            setTakeOffat(date);
+                                        }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+                            <FormGroup>
+                                <FormControl style={{
+                                    direction: "ltr",
+                                }}>
+                                    <TimePicker
+                                        label={t("TOW_RELEASE_TIME")}
+                                        value={towReleaseAt ? moment(towReleaseAt) : null}
+                                        onChange={(newValue: moment.Moment | null) => {
+                                            if (!newValue) {
+                                                setTowReleaseAt(null);
+                                                return;
+                                            }
+
+                                            // Remove the timezone
+                                            newValue.utcOffset(0, true);
+
+                                            if (!action?.date) {
+                                                return;
+                                            }
+
+                                            const date = moment(action.date);
+                                            date.utcOffset(0, true);
+                                            date.set({
+                                                hour: newValue.hour(),
+                                                minute: newValue.minute(),
+                                                second: newValue.second(),
+                                            });
+                                            setTowReleaseAt(date);
+                                        }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+                            <FormGroup>
+                                <FormControl style={{
+                                    direction: "ltr",
+                                }}>
+                                    <TimePicker
+                                        label={t("LANDING_TIME")}
+                                        value={landingAt ? moment(landingAt) : null}
+                                        onChange={(newValue: moment.Moment | null) => {
+                                            if (!newValue) {
+                                                setLandingAt(null);
+                                                return;
+                                            }
+
+                                            // Remove the timezone
+                                            newValue.utcOffset(0, true);
+
+                                            if (!action?.date) {
+                                                return;
+                                            }
+
+                                            const date = moment(action.date);
+                                            date.utcOffset(0, true);
+                                            date.set({
+                                                hour: newValue.hour(),
+                                                minute: newValue.minute(),
+                                                second: newValue.second(),
+                                            });
+                                            setLandingAt(date);
+                                        }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+                        </Grid>
+                        <Grid sx={{
                             width: 400,
                             display: "flex",
                             flexDirection: "column",
                             gap: 1,
-                        }}
-                    >
-                        <FormGroup>
-                            <FormControl>
-                                <Autocomplete
-                                    id="payers-type"
-                                    options={SUPPORTED_PAYERS_TYPES}
-                                    value={payersType}
-                                    getOptionLabel={(option: PayersType) => getPayersTypeDisplayValue(option)}
-                                    onChange={(_, newValue) => setPayersType(newValue)}
-                                    renderInput={(params) => {
-                                        return (
-                                            <TextField
-                                                {...params}
-                                                label={t("PAYERS_TYPE")}
-                                            />
-                                        )
-                                    }}
-                                />
-                            </FormControl>
-                        </FormGroup>
-                        <FormGroup>
-                            <FormControl>
-                                <Autocomplete
-                                    id="payment-method"
-                                    options={SUPPORTED_PAYMENT_METHODS}
-                                    value={paymentMethod}
-                                    onChange={(_, newValue) => setPaymentMethod(newValue)}
-                                    getOptionLabel={(option: PaymentMethod) => getPaymentMethodDisplayValue(option)}
-                                    renderInput={(params) => {
-                                        return (
-                                            <TextField
-                                                {...params}
-                                                label={t("PAYMENT_METHOD")}
-                                            />
-                                        )
-                                    }}
-                                />
-                            </FormControl>
-                        </FormGroup>
-                        <FormGroup>
-                            <FormControl>
-                                <Autocomplete
-                                    id="paying-member"
-                                    options={membersStoreState.members || []}
-                                    value={payingMemberId ? getMemberById(payingMemberId) : null}
-                                    onChange={(_, newValue) => setPayingMemberId(newValue?.id)}
-                                    getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
-                                    renderInput={(params) => {
-                                        return (
-                                            <TextField
-                                                {...params}
-                                                label={t("PAYING_MEMBER")}
-                                            />
-                                        )
-                                    }}
-                                />
-                            </FormControl>
-                        </FormGroup>
-                        <FormGroup>
-                            <FormControl>
-                                <Autocomplete
-                                    id="payment-receiver"
-                                    options={membersStoreState.members || []}
-                                    value={paymentReceiverId ? getMemberById(paymentReceiverId) : null}
-                                    onChange={(_, newValue) => setPaymentReceiverId(newValue?.id)}
-                                    getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
-                                    renderInput={(params) => {
-                                        return (
-                                            <TextField
-                                                {...params}
-                                                label={t("PAYMENT_RECEIVER")}
-                                            />
-                                        )
-                                    }}
-                                />
-                            </FormControl>
-                        </FormGroup>
+                        }}>
+                            <FormGroup>
+                                <FormControl>
+                                    <Autocomplete
+                                        id="pilot-1"
+                                        options={getPilot1Options()}
+                                        value={pilot1Id ? getMemberById(pilot1Id) : null}
+                                        onChange={(_, newValue) => setPilot1Id(newValue?.id)}
+                                        getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
+                                        renderInput={(params) => {
+                                            return (
+                                                <TextField
+                                                    {...params}
+                                                    label={t("PILOT_1")}
+                                                />
+                                            )
+                                        }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+                            <FormGroup>
+                                <FormControl>
+                                    <Autocomplete
+                                        id="pilot-2"
+                                        options={getPilot2Options()}
+                                        value={pilot2Id ? getMemberById(pilot2Id) : null}
+                                        onChange={(_, newValue) => setPilot2Id(newValue?.id)}
+                                        getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
+                                        renderInput={(params) => {
+                                            return (
+                                                <TextField
+                                                    {...params}
+                                                    label={t("PILOT_2")}
+                                                />
+                                            )
+                                        }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+                        </Grid>
+                        <Grid
+                            sx={{
+                                width: 400,
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: 1,
+                            }}
+                        >
+                            <FormGroup>
+                                <FormControl>
+                                    <Autocomplete
+                                        id="tow-airplane"
+                                        options={towAirplanesStoreState.towAirplanes || []}
+                                        value={towAirplaneId ? getTowAirplaneById(towAirplaneId) : null}
+                                        onChange={(_, newValue) => setTowAirplaneId(newValue?.id)}
+                                        getOptionLabel={(option: TowAirplaneSchema) => option.call_sign}
+                                        renderInput={(params) => {
+                                            return (
+                                                <TextField
+                                                    {...params}
+                                                    label={t("TOW_AIRPLANE")}
+                                                />
+                                            )
+                                        }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+                            <FormGroup>
+                                <FormControl>
+                                    <Autocomplete
+                                        id="tow-pilot"
+                                        options={getTowPilotOptions()}
+                                        value={towPilotId ? getMemberById(towPilotId) : null}
+                                        onChange={(_, newValue) => setTowPilotId(newValue?.id)}
+                                        getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
+                                        renderInput={(params) => {
+                                            return (
+                                                <TextField
+                                                    {...params}
+                                                    label={t("TOW_PILOT")}
+                                                />
+                                            )
+                                        }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+                            <FormGroup>
+                                <FormControl>
+                                    <Autocomplete
+                                        id="tow-type"
+                                        options={SUPPORTED_TOW_TYPES}
+                                        value={towType}
+                                        getOptionLabel={(option: TowType) => getTowTypeDisplayValue(option)}
+                                        onChange={(_, newValue) => setTowType(newValue)}
+                                        renderInput={(params) => {
+                                            return (
+                                                <TextField
+                                                    {...params}
+                                                    label={t("TOW_TYPE")}
+                                                />
+                                            )
+                                        }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+                        </Grid>
+                        <Grid
+                            sx={{
+                                width: 400,
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: 1,
+                            }}
+                        >
+                            <FormGroup>
+                                <FormControl>
+                                    <Autocomplete
+                                        id="payers-type"
+                                        options={SUPPORTED_PAYERS_TYPES}
+                                        value={payersType}
+                                        getOptionLabel={(option: PayersType) => getPayersTypeDisplayValue(option)}
+                                        onChange={(_, newValue) => setPayersType(newValue)}
+                                        renderInput={(params) => {
+                                            return (
+                                                <TextField
+                                                    {...params}
+                                                    label={t("PAYERS_TYPE")}
+                                                />
+                                            )
+                                        }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+                            <FormGroup>
+                                <FormControl>
+                                    <Autocomplete
+                                        id="payment-method"
+                                        options={SUPPORTED_PAYMENT_METHODS}
+                                        value={paymentMethod}
+                                        onChange={(_, newValue) => setPaymentMethod(newValue)}
+                                        getOptionLabel={(option: PaymentMethod) => getPaymentMethodDisplayValue(option)}
+                                        renderInput={(params) => {
+                                            return (
+                                                <TextField
+                                                    {...params}
+                                                    label={t("PAYMENT_METHOD")}
+                                                />
+                                            )
+                                        }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+                            <FormGroup>
+                                <FormControl>
+                                    <Autocomplete
+                                        id="paying-member"
+                                        options={membersStoreState.members || []}
+                                        value={payingMemberId ? getMemberById(payingMemberId) : null}
+                                        onChange={(_, newValue) => setPayingMemberId(newValue?.id)}
+                                        getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
+                                        renderInput={(params) => {
+                                            return (
+                                                <TextField
+                                                    {...params}
+                                                    label={t("PAYING_MEMBER")}
+                                                />
+                                            )
+                                        }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+                            <FormGroup>
+                                <FormControl>
+                                    <Autocomplete
+                                        id="payment-receiver"
+                                        options={membersStoreState.members || []}
+                                        value={paymentReceiverId ? getMemberById(paymentReceiverId) : null}
+                                        onChange={(_, newValue) => setPaymentReceiverId(newValue?.id)}
+                                        getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
+                                        renderInput={(params) => {
+                                            return (
+                                                <TextField
+                                                    {...params}
+                                                    label={t("PAYMENT_RECEIVER")}
+                                                />
+                                            )
+                                        }}
+                                    />
+                                </FormControl>
+                            </FormGroup>
+                        </Grid>
                     </Grid>
-                </div>
+                    <Grid
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 1,
+                        }}
+                        mt={2}
+                    >
+                        {renderFlightComments()}
+                    </Grid>
+                </Grid>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onCancel}>

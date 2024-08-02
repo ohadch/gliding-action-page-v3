@@ -58,3 +58,9 @@ from .tow_airplane import (
     TowAirplaneUpdateSchema,
     TowAirplaneSearchSchema,
 )
+from .comment import (
+    CommentSchema,
+    CommentCreateSchema,
+    CommentUpdateSchema,
+    CommentSearchSchema,
+)
