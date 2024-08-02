@@ -8,3 +8,4 @@ from .glider_owner import GliderOwnerCrud
 from .member import MemberCrud
 from .member_role import MemberRoleCrud
 from .tow_airplane import TowAirplaneCrud
+from .comment import CommentCrud
