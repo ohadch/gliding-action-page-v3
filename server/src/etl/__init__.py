@@ -13,9 +13,9 @@ def etl_client_factory() -> EtlClient:
     from src.etl.rest_etl_client import RestEtlClient
 
     settings = get_settings()
-    if settings.etl_server_disabled:
-        etl_client = MockEtlClient()
-    else:
+    if settings.etl_server_url:
         etl_client = RestEtlClient(etl_server_url=settings.etl_server_url)
+    else:
+        etl_client = MockEtlClient()
 
     return etl_client
