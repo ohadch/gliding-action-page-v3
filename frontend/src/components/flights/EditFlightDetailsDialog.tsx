@@ -36,6 +36,7 @@ import {
 import {TimePicker} from "@mui/x-date-pickers";
 import moment from "moment";
 import CommentsTable from "../comments/CommentsTable.tsx";
+import {fetchComments} from "../../store/actions/currentAction.ts";
 
 export interface EditFlightDetailsDialogProps {
     flightId?: number | null
@@ -59,9 +60,8 @@ export default function EditFlightDetailsDialog({
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
     const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
-
-    const comments = useSelector((state: RootState) => state.currentAction.comments)
-    const currentFlightComments = comments?.filter((comment) => comment.flight_id === flightId) || [];
+    const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
+    const currentFlightComments = currentActionStoreState.comments?.filter((comment) => comment.flight_id === flightId);
 
     const {
         t
@@ -85,6 +85,14 @@ export default function EditFlightDetailsDialog({
             dispatch(fetchTowAirplanes());
         }
     });
+
+    useEffect(() => {
+        if (!currentActionStoreState.comments && !currentActionStoreState.fetchInProgress && action?.id) {
+            dispatch(fetchComments({
+                actionId: action.id,
+            }));
+        }
+    })
 
     const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
     const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
@@ -145,7 +153,7 @@ export default function EditFlightDetailsDialog({
 
         return (
             <CommentsTable
-                comments={currentFlightComments}
+                comments={currentFlightComments || []}
                 flightId={flightId}
             />
         )
