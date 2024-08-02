@@ -124,6 +124,7 @@ export const TEXTS_HEBREW = {
     DAILYSUMMARYFOROBSERVER: "סיכום טיסות למפקח",
     SUMMARYFORTOWPILOT: "סיכום טיסות לטייס גורר",
     SUMMARYFORCFI: "סיכום טיסות למדריך",
+    FLIGHTSEMAILREPORT: "דו״ח טיסות",
     HANDLED: "טופל",
     PENDING: "ממתין לטיפול",
     BEING_HANDLED: "בטיפול",
@@ -167,6 +168,8 @@ export const TEXTS_HEBREW = {
     CONFIRM_SEND_EMAIL: "האם אתה בטוח שברצונך לשלוח אימייל",
     SELECT_RECIPIENT: "בחר נמען",
     RECIPIENT: "נמען",
+    EMAIL_SENT_SUCCESSFULLY: "האימייל נשלח בהצלחה",
+    ERROR: "שגיאה",
 }
 
 

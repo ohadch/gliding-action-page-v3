@@ -5,7 +5,7 @@ from src.notifications.handlers.daily_summary_for_observer_notification_handler 
 from src.notifications.handlers.flight_summary_for_pilot_notification_handler import (
     FlightSummaryForPilotNotificationHandler,
 )
-from src.notifications.handlers.flights_report_email_notification_handler import (
+from src.notifications.handlers.flights_email_report_notification_handler import (
     FlightsEmailReportNotificationHandler,
 )
 from src.notifications.handlers.notification_handler import NotificationHandler

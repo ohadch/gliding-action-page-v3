@@ -163,8 +163,9 @@ export default function EventsTable() {
                             <TableCell align="right">{t("ID")}</TableCell>
                             <TableCell align="right">{t("CREATED_AT")}</TableCell>
                             <TableCell align="right">{t("TYPE")}</TableCell>
-                            <TableCell align="right">{t("DATA")}</TableCell>
                             <TableCell align="right">{t("AUTHOR")}</TableCell>
+                            <TableCell align="right">{t("DATA")}</TableCell>
+                            <TableCell align="right">{t("ERROR")}</TableCell>
                             <TableCell align="right"></TableCell>
                         </TableRow>
                     </TableHead>
@@ -183,10 +184,13 @@ export default function EventsTable() {
                                     t(event.type.toUpperCase())
                                 }</TableCell>
                                 <TableCell align="right">{
+                                    event.payload.field_responsible_id && displayMember(event.payload.field_responsible_id)
+                                }</TableCell>
+                                <TableCell align="right">{
                                     renderPayload(event)
                                 }</TableCell>
                                 <TableCell align="right">{
-                                    event.payload.field_responsible_id && displayMember(event.payload.field_responsible_id)
+                                    event.traceback
                                 }</TableCell>
                                 <TableCell>
                                     <Tooltip title={t("DELETE_EVENT")} onClick={() => onEventDelete(event.id)}>

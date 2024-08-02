@@ -90,6 +90,7 @@ export default function NotificationsTable() {
                             <TableCell align="right">{t("RECIPIENT_NAME")}</TableCell>
                             <TableCell align="right">{t("RECIPIENT_EMAIL")}</TableCell>
                             <TableCell align="right">{t("DATA")}</TableCell>
+                            <TableCell align="right">{t("ERROR")}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -147,6 +148,9 @@ export default function NotificationsTable() {
                                 </TableCell>
                                 <TableCell align="right">
                                     {JSON.stringify(notification.payload)}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {notification.traceback}
                                 </TableCell>
                             </TableRow>
                         ))}

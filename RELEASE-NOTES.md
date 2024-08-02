@@ -18,6 +18,7 @@ This release introduces the ability to send a flights report by email to the clu
 #### Frontend
 
 - Adds the `FlightsTableSendEmailDialog` component in order to send the flights report by email.
+- Adds an `error` column to the `EventsTable` and `NotificationsTable` in order to show the traceback in case of an error.
 
 ## v3.3.0
 

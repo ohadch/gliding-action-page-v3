@@ -21,11 +21,13 @@ import {createEvent} from "../../store/actions/event.ts";
 export interface FlightsTableSendEmailDialogProps {
     flights: FlightSchema[];
     open: boolean;
+    onClose: () => void;
 }
 
 export default function FlightsTableSendEmailDialog(props: FlightsTableSendEmailDialogProps) {
-    const {flights, open} = props;
+    const {flights, open, onClose} = props;
     const membersStoreState = useSelector((state: RootState) => state.members)
+    const currentActionState = useSelector((state: RootState) => state.currentAction)
     const [memberId, setMemberId] = useState<number | null>(null);
     const dispatch = useAppDispatch();
 
@@ -33,6 +35,10 @@ export default function FlightsTableSendEmailDialog(props: FlightsTableSendEmail
     const {t} = useTranslation();
 
     function onSendEmail() {
+        if (!currentActionState.actionId) {
+            return;
+        }
+
         if (!memberId) {
             return;
         }
@@ -50,19 +56,23 @@ export default function FlightsTableSendEmailDialog(props: FlightsTableSendEmail
         dispatch(createEvent({
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            action_id: action.id,
+            action_id: currentActionState.actionId,
             type: "flights_email_report_requested",
             payload: {
                 flights_ids: flights.map((flight) => flight.id),
                 recipient_member_id: member.id,
             }
         }))
+
+        alert(t("EMAIL_SENT_SUCCESSFULLY"));
+
+        onClose();
     }
 
     return (
         <Dialog open={open} maxWidth="xl">
             <DialogTitle>
-                <Typography variant="h5">{t("SEND_EMAIL")}: {flights.length} {t("FLIGHTS")}</Typography>
+                {t("SEND_EMAIL")}: {flights.length} {t("FLIGHTS")}
             </DialogTitle>
             <DialogContent>
                 <Grid mt={2}>
@@ -94,7 +104,7 @@ export default function FlightsTableSendEmailDialog(props: FlightsTableSendEmail
                     marginTop: "1rem",
                 }}>
                     <Grid margin={1}>
-                        <Button size={"large"} variant={"outlined"} color={"primary"} onClick={onSendEmail}>
+                        <Button size={"large"} variant={"outlined"} color={"primary"} onClick={() => onClose()}>
                             {t("CANCEL")}
                         </Button>
                     </Grid>

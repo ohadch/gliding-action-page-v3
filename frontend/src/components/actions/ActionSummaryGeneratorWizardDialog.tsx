@@ -419,6 +419,7 @@ export default function ActionSummaryGeneratorWizardDialog({
                     <FlightsTableSendEmailDialog
                         flights={flights}
                         open={sendEmailDialogOpen}
+                        onClose={() => setSendEmailDialogOpen(false)}
                     />
                 )}
             </>
