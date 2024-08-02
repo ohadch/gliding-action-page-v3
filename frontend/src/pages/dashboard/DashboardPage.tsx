@@ -8,7 +8,13 @@ import {useCallback, useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../store";
-import {createFlight, deleteFlight, fetchFlights, updateFlight} from "../../store/actions/currentAction.ts";
+import {
+    createFlight,
+    deleteFlight,
+    fetchComments,
+    fetchFlights,
+    updateFlight
+} from "../../store/actions/currentAction.ts";
 import FlightCreationWizardDialog from "../../components/flights/FlightCreationWizardDialog.tsx";
 import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
 import EditFlightDetailsDialog from "../../components/flights/EditFlightDetailsDialog.tsx";
@@ -158,6 +164,7 @@ export default function DashboardPage() {
     useEffect(() => {
         if (!flights && !fetchingFlightsInProgress && action) {
             dispatch(fetchFlights(action.id));
+            dispatch(fetchComments(action.id));
             dispatch(fetchGliders());
             dispatch(fetchGliderOwners());
         }

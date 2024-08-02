@@ -13,7 +13,7 @@ import TableRow from "@mui/material/TableRow";
 import TableContainer from "@mui/material/TableContainer";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import {fetchEvents, fetchFlights} from "../../store/actions/currentAction.ts";
+import {fetchComments, fetchEvents, fetchFlights} from "../../store/actions/currentAction.ts";
 import {getMemberDisplayValue} from "../../utils/display.ts";
 import {fetchMembers} from "../../store/actions/member.ts";
 import {EventSchema, EventType} from "../../lib/types.ts";
@@ -56,6 +56,7 @@ export default function EventsTable() {
 
         if (!flights && !fetchInProgress && actionId) {
             dispatch(fetchFlights(actionId));
+            dispatch(fetchComments(actionId));
         }
     });
 

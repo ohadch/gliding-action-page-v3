@@ -13,7 +13,7 @@ import TableRow from "@mui/material/TableRow";
 import TableContainer from "@mui/material/TableContainer";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import {fetchNotifications, fetchFlights} from "../../store/actions/currentAction.ts";
+import {fetchNotifications, fetchFlights, fetchComments} from "../../store/actions/currentAction.ts";
 import {getMemberDisplayValue} from "../../utils/display.ts";
 import {fetchMembers} from "../../store/actions/member.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
@@ -55,6 +55,9 @@ export default function NotificationsTable() {
 
         if (!flights && !fetchInProgress && actionId) {
             dispatch(fetchFlights(actionId));
+            dispatch(fetchComments({
+                actionId,
+            }));
         }
     });
 
