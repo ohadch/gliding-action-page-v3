@@ -14,7 +14,7 @@ services:
     ports:
       - "9001:9001"
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - "host.docker.internal:172.17.0.1"
 
   client:
     build:
