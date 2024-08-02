@@ -13,14 +13,14 @@ class FlightsEmailReportNotificationHandler(NotificationHandler):
         flights = session.query(Flight).filter_by(
             id__in=(notification_payload.flights_ids or [])
         )
-        # subject = self._i18n.get_daily_summary_for_observer_email_message_subject(
-        #     action=self._notification.action
-        # )
-        # message = self._i18n.get_daily_summary_for_observer_email_message(
-        #     observer=self._notification.recipient_member,
-        #     action=self._notification.action,
-        #     flights=flights_in_action,
-        # )
+        subject = self._i18n.get_flights_email_report_email_message_subject(
+            flights=flights
+        )
+        message = self._i18n.get_flights_email_report_email_message(
+            member=self._notification.recipient_member,
+            action=self._notification.action,
+            flights=flights,
+        )
 
         self._email_client.send_email(
             to_email=self._notification.recipient_member.email,
