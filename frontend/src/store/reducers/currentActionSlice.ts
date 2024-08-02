@@ -13,7 +13,7 @@ import {
 import {EventSchema, NotificationSchema} from "../../lib/types.ts";
 import {updateNotification} from "../actions/notification.ts";
 import {updateEvent} from "../actions/event.ts";
-import {createComment, updateComment} from "../actions/comment.ts";
+import {createComment, deleteComment, updateComment} from "../actions/comment.ts";
 
 const initialState: CurrentActionStoreState = {
     actionId: CacheService.getNumber(CACHE_KEY_ACTION),
@@ -202,6 +202,17 @@ export const currentActionSlice = createSlice({
                 state.comments = [...(state.comments || []), action.payload]
             })
             .addCase(createComment.rejected, (state, action) => {
+                state.fetchInProgress = false
+                state.error = action.error.message
+            })
+            .addCase(deleteComment.pending, (state) => {
+                state.fetchInProgress = true
+            })
+            .addCase(deleteComment.fulfilled, (state, action) => {
+                state.fetchInProgress = false
+                state.comments = state.comments?.filter(comment => comment.id !== action.payload)
+            })
+            .addCase(deleteComment.rejected, (state, action) => {
                 state.fetchInProgress = false
                 state.error = action.error.message
             })

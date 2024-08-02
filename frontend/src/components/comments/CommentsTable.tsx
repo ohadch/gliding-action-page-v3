@@ -40,7 +40,7 @@ export default function CommentsTable(props: CommentsTableProps) {
                             <TableCell align="right"></TableCell>
                             <TableCell align="right">{t("ID")}</TableCell>
                             <TableCell align="right">{t("AUTHOR")}</TableCell>
-                            <TableCell align="right">{t("TEXT")}</TableCell>
+                            <TableCell align="right">{t("CONTENT")}</TableCell>
                             <TableCell align="right">{t("CREATED_AT")}</TableCell>
                             <TableCell align="right">{t("UPDATED_AT")}</TableCell>
                             <TableCell align="right"></TableCell>

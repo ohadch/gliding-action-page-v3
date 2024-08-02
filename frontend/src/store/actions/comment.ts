@@ -5,7 +5,7 @@ import {API_HOST} from "../../utils/consts.ts";
 import {CommentCreateSchema, CommentSchema, CommentUpdateSchema} from "../../lib/types.ts";
 
 
-const {POST, PUT} = createClient<paths>({baseUrl: API_HOST});
+const {POST, PUT, DELETE} = createClient<paths>({baseUrl: API_HOST});
 
 
 export const createComment = createAsyncThunk<CommentSchema, CommentCreateSchema, { rejectValue: string }
@@ -45,5 +45,26 @@ export const updateComment = createAsyncThunk<CommentSchema, { commentId: number
         }
 
         return data;
+    }
+)
+
+
+export const deleteComment = createAsyncThunk<number, number, { rejectValue: string }
+>(
+    'comments/deleteComment',
+    async (commentId, thunkAPI) => {
+        const {error} = await DELETE("/comments/{id_}", {
+            params: {
+                path: {
+                    id_: commentId,
+                }
+            }
+        });
+
+        if (error) {
+            return thunkAPI.rejectWithValue("Error deleting comment");
+        }
+
+        return commentId;
     }
 )
