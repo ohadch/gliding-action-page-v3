@@ -29,6 +29,19 @@ class I18nClient(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def get_flights_email_report_email_message_subject(
+        self, flights: List[Flight]
+    ) -> str:
+        pass
+
+    @abc.abstractmethod
+    def get_daily_summary_for_observer_email_message_subject(
+        self,
+        action: Action,
+    ) -> str:
+        pass
+
+    @abc.abstractmethod
     def format_flight_summary_for_pilot_email_message_template(
         self,
         member: Member,
@@ -50,19 +63,22 @@ class I18nClient(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_daily_summary_for_observer_email_message_subject(
-        self,
-        action: Action,
-    ) -> str:
-        pass
-
-    @abc.abstractmethod
     def format_daily_summary_for_observer_email_message_template(
         self,
         observer: Member,
         action: Action,
         flights: List[Flight],
         flights_by_glider: List[Tuple[str, int, str, str]],
+    ) -> str:
+        pass
+
+    @abc.abstractmethod
+    def format_flights_email_report_email_message_template(
+        self,
+        member: Member,
+        action: Action,
+        flights: List[Flight],
+        flights_table_html: str,
     ) -> str:
         pass
 
@@ -175,6 +191,75 @@ class I18nClient(abc.ABC):
             flights_by_glider=flights_by_glider,
         )
 
+    def get_summary_for_tow_pilot_email_message(
+        self,
+        tow_pilot: Member,
+        tow_airplane: TowAirplane,
+        action: Action,
+        flights: List[Flight],
+    ) -> str:
+        """
+        Get summary for tow pilot email message
+        :param tow_pilot: tow pilot
+        :param tow_airplane: tow airplane
+        :param action: action
+        :param flights: flights
+        """
+        flights_table_html = self.create_flights_table_html(
+            flights=flights,
+            headers=[
+                "take_off_at",
+                "airplane",
+                "tow_type",
+                "glider",
+                "pilot1",
+                "pilot2",
+            ],
+        )
+
+        return self.format_summary_for_tow_pilot_email_message_template(
+            tow_pilot=tow_pilot,
+            tow_airplane=tow_airplane,
+            action=action,
+            flights=flights,
+            html=flights_table_html,
+        )
+
+    def get_flights_email_report_email_message(
+        self, member: Member, action: Action, flights: List[Flight]
+    ) -> str:
+        """
+        Get flights email report email message
+        :param member: member
+        :param action: action
+        :param flights: flights
+        """
+        flights_table_html = self.create_flights_table_html(
+            flights=flights,
+            headers=[
+                "take_off_at",
+                "landing_at",
+                "glider",
+                "pilot_1",
+                "pilot_2",
+                "tow_pilot",
+                "airplane",
+                "flight_type",
+                "tow_type",
+                "payers_type",
+                "payment_method",
+                "payment_receiver",
+                "flight_duration",
+            ],
+        )
+
+        return self.format_flights_email_report_email_message_template(
+            member=member,
+            action=action,
+            flights=flights,
+            flights_table_html=flights_table_html,
+        )
+
     def _group_flights_by_glider(
         self, flights: List[Flight]
     ) -> List[Tuple[str, int, str, str]]:
@@ -222,40 +307,6 @@ class I18nClient(abc.ABC):
             )
 
         return flights_by_glider
-
-    def get_summary_for_tow_pilot_email_message(
-        self,
-        tow_pilot: Member,
-        tow_airplane: TowAirplane,
-        action: Action,
-        flights: List[Flight],
-    ) -> str:
-        """
-        Get summary for tow pilot email message
-        :param tow_pilot: tow pilot
-        :param tow_airplane: tow airplane
-        :param action: action
-        :param flights: flights
-        """
-        flights_table_html = self.create_flights_table_html(
-            flights=flights,
-            headers=[
-                "take_off_at",
-                "airplane",
-                "tow_type",
-                "glider",
-                "pilot1",
-                "pilot2",
-            ],
-        )
-
-        return self.format_summary_for_tow_pilot_email_message_template(
-            tow_pilot=tow_pilot,
-            tow_airplane=tow_airplane,
-            action=action,
-            flights=flights,
-            html=flights_table_html,
-        )
 
     def create_flights_table_html(
         self, flights: List[Flight], headers: Optional[List[str]] = None

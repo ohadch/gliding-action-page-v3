@@ -185,3 +185,30 @@ class HebrewI18nClient(I18nClient):
             flights=flights,
             flights_html=flights_html,
         )
+
+    def get_flights_email_report_email_message_subject(
+        self, flights: List[Flight]
+    ) -> str:
+        return f"פרטי {len(flights)} טיסות שנשלחו מהמגדל"
+
+    def format_flights_email_report_email_message_template(
+        self,
+        member: Member,
+        action: Action,
+        flights: List[Flight],
+        flights_table_html: str,
+    ) -> str:
+        date_str = action.date.strftime("%Y-%m-%d")
+
+        return f"""
+        <table dir="rtl">
+            <tr>שלום {member.full_name},</tr>
+            <tr></tr>
+            <tr>מצורף פרטי {len(flights)} טיסות שנשלחו מהמגדל בתאריך {date_str}.</tr>
+            <tr></tr>
+            {flights_table_html}
+            <tr></tr>
+            <tr>תודה,</tr>
+            <tr>מרכז הדאיה מגידו</tr>
+        </table>
+        """
