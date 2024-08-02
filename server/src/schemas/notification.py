@@ -41,6 +41,7 @@ class NotificationUpdateSchema(BaseModel):
     state: Optional[NotificationState] = None
     num_sending_attempts: Optional[int] = None
     last_sending_attempt_at: Optional[datetime.datetime] = None
+    traceback: Optional[str] = None
 
 
 class NotificationSearchSchema(NotificationUpdateSchema):

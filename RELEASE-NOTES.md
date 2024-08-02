@@ -14,6 +14,7 @@ This release introduces the ability to send a flights report by email to the clu
 - Introduces the `FlightsEmailReport` notification and the `FlightsEmailReportNotificationHandler`.
 - Implements the required methods to support the flights email report in the `I18n` class.
 - Adds a metadata section to the flights table that is sent by email.
+- Adds the `traceback` column to the `NotificationUpdateSchema` in order to allow clearing the traceback when resending the notification.
 
 #### Frontend
 

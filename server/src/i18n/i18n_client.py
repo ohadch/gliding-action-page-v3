@@ -413,10 +413,10 @@ class I18nClient(abc.ABC):
         # Create the metadata section
         metadata_section = f"""
             <div>
-                <strong>{self.translate("FLIGHTS_NUMBER")}:</strong> {num_flights}
+                <strong>{self.translate("NUMBER_OF_FLIGHTS")}:</strong> {num_flights}
             </div>
             <div>
-                <strong>{self.translate("TOTAL_DURATION")}:</strong> {total_duration_str}
+                <strong>{self.translate("TOTAL_FLIGHTS_DURATION")}:</strong> {total_duration_str}
             </div>
         """
 

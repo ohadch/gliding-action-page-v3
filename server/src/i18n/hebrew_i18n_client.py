@@ -44,6 +44,8 @@ class HebrewI18nClient(I18nClient):
             "AIRPLANE_3000": "3000 רגל",
             "AIRPLANE_3500": "3500 רגל",
             "AIRPLANE_4000": "4000 רגל",
+            "NUMBER_OF_FLIGHTS": "מספר טיסות",
+            "TOTAL_FLIGHTS_DURATION": "זמן טיסה כולל",
         }.get(key, key)
 
     def format_flight_summary_for_pilot_email_message_template(
@@ -205,7 +207,7 @@ class HebrewI18nClient(I18nClient):
         <table dir="rtl">
             <tr>שלום {member.full_name},</tr>
             <tr></tr>
-            <tr>מצורף פרטי {len(flights)} טיסות שנשלחו מהמגדל בתאריך {date_str}.</tr>
+            <tr>מצורפים פרטי {len(flights)} טיסות שנשלחו מהמגדל בתאריך {date_str}.</tr>
             <tr></tr>
             {flights_metadata_html}
             <tr></tr>

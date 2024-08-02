@@ -116,6 +116,7 @@ export default function NotificationsTable() {
                                                                 state: "pending",
                                                                 num_sending_attempts: 0,
                                                                 last_sending_attempt_at: null,
+                                                                traceback: null,
                                                             },
                                                         })
                                                     );

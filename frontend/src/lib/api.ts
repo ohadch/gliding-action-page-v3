@@ -1041,6 +1041,8 @@ export interface components {
       num_sending_attempts?: number | null;
       /** Last Sending Attempt At */
       last_sending_attempt_at?: string | null;
+      /** Traceback */
+      traceback?: string | null;
       /** Action Id */
       action_id?: number | null;
     };
@@ -1066,6 +1068,8 @@ export interface components {
       num_sending_attempts?: number | null;
       /** Last Sending Attempt At */
       last_sending_attempt_at?: string | null;
+      /** Traceback */
+      traceback?: string | null;
     };
     /**
      * PayersType

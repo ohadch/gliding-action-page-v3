@@ -10,8 +10,10 @@ class FlightsEmailReportNotificationHandler(NotificationHandler):
         notification_payload = NotificationPayloadSchema.model_validate(
             self._notification.payload
         )
-        flights = session.query(Flight).filter_by(
-            id__in=(notification_payload.flights_ids or [])
+        flights = (
+            session.query(Flight)
+            .filter(Flight.id.in_(notification_payload.flights_ids or []))
+            .all()
         )
         subject = self._i18n.get_flights_email_report_email_message_subject(
             flights=flights
