@@ -10,7 +10,8 @@ This release introduces the ability to send a flights report by email to the clu
 
 #### Server
 
-- Introduces the `flights_email_report_requested` event and the `FlightsEmailReportRequestedEventHandler`
+- Introduces the `flights_email_report_requested` event and the `FlightsEmailReportRequestedEventHandler`.
+- Introduces the `FlightsEmailReport` notification and the `FlightsEmailReportNotificationHandler`.
 
 #### Frontend
 
