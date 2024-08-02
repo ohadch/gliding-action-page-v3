@@ -4,7 +4,7 @@ import {paths} from "../../lib/api.ts";
 import {API_HOST} from "../../utils/consts.ts";
 import {
     ActiveTowAirplaneCreateSchema,
-    ActiveTowAirplaneSchema, ActiveTowAirplaneUpdateSchema, EventSchema,
+    ActiveTowAirplaneSchema, ActiveTowAirplaneUpdateSchema, CommentSchema, EventSchema,
     FlightCreateSchema,
     FlightSchema,
     FlightUpdateSchema, NotificationSchema
@@ -231,6 +231,33 @@ export const fetchNotifications = createAsyncThunk<NotificationSchema[], {action
 
         if (error) {
             return thunkAPI.rejectWithValue("Error fetching notifications");
+        }
+
+        return data
+    }
+)
+
+
+export const fetchComments = createAsyncThunk<CommentSchema[], {actionId: number}, { rejectValue: string }
+>(
+    'currentAction/fetchComments',
+    async ({
+                actionId,
+           }, thunkAPI) => {
+        const {data, error} = await POST("/comments/search", {
+            params: {
+                query: {
+                    page: 1,
+                    page_size: 3000,
+                },
+            },
+            body: {
+                action_id: actionId,
+            }
+        });
+
+        if (error) {
+            return thunkAPI.rejectWithValue("Error fetching comments");
         }
 
         return data

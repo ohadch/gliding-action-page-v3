@@ -11,6 +11,10 @@ This release introduces the ability to add comments to actions and flights.
 - Introduces the `Comment` table in the database in order to store the comments.
 - Introduces the `CommentSchema`, `CommentSchemaCreate`, and `CommentSchemaUpdate` classes in order to validate the comments.
 
+#### Frontend
+
+- Adds comments store state in the frontend in order to store the comments.
+
 ## v3.4.0
 
 ### New Features

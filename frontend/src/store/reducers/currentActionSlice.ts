@@ -6,13 +6,14 @@ import {
     addActiveTowAirplane,
     createFlight, deleteActiveTowAirplane,
     deleteFlight,
-    fetchActiveTowAirplanes, fetchEvents,
+    fetchActiveTowAirplanes, fetchComments, fetchEvents,
     fetchFlights, fetchNotifications, updateActiveTowAirplane,
     updateFlight
 } from "../actions/currentAction.ts";
 import {EventSchema, NotificationSchema} from "../../lib/types.ts";
 import {updateNotification} from "../actions/notification.ts";
 import {updateEvent} from "../actions/event.ts";
+import {createComment, updateComment} from "../actions/comment.ts";
 
 const initialState: CurrentActionStoreState = {
     actionId: CacheService.getNumber(CACHE_KEY_ACTION),
@@ -170,6 +171,39 @@ export const currentActionSlice = createSlice({
             .addCase(updateNotification.rejected, (state, notification) => {
                 state.fetchInProgress = false
                 state.error = notification.error.message
+            })
+            .addCase(fetchComments.pending, (state) => {
+                state.fetchInProgress = true
+            })
+            .addCase(fetchComments.fulfilled, (state, action) => {
+                state.fetchInProgress = false
+                state.comments = action.payload
+            })
+            .addCase(fetchComments.rejected, (state, action) => {
+                state.fetchInProgress = false
+                state.error = action.error.message
+            })
+            .addCase(updateComment.pending, (state) => {
+                state.fetchInProgress = true
+            })
+            .addCase(updateComment.fulfilled, (state, action) => {
+                state.fetchInProgress = false
+                state.comments = state.comments?.map(comment => comment.id === action.payload.id ? action.payload : comment)
+            })
+            .addCase(updateComment.rejected, (state, action) => {
+                state.fetchInProgress = false
+                state.error = action.error.message
+            })
+            .addCase(createComment.pending, (state) => {
+                state.fetchInProgress = true
+            })
+            .addCase(createComment.fulfilled, (state, action) => {
+                state.fetchInProgress = false
+                state.comments = [...(state.comments || []), action.payload]
+            })
+            .addCase(createComment.rejected, (state, action) => {
+                state.fetchInProgress = false
+                state.error = action.error.message
             })
     }
 })
