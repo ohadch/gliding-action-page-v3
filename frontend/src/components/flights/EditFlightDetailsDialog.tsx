@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import {useEffect, useState} from "react";
 import {
-    CommentCreateSchema, CommentUpdateSchema,
+    CommentCreateSchema, CommentSchema, CommentUpdateSchema,
     FlightCreateSchema,
     FlightType, FlightUpdateSchema,
     GliderSchema,
@@ -40,6 +40,7 @@ import CommentsTable from "../comments/CommentsTable.tsx";
 import {createComment, deleteComment, updateComment} from "../../store/actions/comment.ts";
 import {fetchComments} from "../../store/actions/currentAction.ts";
 import Typography from "@mui/material/Typography";
+import CommentEditDialog from "../comments/CommentEditDialog.tsx";
 
 export interface EditFlightDetailsDialogProps {
     flightId?: number | null
@@ -63,46 +64,9 @@ export default function EditFlightDetailsDialog({
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
     const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
-    const [newComment, setNewComment] = useState<string | null>(null);
 
     const comments = useSelector((state: RootState) => state.currentAction.comments)
     const currentFlightComments = comments?.filter((comment) => comment.flight_id === flightId) || [];
-
-    const onCommentCreate = (comment: CommentCreateSchema) => {
-        if (!action) {
-            return;
-        }
-
-        dispatch(createComment(comment));
-        dispatch(fetchComments({
-            actionId: action.id,
-        }));
-    }
-
-    const onCommentUpdate = (comment: CommentUpdateSchema) => {
-        if (!action) {
-            return;
-        }
-
-        dispatch(updateComment({
-            commentId: comment.id,
-            updatePayload: comment
-        }));
-        dispatch(fetchComments({
-            actionId: action.id,
-        }));
-    }
-
-    const onCommentDelete = (commentId: number) => {
-        if (!action) {
-            return;
-        }
-
-        dispatch(deleteComment(commentId));
-        dispatch(fetchComments({
-            actionId: action.id,
-        }));
-    }
 
     const {
         t
@@ -180,20 +144,14 @@ export default function EditFlightDetailsDialog({
     }
 
     function renderFlightComments() {
-        if (currentFlightComments.length === 0) {
-            return (
-                <p>
-                    {t("NO_COMMENTS_FOR_THIS_FLIGHT")}.
-                </p>
-            )
+        if (!flightId) {
+            return null;
         }
 
         return (
             <CommentsTable
                 comments={currentFlightComments}
-                onCommentCreate={onCommentCreate}
-                onCommentUpdate={onCommentUpdate}
-                onCommentDelete={onCommentDelete}
+                flightId={flightId}
             />
         )
     }
@@ -569,25 +527,7 @@ export default function EditFlightDetailsDialog({
                         }}
                         mt={2}
                     >
-                        <Grid sx={{
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                        }}>
-                            <Grid>
-                                <Typography variant="h5">
-                                {t("COMMENTS")}
-                            </Typography>
-                            </Grid>
-                            <Grid>
-                                <Button onClick={() => alert("TODO")} variant="contained">
-                                    {t("ADD_COMMENT")}
-                                </Button>
-                            </Grid>
-                        </Grid>
-                        <Grid>
-                            {renderFlightComments()}
-                        </Grid>
+                        {renderFlightComments()}
                     </Grid>
                 </Grid>
             </DialogContent>

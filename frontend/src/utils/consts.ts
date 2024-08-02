@@ -173,7 +173,7 @@ export const TEXTS_HEBREW = {
     COMMENTS: "הערות",
     ADD_COMMENT: "הוסף הערה",
     CONTENT: "תוכן",
-    NO_COMMENTS_FOR_THIS_FLIGHT: "אין הערות עבור טיסה זו",
+    NO_COMMENTS: "אין הערות",
 }
 
 
