@@ -660,6 +660,10 @@ export interface components {
       flight_id: number | null;
       /** Text */
       text: string;
+      /** Created At */
+      created_at: string | null;
+      /** Updated At */
+      updated_at: string | null;
     };
     /** CommentSearchSchema */
     CommentSearchSchema: {

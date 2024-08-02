@@ -1,3 +1,4 @@
+import datetime
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
@@ -9,6 +10,8 @@ class CommentSchema(BaseModel):
     action_id: int
     flight_id: Optional[int] = None
     text: str
+    created_at: Optional[datetime.datetime] = None
+    updated_at: Optional[datetime.datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
 

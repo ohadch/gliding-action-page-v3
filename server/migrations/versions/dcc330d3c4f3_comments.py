@@ -1,8 +1,8 @@
 """comments
 
-Revision ID: ba862761d89d
+Revision ID: dcc330d3c4f3
 Revises: e8794fc34ef9
-Create Date: 2024-08-02 12:17:01.343692
+Create Date: 2024-08-02 12:34:14.627612
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "ba862761d89d"
+revision = "dcc330d3c4f3"
 down_revision = "e8794fc34ef9"
 branch_labels = None
 depends_on = None
@@ -21,6 +21,8 @@ def upgrade() -> None:
     op.create_table(
         "comments",
         sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=True),
+        sa.Column("updated_at", sa.DateTime(), nullable=True),
         sa.Column("author_id", sa.Integer(), nullable=False),
         sa.Column("action_id", sa.Integer(), nullable=False),
         sa.Column("flight_id", sa.Integer(), nullable=True),
