@@ -101,6 +101,7 @@ export default function SettingsPage() {
                             <TableCell align="right">{t("STATUS")}</TableCell>
                             <TableCell align="right">{t("ID")}</TableCell>
                             <TableCell align="right">{t("CREATED_AT")}</TableCell>
+                            <TableCell align="right">{t("ERROR")}</TableCell>
                             <TableCell align="right"></TableCell>
                         </TableRow>
                     </TableHead>
@@ -112,6 +113,7 @@ export default function SettingsPage() {
                             </TableCell>
                             <TableCell align="right">{event.id}</TableCell>
                             <TableCell align="right">{event.created_at}</TableCell>
+                            <TableCell align="right">{event.traceback}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

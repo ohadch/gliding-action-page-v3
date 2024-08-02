@@ -1,5 +1,16 @@
 # Gliding Action Page Release Notes
 
+## v3.5.1
+
+### Enhancements
+
+- Adds a column that shows the traceback in case of an error to the data export requests table in the settings page.
+
+### Bug Fixes
+
+- The server reads the `ETL_SERVER_URL` correctly.
+
+
 ## v3.5.0
 
 This release introduces the ability to add comments to actions and flights.
