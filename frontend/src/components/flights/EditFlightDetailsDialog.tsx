@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import {useEffect, useState} from "react";
 import {
-    CommentCreateSchema, CommentSchema, CommentUpdateSchema,
     FlightCreateSchema,
     FlightType, FlightUpdateSchema,
     GliderSchema,
@@ -37,10 +36,6 @@ import {
 import {TimePicker} from "@mui/x-date-pickers";
 import moment from "moment";
 import CommentsTable from "../comments/CommentsTable.tsx";
-import {createComment, deleteComment, updateComment} from "../../store/actions/comment.ts";
-import {fetchComments} from "../../store/actions/currentAction.ts";
-import Typography from "@mui/material/Typography";
-import CommentEditDialog from "../comments/CommentEditDialog.tsx";
 
 export interface EditFlightDetailsDialogProps {
     flightId?: number | null
@@ -167,6 +162,7 @@ export default function EditFlightDetailsDialog({
         <Dialog open={open} maxWidth="xl">
             <DialogTitle>
                 {flightId ? t("EDIT_FLIGHT") : t("CREATE_FLIGHT")}
+                {flightId? ` (${t("ID")}: ${flightId})` : ""}
             </DialogTitle>
             <DialogContent>
                 <Grid

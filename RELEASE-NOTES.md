@@ -16,6 +16,7 @@ This release introduces the ability to add comments to actions and flights.
 - Adds comments store state in the frontend in order to store the comments.
 - Adds the CommentsTable component in order to show the comments in the UI.
 - Renders the comments table in the edit flight dialog.
+- Renders the flight ID in the edit flight dialog.
 
 ## v3.4.0
 

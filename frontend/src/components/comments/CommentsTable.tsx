@@ -104,7 +104,6 @@ export default function CommentsTable(props: CommentsTableProps) {
                             <TableCell align="right">{t("ID")}</TableCell>
                             <TableCell align="right">{t("AUTHOR")}</TableCell>
                             <TableCell align="right">{t("CONTENT")}</TableCell>
-                            <TableCell align="right">{t("CREATED_AT")}</TableCell>
                             <TableCell align="right">{t("UPDATED_AT")}</TableCell>
                             <TableCell align="right"></TableCell>
                         </TableRow>
@@ -118,7 +117,6 @@ export default function CommentsTable(props: CommentsTableProps) {
                                     {displayMember(comment.author_id)}
                                 </TableCell>
                                 <TableCell align="right">{comment.text}</TableCell>
-                                <TableCell align="right">{comment.created_at}</TableCell>
                                 <TableCell align="right">{comment.updated_at}</TableCell>
                                 <TableCell align="right"></TableCell>
                             </TableRow>
@@ -131,17 +129,19 @@ export default function CommentsTable(props: CommentsTableProps) {
 
     return (
         <>
-            <CommentEditDialog
-                open={editCommentDialogOpen}
-                initialText={editedComment ? editedComment.text : newCommentText}
-                onCancel={() => {
-                    onEditCommentDialogClose();
-                }}
-                onSave={(text) => {
-                    onEditedCommentSave(text);
-                }}
+            {editCommentDialogOpen && (
+                <CommentEditDialog
+                    open={editCommentDialogOpen}
+                    initialText={editedComment ? editedComment.text : newCommentText}
+                    onCancel={() => {
+                        onEditCommentDialogClose();
+                    }}
+                    onSave={(text) => {
+                        onEditedCommentSave(text);
+                    }}
 
-            />
+                />
+            )}
             <Grid>
                 <Grid sx={{
                     display: "flex",
@@ -154,7 +154,10 @@ export default function CommentsTable(props: CommentsTableProps) {
                         </Typography>
                     </Grid>
                     <Grid>
-                        <Button onClick={() => alert("TODO")} variant="contained">
+                        <Button variant="contained" onClick={() => {
+                            setNewCommentText("");
+                            setEditCommentDialogOpen(true);
+                        }}>
                             {t("ADD_COMMENT")}
                         </Button>
                     </Grid>

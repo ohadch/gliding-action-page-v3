@@ -174,6 +174,8 @@ export const TEXTS_HEBREW = {
     ADD_COMMENT: "הוסף הערה",
     CONTENT: "תוכן",
     NO_COMMENTS: "אין הערות",
+    EDIT_COMMENT: "ערוך הערה",
+    SAVE: "שמור",
 }
 
 
