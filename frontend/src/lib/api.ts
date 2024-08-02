@@ -610,6 +610,10 @@ export interface components {
       glider_id?: number | null;
       /** Tow Pilot Id */
       tow_pilot_id?: number | null;
+      /** Flights Ids */
+      flights_ids?: number[] | null;
+      /** Recipient Member Id */
+      recipient_member_id?: number | null;
     };
     /** EventPayloadSchema */
     "EventPayloadSchema-Output": {
@@ -625,6 +629,10 @@ export interface components {
       glider_id: number | null;
       /** Tow Pilot Id */
       tow_pilot_id: number | null;
+      /** Flights Ids */
+      flights_ids: number[] | null;
+      /** Recipient Member Id */
+      recipient_member_id: number | null;
     };
     /** EventSchema */
     EventSchema: {
@@ -670,7 +678,7 @@ export interface components {
      * EventType
      * @enum {string}
      */
-    EventType: "flight_landed" | "flight_took_off" | "flight_tow_released" | "action_closed" | "action_reopened" | "responsible_cfi_assigned" | "responsible_cfi_unassigned" | "field_responsible_assigned" | "field_responsible_unassigned" | "tow_airplane_activated" | "tow_airplane_deactivated" | "action_data_export_requested";
+    EventType: "flight_landed" | "flight_took_off" | "flight_tow_released" | "action_closed" | "action_reopened" | "responsible_cfi_assigned" | "responsible_cfi_unassigned" | "field_responsible_assigned" | "field_responsible_unassigned" | "tow_airplane_activated" | "tow_airplane_deactivated" | "action_data_export_requested" | "flights_email_report_requested";
     /** EventUpdateSchema */
     EventUpdateSchema: {
       type?: components["schemas"]["EventType"] | null;
@@ -979,6 +987,8 @@ export interface components {
       tow_pilot_id?: number | null;
       /** Tow Airplane Id */
       tow_airplane_id?: number | null;
+      /** Flights Ids */
+      flights_ids?: number[] | null;
     };
     /** NotificationPayloadSchema */
     "NotificationPayloadSchema-Output": {
@@ -988,6 +998,8 @@ export interface components {
       tow_pilot_id: number | null;
       /** Tow Airplane Id */
       tow_airplane_id: number | null;
+      /** Flights Ids */
+      flights_ids: number[] | null;
     };
     /** NotificationSchema */
     NotificationSchema: {
@@ -1041,7 +1053,7 @@ export interface components {
      * NotificationType
      * @enum {string}
      */
-    NotificationType: "FlightSummaryForPilot" | "DailySummaryForObserver" | "SummaryForTowPilot" | "SummaryForCfi";
+    NotificationType: "FlightSummaryForPilot" | "DailySummaryForObserver" | "SummaryForTowPilot" | "SummaryForCfi" | "FlightsEmailReport";
     /** NotificationUpdateSchema */
     NotificationUpdateSchema: {
       /** Recipient Member Id */

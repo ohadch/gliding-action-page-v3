@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel
 
@@ -10,3 +10,5 @@ class EventPayloadSchema(BaseModel):
     tow_airplane_id: Optional[int] = None
     glider_id: Optional[int] = None
     tow_pilot_id: Optional[int] = None
+    flights_ids: Optional[List[int]] = None
+    recipient_member_id: Optional[int] = None

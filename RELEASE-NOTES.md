@@ -1,5 +1,21 @@
 # Gliding Action Page Release Notes
 
+## v3.4.0
+
+### New Features
+
+This release introduces the ability to send a flights report by email to the club's members.
+
+### Code Changes
+
+#### Server
+
+- Introduces the `flights_email_report_requested` event and the `FlightsEmailReportRequestedEventHandler`
+
+#### Frontend
+
+- Adds the `FlightsTableSendEmailDialog` component in order to send the flights report by email.
+
 ## v3.3.0
 
 ### New Features

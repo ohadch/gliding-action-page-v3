@@ -47,15 +47,16 @@ export default function FlightsTableSendEmailDialog(props: FlightsTableSendEmail
             return;
         }
 
-        // dispatch(createEvent({
-        //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //     // @ts-ignore
-        //     action_id: action.id,
-        //     type: "send_report_email_requested",
-        //     payload: {
-        //         flights
-        //     }
-        // }))
+        dispatch(createEvent({
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            action_id: action.id,
+            type: "flights_email_report_requested",
+            payload: {
+                flights_ids: flights.map((flight) => flight.id),
+                recipient_member_id: member.id,
+            }
+        }))
     }
 
     return (
