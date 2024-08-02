@@ -55,7 +55,7 @@ class MockI18nClient(I18nClient):
     ) -> str:
         pass
 
-    def create_flights_table_html(
+    def _create_flights_table_html(
         self, flights: List[Flight], headers: Optional[List[str]] = None
     ) -> str:
         return "test"

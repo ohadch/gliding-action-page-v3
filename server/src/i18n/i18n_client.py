@@ -78,6 +78,7 @@ class I18nClient(abc.ABC):
         member: Member,
         action: Action,
         flights: List[Flight],
+        flights_metadata_html: str,
         flights_table_html: str,
     ) -> str:
         pass
@@ -205,7 +206,7 @@ class I18nClient(abc.ABC):
         :param action: action
         :param flights: flights
         """
-        flights_table_html = self.create_flights_table_html(
+        flights_table_html = self._create_flights_table_html(
             flights=flights,
             headers=[
                 "take_off_at",
@@ -234,7 +235,7 @@ class I18nClient(abc.ABC):
         :param action: action
         :param flights: flights
         """
-        flights_table_html = self.create_flights_table_html(
+        flights_table_html = self._create_flights_table_html(
             flights=flights,
             headers=[
                 "take_off_at",
@@ -253,10 +254,15 @@ class I18nClient(abc.ABC):
             ],
         )
 
+        flights_metadata_html = self._create_flights_metadata_section_html(
+            flights=flights
+        )
+
         return self.format_flights_email_report_email_message_template(
             member=member,
             action=action,
             flights=flights,
+            flights_metadata_html=flights_metadata_html,
             flights_table_html=flights_table_html,
         )
 
@@ -300,7 +306,7 @@ class I18nClient(abc.ABC):
                     glider_call_sign,
                     len(glider_flights),
                     glider_flights_duration,
-                    self.create_flights_table_html(
+                    self._create_flights_table_html(
                         flights=glider_flights,
                     ),
                 )
@@ -308,7 +314,7 @@ class I18nClient(abc.ABC):
 
         return flights_by_glider
 
-    def create_flights_table_html(
+    def _create_flights_table_html(
         self, flights: List[Flight], headers: Optional[List[str]] = None
     ) -> str:
         # Convert the list of Flight objects into a DataFrame
@@ -388,3 +394,30 @@ class I18nClient(abc.ABC):
         )
 
         return html_table
+
+    def _create_flights_metadata_section_html(self, flights: List[Flight]) -> str:
+        # The metadata section shows the number of flights and total duration
+        num_flights = len(flights)
+        total_duration = sum(
+            [
+                (flight.landing_at - flight.take_off_at).total_seconds()
+                for flight in flights
+            ]
+        )
+
+        # Convert the total duration to a string
+        total_duration_str = stringify_duration(
+            total_duration=datetime.timedelta(seconds=total_duration)
+        )
+
+        # Create the metadata section
+        metadata_section = f"""
+            <div>
+                <strong>{self.translate("FLIGHTS_NUMBER")}:</strong> {num_flights}
+            </div>
+            <div>
+                <strong>{self.translate("TOTAL_DURATION")}:</strong> {total_duration_str}
+            </div>
+        """
+
+        return metadata_section

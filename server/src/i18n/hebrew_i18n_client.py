@@ -175,7 +175,7 @@ class HebrewI18nClient(I18nClient):
     def get_daily_summary_for_observer_email_message(
         self, observer: Member, action: Action, flights: List[Flight]
     ) -> str:
-        flights_html = self.create_flights_table_html(
+        flights_html = self._create_flights_table_html(
             flights=flights,
         )
 
@@ -196,6 +196,7 @@ class HebrewI18nClient(I18nClient):
         member: Member,
         action: Action,
         flights: List[Flight],
+        flights_metadata_html: str,
         flights_table_html: str,
     ) -> str:
         date_str = action.date.strftime("%Y-%m-%d")
@@ -205,6 +206,8 @@ class HebrewI18nClient(I18nClient):
             <tr>שלום {member.full_name},</tr>
             <tr></tr>
             <tr>מצורף פרטי {len(flights)} טיסות שנשלחו מהמגדל בתאריך {date_str}.</tr>
+            <tr></tr>
+            {flights_metadata_html}
             <tr></tr>
             {flights_table_html}
             <tr></tr>
