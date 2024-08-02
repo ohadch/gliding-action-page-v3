@@ -1,5 +1,16 @@
 # Gliding Action Page Release Notes
 
+## v3.5.0
+
+This release introduces the ability to add comments to actions and flights.
+
+### Code Changes
+
+#### Server
+
+- Introduces the `Comment` table in the database in order to store the comments.
+- Introduces the `CommentSchema`, `CommentSchemaCreate`, and `CommentSchemaUpdate` classes in order to validate the comments.
+
 ## v3.4.0
 
 ### New Features

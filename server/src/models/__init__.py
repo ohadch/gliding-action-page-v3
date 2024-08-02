@@ -8,3 +8,4 @@ from .member import Member
 from .member_role import MemberRole
 from .notification import Notification
 from .tow_airplane import TowAirplane
+from .comment import Comment
