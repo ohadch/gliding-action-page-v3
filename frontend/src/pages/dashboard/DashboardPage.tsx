@@ -164,7 +164,7 @@ export default function DashboardPage() {
     useEffect(() => {
         if (!flights && !fetchingFlightsInProgress && action) {
             dispatch(fetchFlights(action.id));
-            dispatch(fetchComments(action.id));
+            dispatch(fetchComments({actionId: action.id}));
             dispatch(fetchGliders());
             dispatch(fetchGliderOwners());
         }

@@ -293,7 +293,7 @@ export default function App() {
                         dispatch(fetchFlights(actionId))
                         dispatch(fetchEvents({actionId}))
                         dispatch(fetchNotifications({actionId}))
-                        dispatch(fetchComments(actionId));
+                        dispatch(fetchComments({actionId}));
                     }}
                 />
                 <Box sx={{display: 'flex'}}>

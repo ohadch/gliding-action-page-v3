@@ -15,7 +15,6 @@ import {RootState, useAppDispatch} from "../../store";
 import {getMemberDisplayValue} from "../../utils/display.ts";
 import {useState} from "react";
 import {useTranslation} from "react-i18next";
-import Typography from "@mui/material/Typography";
 import {createEvent} from "../../store/actions/event.ts";
 
 export interface FlightsTableSendEmailDialogProps {

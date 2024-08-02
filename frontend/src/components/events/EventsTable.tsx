@@ -56,7 +56,7 @@ export default function EventsTable() {
 
         if (!flights && !fetchInProgress && actionId) {
             dispatch(fetchFlights(actionId));
-            dispatch(fetchComments(actionId));
+            dispatch(fetchComments({actionId}));
         }
     });
 
