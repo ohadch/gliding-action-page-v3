@@ -23,6 +23,7 @@ import {
 } from "../../utils/display.ts";
 import Duration from "../common/Duration.tsx";
 import FlightsTable from "../flights/FlightsTable.tsx";
+import FlightsTableSendEmailDialog from "../flights/FlightsTableSendEmailDialog.tsx";
 
 enum RenderedInputName {
     REPORT_TYPE = "REPORT_TYPE",
@@ -55,6 +56,7 @@ export default function ActionSummaryGeneratorWizardDialog({
     const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
     const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
     const [reportType, setReportType] = useState<ReportType | null>(null);
+    const [sendEmailDialogOpen, setSendEmailDialogOpen] = useState(false);
 
     const {
         t
@@ -384,11 +386,17 @@ export default function ActionSummaryGeneratorWizardDialog({
             }));
 
         return (
-            <Grid>
+            <>
+            <Grid sx={{
+                    mt: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                }}>
                 <Grid>
                     <strong>{t("NUM_FLIGHTS")}</strong>: {flights.length}
                 </Grid>
-                {includeTotalDuration && <Grid>
+                {includeTotalDuration && <Grid item>
                     <strong>{t("TOTAL_DURATION")}</strong>: <Duration durations={durations}/> ({t("HOURS_MINUTES_SECONDS")})
                 </Grid>}
                 <Grid>
@@ -398,7 +406,23 @@ export default function ActionSummaryGeneratorWizardDialog({
                         "Landed",
                     ]} />
                 </Grid>
+                <Grid sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                }}>
+                  <Button variant="contained" color="primary" size={"large"} onClick={() => setSendEmailDialogOpen(true)}>
+                    {t("SEND_EMAIL")}
+                  </Button>
+                </Grid>
             </Grid>
+                {sendEmailDialogOpen && (
+                    <FlightsTableSendEmailDialog
+                        flights={flights}
+                        open={sendEmailDialogOpen}
+                        onClose={() => setSendEmailDialogOpen(false)}
+                    />
+                )}
+            </>
         )
     }
 

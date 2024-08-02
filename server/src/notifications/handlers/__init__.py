@@ -5,6 +5,9 @@ from src.notifications.handlers.daily_summary_for_observer_notification_handler 
 from src.notifications.handlers.flight_summary_for_pilot_notification_handler import (
     FlightSummaryForPilotNotificationHandler,
 )
+from src.notifications.handlers.flights_email_report_notification_handler import (
+    FlightsEmailReportNotificationHandler,
+)
 from src.notifications.handlers.notification_handler import NotificationHandler
 from src.notifications.handlers.summary_for_tow_pilot import (
     SummaryForTowPilotNotificationHandler,
@@ -16,6 +19,7 @@ NOTIFICATION_NAME_TO_CLASS_MAP = {
     NotificationType.FlightSummaryForPilot: FlightSummaryForPilotNotificationHandler,
     NotificationType.SummaryForTowPilot: SummaryForTowPilotNotificationHandler,
     NotificationType.DailySummaryForObserver: DailySummaryForObserverNotificationHandler,
+    NotificationType.FlightsEmailReport: FlightsEmailReportNotificationHandler,
 }
 
 

@@ -1,5 +1,26 @@
 # Gliding Action Page Release Notes
 
+## v3.4.0
+
+### New Features
+
+This release introduces the ability to send a flights report by email to the club's members.
+
+### Code Changes
+
+#### Server
+
+- Introduces the `flights_email_report_requested` event and the `FlightsEmailReportRequestedEventHandler`.
+- Introduces the `FlightsEmailReport` notification and the `FlightsEmailReportNotificationHandler`.
+- Implements the required methods to support the flights email report in the `I18n` class.
+- Adds a metadata section to the flights table that is sent by email.
+- Adds the `traceback` column to the `NotificationUpdateSchema` in order to allow clearing the traceback when resending the notification.
+
+#### Frontend
+
+- Adds the `FlightsTableSendEmailDialog` component in order to send the flights report by email.
+- Adds an `error` column to the `EventsTable` and `NotificationsTable` in order to show the traceback in case of an error.
+
 ## v3.3.0
 
 ### New Features

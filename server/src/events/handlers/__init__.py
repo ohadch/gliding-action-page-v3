@@ -18,6 +18,9 @@ from src.events.handlers.flight_took_off_event_handler import (
 from src.events.handlers.flight_tow_released_event_handler import (
     FlightTookOffEventHandler,
 )
+from src.events.handlers.flights_email_report_requested_event_handler import (
+    FlightsEmailReportRequestedEventHandler,
+)
 from src.events.handlers.responsible_cfi_assigned_event_handler import (
     ResponsibleCfiAssignedEventHandler,
 )
@@ -46,6 +49,7 @@ EVENT_NAME_TO_CLASS_MAP = {
     EventType.ACTION_CLOSED: ActionClosedEventHandler,
     EventType.ACTION_REOPENED: ActionReopenedEventHandler,
     EventType.ACTION_DATA_EXPORT_REQUESTED: ActionDataExportRequestedEventHandler,
+    EventType.FLIGHTS_EMAIL_REPORT_REQUESTED: FlightsEmailReportRequestedEventHandler,
 }
 
 

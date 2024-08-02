@@ -124,6 +124,7 @@ export const TEXTS_HEBREW = {
     DAILYSUMMARYFOROBSERVER: "סיכום טיסות למפקח",
     SUMMARYFORTOWPILOT: "סיכום טיסות לטייס גורר",
     SUMMARYFORCFI: "סיכום טיסות למדריך",
+    FLIGHTSEMAILREPORT: "דו״ח טיסות",
     HANDLED: "טופל",
     PENDING: "ממתין לטיפול",
     BEING_HANDLED: "בטיפול",
@@ -161,6 +162,14 @@ export const TEXTS_HEBREW = {
     NO_DATA_EXPORT_REQUEST_EVENTS_FOR_ACTION: 'אין בקשות ייצוא נתונים עבור הפעולה',
     ACTION_DATE: 'תאריך הפעולה',
     ACTION_EXPORTED_AT: 'נתוני הפעולה יוצאו בתאריך',
+    SEND_EMAIL: "שליחה באימייל",
+    SEND: "שלח",
+    EMAIL_ADDRESS: "כתובת אימייל",
+    CONFIRM_SEND_EMAIL: "האם אתה בטוח שברצונך לשלוח אימייל",
+    SELECT_RECIPIENT: "בחר נמען",
+    RECIPIENT: "נמען",
+    EMAIL_SENT_SUCCESSFULLY: "האימייל נשלח בהצלחה",
+    ERROR: "שגיאה",
 }
 
 

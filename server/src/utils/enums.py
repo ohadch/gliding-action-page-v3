@@ -80,6 +80,7 @@ class EventType(enum.Enum):
     TOW_AIRPLANE_ACTIVATED = "tow_airplane_activated"
     TOW_AIRPLANE_DEACTIVATED = "tow_airplane_deactivated"
     ACTION_DATA_EXPORT_REQUESTED = "action_data_export_requested"
+    FLIGHTS_EMAIL_REPORT_REQUESTED = "flights_email_report_requested"
 
 
 class EventState(enum.Enum):
@@ -94,6 +95,7 @@ class NotificationType(enum.Enum):
     DailySummaryForObserver = "DailySummaryForObserver"
     SummaryForTowPilot = "SummaryForTowPilot"
     SummaryForCfi = "SummaryForCfi"
+    FlightsEmailReport = "FlightsEmailReport"
 
 
 class Language(enum.Enum):

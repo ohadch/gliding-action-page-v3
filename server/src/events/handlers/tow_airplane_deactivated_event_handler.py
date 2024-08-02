@@ -13,7 +13,7 @@ from src.utils.enums import NotificationType
 
 class TowAirplaneDeactivatedEventHandler(EventHandler):
     def handle(self, event: Event) -> None:
-        payload = EventPayloadSchema(**event.payload)
+        payload = EventPayloadSchema.model_validate(event.payload)
         session = SessionLocal()
 
         notifications: List[Notification] = []

@@ -44,6 +44,8 @@ class HebrewI18nClient(I18nClient):
             "AIRPLANE_3000": "3000 רגל",
             "AIRPLANE_3500": "3500 רגל",
             "AIRPLANE_4000": "4000 רגל",
+            "NUMBER_OF_FLIGHTS": "מספר טיסות",
+            "TOTAL_FLIGHTS_DURATION": "זמן טיסה כולל",
         }.get(key, key)
 
     def format_flight_summary_for_pilot_email_message_template(
@@ -175,7 +177,7 @@ class HebrewI18nClient(I18nClient):
     def get_daily_summary_for_observer_email_message(
         self, observer: Member, action: Action, flights: List[Flight]
     ) -> str:
-        flights_html = self.create_flights_table_html(
+        flights_html = self._create_flights_table_html(
             flights=flights,
         )
 
@@ -185,3 +187,33 @@ class HebrewI18nClient(I18nClient):
             flights=flights,
             flights_html=flights_html,
         )
+
+    def get_flights_email_report_email_message_subject(
+        self, flights: List[Flight]
+    ) -> str:
+        return f"פרטי {len(flights)} טיסות שנשלחו מהמגדל"
+
+    def format_flights_email_report_email_message_template(
+        self,
+        member: Member,
+        action: Action,
+        flights: List[Flight],
+        flights_metadata_html: str,
+        flights_table_html: str,
+    ) -> str:
+        date_str = action.date.strftime("%Y-%m-%d")
+
+        return f"""
+        <table dir="rtl">
+            <tr>שלום {member.full_name},</tr>
+            <tr></tr>
+            <tr>מצורפים פרטי {len(flights)} טיסות שנשלחו מהמגדל בתאריך {date_str}.</tr>
+            <tr></tr>
+            {flights_metadata_html}
+            <tr></tr>
+            {flights_table_html}
+            <tr></tr>
+            <tr>תודה,</tr>
+            <tr>מרכז הדאיה מגידו</tr>
+        </table>
+        """
