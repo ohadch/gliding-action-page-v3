@@ -7,6 +7,21 @@ from src.i18n import I18nClient
 
 
 class MockI18nClient(I18nClient):
+    def get_flights_email_report_email_message_subject(
+        self, flights: List[Flight]
+    ) -> str:
+        pass
+
+    def format_flights_email_report_email_message_template(
+        self,
+        member: Member,
+        action: Action,
+        flights: List[Flight],
+        flights_metadata_html: str,
+        flights_table_html: str,
+    ) -> str:
+        pass
+
     def translate(self, key: str) -> str:
         pass
 
