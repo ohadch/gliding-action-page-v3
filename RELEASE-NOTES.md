@@ -10,6 +10,10 @@
 
 - The server reads the `ETL_SERVER_URL` correctly.
 
+### Infrastructure
+
+- Adds the `default` network to the project to be used by the external ETL compose projects.
+
 ## v3.5.0
 
 This release introduces the ability to add comments to actions and flights.
