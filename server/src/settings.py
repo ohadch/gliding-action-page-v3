@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 
@@ -11,7 +13,7 @@ class Settings(BaseSettings):
     default_notification_method: str = "email"
     sendgrid_api_key: str
     sender_email: str
-    etl_server_disabled: bool = False
+    etl_server_url: Optional[str] = None
 
 
 @lru_cache()
