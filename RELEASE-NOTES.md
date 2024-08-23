@@ -14,6 +14,12 @@
 
 - Adds the `default` network to the project to be used by the external ETL compose projects.
 
+## v3.5.1
+
+### Infrastructure
+
+- Adds `max-size` of `10m` to the logging options of the docker compose services.
+
 ## v3.5.0
 
 This release introduces the ability to add comments to actions and flights.

@@ -3,6 +3,9 @@ version: '3.7'
 services:
 
   server:
+    logging:
+      options:
+        max-size: "10m"
     build:
       context: server
       dockerfile: Dockerfile
@@ -19,6 +22,9 @@ services:
       - default
 
   client:
+    logging:
+      options:
+        max-size: "10m"
     build:
       context: frontend
       dockerfile: Dockerfile
@@ -28,6 +34,9 @@ services:
       - default
 
   db:
+    logging:
+      options:
+        max-size: "10m"
     image: postgres:14-alpine
     user: postgres
     platform: linux/amd64
