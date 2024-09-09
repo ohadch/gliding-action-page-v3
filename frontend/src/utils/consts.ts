@@ -179,6 +179,7 @@ export const TEXTS_HEBREW = {
     UPDATED_AT: "זמן עדכון",
     DELETE_COMMENT: "מחק הערה",
     DELETE_COMMENT_CONFIRMATION: "האם אתה בטוח שברצונך למחוק את ההערה?",
+    MOVE_FLIGHT_TO_STATE: "העבר טיסה לשלב",
 }
 
 
