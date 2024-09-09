@@ -200,6 +200,8 @@ export default function EditActiveTowAirplaneDialog({towAirplaneId, open, onSubm
         // @ts-ignore
         <Dialog open={open} maxWidth="xl">
             <DialogTitle sx={{
+                fontSize: "2rem",
+                fontWeight: "bold",
                 display: "flex",
                 justifyContent: "space-between",
             }}>

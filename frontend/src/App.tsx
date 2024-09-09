@@ -180,7 +180,8 @@ export default function App() {
                             <strong>{t("ACTION_NOT_SELECTED_TITLE")}</strong>
                         </AlertTitle>
                         {t("ACTION_NOT_SELECTED_MESSAGE")}
-                        <Button onClick={() => setSelectActionDialogOpen(true)}>
+                        <Button
+                            onClick={() => setSelectActionDialogOpen(true)}>
                             {t("SELECT_ACTION")}
                         </Button>
                     </Alert>

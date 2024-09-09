@@ -168,7 +168,14 @@ export default function EditFlightDetailsDialog({
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         <Dialog open={open} maxWidth="xl">
-            <DialogTitle>
+            <DialogTitle
+                sx={{
+                fontSize: "2rem",
+                fontWeight: "bold",
+                display: "flex",
+                justifyContent: "space-between",
+            }}
+            >
                 {flightId ? t("EDIT_FLIGHT") : t("CREATE_FLIGHT")}
                 {flightId? ` (${t("ID")}: ${flightId})` : ""}
             </DialogTitle>
@@ -535,14 +542,36 @@ export default function EditFlightDetailsDialog({
                     </Grid>
                 </Grid>
             </DialogContent>
-            <DialogActions>
-                <Button onClick={onCancel}>
+            <DialogActions
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 2,
+                }}
+            >
+                <Button
+                color={"error"}
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.5rem",
+                        }}
+                    onClick={onCancel}>
                     {t("CANCEL")}
                 </Button>
                 {!flightId && (
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    <Button onClick={() => onCreate({
+                    <Button
+                    color={"primary"}
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.5rem",
+                        }}
+                        onClick={() => onCreate({
                         state: "Draft",
                         action_id: action.id,
                         glider_id: gliderId,
@@ -565,7 +594,15 @@ export default function EditFlightDetailsDialog({
                 {flightId && (
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    <Button onClick={() => onUpdate(flightId, {
+                    <Button
+                    color={"primary"}
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.5rem",
+                        }}
+                        onClick={() => onUpdate(flightId, {
                         state: flightData.state,
                         action_id: action.id,
                         glider_id: gliderId,

@@ -51,7 +51,14 @@ export default function SelectActionDialog({open, onQuitAction, onClose, onActio
 
     return (
         <Dialog open={open}>
-            <DialogTitle>
+            <DialogTitle
+                sx={{
+                fontSize: "2rem",
+                fontWeight: "bold",
+                display: "flex",
+                justifyContent: "space-between",
+            }}
+            >
                 {t("SELECT_ACTION")}
             </DialogTitle>
             <DialogContent
