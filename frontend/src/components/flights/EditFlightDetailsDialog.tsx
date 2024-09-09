@@ -216,7 +216,7 @@ export default function EditFlightDetailsDialog({
                                         id="glider"
                                         options={glidersStoreState.gliders || []}
                                         value={gliderId ? getGliderById(gliderId) : null}
-                                        onChange={(_, newValue) => setGliderId(newValue?.id)}
+                                        onChange={(_, newValue) => setGliderId(newValue?.id ? newValue.id : null)}
                                         getOptionLabel={(option: GliderSchema) => option.call_sign}
                                         renderInput={(params) => {
                                             return (
@@ -338,7 +338,7 @@ export default function EditFlightDetailsDialog({
                                         id="pilot-1"
                                         options={getPilot1Options()}
                                         value={pilot1Id ? getMemberById(pilot1Id) : null}
-                                        onChange={(_, newValue) => setPilot1Id(newValue?.id)}
+                                        onChange={(_, newValue) => setPilot1Id(newValue?.id ? newValue.id : null)}
                                         getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
                                         renderInput={(params) => {
                                             return (
@@ -357,7 +357,7 @@ export default function EditFlightDetailsDialog({
                                         id="pilot-2"
                                         options={getPilot2Options()}
                                         value={pilot2Id ? getMemberById(pilot2Id) : null}
-                                        onChange={(_, newValue) => setPilot2Id(newValue?.id)}
+                                        onChange={(_, newValue) => setPilot2Id(newValue?.id ? newValue.id : null)}
                                         getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
                                         renderInput={(params) => {
                                             return (
@@ -385,7 +385,7 @@ export default function EditFlightDetailsDialog({
                                         id="tow-airplane"
                                         options={towAirplanesStoreState.towAirplanes || []}
                                         value={towAirplaneId ? getTowAirplaneById(towAirplaneId) : null}
-                                        onChange={(_, newValue) => setTowAirplaneId(newValue?.id)}
+                                        onChange={(_, newValue) => setTowAirplaneId(newValue?.id ? newValue.id : null)}
                                         getOptionLabel={(option: TowAirplaneSchema) => option.call_sign}
                                         renderInput={(params) => {
                                             return (
@@ -404,7 +404,7 @@ export default function EditFlightDetailsDialog({
                                         id="tow-pilot"
                                         options={getTowPilotOptions()}
                                         value={towPilotId ? getMemberById(towPilotId) : null}
-                                        onChange={(_, newValue) => setTowPilotId(newValue?.id)}
+                                        onChange={(_, newValue) => setTowPilotId(newValue?.id ? newValue.id : null)}
                                         getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
                                         renderInput={(params) => {
                                             return (
@@ -489,7 +489,7 @@ export default function EditFlightDetailsDialog({
                                         id="paying-member"
                                         options={membersStoreState.members || []}
                                         value={payingMemberId ? getMemberById(payingMemberId) : null}
-                                        onChange={(_, newValue) => setPayingMemberId(newValue?.id)}
+                                        onChange={(_, newValue) => setPayingMemberId(newValue?.id ? newValue.id : null)}
                                         getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
                                         renderInput={(params) => {
                                             return (
@@ -508,7 +508,7 @@ export default function EditFlightDetailsDialog({
                                         id="payment-receiver"
                                         options={membersStoreState.members || []}
                                         value={paymentReceiverId ? getMemberById(paymentReceiverId) : null}
-                                        onChange={(_, newValue) => setPaymentReceiverId(newValue?.id)}
+                                        onChange={(_, newValue) => setPaymentReceiverId(newValue?.id ? newValue.id : null)}
                                         getOptionLabel={(option: MemberSchema) => `${option.first_name} ${option.last_name}`}
                                         renderInput={(params) => {
                                             return (
