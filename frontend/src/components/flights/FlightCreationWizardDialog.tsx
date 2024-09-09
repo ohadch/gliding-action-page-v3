@@ -448,7 +448,9 @@ export default function FlightCreationWizardDialog({
 
     function renderFlightPreview() {
         return (
-            <Grid>
+            <Grid sx={{
+                fontSize: "1.4rem",
+            }}>
                 {flightType && (
                     <Grid>
                         <strong>{t("FLIGHT_TYPE")}</strong>: {getFlightTypeDisplayValue(flightType)}
@@ -515,50 +517,84 @@ export default function FlightCreationWizardDialog({
         // @ts-ignore
         <Dialog open={open} maxWidth="xl">
             <DialogTitle sx={{
+                fontSize: "2rem",
+                fontWeight: "bold",
                 display: "flex",
-                justifyContent: "space-between",
+                gap: 10
             }}>
                 <div>{t("CREATE_FLIGHT")}</div>
+
                 <div style={{
                     display: "flex",
-                    justifyContent: "flex-end",
+                    gap: 4,
                 }}>
-                    <Button onClick={onCancel}>
+                    <Button
+                        color={"error"}
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
+                        onClick={onCancel}>
                         {t("CANCEL")}
                     </Button>
-                    <Button onClick={() => {
-                        if (!confirm(t("CLEAR_CONFIRMATION"))) {
-                            return
-                        }
+                    <Button
+                        variant={"contained"}
+                        size={"large"}
+                        color={"warning"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
+                        onClick={() => {
+                            if (!confirm(t("CLEAR_CONFIRMATION"))) {
+                                return
+                            }
 
-                        setFlightType(null);
-                        setGliderId(null);
-                        setPilot1Id(null);
-                        setPilot2Id(null);
-                        setTowAirplaneId(null);
-                        setTowPilotId(null);
-                        setPayersType(null);
-                        setIsSoloFlightOfPrivatePilot(false);
-                    }}>
+                            setFlightType(null);
+                            setGliderId(null);
+                            setPilot1Id(null);
+                            setPilot2Id(null);
+                            setTowAirplaneId(null);
+                            setTowPilotId(null);
+                            setPayersType(null);
+                            setIsSoloFlightOfPrivatePilot(false);
+                        }}>
                         {t("CLEAR")}
                     </Button>
-                    <Button onClick={() => onAdvancedEdit({
-                        action_id: action.id,
-                        state: "Draft",
-                        flight_type: flightType,
-                        glider_id: gliderId,
-                        pilot_1_id: pilot1Id,
-                        pilot_2_id: pilot2Id,
-                        tow_airplane_id: towAirplaneId,
-                        tow_pilot_id: towPilotId,
-                        payment_receiver_id: null,
-                        tow_type: null,
-                        payers_type: payersType,
-                        payment_method: null,
-                    })}>
+                    <Button
+                        color={"info"}
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
+                        onClick={() => onAdvancedEdit({
+                            action_id: action.id,
+                            state: "Draft",
+                            flight_type: flightType,
+                            glider_id: gliderId,
+                            pilot_1_id: pilot1Id,
+                            pilot_2_id: pilot2Id,
+                            tow_airplane_id: towAirplaneId,
+                            tow_pilot_id: towPilotId,
+                            payment_receiver_id: null,
+                            tow_type: null,
+                            payers_type: payersType,
+                            payment_method: null,
+                        })}>
                         {t("ADVANCED_EDIT")}
                     </Button>
                     <Button
+                        color={"primary"}
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
                         disabled={!isSubmitEnabled()}
                         onClick={() => onSubmit({
                             action_id: action.id,

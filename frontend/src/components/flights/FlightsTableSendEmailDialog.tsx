@@ -70,7 +70,14 @@ export default function FlightsTableSendEmailDialog(props: FlightsTableSendEmail
 
     return (
         <Dialog open={open} maxWidth="xl">
-            <DialogTitle>
+            <DialogTitle
+                sx={{
+                fontSize: "2rem",
+                fontWeight: "bold",
+                display: "flex",
+                justifyContent: "space-between",
+            }}
+            >
                 {t("SEND_EMAIL")}: {flights.length} {t("FLIGHTS")}
             </DialogTitle>
             <DialogContent>

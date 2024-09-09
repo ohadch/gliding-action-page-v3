@@ -118,18 +118,38 @@ export default function FlightEndTowDialog({flight, open, onCancel, onSubmit}: F
         // @ts-ignore
         <Dialog open={open} maxWidth="xl">
             <DialogTitle sx={{
+                fontSize: "2rem",
+                fontWeight: "bold",
                 display: "flex",
                 justifyContent: "space-between",
+                gap: 4
             }}>
                 <div>{t("SELECT_TOW_TYPE")}</div>
                 <div style={{
                     display: "flex",
                     justifyContent: "flex-end",
+                    gap: 4
                 }}>
-                    <Button onClick={onCancel}>
+                    <Button
+                        color={"error"}
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
+                        onClick={onCancel}>
                         {t("CANCEL")}
                     </Button>
-                    <Button onClick={() => {
+                    <Button
+                        color={"warning"}
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
+                        onClick={() => {
                         if (!confirm(t("CLEAR_CONFIRMATION"))) {
                             return
                         }
@@ -139,6 +159,13 @@ export default function FlightEndTowDialog({flight, open, onCancel, onSubmit}: F
                         {t("CLEAR")}
                     </Button>
                     <Button
+                        color={"primary"}
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
                         disabled={!isSubmitEnabled()}
                         onClick={() => onSubmit({
                             ...flight,

@@ -1,7 +1,7 @@
 import {
     Autocomplete,
     Button,
-    Dialog,
+    Dialog, DialogActions,
     DialogContent,
     DialogTitle,
     FormControl,
@@ -240,39 +240,12 @@ export default function FlightSettlePaymentWizardDialog({
         // @ts-ignore
         <Dialog open={open} maxWidth="xl">
             <DialogTitle sx={{
+                fontSize: "2rem",
+                fontWeight: "bold",
                 display: "flex",
                 justifyContent: "space-between",
             }}>
                 <div>{t("SETTLE_PAYMENT")}</div>
-                <div style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                }}>
-                    <Button onClick={onClose}>
-                        {t("CANCEL")}
-                    </Button>
-                    <Button onClick={() => {
-                        if (!confirm(t("CLEAR_CONFIRMATION"))) {
-                            return
-                        }
-
-                        setPaymentReceiverId(null);
-                        setPaymentMethod(null);
-                        setPayingMemberId(null);
-                    }}>
-                        {t("CLEAR")}
-                    </Button>
-                    <Button
-                        disabled={!isSubmitEnabled()}
-                        onClick={() => onSubmit({
-                            ...flight,
-                            payment_method: paymentMethod as never,
-                            payment_receiver_id: paymentReceiverId,
-                            paying_member_id: payingMemberId,
-                        })}>
-                        {t("CONFIRM")}
-                    </Button>
-                </div>
             </DialogTitle>
             <DialogContent>
                 {renderPaymentPreview()}
@@ -286,6 +259,59 @@ export default function FlightSettlePaymentWizardDialog({
                     {renderedInputName && renderInput(renderedInputName)}
                 </Grid>
             </DialogContent>
+            <DialogActions>
+                <div style={{
+                    display: "flex",
+                    gap: 4,
+                }}>
+                    <Button
+                        color={"error"}
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
+                        onClick={onClose}>
+                        {t("CANCEL")}
+                    </Button>
+                    <Button
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
+                        onClick={() => {
+                            if (!confirm(t("CLEAR_CONFIRMATION"))) {
+                                return
+                            }
+
+                            setPaymentReceiverId(null);
+                            setPaymentMethod(null);
+                            setPayingMemberId(null);
+                        }}>
+                        {t("CLEAR")}
+                    </Button>
+                    <Button
+                        color={"primary"}
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
+                        disabled={!isSubmitEnabled()}
+                        onClick={() => onSubmit({
+                            ...flight,
+                            payment_method: paymentMethod as never,
+                            payment_receiver_id: paymentReceiverId,
+                            paying_member_id: payingMemberId,
+                        })}>
+                        {t("CONFIRM")}
+                    </Button>
+                </div>
+            </DialogActions>
         </Dialog>
     )
 }

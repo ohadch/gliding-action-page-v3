@@ -168,7 +168,11 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
         }
 
         return (
-            <Grid>
+            <Grid
+                sx={{
+                    fontSize: "1.4rem"
+                }}
+            >
                 {towAirplaneId && (
                     <Grid>
                         <strong>{t("TOW_AIRPLANE")}</strong>: {displayTowAirplane(towAirplaneId)}
@@ -208,28 +212,54 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
         // @ts-ignore
         <Dialog open={open} maxWidth="xl">
             <DialogTitle sx={{
+                fontSize: "2rem",
+                fontWeight: "bold",
                 display: "flex",
                 justifyContent: "space-between",
+                gap: 10
             }}>
                 <div>{t("DISPATCH_FLIGHT")}</div>
                 <div style={{
                     display: "flex",
-                    justifyContent: "flex-end",
+                    gap: 4,
                 }}>
-                    <Button onClick={onCancel}>
+                    <Button
+                        onClick={onCancel}
+                        color={"error"}
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
+                    >
                         {t("CANCEL")}
                     </Button>
-                    <Button onClick={() => {
-                        if (!confirm(t("CLEAR_CONFIRMATION"))) {
-                            return
-                        }
+                    <Button
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
+                        onClick={() => {
+                            if (!confirm(t("CLEAR_CONFIRMATION"))) {
+                                return
+                            }
 
-                        setTowAirplaneId(null);
-                        setSelfLaunch(false);
-                    }}>
+                            setTowAirplaneId(null);
+                            setSelfLaunch(false);
+                        }}>
                         {t("CLEAR")}
                     </Button>
                     <Button
+                        color={"success"}
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
                         disabled={!isSubmitEnabled()}
                         onClick={() => {
                             if (selfLaunch) {

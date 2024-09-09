@@ -16,7 +16,14 @@ export default function CommentEditDialog(props: CommentEditDialogProps) {
 
     return (
         <Dialog open={open}>
-            <DialogTitle>{t("EDIT_COMMENT")}</DialogTitle>
+            <DialogTitle
+                sx={{
+                fontSize: "2rem",
+                fontWeight: "bold",
+                display: "flex",
+                justifyContent: "space-between",
+            }}
+            >{t("EDIT_COMMENT")}</DialogTitle>
             <DialogContent>
                 <TextareaAutosize
                     style={{width: "400px"}}
