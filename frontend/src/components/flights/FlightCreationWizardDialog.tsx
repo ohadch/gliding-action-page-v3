@@ -369,6 +369,11 @@ export default function FlightCreationWizardDialog({
                                         />
                                     )
                                 }}
+                                ListboxProps={{
+                                    style: {
+                                        maxHeight: 300,
+                                    }
+                                }}
                             />
                         </FormControl>
                     </FormGroup>

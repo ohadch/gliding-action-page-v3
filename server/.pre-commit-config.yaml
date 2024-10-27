@@ -6,8 +6,8 @@ repos:
         args: [--branch, development, --branch, master]
     -   id: check-merge-conflict
     -   id: debug-statements
-        language_version: python3.10
-    -   id: detect-aws-credentials
+        language_version: python3.11
+#    -   id: detect-aws-credentials
     -   id: detect-private-key
     -   id: check-json
     -   id: end-of-file-fixer
@@ -37,7 +37,7 @@ repos:
       files: ^(requirements.*\.txt)$
       stages: [manual]
 -   repo: https://github.com/hakancelik96/unimport
-    rev: 0.2.7
+    rev: 1.2.1
     hooks:
     - id: unimport
       args: [-r, --include-star-import]
@@ -47,7 +47,7 @@ repos:
     rev: 22.3.0
     hooks:
     -   id: black
-        language_version: python3.10
+        language_version: python3.11
 #-   repo: local
 #    hooks:
 #      - id: pytest

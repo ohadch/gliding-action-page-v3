@@ -1,5 +1,15 @@
 # Gliding Action Page Release Notes
 
+## v3.5.2
+
+### Bug Fixes
+
+- Fixes a bug that caused the autocomplete items to hide the first pilot selection title. [Issue #155](https://github.com/ohadch/gliding-action-page-v3/issues/155)
+
+### Enhancements
+
+- Adds more pilots to the seed data.
+
 ## v3.5.1
 
 ### Enhancements
