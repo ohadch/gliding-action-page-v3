@@ -139,6 +139,54 @@ class SeedDataGenerator:
         )
 
         self._create_member(
+            first_name="רן",
+            last_name="כהן",
+            email="ran.cohen@example.com",
+            phone_number="0501234567",
+            roles=[Role.PrivatePilotLicense, Role.FieldResponsible],
+        )
+
+        self._create_member(
+            first_name="גילה",
+            last_name="לוי",
+            email="gila.levy@example.com",
+            phone_number="0501234567",
+            roles=[Role.PrivatePilotLicense, Role.FieldResponsible],
+        )
+
+        self._create_member(
+            first_name="דני",
+            last_name="דין",
+            email="danny.dean@example.com",
+            phone_number="0501234567",
+            roles=[Role.PrivatePilotLicense, Role.FieldResponsible],
+        )
+
+        self._create_member(
+            first_name="לי",
+            last_name="הגרי",
+            email="lee.hagary@example.com",
+            phone_number="0501234567",
+            roles=[Role.PrivatePilotLicense, Role.FieldResponsible],
+        )
+
+        self._create_member(
+            first_name="אליאב",
+            last_name="כרמון",
+            email="eliav.carmon@example.com",
+            phone_number="0501234567",
+            roles=[Role.PrivatePilotLicense, Role.FieldResponsible],
+        )
+
+        self._create_member(
+            first_name="נגה",
+            last_name="צמח",
+            email="noga.tzemach@example.com",
+            phone_number="0501234567",
+            roles=[Role.PrivatePilotLicense, Role.FieldResponsible],
+        )
+
+        self._create_member(
             first_name="רוני",
             last_name="סמרה",
             email="example5@example.com",

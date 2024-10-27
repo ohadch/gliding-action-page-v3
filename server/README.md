@@ -32,13 +32,8 @@ Apply the migrations to the database:
 make migrate
 ```
 
-Create seed data (optional):
-
-```bash
-make create-seed-data
-```
-
 ### Running the Server
+
 ```bash
 python main.py
 ```
