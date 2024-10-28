@@ -9,6 +9,7 @@
 - Tidies the payment settlement dialog.
 - Tidies the edit active tow airplane dialog.
 - Flips the flight state controller buttons - next state is on the right, and previous state is on the left.
+- Emphasizes the payment settlement alert.
 
 ### Enhancements
 

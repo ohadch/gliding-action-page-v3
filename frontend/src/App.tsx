@@ -213,9 +213,17 @@ export default function App() {
                 <Card>
                     <Alert severity="warning" sx={{
                         height: "100%",
+                        fontSize: "1.5rem",
+                        display: "flex",
+                        ".MuiAlert-icon": {
+                            marginTop: "0.4rem",
+                        }
                     }}>
-                        <AlertTitle>
-                            <strong>{t("FLIGHTS_WITH_UNSETTLED_PAYMENTS_TITLE")}</strong>
+                        <AlertTitle sx={{
+                            fontSize: "1.5rem",
+                            fontWeight: "bold",
+                        }}>
+                            <strong>{t("FLIGHTS_WITH_UNSETTLED_PAYMENTS_TITLE")}!</strong>
                         </AlertTitle>
                         {t("FLIGHTS_WITH_UNSETTLED_PAYMENTS_MESSAGE")}
                     </Alert>
