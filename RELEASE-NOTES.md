@@ -7,6 +7,7 @@
 - Fixes a bug that caused the autocomplete items to hide the first pilot selection title. [Issue #155](https://github.com/ohadch/gliding-action-page-v3/issues/155)
 - Adds a title for the autocomplete inputs for better clarity.
 - Tidies the payment settlement dialog.
+- Tidies the edit active tow airplane dialog.
 - Flips the flight state controller buttons - next state is on the right, and previous state is on the left.
 
 ### Enhancements
