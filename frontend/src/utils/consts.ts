@@ -55,7 +55,7 @@ export const TEXTS_HEBREW = {
     FLIGHT_STATE: "שלב טיסה",
     FLIGHT_STATES: "שלבי טיסה",
     FLIGHT_HAS_BUSY_ENTITIES_ALERT: "לא ניתן לשגר את הטיסה עד שהבאים מתפנים",
-    SOLO_FLIGHT: "טיסת סולו",
+    CLICK_HERE_IF_NO_SECOND_PILOT: "לחץ כאן אם אין טייס שני",
     TOW_RELEASE_TIME: "שעת סיום הגרירה",
     ACTION_NOT_SELECTED_MESSAGE: "יש לבחור פעולה על מנת להתחיל.",
     ACTION_NOT_SELECTED_TITLE: "לא נבחרה פעולה",

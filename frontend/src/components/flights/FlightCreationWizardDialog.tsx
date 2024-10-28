@@ -387,10 +387,8 @@ export default function FlightCreationWizardDialog({
                 return (
                     <FormGroup>
                         <FormControl>
-                            <Grid container alignItems="center">
-                                <Grid item xs={
-                                    isSoloFlightButtonVisible() ? 7 : 12
-                                } ml={1}>
+                            <Grid container>
+                                <Grid item>
                                     <Autocomplete
                                         id="pilot2"
                                         options={getPilot2Options().filter((member) => !isMemberBusy(member.id))}
@@ -408,23 +406,32 @@ export default function FlightCreationWizardDialog({
                                                 label={t("PILOT_2")}
                                             />
                                         )}
+                                        sx={{
+                                            minWidth: 300,
+                                            marginLeft: 1,
+                                        }}
                                         ListboxProps={{
-                                    style: {
-                                        maxHeight: 300,
-                                    }
-                                }}
+                                            style: {
+                                                maxHeight: 300,
+                                            }
+                                        }}
                                     />
                                 </Grid>
                                 {isSoloFlightButtonVisible() && (
-                                    <Grid item xs={4}>
-                                    <Button
-                                        variant={"text"}
-                                        onClick={() => setIsSoloFlightOfPrivatePilot(!isSoloFlightOfPrivatePilot)}
-                                        fullWidth
-                                    >
-                                        {t("SOLO_FLIGHT")}?
-                                    </Button>
-                                </Grid>
+                                    <Grid item>
+                                        <Button
+                                            sx={{
+                                                fontSize: "1.4rem",
+                                                fontWeight: "bold",
+                                            }}
+                                            color={"warning"}
+                                            variant={"outlined"}
+                                            onClick={() => setIsSoloFlightOfPrivatePilot(!isSoloFlightOfPrivatePilot)}
+                                            fullWidth
+                                        >
+                                            {t("CLICK_HERE_IF_NO_SECOND_PILOT")}
+                                        </Button>
+                                    </Grid>
                                 )}
                             </Grid>
                         </FormControl>
