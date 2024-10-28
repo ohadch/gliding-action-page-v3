@@ -71,15 +71,15 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
         }}>
             <Grid item xs={2}>
                 {
-                    onStateUpdated && goToPreviousStateVisible() && (
+                    onStateUpdated && goToNextStateVisible() && (
                         <Tooltip
-                            title={`${t("MOVE_FLIGHT_TO_STATE")}: ${previousStateToDisplay}`}>
+                            title={`${t("MOVE_FLIGHT_TO_STATE")}: ${nextStateToDisplay}`}>
                             <IconButton
                                 color={color}
-                                disabled={!goToPreviousStateEnabled() || Boolean(action?.closed_at)}
-                                onClick={() => onStateUpdated(flight.id, previousState)}
+                                disabled={!goToNextStateEnabled() || Boolean(action?.closed_at)}
+                                onClick={() => onStateUpdated(flight.id, nextState)}
                             >
-                                <ArrowUpwardIcon/>
+                                <ArrowDownwardIcon/>
                             </IconButton>
                         </Tooltip>
                     )
@@ -99,22 +99,24 @@ export default function FlightStateController({flight, onStateUpdated}: FlightSt
                     {t(label)}
                 </Button>
             </Grid>
+
             <Grid item xs={2}>
                 {
-                    onStateUpdated && goToNextStateVisible() && (
+                    onStateUpdated && goToPreviousStateVisible() && (
                         <Tooltip
-                            title={`${t("MOVE_FLIGHT_TO_STATE")}: ${nextStateToDisplay}`}>
+                            title={`${t("MOVE_FLIGHT_TO_STATE")}: ${previousStateToDisplay}`}>
                             <IconButton
                                 color={color}
-                                disabled={!goToNextStateEnabled() || Boolean(action?.closed_at)}
-                                onClick={() => onStateUpdated(flight.id, nextState)}
+                                disabled={!goToPreviousStateEnabled() || Boolean(action?.closed_at)}
+                                onClick={() => onStateUpdated(flight.id, previousState)}
                             >
-                                <ArrowDownwardIcon/>
+                                <ArrowUpwardIcon/>
                             </IconButton>
                         </Tooltip>
                     )
                 }
             </Grid>
+
         </Grid>
     );
 }

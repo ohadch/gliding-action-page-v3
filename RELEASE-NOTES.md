@@ -1,5 +1,22 @@
 # Gliding Action Page Release Notes
 
+## v3.5.2
+
+### Bug Fixes
+
+- Fixes a bug that caused the autocomplete items to hide the first pilot selection title. [Issue #155](https://github.com/ohadch/gliding-action-page-v3/issues/155)
+- Adds a title for the autocomplete inputs for better clarity.
+- Tidies up the payment settlement dialog.
+- Tidies up the edit active tow airplane dialog.
+- Flips the flight state controller buttons - next state is on the right, and previous state is on the left.
+- Emphasizes the payment settlement alert.
+- Tidies up the flight dispatch dialog.
+- Emphasizes the call signs of the gliders in the flights table.
+
+### Enhancements
+
+- Adds more pilots to the seed data.
+
 ## v3.5.1
 
 ### Enhancements

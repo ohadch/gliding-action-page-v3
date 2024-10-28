@@ -167,7 +167,9 @@ export default function EditActiveTowAirplaneDialog({towAirplaneId, open, onSubm
 
     function renderFlightPreview() {
         return (
-            <Grid>
+            <Grid sx={{
+                fontSize: "1.4rem",
+            }}>
                 {newTowAirplaneId && (
                     <Grid>
                         <strong>{t("TOW_AIRPLANE")}</strong>: {displayTowAirplane(newTowAirplaneId)}
@@ -204,16 +206,32 @@ export default function EditActiveTowAirplaneDialog({towAirplaneId, open, onSubm
                 fontWeight: "bold",
                 display: "flex",
                 justifyContent: "space-between",
+                gap: 10
             }}>
                 <div>{t("SELECT_TOW_PILOT")}</div>
                 <div style={{
                     display: "flex",
-                    justifyContent: "flex-end",
+                    gap: 4,
                 }}>
-                    <Button onClick={onCancel}>
+                    <Button
+                    color={"error"}
+                    variant={"contained"}
+                        size={"large"}
+                    sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
+                        onClick={onCancel}>
                         {t("CANCEL")}
                     </Button>
                     <Button
+                        color={"primary"}
+                        variant={"contained"}
+                        size={"large"}
+                        sx={{
+                            fontWeight: "bold",
+                            fontSize: "1.25rem",
+                        }}
                         disabled={!isSubmitEnabled()}
                         onClick={() => towPilotId && onSubmit(towPilotId)}>
                         {t("CONFIRM")}
@@ -224,12 +242,25 @@ export default function EditActiveTowAirplaneDialog({towAirplaneId, open, onSubm
                 {renderFlightPreview()}
                 <Grid sx={{
                     mt: 2,
-                    width: 400,
                     display: "flex",
                     flexDirection: "column",
                     gap: 1,
                 }}>
-                    {renderedInputName && renderInput(renderedInputName)}
+                    {renderedInputName && (
+                        <Grid sx={{
+                            fontSize: "1.4rem",
+                            display: "flex",
+                            flexDirection: "row",
+                            gap: 1,
+                        }}>
+                            <Grid>
+                                <strong>{t(renderedInputName)}: </strong>
+                            </Grid>
+                            <Grid minWidth={400}>
+                                {renderInput(renderedInputName)}
+                            </Grid>
+                        </Grid>
+                    )}
                 </Grid>
             </DialogContent>
         </Dialog>
