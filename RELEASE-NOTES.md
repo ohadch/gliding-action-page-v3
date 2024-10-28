@@ -11,6 +11,7 @@
 - Flips the flight state controller buttons - next state is on the right, and previous state is on the left.
 - Emphasizes the payment settlement alert.
 - Tidies up the flight dispatch dialog.
+- Emphasizes the call signs of the gliders in the flights table.
 
 ### Enhancements
 

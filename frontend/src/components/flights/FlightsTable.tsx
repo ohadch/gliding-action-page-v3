@@ -193,7 +193,10 @@ export default function FlightsTable(props: FlightsTableProps) {
                                         />
                                     )}
                                 </TableCell>
-                                <TableCell align="right" style={textCellStyle}>
+                                <TableCell align="right" style={{
+                                    ...textCellStyle,
+                                    fontWeight: "bold"
+                                }}>
                                     {flight.glider_id && displayGlider(flight.glider_id)}
                                 </TableCell>
                                 <TableCell align="right" style={textCellStyle}>
