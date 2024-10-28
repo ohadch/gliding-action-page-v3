@@ -342,6 +342,11 @@ export default function FlightCreationWizardDialog({
                                         />
                                     )
                                 }}
+                                ListboxProps={{
+                                    style: {
+                                        maxHeight: 300,
+                                    }
+                                }}
                             />
                         </FormControl>
                     </FormGroup>
@@ -403,6 +408,11 @@ export default function FlightCreationWizardDialog({
                                                 label={t("PILOT_2")}
                                             />
                                         )}
+                                        ListboxProps={{
+                                    style: {
+                                        maxHeight: 300,
+                                    }
+                                }}
                                     />
                                 </Grid>
                                 {isSoloFlightButtonVisible() && (
@@ -439,6 +449,11 @@ export default function FlightCreationWizardDialog({
                                             label={t("FLIGHT_TYPE")}
                                         />
                                     )
+                                }}
+                                ListboxProps={{
+                                    style: {
+                                        maxHeight: 300,
+                                    }
                                 }}
                             />
                         </FormControl>
@@ -623,12 +638,25 @@ export default function FlightCreationWizardDialog({
                 {renderFlightPreview()}
                 <Grid sx={{
                     mt: 2,
-                    width: 400,
                     display: "flex",
                     flexDirection: "column",
                     gap: 1,
                 }}>
-                    {renderedInputName && renderInput(renderedInputName)}
+                    {renderedInputName && (
+                        <Grid sx={{
+                            fontSize: "1.4rem",
+                            display: "flex",
+                            flexDirection: "row",
+                            gap: 1,
+                        }}>
+                            <Grid>
+                                <strong>{t(renderedInputName)}: </strong>
+                            </Grid>
+                            <Grid minWidth={400}>
+                                {renderInput(renderedInputName)}
+                            </Grid>
+                        </Grid>
+                    )}
                 </Grid>
             </DialogContent>
         </Dialog>
