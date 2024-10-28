@@ -161,7 +161,10 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
     function renderFlightPreview() {
         if (selfLaunch) {
             return (
-                <Grid>
+                <Grid sx={{
+                    fontSize: "1.4rem",
+                    fontWeight: "bold",
+                }}>
                     <strong>{t("SELF_LAUNCH")}</strong>
                 </Grid>
             )
@@ -299,7 +302,6 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
                 {!selfLaunch && (
                     <Grid sx={{
                         mt: 2,
-                        width: 400,
                         display: "flex",
                         flexDirection: "column",
                         gap: 1,
@@ -308,17 +310,36 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
                             <Grid item xs={
                                 isSelfLaunchCapable ? 7 : 12
                             } ml={1}>
-                                {renderedInputName && renderInput(renderedInputName)}
+                                {renderedInputName && (
+                                    <Grid sx={{
+                                        fontSize: "1.4rem",
+                                        display: "flex",
+                                        flexDirection: "row",
+                                        gap: 1,
+                                    }}>
+                                        <Grid>
+                                            <strong>{t(renderedInputName)}: </strong>
+                                        </Grid>
+                                        <Grid minWidth={400}>
+                                            {renderInput(renderedInputName)}
+                                        </Grid>
+                                    </Grid>
+                                )}
                             </Grid>
 
                             {isSelfLaunchCapable && (
                                 <Grid item xs={4}>
                                     <Button
-                                        variant={"text"}
+                                        sx={{
+                                            fontSize: "1.4rem",
+                                            fontWeight: "bold",
+                                        }}
+                                        color={"warning"}
+                                        variant={"outlined"}
                                         onClick={() => setSelfLaunch(true)}
                                         fullWidth
                                     >
-                                        {t("SELF_LAUNCH")}?
+                                        {t("CLICK_HERE_IF_SELF_LAUNCH")}
                                     </Button>
                                 </Grid>
                             )}
