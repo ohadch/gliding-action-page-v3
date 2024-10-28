@@ -108,13 +108,12 @@ export default function FlightSettlePaymentWizardDialog({
     }
 
     function renderInput(inputName: RenderedInputName) {
+        let input = null
         switch (inputName) {
             case RenderedInputName.PAYMENT_RECEIVER:
-                return (
-                    <FormGroup>
-                        <FormControl>
-                            <Grid container alignItems="center" spacing={2}>
-                                <Grid item xs={7}>
+                input = (
+                            <Grid container>
+                                <Grid item xs={8} spacing={1}>
                                     <Autocomplete
                                         id="paymentReceiver"
                                         options={membersStoreState.members || []}
@@ -137,21 +136,23 @@ export default function FlightSettlePaymentWizardDialog({
                                 </Grid>
                                 <Grid item xs={4}>
                                     <Button
-                                        variant={"text"}
+                                        variant={"outlined"}
+                                        color={"warning"}
                                         onClick={() => setPaymentIsByClubMember(true)}
-                                        fullWidth
+                                        sx={{
+                                            fontSize: "1.4rem",
+                                            fontWeight: "bold",
+                                            marginRight: 2
+                                        }}
                                     >
-                                        {t("PAYMENT_BY_CLUB_MEMBER")}?
+                                        {t("PAYMENT_BY_CLUB_MEMBER")}
                                     </Button>
                                 </Grid>
                             </Grid>
-                        </FormControl>
-                    </FormGroup>
                 )
+                break;
             case RenderedInputName.PAYMENT_METHOD:
-                return (
-                    <FormGroup>
-                        <FormControl>
+                input = (
                             <Autocomplete
                                 id="paymentMethod"
                                 options={SUPPORTED_PAYMENT_METHODS}
@@ -169,13 +170,10 @@ export default function FlightSettlePaymentWizardDialog({
                                     )
                                 }}
                             />
-                        </FormControl>
-                    </FormGroup>
                 )
+                break;
             case RenderedInputName.PAYING_MEMBER:
-                return (
-                    <FormGroup>
-                        <FormControl>
+                input = (
                             <Autocomplete
                                 id="payingMember"
                                 options={membersStoreState.members || []}
@@ -195,19 +193,28 @@ export default function FlightSettlePaymentWizardDialog({
                                     )
                                 }}
                             />
-                        </FormControl>
-                    </FormGroup>
                 )
+                break;
             default:
-                return null;
+                input = null;
         }
+
+        return (
+            <FormGroup>
+                <FormControl>
+                    {input}
+                </FormControl>
+            </FormGroup>
+        )
     }
 
     const renderedInputName = getInputToRender();
 
     function renderPaymentPreview() {
         return (
-            <Grid>
+            <Grid sx={{
+                fontSize: "1.4rem",
+            }}>
                 {paymentReceiverId && (
                     <Grid>
                         <strong>{t("PAYMENT_RECEIVER")}</strong>: {displayMember(paymentReceiverId)}
@@ -249,68 +256,86 @@ export default function FlightSettlePaymentWizardDialog({
             </DialogTitle>
             <DialogContent>
                 {renderPaymentPreview()}
-                <Grid sx={{
-                    mt: 2,
-                    width: 600,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1,
-                }}>
-                    {renderedInputName && renderInput(renderedInputName)}
+                <Grid container width={900}>
+                    <Grid xs={8} sx={{
+                        mt: 2,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1,
+                    }}>
+                        {renderedInputName && (
+                            <Grid container sx={{
+                                fontSize: "1.4rem",
+                            }}>
+                                <Grid item xs={3}>
+                                    <strong>{t(renderedInputName)}: </strong>
+                                </Grid>
+                                <Grid item xs={9}>
+                                    {renderInput(renderedInputName)}
+                                </Grid>
+                            </Grid>
+                        )}
+                    </Grid>
+                    <Grid xs={4}></Grid>
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <div style={{
-                    display: "flex",
-                    gap: 4,
-                }}>
-                    <Button
-                        color={"error"}
-                        variant={"contained"}
-                        size={"large"}
-                        sx={{
-                            fontWeight: "bold",
-                            fontSize: "1.25rem",
-                        }}
-                        onClick={onClose}>
-                        {t("CANCEL")}
-                    </Button>
-                    <Button
-                        variant={"contained"}
-                        size={"large"}
-                        sx={{
-                            fontWeight: "bold",
-                            fontSize: "1.25rem",
-                        }}
-                        onClick={() => {
-                            if (!confirm(t("CLEAR_CONFIRMATION"))) {
-                                return
-                            }
-
-                            setPaymentReceiverId(null);
-                            setPaymentMethod(null);
-                            setPayingMemberId(null);
+                <Grid container>
+                    <Grid xs={9}></Grid>
+                    <Grid xs={3}>
+                        <div style={{
+                            display: "flex",
+                            gap: 4,
                         }}>
-                        {t("CLEAR")}
-                    </Button>
-                    <Button
-                        color={"primary"}
-                        variant={"contained"}
-                        size={"large"}
-                        sx={{
-                            fontWeight: "bold",
-                            fontSize: "1.25rem",
-                        }}
-                        disabled={!isSubmitEnabled()}
-                        onClick={() => onSubmit({
-                            ...flight,
-                            payment_method: paymentMethod as never,
-                            payment_receiver_id: paymentReceiverId,
-                            paying_member_id: payingMemberId,
-                        })}>
-                        {t("CONFIRM")}
-                    </Button>
-                </div>
+                            <Button
+                                color={"error"}
+                                variant={"contained"}
+                                size={"large"}
+                                sx={{
+                                    fontWeight: "bold",
+                                    fontSize: "1.25rem",
+                                }}
+                                onClick={onClose}>
+                                {t("CANCEL")}
+                            </Button>
+                            <Button
+                                variant={"contained"}
+                                size={"large"}
+                                sx={{
+                                    fontWeight: "bold",
+                                    fontSize: "1.25rem",
+                                }}
+                                onClick={() => {
+                                    if (!confirm(t("CLEAR_CONFIRMATION"))) {
+                                        return
+                                    }
+
+                                    setPaymentReceiverId(null);
+                                    setPaymentMethod(null);
+                                    setPayingMemberId(null);
+                                }}>
+                                {t("CLEAR")}
+                            </Button>
+                            <Button
+                                color={"primary"}
+                                variant={"contained"}
+                                size={"large"}
+                                sx={{
+                                    fontWeight: "bold",
+                                    fontSize: "1.25rem",
+                                }}
+                                disabled={!isSubmitEnabled()}
+                                onClick={() => onSubmit({
+                                    ...flight,
+                                    payment_method: paymentMethod as never,
+                                    payment_receiver_id: paymentReceiverId,
+                                    paying_member_id: payingMemberId,
+                                })}>
+                                {t("CONFIRM")}
+                            </Button>
+                        </div>
+                    </Grid>
+                </Grid>
             </DialogActions>
         </Dialog>
     )
