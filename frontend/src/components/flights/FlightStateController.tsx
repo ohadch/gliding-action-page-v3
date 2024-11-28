@@ -21,7 +21,7 @@ interface StateButtonConfig {
 const STATE_BUTTON_CONFIGS: Record<FlightState, StateButtonConfig> = {
     "Draft": {
         label: "DRAFT",
-        color: "error",
+        color: "primary",
     },
     "Tow": {
         label: "TOW",
@@ -29,7 +29,7 @@ const STATE_BUTTON_CONFIGS: Record<FlightState, StateButtonConfig> = {
     },
     "Inflight": {
         label: "INFLIGHT",
-        color: "primary",
+        color: "error",
     },
     "Landed": {
         label: "LANDED",
