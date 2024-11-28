@@ -241,6 +241,7 @@ export default function EditFlightDetailsDialog({
                                     direction: "ltr",
                                 }}>
                                     <TimePicker
+                                        ampm={false}
                                         label={t("TAKE_OFF_TIME")}
                                         value={takeOffat ? moment(takeOffat) : null}
                                         onChange={(newValue: moment.Moment | null) => {
@@ -273,6 +274,7 @@ export default function EditFlightDetailsDialog({
                                     direction: "ltr",
                                 }}>
                                     <TimePicker
+                                        ampm={false}
                                         label={t("TOW_RELEASE_TIME")}
                                         value={towReleaseAt ? moment(towReleaseAt) : null}
                                         onChange={(newValue: moment.Moment | null) => {
@@ -305,6 +307,7 @@ export default function EditFlightDetailsDialog({
                                     direction: "ltr",
                                 }}>
                                     <TimePicker
+                                        ampm={false}
                                         label={t("LANDING_TIME")}
                                         value={landingAt ? moment(landingAt) : null}
                                         onChange={(newValue: moment.Moment | null) => {
