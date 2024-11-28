@@ -13,6 +13,10 @@
 - Tidies up the flight dispatch dialog.
 - Emphasizes the call signs of the gliders in the flights table.
 - Changes the naming of the `Solo Flight?` button in the flight creation dialog for members flight. [Issue #190](https://github.com/ohadch/gliding-action-page-v3/issues/190)
+- Updates the flight states colors: blue for draft, yellow for tow, red for inflight, and green for landed.
+- Turns the time pickers from am/pm to 24h format.
+- Configures minutes steps to 1 min instead of 5.
+- Sorts the order of the timepicker inputs from minutes/hours to hours/minutes.
 
 ### Enhancements
 

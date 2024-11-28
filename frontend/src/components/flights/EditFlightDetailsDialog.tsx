@@ -241,6 +241,10 @@ export default function EditFlightDetailsDialog({
                                     direction: "ltr",
                                 }}>
                                     <TimePicker
+                                        views={["minutes", "hours"]}
+                                        ampm={false}
+                                        ampmInClock={false}
+                                        timeSteps={{minutes: 1}}
                                         label={t("TAKE_OFF_TIME")}
                                         value={takeOffat ? moment(takeOffat) : null}
                                         onChange={(newValue: moment.Moment | null) => {
@@ -273,6 +277,10 @@ export default function EditFlightDetailsDialog({
                                     direction: "ltr",
                                 }}>
                                     <TimePicker
+                                        views={["minutes", "hours"]}
+                                        ampm={false}
+                                        ampmInClock={false}
+                                        timeSteps={{minutes: 1}}
                                         label={t("TOW_RELEASE_TIME")}
                                         value={towReleaseAt ? moment(towReleaseAt) : null}
                                         onChange={(newValue: moment.Moment | null) => {
@@ -305,6 +313,12 @@ export default function EditFlightDetailsDialog({
                                     direction: "ltr",
                                 }}>
                                     <TimePicker
+                                        views={["minutes", "hours"]}
+                                        ampm={false}
+                                        ampmInClock={false}
+                                        timeSteps={{
+                                            minutes: 1
+                                        }}
                                         label={t("LANDING_TIME")}
                                         value={landingAt ? moment(landingAt) : null}
                                         onChange={(newValue: moment.Moment | null) => {
