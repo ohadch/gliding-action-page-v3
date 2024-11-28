@@ -241,6 +241,7 @@ export default function EditFlightDetailsDialog({
                                     direction: "ltr",
                                 }}>
                                     <TimePicker
+                                        views={["minutes", "hours"]}
                                         ampm={false}
                                         ampmInClock={false}
                                         timeSteps={{minutes: 1}}
@@ -276,6 +277,7 @@ export default function EditFlightDetailsDialog({
                                     direction: "ltr",
                                 }}>
                                     <TimePicker
+                                        views={["minutes", "hours"]}
                                         ampm={false}
                                         ampmInClock={false}
                                         timeSteps={{minutes: 1}}
@@ -311,6 +313,7 @@ export default function EditFlightDetailsDialog({
                                     direction: "ltr",
                                 }}>
                                     <TimePicker
+                                        views={["minutes", "hours"]}
                                         ampm={false}
                                         ampmInClock={false}
                                         timeSteps={{

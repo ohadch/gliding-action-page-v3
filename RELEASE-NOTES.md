@@ -16,6 +16,7 @@
 - Updates the flight states colors: blue for draft, yellow for tow, red for inflight, and green for landed.
 - Turns the time pickers from am/pm to 24h format.
 - Configures minutes steps to 1 min instead of 5.
+- Sorts the order of the timepicker inputs from minutes/hours to hours/minutes.
 
 ### Enhancements
 
