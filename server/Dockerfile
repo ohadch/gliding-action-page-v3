@@ -10,7 +10,8 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     gcc \
-    make
+    make \
+    curl
 
 # Install requirements
 COPY requirements.txt /app/requirements.txt

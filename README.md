@@ -6,6 +6,8 @@ A system for managing gliding actions.
 
 ## Setup Development Environment
 
+First, create a `./server/.env` file based on the `./server/.env.example` file.
+
 ### Using Docker Compose
 
 ```bash

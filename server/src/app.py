@@ -63,3 +63,8 @@ async def shutdown():
     # hook startup event to disconnect from database for example
     # await database.disconnect()
     logger.debug("Application shutdown", extra={})
+
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}

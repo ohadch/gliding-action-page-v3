@@ -19,7 +19,7 @@ COPY . .
 FROM base AS dev
 
 # Start the app
-CMD [ "yarn", "dev" ]
+CMD [ "yarn", "dev", "--host", "0.0.0.0" ]
 
 FROM base AS build
 

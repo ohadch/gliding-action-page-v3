@@ -16,11 +16,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://localhost:9001/health" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 3
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9001/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   client:
     logging:
@@ -33,6 +33,11 @@ services:
       - "5173:5173"
     networks:
       - default
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5173/" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   db:
     logging:
