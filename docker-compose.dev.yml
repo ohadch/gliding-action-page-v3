@@ -1,0 +1,27 @@
+services:
+
+  server:
+    extends:
+      file: docker-compose.common.yml
+      service: server
+
+  client:
+    build:
+      target: dev
+    extends:
+      file: docker-compose.common.yml
+      service: client
+    volumes:
+      - ./frontend/src:/app/src
+
+  db:
+    extends:
+      file: docker-compose.common.yml
+      service: db
+
+volumes:
+  db_home:
+
+networks:
+  default:
+    driver: bridge

@@ -1,0 +1,26 @@
+services:
+
+  server:
+    extends:
+      file: docker-compose.common.yml
+      service: server
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  client:
+    extends:
+      file: docker-compose.common.yml
+      service: client
+      target: build
+
+  db:
+    extends:
+      file: docker-compose.common.yml
+      service: db
+
+volumes:
+  db_home:
+
+networks:
+  default:
+    driver: bridge
