@@ -48,6 +48,14 @@ export default function FlightsBoardPage() {
         }
     });
 
+
+    useEffect(() => {
+        // Refresh the page after 30 seconds
+        setTimeout(() => {
+            window.location.reload();
+        }, 60 * 1000); // 60 seconds
+    });
+
     function renderFlightsTable(
         flights: FlightSchema[]
     ) {
