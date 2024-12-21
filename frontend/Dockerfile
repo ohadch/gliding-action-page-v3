@@ -1,4 +1,4 @@
-FROM node:16.15-alpine
+FROM node:16.15-alpine AS base
 
 # Add a work directory
 WORKDIR /app
@@ -15,6 +15,13 @@ RUN yarn install
 
 # Copy app files
 COPY . .
+
+FROM base AS dev
+
+# Start the app
+CMD [ "yarn", "dev", "--host", "0.0.0.0" ]
+
+FROM base AS build
 
 # Build app
 RUN yarn build

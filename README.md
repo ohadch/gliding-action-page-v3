@@ -4,19 +4,21 @@ A system for managing gliding actions.
 
 <img width="1725" alt="image" src="https://github.com/ohadch/gliding-action-page-v3/assets/17769668/b4a696e5-712d-4834-b25c-def4ddeb4c30">
 
-## Quick Setup
+## Setup Development Environment
+
+First, create a `./server/.env` file based on the `./server/.env.example` file.
+
+### Using Docker Compose
 
 ```bash
-docker-compose up -d
+docker-compose -f docker-compose.dev.yml up -d
 ```
 
-## Local Development
-
-### Prepare the local machine
+### Local Environment
 
 Run the DB:
 ```bash
-docker-compose up -d db
+docker-compose -f docker-compose.dev.yml up -d db
 ```
 
 Install the server's env:
@@ -40,8 +42,6 @@ Install the frontend env:
 # Install the frontend's env
 cd frontend && yarn
 ```
-
-### Run the project
 
 Run the frontend:
 

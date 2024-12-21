@@ -45,7 +45,7 @@ import {
 } from "./store/actions/currentAction.ts";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
-import {ConnectingAirports, Email, LegendToggle, Settings} from "@mui/icons-material";
+import {ConnectingAirports, Email, LegendToggle, Settings, Dashboard} from "@mui/icons-material";
 
 const DRAWER_WIDTH = 240;
 
@@ -148,6 +148,12 @@ export default function App() {
             path: "/",
             icon: <ConnectingAirports/>,
             element: React.lazy(() => import('./pages/dashboard/DashboardPage.tsx')),
+        },
+        {
+            name: t("FLIGHTS_BOARD"),
+            path: "/flights-board",
+            icon: <Dashboard/>,
+            element: React.lazy(() => import('./pages/flights-board/FlightsBoardPage.tsx')),
         },
         {
             name: t("EVENTS"),

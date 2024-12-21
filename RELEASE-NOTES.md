@@ -1,5 +1,17 @@
 # Gliding Action Page Release Notes
 
+## v3.6.0
+
+### Frontend
+
+- Adds the `flights-board` page that is intended to be displayed on a screen in the club.
+
+### Infrastructure
+
+- Revamps the docker-compose files to be more organized and easier to use.
+- Optimizes the server's Dockerfile to be more small and efficient.
+- Refactors the frontend's Dockerfile to a multi-stage build.
+
 ## v3.5.2
 
 ### Bug Fixes
