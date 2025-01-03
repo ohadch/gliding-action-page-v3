@@ -1,12 +1,14 @@
 services:
 
   server:
+    command: python main.py
     extends:
       file: docker-compose.common.yml
       service: server
     volumes:
       - ./server/src:/app/src
       - ./server/main.py:/app/main.py
+      - ./server/backup.py:/app/backup.py
 
   client:
     build:
@@ -14,6 +16,8 @@ services:
     extends:
       file: docker-compose.common.yml
       service: client
+    environment:
+      - VITE_DISABLE_CLOSING_ACTION=true
     volumes:
       - ./frontend/src:/app/src
 
