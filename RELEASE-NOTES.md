@@ -9,6 +9,7 @@
 ## Infra
 
 - The servers docker files were enhanced to allow local debugging.
+- Adds the `backup.py` script to the server in order to backup the database and send it by email.
 
 ## v3.6.0
 
