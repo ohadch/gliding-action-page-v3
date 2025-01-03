@@ -14,6 +14,10 @@ First, create a `./server/.env` file based on the `./server/.env.example` file.
 docker-compose -f docker-compose.dev.yml up -d
 ```
 
+To debug the server's code, kill the server container and configure a python remote runner in Pycharm.
+
+Then, add a python configuration in Pycharm pointing to the `./server/main.py` file.
+
 ### Local Environment
 
 Run the DB:
