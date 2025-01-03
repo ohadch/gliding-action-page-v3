@@ -1,7 +1,7 @@
 import {FlightState, FlightType, PayersType, PaymentMethod, TowType} from "../lib/types.ts";
 
 export const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:9001';
-
+export const DISABLE_CLOSING_ACTION = import.meta.env.VITE_DISABLE_CLOSING_ACTION == 'true';
 
 export const CACHE_KEY_ACTION = 'action';
 export const CACHE_KEY_ACTION_PAGE = 'actions_page';

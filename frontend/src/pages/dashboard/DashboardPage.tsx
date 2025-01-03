@@ -22,7 +22,7 @@ import {FlightCreateSchema, FlightSchema, FlightState, FlightUpdateSchema} from 
 import FlightStartTowDialog from "../../components/flights/FlightStartTowDialog.tsx";
 import moment from "moment/moment";
 import FlightEndTowDialog from "../../components/flights/FlightEndTowDialog.tsx";
-import {ORDERED_FLIGHT_STATES} from "../../utils/consts.ts";
+import {DISABLE_CLOSING_ACTION, ORDERED_FLIGHT_STATES} from "../../utils/consts.ts";
 import {isFlightActive} from "../../utils/flights.ts";
 import {getGliderDisplayValue, getMemberDisplayValue, getTowAirplaneDisplayValue} from "../../utils/display.ts";
 import {createEvent} from "../../store/actions/event.ts";
@@ -600,6 +600,10 @@ export default function DashboardPage() {
     const nonFlightsExist = flights?.some((flight) => flight.state !== "Draft");
 
     const isCloseActionDisabled = () => {
+        if (DISABLE_CLOSING_ACTION) {
+            return true;
+        }
+
         const clubGuestFlights = flights?.filter((flight) => flight.flight_type === "ClubGuest") || [];
 
         const isFlightPaymentSettled = (flight: FlightSchema) => {

@@ -5,6 +5,7 @@
 ## New Features
 
 - When closing an action, a backup of the database and the flights data is created and sent to the assigned email.
+- Adds the ability to disable closing action by passing the VITE_DISABLE_CLOSING_ACTION=true environment variable to the frontend service.
 
 ## Infra
 
