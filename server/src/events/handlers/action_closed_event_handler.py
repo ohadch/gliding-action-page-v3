@@ -1,12 +1,10 @@
 """
 This module implements the ActionClosedEventHandler class.
 """
-from tempfile import TemporaryDirectory
 from typing import List
 
 from src import Event, Notification, MemberRole, get_settings
 from src.database import SessionLocal
-from src.emails.email_client import EmailClient
 from src.events.handlers.event_handler import EventHandler
 from src.utils.backup import PostgresBackupManager
 from src.utils.enums import NotificationType, Role
@@ -49,29 +47,16 @@ class ActionClosedEventHandler(EventHandler):
 
         session.commit()
 
-    def _send_database_backup_email(self, event: Event) -> None:
+    def _send_database_backup_email(self) -> None:
         """
         Send an email with the database backup attached.
         :return: None
         """
         settings = get_settings()
         recipient = settings.database_backup_recipient_email
-        action = event.action
 
-        self._logger.info(
-            f"Sending database backup email of action {action.id} to {recipient}"
-        )
-
-        with TemporaryDirectory() as temp_dir:
-            backup_manager = PostgresBackupManager.from_env()
-            backup_path = backup_manager.backup(output_dir=temp_dir)
-            settings = get_settings()
-            email_client = EmailClient()
-            email_client.send_email(
-                to_email=settings.database_backup_recipient_email,
-                subject=f"Database Backup - Action {action.id} - {action.date.strftime('%Y-%m-%d')}",
-                html_content="Please find the database backup attached.",
-                attachment_path=backup_path,
-            )
+        self._logger.info(f"Sending database backup email to {recipient}")
+        backup_manager = PostgresBackupManager.from_env()
+        backup_manager.backup_and_send_to_recipient()
 
         self._logger.info(f"Database backup email sent to {recipient}")

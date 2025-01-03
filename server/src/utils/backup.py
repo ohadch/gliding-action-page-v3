@@ -2,8 +2,10 @@ import logging
 import os
 import zipfile
 from datetime import datetime
+from tempfile import TemporaryDirectory
 
 from src import get_settings
+from src.emails.email_client import EmailClient
 from src.utils.common import run_subprocess
 
 
@@ -35,12 +37,23 @@ class PostgresBackupManager:
 
         # Zip the csv file
         with zipfile.ZipFile(zip_file, "w", zipfile.ZIP_DEFLATED) as zipf:
-            zipf.write(backup_file, os.path.basename(backup_file))
             zipf.write(f"{output_dir}/flights.csv", "flights.csv")
-
-        # Remove the SQL file after zipping
-        os.remove(backup_file)
 
         self._logger.info(f"Database backup created at {zip_file}")
 
         return zip_file
+
+    def backup_and_send_to_recipient(self):
+        """
+        Backup the database and send it to the assigned recipient
+        """
+        with TemporaryDirectory() as temp_dir:
+            backup_path = self.backup(output_dir=temp_dir)
+            settings = get_settings()
+            email_client = EmailClient()
+            email_client.send_email(
+                to_email=settings.database_backup_recipient_email,
+                subject=f"Database Backup - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+                html_content="Please find the database backup attached.",
+                attachment_path=backup_path,
+            )
