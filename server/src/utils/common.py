@@ -1,4 +1,5 @@
 import datetime
+import subprocess
 
 
 def stringify_duration(
@@ -14,3 +15,19 @@ def stringify_duration(
     minutes, seconds = divmod(remainder, 60)
     duration_str = f"{hours:02}:{minutes:02}:{seconds:02}"
     return duration_str
+
+
+def run_subprocess(command: str) -> str:
+    """
+    Run a subprocess command and return the output
+    :param command: Command to run
+    :return: Output of the command
+    """
+    stdout, stderr = subprocess.Popen(
+        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    ).communicate()
+
+    if stderr:
+        raise RuntimeError(f"Command failed with error: {stderr.decode('utf-8')}")
+
+    return stdout.decode("utf-8")
