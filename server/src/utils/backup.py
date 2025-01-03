@@ -24,20 +24,16 @@ class PostgresBackupManager:
         :return: Path to the ZIP file
         """
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        backup_file = os.path.join(output_dir, f"backup_{timestamp}.sql")
         zip_file = os.path.join(output_dir, f"backup_{timestamp}.zip")
 
         self._logger.info(f"Creating a backup of the database to {zip_file}")
 
-        # Dump the database to a SQL file
-        dump_command = f"pg_dump {self._connection_url} > {backup_file}"
-        run_subprocess(command=dump_command)
-
-        # Specifically, dump the flights table to a csv file
+        # Specifically, dump the flights table to a csv file.
+        # Only dump the flights to avoid dumping sensitive data!
         dump_command = f"psql {self._connection_url} -c 'COPY flights TO STDOUT WITH CSV HEADER' > {output_dir}/flights.csv"
         run_subprocess(command=dump_command)
 
-        # Zip the SQL file and the csv file
+        # Zip the csv file
         with zipfile.ZipFile(zip_file, "w", zipfile.ZIP_DEFLATED) as zipf:
             zipf.write(backup_file, os.path.basename(backup_file))
             zipf.write(f"{output_dir}/flights.csv", "flights.csv")
