@@ -5,7 +5,7 @@ from tempfile import TemporaryDirectory
 from typing import List
 
 from src import Event, Notification, MemberRole, get_settings
-from src.database import SessionLocal, engine
+from src.database import SessionLocal
 from src.emails.email_client import EmailClient
 from src.events.handlers.event_handler import EventHandler
 from src.utils.backup import PostgresBackupManager
@@ -14,6 +14,13 @@ from src.utils.enums import NotificationType, Role
 
 class ActionClosedEventHandler(EventHandler):
     def handle(self, event: Event) -> None:
+        try:
+            self._send_database_backup_email(event=event)
+        except Exception as e:
+            self._logger.error(
+                f"An error occurred while sending the database backup email: {e}"
+            )
+
         session = SessionLocal()
 
         observer_member_roles: List[MemberRole] = (
@@ -42,8 +49,6 @@ class ActionClosedEventHandler(EventHandler):
 
         session.commit()
 
-        self._send_database_backup_email(event)
-
     def _send_database_backup_email(self, event: Event) -> None:
         """
         Send an email with the database backup attached.
@@ -58,13 +63,13 @@ class ActionClosedEventHandler(EventHandler):
         )
 
         with TemporaryDirectory() as temp_dir:
-            backup_manager = PostgresBackupManager(engine)
+            backup_manager = PostgresBackupManager.from_env()
             backup_path = backup_manager.backup(output_dir=temp_dir)
             settings = get_settings()
             email_client = EmailClient()
             email_client.send_email(
                 to_email=settings.database_backup_recipient_email,
-                subject=f"Database Backup - Action {action.id} - {action.date}",
+                subject=f"Database Backup - Action {action.id} - {action.date.strftime('%Y-%m-%d')}",
                 html_content="Please find the database backup attached.",
                 attachment_path=backup_path,
             )

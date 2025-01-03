@@ -1,6 +1,7 @@
 services:
 
   server:
+#    entrypoint: /app/entrypoint.sh
     logging:
       options:
         max-size: "10m"

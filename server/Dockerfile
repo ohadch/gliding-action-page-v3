@@ -26,6 +26,4 @@ COPY . /app
 # Make port 8000 available to the world outside this container
 EXPOSE 9001
 
-# Entrypoint
 RUN chmod +x /app/entrypoint.sh
-CMD ["/app/entrypoint.sh"]
