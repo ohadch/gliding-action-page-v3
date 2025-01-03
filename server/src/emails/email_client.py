@@ -1,10 +1,15 @@
-"""
-This module contains the EmailClient class, which is used to send emails.
-"""
+import base64
 import logging
 import os
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+from sendgrid.helpers.mail import (
+    Mail,
+    Attachment,
+    FileContent,
+    FileName,
+    FileType,
+    Disposition,
+)
 
 
 class EmailClient:
@@ -15,12 +20,20 @@ class EmailClient:
         self._sg = SendGridAPIClient(self._sendgrid_api_key)
         self._logger = logging.getLogger(__name__)
 
-    def send_email(self, to_email: str, subject: str, html_content: str) -> None:
+    def send_email(
+        self,
+        to_email: str,
+        subject: str,
+        html_content: str,
+        attachment_path: str = None,
+    ) -> None:
         """
-        Send an email
+        Sends an email with an optional attachment.
+
         :param to_email: The recipient's email address
         :param subject: The email subject
         :param html_content: The email content
+        :param attachment_path: Optional path to a file to attach
         :return: None
         """
         if self._dev_email_receiver:
@@ -36,6 +49,22 @@ class EmailClient:
             subject=subject,
             html_content=html_content,
         )
+
+        if attachment_path:
+            if not os.path.isfile(attachment_path):
+                raise FileNotFoundError(f"Attachment file not found: {attachment_path}")
+
+            with open(attachment_path, "rb") as f:
+                encoded_content = base64.b64encode(f.read()).decode()
+
+            attachment = Attachment(
+                FileContent(encoded_content),
+                FileName(os.path.basename(attachment_path)),
+                FileType("application/zip"),  # Adjust the MIME type if needed
+                Disposition("attachment"),
+            )
+            message.attachment = attachment
+
         try:
             response = self._sg.send(message)
             return response
