@@ -1,7 +1,7 @@
 services:
 
   server:
-    command: python main.py
+    entrypoint: /app/entrypoint.sh
     extends:
       file: docker-compose.common.yml
       service: server
