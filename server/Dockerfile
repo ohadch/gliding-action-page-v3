@@ -9,6 +9,7 @@ WORKDIR /app
 # Install libs
 RUN apt-get update && apt-get install -y \
     libpq-dev \
+    postgresql-client \
     gcc \
     make \
     curl
