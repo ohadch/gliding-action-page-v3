@@ -9,6 +9,7 @@ WORKDIR /app
 # Install libs
 RUN apt-get update && apt-get install -y \
     libpq-dev \
+    postgresql-client \
     gcc \
     make \
     curl
@@ -25,6 +26,4 @@ COPY . /app
 # Make port 8000 available to the world outside this container
 EXPOSE 9001
 
-# Entrypoint
 RUN chmod +x /app/entrypoint.sh
-CMD ["/app/entrypoint.sh"]

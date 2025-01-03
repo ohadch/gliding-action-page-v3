@@ -1,5 +1,16 @@
 # Gliding Action Page Release Notes
 
+## v3.7.0
+
+## New Features
+
+- When closing an action, a backup of the database and the flights data is created and sent to the assigned email.
+
+## Infra
+
+- The servers docker files were enhanced to allow local debugging.
+- Adds the `backup.py` script to the server in order to backup the database and send it by email.
+
 ## v3.6.0
 
 ### Frontend

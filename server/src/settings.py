@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     sendgrid_api_key: str
     sender_email: str
     etl_server_url: Optional[str] = None
+    database_backup_recipient_email: str
 
 
 @lru_cache()
