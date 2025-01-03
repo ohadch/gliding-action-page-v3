@@ -1,7 +1,7 @@
 services:
 
   server:
-#    entrypoint: /app/entrypoint.sh
+    command: python main.py
     logging:
       options:
         max-size: "10m"
