@@ -1,6 +1,7 @@
 services:
 
   server:
+    command: python main.py
     extends:
       file: docker-compose.common.yml
       service: server
