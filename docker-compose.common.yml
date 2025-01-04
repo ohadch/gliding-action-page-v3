@@ -10,6 +10,8 @@ services:
       dockerfile: Dockerfile
     env_file:
       - ./server/.env
+    environment:
+      - MODE=server
     ports:
       - "9001:9001"
     networks:
