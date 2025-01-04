@@ -1,11 +1,14 @@
 services:
 
   server:
+    entrypoint: /app/entrypoint.sh
     extends:
       file: docker-compose.common.yml
       service: server
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - default
 
   client:
     extends:
@@ -17,6 +20,8 @@ services:
     extends:
       file: docker-compose.common.yml
       service: db
+    networks:
+      - default
 
 volumes:
   db_home:
