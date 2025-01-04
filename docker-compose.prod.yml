@@ -10,6 +10,19 @@ services:
     networks:
       - default
 
+  backup_cron:
+    entrypoint: /app/entrypoint.sh
+    environment:
+      MODE: backup_cron
+      BACKUP_CRON_SCHEDULE: 0 0 * * 4-6  # Every Friday, Saturday, Sunday at midnight
+    extends:
+      file: docker-compose.common.yml
+      service: server
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - default
+
   client:
     extends:
       file: docker-compose.common.yml
