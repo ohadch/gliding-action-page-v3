@@ -35,6 +35,7 @@ export default function SelectActionDialog({open, onQuitAction, onClose, onActio
     const dispatch = useAppDispatch();
     const {fetchInProgress, actions, page, pageSize} = useSelector((state: RootState) => state.actions)
     const {actionId: currentActionId} = useSelector((state: RootState) => state.currentAction)
+    const reviewMode = useSelector((state: RootState) => state.currentAction.reviewMode)
 
     const {
         t
@@ -45,6 +46,7 @@ export default function SelectActionDialog({open, onQuitAction, onClose, onActio
             dispatch(fetchActions({
                 page,
                 pageSize,
+                date: reviewMode ? new Date() : undefined,
             }));
         }
     });
