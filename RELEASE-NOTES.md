@@ -1,5 +1,13 @@
 # Gliding Action Page Release Notes
 
+## v3.8.0
+
+### New Features
+
+- By default, today's date is selected as an action.
+- Enables review mode: if inactive, then the user cannot switch actions.
+- Does not send flight landed events in review mode.
+
 ## v3.7.0
 
 ## New Features

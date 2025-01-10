@@ -55,6 +55,7 @@ export default function DashboardPage() {
     const [settlePaymentDialogFlight, setSettlePaymentDialogFlight] = useState<FlightSchema | null>(null);
     const shownFlightStates = action?.closed_at ? ["Landed"] : ORDERED_FLIGHT_STATES;
     const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
+    const reviewMode = currentActionStoreState.reviewMode;
 
 
     useEffect(() => {
@@ -196,6 +197,8 @@ export default function DashboardPage() {
 
         const promises = [];
 
+        const shouldCreateEvent = !reviewMode;
+
         switch (state) {
             case "Draft":
                 updatePayload.take_off_at = null;
@@ -309,7 +312,7 @@ export default function DashboardPage() {
             case "Landed":
                 updatePayload.landing_at = now;
 
-                if (action?.id) {
+                if (action?.id && shouldCreateEvent) {
                     promises.push(new Promise(() => dispatch(createEvent({
                         action_id: action.id,
                         type: "flight_landed",
