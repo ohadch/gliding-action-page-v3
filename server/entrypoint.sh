@@ -11,7 +11,7 @@ if [ "$MODE" = "server" ]; then
     fi
 
     echo "Starting server..."
-    make run
+    python main.py
 elif [ "$MODE" = "backup_cron" ]; then
     echo "Starting backup cron..."
 
