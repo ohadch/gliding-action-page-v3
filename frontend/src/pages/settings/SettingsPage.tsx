@@ -111,11 +111,11 @@ export default function SettingsPage() {
         );
     }
 
-    const actionDataExportRequestedEvents = events?.filter((event) => (
-        event.type === "action_data_export_requested" && event.action_id === action?.id
+    const actionDataImportExportRequestedEvents = events?.filter((event) => (
+        (event.type === "action_data_export_requested" || event.type === "reference_data_import_requested") && event.action_id === action?.id
     )) || [];
 
-    function renderActionDataExportRequestEventsTable() {
+    function renderActionDataImportExportRequestEventsTable() {
         return (
             <Table>
                     <TableHead>
@@ -128,7 +128,7 @@ export default function SettingsPage() {
                         </TableRow>
                     </TableHead>
                 <TableBody>
-                    {actionDataExportRequestedEvents.map((event) => (
+                    {actionDataImportExportRequestedEvents.map((event) => (
                         <TableRow key={event.id}>
                             <TableCell align="right">
                                 <EventStateChip state={event.state}/>
@@ -155,6 +155,27 @@ export default function SettingsPage() {
         )
     }
 
+    function renderImportReferenceDataButton(action: ActionSchema) {
+        return (
+            <Button variant="contained" color="primary"
+                    onClick={() => {
+                        if (!confirm(t("CONFIRM_IMPORT_REFERENCE_DATA"))) {
+                            return;
+                        }
+                        dispatch(
+                            createEvent({
+                                action_id: action.id,
+                                type: "reference_data_import_requested",
+                                payload: {}
+                            })
+                        )
+                    }}
+            >
+                {t("IMPORT_REFERENCE_DATA")}
+            </Button>
+        )
+    }
+
     return (
         <Grid>
             <Grid item xs={12}>
@@ -172,6 +193,9 @@ export default function SettingsPage() {
                         display: "flex",
                         flexDirection: "column",
                     }}>
+                        <Grid mb={2}>
+                            {action && renderImportReferenceDataButton(action)}
+                        </Grid>
                         <Grid>
                             {action && renderExportActionDataButton(action)}
                         </Grid>
@@ -187,11 +211,11 @@ export default function SettingsPage() {
 
                                 </Grid>
                                 <Grid item xs={12}>
-                        <h2>{t("DATA_EXPORT_REQUEST_EVENTS")}</h2>
+                        <h2>{t("DATA_IMPORT_EXPORT_REQUEST_EVENTS")}</h2>
                         {
-                            actionDataExportRequestedEvents.length === 0 ? (
+                            actionDataImportExportRequestedEvents.length === 0 ? (
                                 <p>{t("NO_DATA_EXPORT_REQUEST_EVENTS_FOR_ACTION")}.</p>
-                            ) : renderActionDataExportRequestEventsTable()
+                            ) : renderActionDataImportExportRequestEventsTable()
                         }
                     </Grid>
                 </Grid>
