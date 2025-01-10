@@ -13,7 +13,7 @@ if [ "$MODE" = "server" ]; then
     echo "Starting server..."
     python main.py
 elif [ "$MODE" = "backup_cron" ]; then
-    echo "Starting backup cron..."
+    echo "Starting backup cron with schedule: $BACKUP_CRON_SCHEDULE"
 
     # Copy crontab file to cron.d directory
     echo "$BACKUP_CRON_SCHEDULE /usr/bin/python /app/backup.py" > /etc/cron.d/backup_cron
