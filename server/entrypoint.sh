@@ -16,7 +16,7 @@ elif [ "$MODE" = "backup_cron" ]; then
     echo "Starting backup cron..."
 
     # Copy crontab file to cron.d directory
-    cp /app/crontab.txt /etc/cron.d/backup_cron
+    echo "$BACKUP_CRON_SCHEDULE /usr/bin/python /app/backup.py" > /etc/cron.d/backup_cron
 
     # Give execute permissions
     chmod 0644 /etc/cron.d/backup_cron
