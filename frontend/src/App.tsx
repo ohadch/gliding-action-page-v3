@@ -134,6 +134,7 @@ export default function App() {
     const [drawerOpen, setDrawerDrawerOpen] = React.useState(false);
     const [theme, setTheme] = React.useState(CacheService.get("CACHE_KEY_THEME") === "dark" ? darkTheme : lightTheme);
     const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
+    const reviewMode = useSelector((state: RootState) => state.currentAction.reviewMode);
     const [selectActionDialogOpen, setSelectActionDialogOpen] = React.useState(false);
     const {t} = useTranslation()
     const {pathname} = useLocation();
@@ -284,7 +285,14 @@ export default function App() {
             )
         }
         return (
-            <Button color="inherit" onClick={() => setSelectActionDialogOpen(true)}>
+            <Button
+                color="inherit"
+                onClick={() => setSelectActionDialogOpen(true)}
+                disabled={!reviewMode}
+                sx={{
+                    color: "white !important",
+                }}
+            >
                 {t("CURRENT_ACTION")}: {" "}
                 {action?.date.split("T")[0]}
             </Button>

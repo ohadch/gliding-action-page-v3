@@ -165,7 +165,7 @@ export default function SelectActionDialog({open, onQuitAction, onClose, onActio
                     {t("CANCEL")}
                 </Button>
                 <Button onClick={onQuitAction}>
-                    {t("QUIT_ACTION")}
+                    {t("SELECT_TODAYS_ACTION")}
                 </Button>
             </DialogActions>
         </Dialog>
