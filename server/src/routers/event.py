@@ -26,7 +26,7 @@ tags = [prefix]
     response_model=List[EventSchema],
     summary=f"Search {prefix}",
 )
-async def search(
+def search(
     page: int = 1,
     page_size: Optional[int] = None,
     filters: Optional[EventSearchSchema] = None,
@@ -42,7 +42,7 @@ async def search(
     :param settings: Settings
     :return: List of events
     """
-    return await crud.search(
+    return crud.search(
         db=db,
         filters=filters,
         page=page,
@@ -56,13 +56,13 @@ async def search(
     response_model=EventSchema,
     summary=f"Create {prefix}",
 )
-async def create(data: EventCreateSchema, db: Session = Depends(get_db)):
+def create(data: EventCreateSchema, db: Session = Depends(get_db)):
     """
     Create event
     :param data: Data
     :param db: Database session
     """
-    return await crud.create(
+    return crud.create(
         db=db,
         data=data,
     )
@@ -74,14 +74,14 @@ async def create(data: EventCreateSchema, db: Session = Depends(get_db)):
     response_model=EventSchema,
     summary=f"Get {prefix} by ID",
 )
-async def get_by_id(id_: int, db: Session = Depends(get_db)):
+def get_by_id(id_: int, db: Session = Depends(get_db)):
     """
     Read event by ID
     :param id_: Event ID
     :param db: Database session
     :return: Event
     """
-    event = await crud.get_by_id(db=db, id_=id_)
+    event = crud.get_by_id(db=db, id_=id_)
     if not event:
         raise HTTPException(status_code=404, detail=f"{prefix.title()} not found")
     return event
@@ -93,7 +93,7 @@ async def get_by_id(id_: int, db: Session = Depends(get_db)):
     response_model=EventSchema,
     summary=f"Update {prefix}",
 )
-async def update(
+def update(
     id_: int,
     data: EventUpdateSchema,
     db: Session = Depends(get_db),
@@ -117,7 +117,7 @@ async def update(
     tags=tags,
     summary=f"Delete {prefix}",
 )
-async def delete(id_: int, db: Session = Depends(get_db)):
+def delete(id_: int, db: Session = Depends(get_db)):
     """
     Delete event
     :param id_: Event ID

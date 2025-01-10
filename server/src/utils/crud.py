@@ -33,7 +33,7 @@ class GenericModelCrud(
     ):
         self.model = model
 
-    async def search(
+    def search(
         self,
         db: Session,
         filters: Optional[TModelSearchSchema] = None,
@@ -62,7 +62,7 @@ class GenericModelCrud(
         )
         return response.items
 
-    async def create(self, db: Session, data: TModelCreateSchema) -> TModel:
+    def create(self, db: Session, data: TModelCreateSchema) -> TModel:
         """
         Create a new item.
         :param db: Database session

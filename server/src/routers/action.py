@@ -1,3 +1,4 @@
+import datetime
 from typing import List, Optional
 
 from fastapi import Depends, HTTPException
@@ -13,6 +14,7 @@ from src.schemas import (
     ActionCreateSchema,
     ActionUpdateSchema,
 )
+from src.schemas.action import ActionGetOrCreateByDateSchema
 from src.settings import Settings, get_settings
 
 crud = ActionCrud()
@@ -26,7 +28,7 @@ tags = [prefix]
     response_model=List[ActionSchema],
     summary=f"Search {prefix}",
 )
-async def search(
+def search(
     page: int = 1,
     page_size: Optional[int] = None,
     filters: Optional[ActionSearchSchema] = None,
@@ -42,7 +44,7 @@ async def search(
     :param settings: Settings
     :return: List of actions
     """
-    items = await crud.search(
+    items = crud.search(
         db=db,
         filters=filters,
         page=page,
@@ -59,13 +61,13 @@ async def search(
     response_model=ActionSchema,
     summary=f"Create {prefix}",
 )
-async def create(data: ActionCreateSchema, db: Session = Depends(get_db)):
+def create(data: ActionCreateSchema, db: Session = Depends(get_db)):
     """
     Create action
     :param data: Data
     :param db: Database session
     """
-    return await crud.create(
+    return crud.create(
         db=db,
         data=data,
     )
@@ -77,14 +79,14 @@ async def create(data: ActionCreateSchema, db: Session = Depends(get_db)):
     response_model=ActionSchema,
     summary=f"Get {prefix} by ID",
 )
-async def get_by_id(id_: int, db: Session = Depends(get_db)):
+def get_by_id(id_: int, db: Session = Depends(get_db)):
     """
     Read action by ID
     :param id_: Action ID
     :param db: Database session
     :return: Action
     """
-    action = await crud.get_by_id(db=db, id_=id_)
+    action = crud.get_by_id(db=db, id_=id_)
     if not action:
         raise HTTPException(status_code=404, detail=f"{prefix.title()} not found")
     return action
@@ -96,7 +98,7 @@ async def get_by_id(id_: int, db: Session = Depends(get_db)):
     response_model=ActionSchema,
     summary=f"Update {prefix}",
 )
-async def update(
+def update(
     id_: int,
     data: ActionUpdateSchema,
     db: Session = Depends(get_db),
@@ -120,10 +122,30 @@ async def update(
     tags=tags,
     summary=f"Delete {prefix}",
 )
-async def delete(id_: int, db: Session = Depends(get_db)):
+def delete(id_: int, db: Session = Depends(get_db)):
     """
     Delete action
     :param id_: Action ID
     :param db: Database session
     """
     crud.delete(db=db, id_=id_)
+
+
+@app.post(
+    f"/{prefix}/get-or-create-by-date",
+    tags=tags,
+    response_model=ActionSchema,
+    summary=f"Get or create {prefix} by date",
+)
+def get_or_create_by_date(
+    data: ActionGetOrCreateByDateSchema,
+    db: Session = Depends(get_db),
+):
+    """
+    Get or create action by date
+    :param data: Data
+    :param db: Database session
+    :return: Action
+    """
+    date = datetime.datetime.strptime(data.date, "%Y-%m-%d").date()
+    return crud.get_or_create_action_by_date(db=db, date=date)

@@ -7,7 +7,7 @@ import {
     createFlight, deleteActiveTowAirplane,
     deleteFlight,
     fetchActiveTowAirplanes, fetchComments, fetchEvents,
-    fetchFlights, fetchNotifications, updateActiveTowAirplane,
+    fetchFlights, fetchNotifications, setActionAsToday, updateActiveTowAirplane,
     updateFlight
 } from "../actions/currentAction.ts";
 import {EventSchema, NotificationSchema} from "../../lib/types.ts";
@@ -213,6 +213,17 @@ export const currentActionSlice = createSlice({
                 state.comments = state.comments?.filter(comment => comment.id !== action.payload)
             })
             .addCase(deleteComment.rejected, (state, action) => {
+                state.fetchInProgress = false
+                state.error = action.error.message
+            })
+            .addCase(setActionAsToday.pending, (state) => {
+                state.fetchInProgress = true
+            })
+            .addCase(setActionAsToday.fulfilled, (state, action) => {
+                state.fetchInProgress = false
+                state.actionId = action.payload.id
+            })
+            .addCase(setActionAsToday.rejected, (state, action) => {
                 state.fetchInProgress = false
                 state.error = action.error.message
             })

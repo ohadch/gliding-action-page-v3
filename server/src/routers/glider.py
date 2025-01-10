@@ -26,7 +26,7 @@ tags = [prefix]
     response_model=List[GliderSchema],
     summary=f"Search {prefix}",
 )
-async def search(
+def search(
     page: int = 1,
     page_size: Optional[int] = None,
     filters: Optional[GliderSearchSchema] = None,
@@ -42,7 +42,7 @@ async def search(
     :param settings: Settings
     :return: List of gliders
     """
-    return await crud.search(
+    return crud.search(
         db=db,
         filters=filters,
         page=page,
@@ -56,13 +56,13 @@ async def search(
     response_model=GliderSchema,
     summary=f"Create {prefix}",
 )
-async def create(data: GliderCreateSchema, db: Session = Depends(get_db)):
+def create(data: GliderCreateSchema, db: Session = Depends(get_db)):
     """
     Create glider
     :param data: Data
     :param db: Database session
     """
-    return await crud.create(
+    return crud.create(
         db=db,
         data=data,
     )
@@ -74,14 +74,14 @@ async def create(data: GliderCreateSchema, db: Session = Depends(get_db)):
     response_model=GliderSchema,
     summary=f"Get {prefix} by ID",
 )
-async def get_by_id(id_: int, db: Session = Depends(get_db)):
+def get_by_id(id_: int, db: Session = Depends(get_db)):
     """
     Read glider by ID
     :param id_: Glider ID
     :param db: Database session
     :return: Glider
     """
-    glider = await crud.get_by_id(db=db, id_=id_)
+    glider = crud.get_by_id(db=db, id_=id_)
     if not glider:
         raise HTTPException(status_code=404, detail=f"{prefix.title()} not found")
     return glider
@@ -93,7 +93,7 @@ async def get_by_id(id_: int, db: Session = Depends(get_db)):
     response_model=GliderSchema,
     summary=f"Update {prefix}",
 )
-async def update(
+def update(
     id_: int,
     data: GliderUpdateSchema,
     db: Session = Depends(get_db),
@@ -117,7 +117,7 @@ async def update(
     tags=tags,
     summary=f"Delete {prefix}",
 )
-async def delete(id_: int, db: Session = Depends(get_db)):
+def delete(id_: int, db: Session = Depends(get_db)):
     """
     Delete glider
     :param id_: Glider ID

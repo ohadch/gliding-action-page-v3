@@ -26,7 +26,7 @@ tags = [prefix]
     response_model=List[TowAirplaneSchema],
     summary=f"Search {prefix}",
 )
-async def search(
+def search(
     page: int = 1,
     page_size: Optional[int] = None,
     filters: Optional[TowAirplaneSearchSchema] = None,
@@ -42,7 +42,7 @@ async def search(
     :param settings: Settings
     :return: List of tow_airplanes
     """
-    return await crud.search(
+    return crud.search(
         db=db,
         filters=filters,
         page=page,
@@ -56,13 +56,13 @@ async def search(
     response_model=TowAirplaneSchema,
     summary=f"Create {prefix}",
 )
-async def create(data: TowAirplaneCreateSchema, db: Session = Depends(get_db)):
+def create(data: TowAirplaneCreateSchema, db: Session = Depends(get_db)):
     """
     Create tow_airplane
     :param data: Data
     :param db: Database session
     """
-    return await crud.create(
+    return crud.create(
         db=db,
         data=data,
     )
@@ -74,14 +74,14 @@ async def create(data: TowAirplaneCreateSchema, db: Session = Depends(get_db)):
     response_model=TowAirplaneSchema,
     summary=f"Get {prefix} by ID",
 )
-async def get_by_id(id_: int, db: Session = Depends(get_db)):
+def get_by_id(id_: int, db: Session = Depends(get_db)):
     """
     Read tow_airplane by ID
     :param id_: TowAirplane ID
     :param db: Database session
     :return: TowAirplane
     """
-    tow_airplane = await crud.get_by_id(db=db, id_=id_)
+    tow_airplane = crud.get_by_id(db=db, id_=id_)
     if not tow_airplane:
         raise HTTPException(status_code=404, detail=f"{prefix.title()} not found")
     return tow_airplane
@@ -93,7 +93,7 @@ async def get_by_id(id_: int, db: Session = Depends(get_db)):
     response_model=TowAirplaneSchema,
     summary=f"Update {prefix}",
 )
-async def update(
+def update(
     id_: int,
     data: TowAirplaneUpdateSchema,
     db: Session = Depends(get_db),
@@ -117,7 +117,7 @@ async def update(
     tags=tags,
     summary=f"Delete {prefix}",
 )
-async def delete(id_: int, db: Session = Depends(get_db)):
+def delete(id_: int, db: Session = Depends(get_db)):
     """
     Delete tow_airplane
     :param id_: TowAirplane ID

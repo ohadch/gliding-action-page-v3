@@ -33,3 +33,7 @@ class ActionUpdateSchema(BaseModel):
 
 class ActionSearchSchema(ActionUpdateSchema):
     pass
+
+
+class ActionGetOrCreateByDateSchema(BaseModel):
+    date: str

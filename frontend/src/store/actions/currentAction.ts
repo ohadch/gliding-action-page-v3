@@ -3,12 +3,14 @@ import createClient from "openapi-fetch";
 import {paths} from "../../lib/api.ts";
 import {API_HOST} from "../../utils/consts.ts";
 import {
+    ActionSchema,
     ActiveTowAirplaneCreateSchema,
     ActiveTowAirplaneSchema, ActiveTowAirplaneUpdateSchema, CommentSchema, EventSchema,
     FlightCreateSchema,
     FlightSchema,
     FlightUpdateSchema, NotificationSchema
 } from "../../lib/types.ts";
+import {fetchActions} from "./action.ts";
 
 
 const {POST, PUT, DELETE} = createClient<paths>({baseUrl: API_HOST});
@@ -261,5 +263,26 @@ export const fetchComments = createAsyncThunk<CommentSchema[], {actionId: number
         }
 
         return data
+    }
+)
+
+
+export const setActionAsToday = createAsyncThunk<ActionSchema, { date: string }, { rejectValue: string }
+>(
+    'currentAction/setActionAsToday',
+    async ({date}, thunkAPI) => {
+        const {data, error} = await POST("/actions/get-or-create-by-date", {
+            body: {
+                date,
+            },
+        });
+
+        if (error) {
+            return thunkAPI.rejectWithValue("Error creating action");
+        }
+
+        // await fetchActions({page: 1, pageSize: 20})(thunkAPI.dispatch, thunkAPI.getState, undefined);
+
+        return data;
     }
 )

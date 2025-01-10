@@ -41,11 +41,12 @@ import {
     fetchComments,
     fetchEvents,
     fetchFlights,
-    fetchNotifications
+    fetchNotifications, setActionAsToday
 } from "./store/actions/currentAction.ts";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {ConnectingAirports, Email, LegendToggle, Settings, Dashboard} from "@mui/icons-material";
+import {useEffect} from "react";
 
 const DRAWER_WIDTH = 240;
 
@@ -137,6 +138,16 @@ export default function App() {
     const {t} = useTranslation()
     const {pathname} = useLocation();
     document.body.dir = i18n.dir();
+
+    useEffect(() => {
+        if (!action) {
+            dispatch(
+                setActionAsToday({
+                    date: new Date().toISOString().split("T")[0]
+                })
+            )
+        }
+    }, [action, dispatch]);
 
     const toggleDrawer = () => {
         setDrawerDrawerOpen(!drawerOpen);
