@@ -4,6 +4,8 @@ services:
     extends:
       file: docker-compose.common.yml
       service: server
+    ports:
+      - "9001:9001"
     volumes:
       - ./server/src:/app/src
       - ./server/main.py:/app/main.py
