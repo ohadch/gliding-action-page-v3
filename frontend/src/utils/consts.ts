@@ -7,7 +7,6 @@ export const CACHE_KEY_ACTION = 'action';
 export const CACHE_KEY_ACTION_PAGE = 'actions_page';
 export const CACHE_KEY_ACTION_PAGE_SIZE = 'actions_page_size';
 export const CACHE_KEY_THEME = 'theme';
-export const CACHE_KEY_REVIEW_MODE = 'review_mode';
 
 export const TEXTS_HEBREW = {
     APP_NAME: "ניהול פעולת הדאיה",
