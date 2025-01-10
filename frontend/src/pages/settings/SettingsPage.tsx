@@ -13,10 +13,12 @@ import TableBody from "@mui/material/TableBody";
 import {useEffect} from "react";
 import {fetchEvents} from "../../store/actions/currentAction.ts";
 import EventStateChip from "../../components/common/EventStateChip.tsx";
+import {setReviewMode} from "../../store/reducers/currentActionSlice.ts";
 
 export default function SettingsPage() {
     const {t} = useTranslation();
     const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
+    const reviewMode = useSelector((state: RootState) => state.currentAction.reviewMode);
     const dispatch = useAppDispatch();
     const {events, fetchInProgress} = useSelector((state: RootState) => state.currentAction) || [];
 
@@ -64,6 +66,26 @@ export default function SettingsPage() {
                 }}
             >
                 {t("REOPEN_ACTION")}
+            </Button>
+        )
+    }
+
+    function renderToggleReviewModeButton() {
+        return (
+            <Button variant="contained" color="primary"
+                onClick={() => {
+                    if (!confirm(
+                        reviewMode ? t("CONFIRM_EXIT_REVIEW_MODE") : t("CONFIRM_ENTER_REVIEW_MODE")
+                    )) {
+                        return;
+                    }
+
+                    dispatch(
+                        setReviewMode(!reviewMode)
+                    )
+                }}
+            >
+                {reviewMode ? t("EXIT_REVIEW_MODE") : t("ENTER_REVIEW_MODE")}
             </Button>
         )
     }
@@ -140,6 +162,9 @@ export default function SettingsPage() {
             </Grid>
             <Grid item xs={12}>
                 <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        {action && renderToggleReviewModeButton()}
+                    </Grid>
                     <Grid item xs={12}>
                         {action && renderReopenActionButton(action)}
                     </Grid>

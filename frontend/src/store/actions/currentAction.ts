@@ -10,7 +10,6 @@ import {
     FlightSchema,
     FlightUpdateSchema, NotificationSchema
 } from "../../lib/types.ts";
-import {fetchActions} from "./action.ts";
 
 
 const {POST, PUT, DELETE} = createClient<paths>({baseUrl: API_HOST});

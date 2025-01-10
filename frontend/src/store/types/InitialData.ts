@@ -21,6 +21,7 @@ export interface ActionsStoreState extends BaseInitialState {
 
 
 export interface CurrentActionStoreState extends BaseInitialState {
+    reviewMode: boolean;
     actionId?: number;
     initialState: boolean;
     fetchingActiveTowAirplanesInProgress: boolean;

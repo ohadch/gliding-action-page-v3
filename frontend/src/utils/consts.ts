@@ -7,7 +7,7 @@ export const CACHE_KEY_ACTION = 'action';
 export const CACHE_KEY_ACTION_PAGE = 'actions_page';
 export const CACHE_KEY_ACTION_PAGE_SIZE = 'actions_page_size';
 export const CACHE_KEY_THEME = 'theme';
-
+export const CACHE_KEY_REVIEW_MODE = 'review_mode';
 
 export const TEXTS_HEBREW = {
     APP_NAME: "ניהול פעולת הדאיה",
@@ -181,6 +181,10 @@ export const TEXTS_HEBREW = {
     DELETE_COMMENT: "מחק הערה",
     DELETE_COMMENT_CONFIRMATION: "האם אתה בטוח שברצונך למחוק את ההערה?",
     MOVE_FLIGHT_TO_STATE: "העבר טיסה לשלב",
+    ENTER_REVIEW_MODE: "הכנס למצב ביקורת",
+    EXIT_REVIEW_MODE: "צא ממצב ביקורת",
+    CONFIRM_ENTER_REVIEW_MODE: "האם אתה בטוח שברצונך להכנס למצב ביקורת?",
+    CONFIRM_EXIT_REVIEW_MODE: "האם אתה בטוח שברצונך לצאת ממצב ביקורת?",
 }
 
 
