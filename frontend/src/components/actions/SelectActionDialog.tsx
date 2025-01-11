@@ -34,15 +34,15 @@ export interface SelectActionDialogProps {
 export default function SelectActionDialog({open, onQuitAction, onClose, onActionSelected}: SelectActionDialogProps) {
     const dispatch = useAppDispatch();
     const {fetchInProgress, actions, page, pageSize} = useSelector((state: RootState) => state.actions)
-    const {actionId: currentActionId} = useSelector((state: RootState) => state.currentAction)
-    const reviewMode = useSelector((state: RootState) => state.currentAction.reviewMode)
+    const {actionId: currentActionId} = useSelector((state: RootState) => state.actions)
+    const reviewMode = useSelector((state: RootState) => state.actions.reviewMode)
 
     const {
         t
     } = useTranslation()
 
     useEffect(() => {
-        if (!actions && !fetchInProgress) {
+        if (!actions && !fetchInProgress && reviewMode) {
             dispatch(fetchActions({
                 page,
                 pageSize,

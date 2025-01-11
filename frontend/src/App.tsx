@@ -32,21 +32,17 @@ import {RootState, useAppDispatch} from "./store";
 import {CACHE_KEY_ACTION, TEXTS_HEBREW} from "./utils/consts.ts";
 import {CacheService} from "./utils/cache.ts";
 import {
-    setActiveTowAirplanes,
-    setCurrentActionId,
-    setFlights
-} from "./store/reducers/currentActionSlice.ts";
-import {
     fetchActiveTowAirplanes,
     fetchComments,
     fetchEvents,
     fetchFlights,
-    fetchNotifications, setActionAsToday
-} from "./store/actions/currentAction.ts";
+    fetchNotifications, setActionAsToday,
+} from "./store/actions/action.ts";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {ConnectingAirports, Email, LegendToggle, Settings, Dashboard} from "@mui/icons-material";
 import {useEffect} from "react";
+import {setActiveTowAirplanes, setCurrentActionId, setFlights} from "./store/reducers/actionSlice.ts";
 
 const DRAWER_WIDTH = 240;
 
@@ -133,22 +129,22 @@ export default function App() {
     const dispatch = useAppDispatch();
     const [drawerOpen, setDrawerDrawerOpen] = React.useState(false);
     const [theme, setTheme] = React.useState(CacheService.get("CACHE_KEY_THEME") === "dark" ? darkTheme : lightTheme);
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
-    const reviewMode = useSelector((state: RootState) => state.currentAction.reviewMode);
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
+    const reviewMode = useSelector((state: RootState) => state.actions.reviewMode);
     const [selectActionDialogOpen, setSelectActionDialogOpen] = React.useState(false);
     const {t} = useTranslation()
     const {pathname} = useLocation();
     document.body.dir = i18n.dir();
 
     useEffect(() => {
-        if (!action && !reviewMode) {
+        if (!reviewMode && !action) {
             dispatch(
                 setActionAsToday({
                     date: new Date().toISOString().split("T")[0]
                 })
             )
         }
-    }, [action, dispatch]);
+    }, [action, dispatch, reviewMode]);
 
     const toggleDrawer = () => {
         setDrawerDrawerOpen(!drawerOpen);
@@ -299,7 +295,7 @@ export default function App() {
         )
     }
 
-    const flightsWithUnsettlePayments = useSelector((state: RootState) => state.currentAction.flights?.filter((flight) => {
+    const flightsWithUnsettlePayments = useSelector((state: RootState) => state.actions.flights?.filter((flight) => {
         // Only ClubGuest flights require payment settlement
         if (flight.flight_type !== "ClubGuest") {
             return false

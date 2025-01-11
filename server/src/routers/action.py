@@ -148,4 +148,5 @@ def get_or_create_by_date(
     :return: Action
     """
     date = datetime.datetime.strptime(data.date, "%Y-%m-%d").date()
-    return crud.get_or_create_action_by_date(db=db, date=date)
+    action = crud.get_or_create_action_by_date(db=db, date=date)
+    return action

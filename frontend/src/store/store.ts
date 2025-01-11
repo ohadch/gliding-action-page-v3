@@ -4,13 +4,11 @@ import {actionsSlice} from "./reducers/actionSlice.ts";
 import {membersSlice} from "./reducers/memberSlice.ts";
 import {glidersSlice} from "./reducers/gliderSlice.ts";
 import {towAirplanesSlice} from "./reducers/towAirplaneSlice.ts";
-import {currentActionSlice} from "./reducers/currentActionSlice.ts";
 import {eventsSlice} from "./reducers/eventSlice.ts";
 
 export const store = configureStore({
     reducer: {
         actions: actionsSlice.reducer,
-        currentAction: currentActionSlice.reducer,
         members: membersSlice.reducer,
         gliders: glidersSlice.reducer,
         towAirplanes: towAirplanesSlice.reducer,

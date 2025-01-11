@@ -36,7 +36,7 @@ import {
 import {TimePicker} from "@mui/x-date-pickers";
 import moment from "moment";
 import CommentsTable from "../comments/CommentsTable.tsx";
-import {fetchComments} from "../../store/actions/currentAction.ts";
+import {fetchComments} from "../../store/actions/action.ts";
 
 export interface EditFlightDetailsDialogProps {
     flightId?: number | null
@@ -59,8 +59,8 @@ export default function EditFlightDetailsDialog({
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
-    const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
+    const currentActionStoreState = useSelector((state: RootState) => state.actions)
     const currentFlightComments = currentActionStoreState.comments?.filter((comment) => comment.flight_id === flightId);
 
     const {

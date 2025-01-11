@@ -14,7 +14,7 @@ import {RootState, useAppDispatch} from "../../store";
 import CommentEditDialog from "./CommentEditDialog.tsx";
 import {Button, Grid, Tooltip} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import {fetchComments} from "../../store/actions/currentAction.ts";
+import {fetchComments} from "../../store/actions/action.ts";
 import {createComment, deleteComment, updateComment} from "../../store/actions/comment.ts";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -31,11 +31,11 @@ export default function CommentsTable(props: CommentsTableProps) {
     const [newCommentText, setNewCommentText] = useState<string | null>(null);
     const [editedComment, setEditedComment] = useState<CommentSchema | null>(null);
     const [editCommentDialogOpen, setEditCommentDialogOpen] = useState<boolean>(false);
-    const currentActionStoreState = useSelector((state: RootState) => state.currentAction);
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
+    const currentActionStoreState = useSelector((state: RootState) => state.actions);
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
     const fieldResponsibleId = action?.field_responsible_id;
     const dispatch = useAppDispatch();
-    const flight = useSelector((state: RootState) => state.currentAction.flights?.find((flight) => flight.id === flightId));
+    const flight = useSelector((state: RootState) => state.actions.flights?.find((flight) => flight.id === flightId));
 
     const getMemberById = useCallback((id: number) => membersStoreState.members?.find((member) => member.id === id), [membersStoreState.members]);
     const displayMember = (id: number) => {

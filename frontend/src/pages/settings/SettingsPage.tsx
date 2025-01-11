@@ -11,16 +11,16 @@ import TableCell from "@mui/material/TableCell";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import {useEffect} from "react";
-import {fetchEvents} from "../../store/actions/currentAction.ts";
+import {fetchEvents} from "../../store/actions/action.ts";
 import EventStateChip from "../../components/common/EventStateChip.tsx";
-import {setReviewMode} from "../../store/reducers/currentActionSlice.ts";
+import {setReviewMode} from "../../store/reducers/actionSlice.ts";
 
 export default function SettingsPage() {
     const {t} = useTranslation();
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
-    const reviewMode = useSelector((state: RootState) => state.currentAction.reviewMode);
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
+    const reviewMode = useSelector((state: RootState) => state.actions.reviewMode);
     const dispatch = useAppDispatch();
-    const {events, fetchInProgress} = useSelector((state: RootState) => state.currentAction) || [];
+    const {events, fetchInProgress} = useSelector((state: RootState) => state.actions) || [];
 
     useEffect(() => {
         if (!events && !fetchInProgress && action) {

@@ -19,7 +19,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {deleteFlight} from "../../store/actions/currentAction.ts";
+import {deleteFlight} from "../../store/actions/action.ts";
 import {FlightCreateSchema, FlightSchema, FlightState, FlightUpdateSchema} from "../../lib/types.ts";
 import FlightStateController from "./FlightStateController.tsx";
 import FlightDuration from "./FlightDuration.tsx";
@@ -49,7 +49,7 @@ export default function FlightsTable(props: FlightsTableProps) {
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
+    const currentActionStoreState = useSelector((state: RootState) => state.actions)
 
     const shownAndSortedFlights = useCallback(() => {
         if (!flights) {

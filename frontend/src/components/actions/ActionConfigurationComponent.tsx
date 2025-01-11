@@ -21,7 +21,7 @@ import {
     addActiveTowAirplane,
     deleteActiveTowAirplane,
     fetchActiveTowAirplanes
-} from "../../store/actions/currentAction.ts";
+} from "../../store/actions/action.ts";
 import {createEvent} from "../../store/actions/event.ts";
 import {MemberSchema} from "../../lib/types.ts";
 
@@ -40,8 +40,8 @@ export default function ActionConfigurationComponent() {
     const {t} = useTranslation();
     const membersStoreState = useSelector((state: RootState) => state.members)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
-    const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
+    const currentActionStoreState = useSelector((state: RootState) => state.actions)
     const getMemberById = useCallback((id: number) => membersStoreState.members?.find((member) => member.id === id), [membersStoreState.members]);
     const dispatch = useAppDispatch();
     const [editedActiveTowAirplaneId, setEditedActiveTowAirplaneId] = useState<number | null>(null);
