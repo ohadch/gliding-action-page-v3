@@ -2,7 +2,12 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {ActionsStoreState} from "../types/InitialData";
 import {fetchActions, updateAction} from "../actions/action";
 import {CacheService} from "../../utils/cache.ts";
-import {CACHE_KEY_ACTION, CACHE_KEY_ACTION_PAGE, CACHE_KEY_ACTION_PAGE_SIZE} from "../../utils/consts.ts";
+import {
+    CACHE_KEY_ACTION,
+    CACHE_KEY_ACTION_PAGE,
+    CACHE_KEY_ACTION_PAGE_SIZE,
+    CACHE_KEY_REVIEW_MODE
+} from "../../utils/consts.ts";
 import {
     addActiveTowAirplane,
     createFlight, deleteActiveTowAirplane,
@@ -23,7 +28,7 @@ const initialState: ActionsStoreState = {
     actions: undefined,
     fetchInProgress: false,
     initialState: true,
-    reviewMode: false,
+    reviewMode: CacheService.getBoolean(CACHE_KEY_REVIEW_MODE) || false,
     fetchingActiveTowAirplanesInProgress: false,
     fetchingFlightsInProgress: false,
 }
@@ -45,6 +50,8 @@ export const actionsSlice = createSlice({
         },
         setReviewMode: (state, action) => {
             state.reviewMode = action.payload
+            const ttlMillis = 1000 * 60 * 60 // 1 hour
+            CacheService.set(CACHE_KEY_REVIEW_MODE, action.payload, ttlMillis)
         }
     },
     extraReducers: (builder) => {

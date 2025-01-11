@@ -6,7 +6,7 @@ export class CacheService {
      * @param key - The key to retrieve from storage.
      * @returns The value as a string or null if not found or expired.
      */
-    public static get(key: string): string | null {
+    public static get(key: string): string | number | boolean | null {
         const item = localStorage.getItem(key);
         if (!item) return null;
 
@@ -55,11 +55,11 @@ export class CacheService {
         const value = CacheService.get(key);
         if (value === null) return undefined;
 
-        if (value === "true") return true;
-        if (value === "false") return false;
+        if (value === true) return true;
+        if (value === false) return false;
 
         CacheService.remove(key); // Remove invalid data
-        console.error(`Failed to parse boolean from cache for key: ${key}`);
+        console.error(`Failed to parse boolean from cache for key: ${key}, value: ${value}`);
         return undefined;
     }
 
@@ -76,6 +76,28 @@ export class CacheService {
             expiry: ttlMilliseconds ? new Date().getTime() + ttlMilliseconds : undefined // Calculate expiry (current time + ttlMilliseconds)
         };
         localStorage.setItem(key, JSON.stringify(item));
+    }
+
+    /**
+     * Stores a numerical value with an optional expiration time.
+     *
+     * @param key - The key to be set in storage.
+     * @param value - The value to be stored as a number.
+     * @param ttlMilliseconds - Optional time-to-live in **milliseconds** after which the key will expire.
+     */
+    public static setNumber(key: string, value: number, ttlMilliseconds?: number): void {
+        CacheService.set(key, value.toString(), ttlMilliseconds);
+    }
+
+    /**
+     * Stores a boolean value with an optional expiration time.
+     *
+     * @param key - The key to be set in storage.
+     * @param value - The value to be stored as a boolean.
+     * @param ttlMilliseconds - Optional time-to-live in **milliseconds** after which the key will expire.
+     */
+    public static setBoolean(key: string, value: boolean, ttlMilliseconds?: number): void {
+        CacheService.set(key, value.toString(), ttlMilliseconds);
     }
 
     /**

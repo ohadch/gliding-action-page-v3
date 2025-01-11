@@ -136,6 +136,11 @@ export default function App() {
     const {pathname} = useLocation();
     document.body.dir = i18n.dir();
 
+    // If review mode, surround the app with the reviewModeStyle which is an orange border
+    const reviewModeStyle = reviewMode ? {
+        border: "10px solid orange",
+    } : {};
+
     useEffect(() => {
         if (!reviewMode && !action) {
             dispatch(
@@ -198,6 +203,23 @@ export default function App() {
                             onClick={() => setSelectActionDialogOpen(true)}>
                             {t("SELECT_ACTION")}
                         </Button>
+                    </Alert>
+                </Card>
+            </Typography>
+        )
+    }
+
+    function renderReviewModeAlertMessage() {
+        return (
+            <Typography variant="h4" component="h4" mb={2}>
+                <Card>
+                    <Alert severity="warning" sx={{
+                        height: "100%",
+                    }}>
+                        <AlertTitle>
+                            <strong>{t("REVIEW_MODE_TITLE")}</strong>
+                        </AlertTitle>
+                        {t("REVIEW_MODE_MESSAGE")}
                     </Alert>
                 </Card>
             </Typography>
@@ -417,9 +439,11 @@ export default function App() {
                             height: '100vh',
                             overflow: 'auto',
                         }}
+                        style={reviewModeStyle}
                     >
                         <Toolbar/>
                         <Container maxWidth="xl" sx={{mt: 4, mb: 4}}>
+                            {reviewMode && renderReviewModeAlertMessage()}
 
                             {
                                 action?.closed_at && (
