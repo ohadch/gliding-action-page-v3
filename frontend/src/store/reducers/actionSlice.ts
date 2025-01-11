@@ -52,6 +52,10 @@ export const actionsSlice = createSlice({
             state.reviewMode = action.payload
             const ttlMillis = 1000 * 60 * 60 // 1 hour
             CacheService.set(CACHE_KEY_REVIEW_MODE, action.payload, ttlMillis)
+
+            if (!action.payload) {
+                window.location.reload()
+            }
         }
     },
     extraReducers: (builder) => {
@@ -280,4 +284,4 @@ export const actionsSlice = createSlice({
     }
 })
 
-export const {setCurrentActionId, setActiveTowAirplanes, setFlights, setReviewMode} = actionsSlice.actions;
+export const {setCurrentActionId, setReviewMode} = actionsSlice.actions;

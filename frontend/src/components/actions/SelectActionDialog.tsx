@@ -28,10 +28,9 @@ export interface SelectActionDialogProps {
     open: boolean
     onClose: () => void
     onActionSelected: (actionId: number) => void
-    onQuitAction: () => void
 }
 
-export default function SelectActionDialog({open, onQuitAction, onClose, onActionSelected}: SelectActionDialogProps) {
+export default function SelectActionDialog({open, onClose, onActionSelected}: SelectActionDialogProps) {
     const dispatch = useAppDispatch();
     const {fetchInProgress, actions, page, pageSize} = useSelector((state: RootState) => state.actions)
     const {actionId: currentActionId} = useSelector((state: RootState) => state.actions)
@@ -42,11 +41,10 @@ export default function SelectActionDialog({open, onQuitAction, onClose, onActio
     } = useTranslation()
 
     useEffect(() => {
-        if (!actions && !fetchInProgress && reviewMode) {
+        if ((actions?.length || 0) < 2 && !fetchInProgress && reviewMode) {
             dispatch(fetchActions({
                 page,
                 pageSize,
-                date: reviewMode ? new Date() : undefined,
             }));
         }
     });
@@ -165,9 +163,6 @@ export default function SelectActionDialog({open, onQuitAction, onClose, onActio
             <DialogActions>
                 <Button onClick={onClose}>
                     {t("CANCEL")}
-                </Button>
-                <Button onClick={onQuitAction}>
-                    {t("SELECT_TODAYS_ACTION")}
                 </Button>
             </DialogActions>
         </Dialog>

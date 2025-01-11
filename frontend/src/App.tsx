@@ -29,7 +29,7 @@ import {initReactI18next, useTranslation} from "react-i18next";
 import SelectActionDialog from "./components/actions/SelectActionDialog.tsx";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "./store";
-import {CACHE_KEY_ACTION, TEXTS_HEBREW} from "./utils/consts.ts";
+import {TEXTS_HEBREW} from "./utils/consts.ts";
 import {CacheService} from "./utils/cache.ts";
 import {
     fetchActiveTowAirplanes,
@@ -42,7 +42,7 @@ import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {ConnectingAirports, Email, LegendToggle, Settings, Dashboard} from "@mui/icons-material";
 import {useEffect} from "react";
-import {setActiveTowAirplanes, setCurrentActionId, setFlights} from "./store/reducers/actionSlice.ts";
+import {setCurrentActionId} from "./store/reducers/actionSlice.ts";
 
 const DRAWER_WIDTH = 240;
 
@@ -332,13 +332,6 @@ export default function App() {
                 <SelectActionDialog
                     open={selectActionDialogOpen}
                     onClose={() => setSelectActionDialogOpen(false)}
-                    onQuitAction={() => {
-                        dispatch(setCurrentActionId(null))
-                        dispatch(setActiveTowAirplanes(undefined))
-                        dispatch(setFlights(undefined))
-                        setSelectActionDialogOpen(false)
-                        CacheService.remove(CACHE_KEY_ACTION)
-                    }}
                     onActionSelected={(actionId) => {
                         dispatch(setCurrentActionId(actionId))
                         dispatch(fetchActiveTowAirplanes(actionId))
@@ -350,7 +343,7 @@ export default function App() {
                 />
                 <Box sx={{display: 'flex'}}>
                     <CssBaseline/>
-                    <AppBar position="absolute" open={drawerOpen}>
+                    <AppBar position="absolute" open={drawerOpen} color={reviewMode ? "warning" : "primary" as any}>
                         <Toolbar
                             sx={{
                                 pl: '24px', // keep padding when drawer closed
