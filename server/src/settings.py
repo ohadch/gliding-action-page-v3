@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     sender_email: str
     etl_server_url: Optional[str] = None
     database_backup_recipient_email: str
+    migrate_on_start: bool = True
 
 
 @lru_cache()

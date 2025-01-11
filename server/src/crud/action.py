@@ -2,6 +2,7 @@ import datetime
 from uuid import UUID
 
 import psycopg2
+import sqlalchemy.exc
 from sqlalchemy.orm import Session
 
 from ..models import Action
@@ -44,7 +45,7 @@ class ActionCrud(
                 db.add(action)
                 db.commit()
                 db.refresh(action)
-            except psycopg2.errors.UniqueViolation:
+            except (psycopg2.errors.UniqueViolation, sqlalchemy.exc.IntegrityError):
                 action = db.query(self.model).filter(self.model.date == date).first()
 
         return action

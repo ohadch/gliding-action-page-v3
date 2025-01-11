@@ -1,4 +1,6 @@
 # This has to be at the top always
+import os
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -25,6 +27,9 @@ if __name__ == "__main__":
     )
 
     settings = get_settings()
+
+    if settings.migrate_on_start:
+        os.system("make migrate")
 
     if settings.create_seed_data:
         logger.info("Creating seed data")
