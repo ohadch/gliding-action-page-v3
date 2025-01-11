@@ -141,7 +141,7 @@ export default function App() {
     document.body.dir = i18n.dir();
 
     useEffect(() => {
-        if (!action) {
+        if (!action && !reviewMode) {
             dispatch(
                 setActionAsToday({
                     date: new Date().toISOString().split("T")[0]
