@@ -187,7 +187,13 @@ export const TEXTS_HEBREW = {
     CONFIRM_ENTER_REVIEW_MODE: "האם אתה בטוח שברצונך להכנס למצב ביקורת?",
     CONFIRM_EXIT_REVIEW_MODE: "האם אתה בטוח שברצונך לצאת ממצב ביקורת?",
     REVIEW_MODE_TITLE: "אזהרה! מצב ביקורת פעיל!",
-    REVIEW_MODE_MESSAGE: "יום הפעולה עשוי להיות שונה מהנכון, וכן מיילים על טיסות שנחתו לא יישלחו!"
+    REVIEW_MODE_MESSAGE: "יום הפעולה עשוי להיות שונה מהנכון, וכן מיילים על טיסות שנחתו לא יישלחו!",
+    MOVE_TO_DRAFT_CONFIRMATION: "האם אתה בטוח שברצונך להעביר את הטיסה למצב הכנה?",
+    START_TOW_CONFIRMATION: "האם אתה בטוח שברצונך להתחיל את הגרירה?",
+    RETURN_TO_TOW_CONFIRMATION: "האם אתה בטוח שברצונך להחזיר את הטיסה למצב גרירה?",
+    START_FLIGHT_CONFIRMATION: "האם אתה בטוח שברצונך להתחיל את הטיסה?",
+    LAND_FLIGHT_CONFIRMATION: "האם אתה בטוח שברצונך לנחות את הטיסה?",
+    END_TOW_CONFIRMATION: "האם אתה בטוח שברצונך לסיים את הגרירה?"
 }
 
 
