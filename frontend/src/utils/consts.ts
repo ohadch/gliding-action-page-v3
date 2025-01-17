@@ -195,7 +195,30 @@ export const TEXTS_HEBREW = {
     LAND_FLIGHT_CONFIRMATION: "האם אתה בטוח שברצונך לנחות את הטיסה?",
     END_TOW_CONFIRMATION: "האם אתה בטוח שברצונך לסיים את הגרירה?",
     CHANGE_FIELD_RESPONSIBLE_CONFIRMATION: "האם אתה בטוח שברצונך לשנות את האחראי שדה?",
-    CHANGE_RESPONSIBLE_CFI_CONFIRMATION: "האם אתה בטוח שברצונך לשנות את המדריך האחראי?"
+    CHANGE_RESPONSIBLE_CFI_CONFIRMATION: "האם אתה בטוח שברצונך לשנות את המדריך האחראי?",
+    MEMBERS: "חברים",
+    NAME: "שם",
+    EMAIL: "דוא״ל",
+    PHONE: "טלפון",
+    ROLES: "תפקידים",
+    TowPilot: "טייס גורר",
+    CFI: "מדריך",
+    FieldResponsible: "אחראי שדה",
+    Student: "חניך",
+    Pilot: "טייס",
+    Admin: "מנהל",
+    BoardMember: "חבר ועד",
+    Maintenance: "אחזקה",
+    Treasurer: "גזבר",
+    PrivatePilotLicense: "רישיון טיס פרטי",
+    Observer: "משקיף",
+    NotCertifiedForSoloNotPayingStudent: "חניך לא מורשה סולו לא משלם",
+    SoloStudent: "חניך סולו",
+    ResponsibleCFI: "מדריך אחראי",
+    Contact: "איש קשר",
+    Tester: "בוחן",
+    NotCertifiedForSoloPayingStudent: "חניך לא מורשה סולו משלם",
+    FLIGHTS_BOARD: "לוח טיסות"
 }
 
 

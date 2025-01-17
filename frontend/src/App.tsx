@@ -41,10 +41,11 @@ import {
 } from "./store/actions/action.ts";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
-import {ConnectingAirports, Email, LegendToggle, Settings, Dashboard} from "@mui/icons-material";
+import {ConnectingAirports, Email, LegendToggle, Settings, Dashboard, People} from "@mui/icons-material";
 import {useEffect} from "react";
 import {setCurrentActionId} from "./store/reducers/actionSlice.ts";
 import DashboardPage from './pages/dashboard/DashboardPage';
+import MembersPage from "./pages/members/MembersPage";
 
 const DRAWER_WIDTH = 240;
 
@@ -187,6 +188,12 @@ export default function App() {
             path: "/settings",
             icon: <Settings/>,
             element: React.lazy(() => import('./pages/settings/SettingsPage.tsx')),
+        },
+        {
+            name: t("MEMBERS"),
+            path: "/members",
+            icon: <People />,
+            element: React.lazy(() => import('./pages/members/MembersPage')),
         }
     ]
 
