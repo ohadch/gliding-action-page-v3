@@ -7,6 +7,8 @@ import FlightSettlePaymentWizardDialog from "../flights/FlightSettlePaymentWizar
 import { useAppDispatch } from "../../store";
 import { createFlight, updateFlight } from "../../store/actions/action";
 import {createEvent} from "../../store/actions/event.ts";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 interface FlightDialogsProps {
     flightCreationWizardDialogOpen: boolean;
@@ -24,7 +26,6 @@ interface FlightDialogsProps {
     settlePaymentDialogFlight: FlightSchema | null;
     setSettlePaymentDialogFlight: (flight: FlightSchema | null) => void;
     actionId: number;
-    fieldResponsibleId?: number;
 }
 
 export function FlightDialogs({
@@ -42,10 +43,12 @@ export function FlightDialogs({
     setEndTowDialogFlight,
     settlePaymentDialogFlight,
     setSettlePaymentDialogFlight,
-    actionId,
-    fieldResponsibleId
+    actionId
 }: FlightDialogsProps) {
     const dispatch = useAppDispatch();
+    const action = useSelector((state: RootState) => 
+        state.actions.actions?.find((action) => action.id === actionId)
+    );
 
     return (
         <>
@@ -110,13 +113,14 @@ export function FlightDialogs({
                                 type: "flight_took_off",
                                 payload: {
                                     flight_id: startTowDialogFlight.id,
-                                    field_responsible_id: fieldResponsibleId,
+                                    field_responsible_id: action?.field_responsible_id,
                                 }
                             }));
                         }
 
                         setStartTowDialogFlight(null);
                     }}
+                    fieldResponsibleId={action?.field_responsible_id}
                 />
             )}
 
@@ -137,13 +141,14 @@ export function FlightDialogs({
                                 type: "flight_tow_released",
                                 payload: {
                                     flight_id: endTowDialogFlight.id,
-                                    field_responsible_id: fieldResponsibleId,
+                                    field_responsible_id: action?.field_responsible_id,
                                 }
                             }));
                         }
 
                         setEndTowDialogFlight(null);
                     }}
+                    fieldResponsibleId={action?.field_responsible_id}
                 />
             )}
 

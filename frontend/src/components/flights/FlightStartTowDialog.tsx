@@ -35,18 +35,27 @@ enum RenderedInputName {
 
 export interface FlightStartTowDialogProps {
     flight: FlightSchema;
-    open: boolean
-    onCancel: () => void
-    onSubmit: (flight: FlightUpdateSchema) => void
+    open: boolean;
+    onCancel: () => void;
+    onSubmit: (flight: FlightUpdateSchema) => void;
+    fieldResponsibleId?: number;
 }
 
-export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}: FlightStartTowDialogProps) {
+export default function FlightStartTowDialog({
+    flight, 
+    open, 
+    onCancel, 
+    onSubmit,
+    fieldResponsibleId
+}: FlightStartTowDialogProps) {
     const dispatch = useAppDispatch();
-    const membersStoreState = useSelector((state: RootState) => state.members)
-    const glidersStoreState = useSelector((state: RootState) => state.gliders)
-    const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const {activeTowAirplanes, flights} = useSelector((state: RootState) => state.actions)
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
+    const membersStoreState = useSelector((state: RootState) => state.members);
+    const glidersStoreState = useSelector((state: RootState) => state.gliders);
+    const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes);
+    const { activeTowAirplanes, flights } = useSelector((state: RootState) => state.actions);
+    const action = useSelector((state: RootState) => 
+        state.actions.actions?.find((action) => action.id === state.actions.actionId)
+    );
 
     const {
         t
@@ -75,16 +84,43 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
     }
 
 
-    const busyTowAirplaneIds = flights?.filter((flight) => flight.state === "Tow").map((flight) => flight.tow_airplane_id) || [];
+    const busyTowAirplaneIds = flights?.filter((flight) => flight.state === "Tow")
+        .map((flight) => flight.tow_airplane_id) || [];
+
+    // Let's log the filtering steps
+    console.log('All tow airplanes:', towAirplanesStoreState.towAirplanes);
+    console.log('Active tow airplanes:', activeTowAirplanes);
+    console.log('Busy tow airplane IDs:', busyTowAirplaneIds);
+
     const availableTowAirplanes = towAirplanesStoreState.towAirplanes?.filter((towAirplane) => {
+        // Check if airplane is busy
         if (busyTowAirplaneIds.includes(towAirplane.id)) {
+            console.log(`${towAirplane.call_sign} is busy`);
             return false;
         }
 
-        const towPilotId = getTowPilotByAirplaneId(towAirplane.id);
+        // Check if airplane is active
+        const isActive = activeTowAirplanes?.some(
+            (activeTowAirplane) => activeTowAirplane.airplane_id === towAirplane.id
+        );
+        if (!isActive) {
+            console.log(`${towAirplane.call_sign} is not active`);
+            return false;
+        }
 
-        return ![flight.pilot_1_id, flight.pilot_2_id].filter(Boolean).includes(towPilotId);
-    }).filter((towAirplane) => activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === towAirplane.id)) || [];
+        // Check if tow pilot can't tow themselves
+        const towPilotId = getTowPilotByAirplaneId(towAirplane.id);
+        const cannotTowThemselves = ![flight.pilot_1_id, flight.pilot_2_id]
+            .filter(Boolean)
+            .includes(towPilotId);
+        
+        if (!cannotTowThemselves) {
+            console.log(`${towAirplane.call_sign}'s pilot cannot tow themselves`);
+        }
+        return cannotTowThemselves;
+    }) || [];
+
+    console.log('Available tow airplanes:', availableTowAirplanes);
 
     const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>(
         availableTowAirplanes.length === 1 ? availableTowAirplanes[0].id : null
@@ -138,12 +174,12 @@ export default function FlightStartTowDialog({flight, open, onCancel, onSubmit}:
                                 value={towAirplaneId ? getTowAirplaneById(towAirplaneId) : null}
                                 onChange={(_, newValue) => setTowAirplaneId(newValue?.id)}
                                 getOptionLabel={(option) => option.call_sign}
-                                open={availableTowAirplanes.length > 0}
                                 renderInput={(params) => {
                                     return (
                                         <TextField
                                             {...params}
                                             label={t("TOW_AIRPLANE")}
+                                            helperText={availableTowAirplanes.length === 0 ? t("NO_TOW_AIRPLANES_AVAILABLE") : undefined}
                                         />
                                     )
                                 }}

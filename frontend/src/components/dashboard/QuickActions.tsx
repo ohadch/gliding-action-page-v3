@@ -57,6 +57,7 @@ export function QuickActions({ onGenerateSummary, onCloseAction }: QuickActionsP
                 alignItems: "center",
                 display: "flex",
                 justifyContent: "center",
+                gap: 3
             }}
         >
             <Button
@@ -67,10 +68,9 @@ export function QuickActions({ onGenerateSummary, onCloseAction }: QuickActionsP
                 size="large"
                 sx={{
                     fontSize: "1.5rem",
-                    marginRight: "1rem",
                 }}
             >
-                <Summarize />
+                <Summarize sx={{ mr: 1 }} />
                 {t("OPEN_SUMMARY_GENERATOR")}
             </Button>
 

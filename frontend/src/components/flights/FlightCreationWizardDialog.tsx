@@ -535,6 +535,20 @@ export default function FlightCreationWizardDialog({
         return conditions.every(Boolean)
     }
 
+    // Reset state when dialog opens/closes
+    useEffect(() => {
+        if (!open) {
+            setGliderId(null);
+            setPilot1Id(null);
+            setPilot2Id(null);
+            setTowAirplaneId(null);
+            setTowPilotId(null);
+            setFlightType(null);
+            setPayersType(null);
+            setIsSoloFlightOfPrivatePilot(false);
+        }
+    }, [open]);
+
     if (!action) {
         return null;
     }

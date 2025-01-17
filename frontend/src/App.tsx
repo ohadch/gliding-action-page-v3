@@ -20,7 +20,8 @@ import {
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    Tooltip
+    Tooltip,
+    CircularProgress
 } from "@mui/material";
 import {Route, Routes, useLocation} from "react-router-dom";
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -43,6 +44,7 @@ import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {ConnectingAirports, Email, LegendToggle, Settings, Dashboard} from "@mui/icons-material";
 import {useEffect} from "react";
 import {setCurrentActionId} from "./store/reducers/actionSlice.ts";
+import DashboardPage from './pages/dashboard/DashboardPage';
 
 const DRAWER_WIDTH = 240;
 
@@ -160,7 +162,7 @@ export default function App() {
             name: t("DASHBOARD"),
             path: "/",
             icon: <ConnectingAirports/>,
-            element: React.lazy(() => import('./pages/dashboard/DashboardPage.tsx')),
+            element: React.lazy(() => import('./pages/dashboard/DashboardPage')),
         },
         {
             name: t("FLIGHTS_BOARD"),
@@ -280,7 +282,11 @@ export default function App() {
                         key={route.path}
                         path={route.path}
                         element={
-                            <React.Suspense fallback={<div></div>}>
+                            <React.Suspense fallback={
+                                <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+                                    <CircularProgress />
+                                </Box>
+                            }>
                                 <route.element/>
                             </React.Suspense>
                         }
