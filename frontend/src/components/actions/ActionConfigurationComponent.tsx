@@ -7,6 +7,8 @@ import {
     MenuItem, OutlinedInput,
     Select, SelectChangeEvent,
     TextField,
+    Typography,
+    IconButton,
 } from "@mui/material";
 import {useTranslation} from "react-i18next";
 import {getMemberDisplayValue, getTowAirplaneDisplayValue} from "../../utils/display.ts";
@@ -24,6 +26,7 @@ import {
 } from "../../store/actions/action.ts";
 import {createEvent} from "../../store/actions/event.ts";
 import {MemberSchema} from "../../lib/types.ts";
+import {Close} from "@mui/icons-material";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -43,6 +46,7 @@ export default function ActionConfigurationComponent() {
     const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
     const currentActionStoreState = useSelector((state: RootState) => state.actions)
     const getMemberById = useCallback((id: number) => membersStoreState.members?.find((member) => member.id === id), [membersStoreState.members]);
+    const getTowAirplaneById = useCallback((id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id), [towAirplanesStoreState.towAirplanes]);
     const dispatch = useAppDispatch();
     const [editedActiveTowAirplaneId, setEditedActiveTowAirplaneId] = useState<number | null>(null);
 
@@ -287,85 +291,102 @@ export default function ActionConfigurationComponent() {
                     setEditedActiveTowAirplaneId(null)
                 }}
             />}
-            <Grid container spacing={2}>
-                <Grid item xs={3}>
-                    <FormGroup>
-                        <FormControl>
-                            <Autocomplete
-                                id="field-responsible"
-                                disabled={Boolean(action?.closed_at)}
-                                options={getFieldResponsibleOptions()}
-                                value={(field_responsible_id ? getMemberById(field_responsible_id) : null) || null}
-                                onChange={(_, newValue) => onFieldResponsibleChanged(newValue)}
-                                getOptionLabel={(option) => getMemberDisplayValue(
-                                    option,
-                                )}
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            label={t("FIELD_RESPONSIBLE")}
-                                        />
-                                    )
-                                }}
-                            />
-                        </FormControl>
-                    </FormGroup>
+            <Grid container spacing={1}>
+                <Grid item xs={4}>
+                    <FormControl fullWidth sx={{ height: '56px' }}>
+                        <Autocomplete
+                            id="field-responsible"
+                            disabled={Boolean(action?.closed_at)}
+                            value={field_responsible_id ? getMemberById(field_responsible_id) : null}
+                            onChange={(_, newValue) => onFieldResponsibleChanged(newValue)}
+                            options={getFieldResponsibleOptions()}
+                            getOptionLabel={getMemberDisplayValue}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label={t("FIELD_RESPONSIBLE")}
+                                />
+                            )}
+                            sx={{ 
+                                '& .MuiInputBase-root': {
+                                    height: '56px'
+                                }
+                            }}
+                        />
+                    </FormControl>
                 </Grid>
-                <Grid item xs={3}>
-                    <FormGroup>
-                        <FormControl>
-                            <Autocomplete
-                                id="responsible-cfi"
-                                disabled={Boolean(action?.closed_at)}
-                                options={getResponsibleCfiOptions()}
-                                value={(responsible_cfi_id ? getMemberById(responsible_cfi_id) : null) || null}
-                                onChange={(_, newValue) => onResponsibleCfiChanged(newValue)}
-                                getOptionLabel={(option) => getMemberDisplayValue(
-                                    option,
-                                )}
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            label={t("RESPONSIBLE_CFI")}
-                                        />
-                                    )
-                                }}
-                            />
-                        </FormControl>
-                    </FormGroup>
+                <Grid item xs={4}>
+                    <FormControl fullWidth sx={{ height: '56px' }}>
+                        <Autocomplete
+                            id="responsible-cfi"
+                            disabled={Boolean(action?.closed_at)}
+                            value={responsible_cfi_id ? getMemberById(responsible_cfi_id) : null}
+                            onChange={(_, newValue) => onResponsibleCfiChanged(newValue)}
+                            options={getResponsibleCfiOptions()}
+                            getOptionLabel={getMemberDisplayValue}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label={t("RESPONSIBLE_CFI")}
+                                />
+                            )}
+                            sx={{ 
+                                '& .MuiInputBase-root': {
+                                    height: '56px'
+                                }
+                            }}
+                        />
+                    </FormControl>
                 </Grid>
-                <Grid item xs={6}>
-                    <FormGroup>
-                        <FormControl>
-                            <InputLabel id="active-tow-airplanes-label">{t("ACTIVE_TOW_AIRPLANES")}</InputLabel>
-                            <Select
-                                disabled={Boolean(action?.closed_at)}
-                                labelId="active-tow-airplanes-label"
-                                id="active-tow-airplanes"
-                                multiple
-                                value={currentActionStoreState?.activeTowAirplanes?.map((activeTowAirplane) => activeTowAirplane.airplane_id) || []}
-                                onChange={(event) => handleActiveTowAirplaneChange(event)}
-                                input={<OutlinedInput label="Tag"/>}
-                                renderValue={(selected) => (
-                                    <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
-                                        {selected.map((value) => renderTowAirplane(value))}
-                                    </Box>
-                                )}
-                                MenuProps={MenuProps}
-                            >
-                                {(towAirplanesStoreState.towAirplanes || []).map((towAirplane) => (
-                                    <MenuItem key={towAirplane.id} value={towAirplane.id}>
-                                        <Checkbox
-                                            checked={(currentActionStoreState?.activeTowAirplanes?.map((activeTowAirplane) => activeTowAirplane.airplane_id) || []).indexOf(towAirplane.id) > -1}/>
-                                        <ListItemText primary={towAirplane.call_sign}
-                                                      secondary={displayTowPilotByAirplaneId(towAirplane.id)}/>
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </FormGroup>
+                <Grid item xs={4}>
+                    <FormControl fullWidth sx={{ height: '56px' }}>
+                        <InputLabel id="active-tow-airplanes-label">{t("ACTIVE_TOW_AIRPLANES")}</InputLabel>
+                        <Select
+                            disabled={Boolean(action?.closed_at)}
+                            labelId="active-tow-airplanes-label"
+                            id="active-tow-airplanes"
+                            multiple
+                            value={currentActionStoreState?.activeTowAirplanes?.map((activeTowAirplane) => activeTowAirplane.airplane_id) || []}
+                            onChange={handleActiveTowAirplaneChange}
+                            input={<OutlinedInput label={t("ACTIVE_TOW_AIRPLANES")} />}
+                            renderValue={(selected) => (
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                    {selected.map((value) => {
+                                        const towAirplane = getTowAirplaneById(value);
+                                        const activeTowAirplane = currentActionStoreState?.activeTowAirplanes?.find(
+                                            (activeTowAirplane) => activeTowAirplane.airplane_id === value
+                                        );
+                                        const towPilot = activeTowAirplane ? getMemberById(activeTowAirplane.tow_pilot_id) : null;
+                                        return (
+                                            <Chip 
+                                                key={value} 
+                                                label={`${towAirplane?.call_sign}${towPilot ? ` (${getMemberDisplayValue(towPilot)})` : ''}`}
+                                                onDelete={() => handleDeactivateTowAirplane(value)}
+                                            />
+                                        );
+                                    })}
+                                </Box>
+                            )}
+                            MenuProps={MenuProps}
+                            sx={{ height: '56px' }}
+                        >
+                            {(towAirplanesStoreState.towAirplanes || []).map((towAirplane) => (
+                                <MenuItem 
+                                    key={towAirplane.id} 
+                                    value={towAirplane.id}
+                                    onClick={() => setEditedActiveTowAirplaneId(towAirplane.id)}
+                                >
+                                    <Checkbox
+                                        checked={(currentActionStoreState?.activeTowAirplanes?.map((activeTowAirplane) => activeTowAirplane.airplane_id) || []).indexOf(towAirplane.id) > -1}
+                                    />
+                                    <ListItemText 
+                                        primary={towAirplane.call_sign}
+                                        secondary={displayTowPilotByAirplaneId(towAirplane.id)}
+                                    />
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Grid>
             </Grid>
         </>

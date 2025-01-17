@@ -10,7 +10,6 @@ import { updateAction, deleteFlight } from "../../store/actions/action";
 import { createEvent } from "../../store/actions/event";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
-import { FlightStateManager } from "../../components/dashboard/FlightStateManager";
 import { useFlightStateManager } from "../../utils/flightStateManager";
 
 export default function DashboardPage() {
