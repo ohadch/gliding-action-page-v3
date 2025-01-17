@@ -193,7 +193,9 @@ export const TEXTS_HEBREW = {
     RETURN_TO_TOW_CONFIRMATION: "האם אתה בטוח שברצונך להחזיר את הטיסה למצב גרירה?",
     START_FLIGHT_CONFIRMATION: "האם אתה בטוח שברצונך להתחיל את הטיסה?",
     LAND_FLIGHT_CONFIRMATION: "האם אתה בטוח שברצונך לנחות את הטיסה?",
-    END_TOW_CONFIRMATION: "האם אתה בטוח שברצונך לסיים את הגרירה?"
+    END_TOW_CONFIRMATION: "האם אתה בטוח שברצונך לסיים את הגרירה?",
+    CHANGE_FIELD_RESPONSIBLE_CONFIRMATION: "האם אתה בטוח שברצונך לשנות את האחראי שדה?",
+    CHANGE_RESPONSIBLE_CFI_CONFIRMATION: "האם אתה בטוח שברצונך לשנות את המדריך האחראי?"
 }
 
 

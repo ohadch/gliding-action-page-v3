@@ -8,8 +8,8 @@ export function isCfi(member: MemberSchema, roles: MemberRoleSchema[]): boolean 
     return hasRole(member, roles, "ResponsibleCFI") || hasRole(member, roles, "CFI")
 }
 
-export function isFieldResponsible(member: MemberSchema, roles: MemberRoleSchema[]): boolean {
-    return hasRole(member, roles, "FieldResponsible")
+export function isFieldResponsible(member: MemberSchema, membersRoles: MemberRoleSchema[]): boolean {
+    return hasRole(member, membersRoles, "FieldResponsible");
 }
 
 export function isTowPilot(member: MemberSchema, roles: MemberRoleSchema[]): boolean {
