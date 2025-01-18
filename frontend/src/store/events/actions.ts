@@ -2,9 +2,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import createClient from "openapi-fetch";
 import { paths } from "../../lib/api";
 import { API_HOST } from "../../utils/consts";
-import { EventSchema, EventCreateSchema } from "../../lib/types";
+import { EventSchema, EventCreateSchema, EventUpdateSchema } from "../../lib/types";
 
-const { POST } = createClient<paths>({baseUrl: API_HOST});
+const { POST, PUT } = createClient<paths>({baseUrl: API_HOST});
 
 export const createEvent = createAsyncThunk<EventSchema, EventCreateSchema, { rejectValue: string }>(
     'events/createEvent',
@@ -21,21 +21,40 @@ export const createEvent = createAsyncThunk<EventSchema, EventCreateSchema, { re
     }
 );
 
-export const updateEvent = createAsyncThunk<
-    EventSchema,
-    { eventId: number; updatePayload: EventUpdateSchema }
->(
+export const updateEvent = createAsyncThunk<EventSchema, { id: number; event: EventUpdateSchema }, { rejectValue: string }>(
     'events/updateEvent',
-    async ({ eventId, updatePayload }) => {
-        const response = await api.patch(`/events/${eventId}`, updatePayload);
-        return response.data;
+    async ({ id, event }, thunkAPI) => {
+        const { data, error } = await PUT(`/events/${id}`, {
+            body: event
+        });
+
+        if (error) {
+            return thunkAPI.rejectWithValue("Error updating event");
+        }
+
+        return data;
     }
 );
 
-export const fetchEvents = createAsyncThunk<EventSchema[], number>(
+export const fetchEvents = createAsyncThunk<EventSchema[], number, { rejectValue: string }>(
     'events/fetchEvents',
-    async (actionId) => {
-        const response = await api.get(`/actions/${actionId}/events`);
-        return response.data;
+    async (actionId, thunkAPI) => {
+        const { data, error } = await POST("/events/search", {
+            params: {
+                query: {
+                    page: 1,
+                    page_size: 1000,
+                }
+            },
+            body: {
+                action_id: actionId
+            }
+        });
+
+        if (error) {
+            return thunkAPI.rejectWithValue("Error fetching events");
+        }
+
+        return data;
     }
 ); 

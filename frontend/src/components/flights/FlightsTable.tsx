@@ -23,6 +23,7 @@ import {FlightSchema, FlightState, FlightUpdateSchema} from "../../lib/types.ts"
 import FlightStateController from "./FlightStateController.tsx";
 import FlightDuration from "./FlightDuration.tsx";
 import {Payment} from "@mui/icons-material";
+import moment from "moment";
 
 export interface FlightsTableProps {
     flights: FlightSchema[];
@@ -106,11 +107,12 @@ export default function FlightsTable(props: FlightsTableProps) {
         return towAirplane && towPilot ? `${towAirplane} (${towPilot})` : null;
     }
 
-    const displayTime = (time: string) => new Date(time).toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false
-    })
+    const displayTime = (time: string) => {
+        // Always treat times as UTC and convert to local
+        return moment.utc(time)
+            .local()
+            .format('HH:mm');
+    }
 
     const settlePaymentButtonVisible = (flight: FlightSchema) => {
         if (flight.flight_type !== "ClubGuest") {

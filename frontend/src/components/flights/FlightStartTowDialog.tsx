@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { getMemberDisplayValue } from "../../utils/display";
+import moment from "moment";
 
 enum RenderedInputName {
     TOW_AIRPLANE = "TOW_AIRPLANE",
@@ -57,8 +58,8 @@ export default function FlightStartTowDialog({
     const getTowAirplaneById = (id: number) => 
         aircraftState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
 
-    const displayTowAirplane = (activeTowAirplane: { airplane_id: number }) => {
-        const towAirplane = getTowAirplaneById(activeTowAirplane.airplane_id);
+    const displayTowAirplane = (airplaneId: number) => {
+        const towAirplane = getTowAirplaneById(airplaneId);
         return towAirplane ? towAirplane.call_sign : "";
     };
 
@@ -104,7 +105,7 @@ export default function FlightStartTowDialog({
                                 id="tow-airplane"
                                 options={availableTowAirplanes}
                                 value={availableTowAirplanes.find(ata => ata.airplane_id === towAirplaneId) || null}
-                                getOptionLabel={(option) => displayTowAirplane(option)}
+                                getOptionLabel={(option) => displayTowAirplane(option.airplane_id)}
                                 open={autocompleteOpen}
                                 onOpen={() => setAutocompleteOpen(true)}
                                 onChange={(_, newValue) => {
@@ -185,7 +186,7 @@ export default function FlightStartTowDialog({
                             ...flight,
                             tow_airplane_id: towAirplaneId,
                             tow_pilot_id: towPilotId,
-                            take_off_at: new Date().toISOString(),
+                            take_off_at: moment.utc().toISOString(),
                             state: "Tow",
                         })}
                     >

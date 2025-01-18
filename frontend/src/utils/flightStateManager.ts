@@ -44,7 +44,7 @@ interface FlightEvent {
 
 // Time utilities
 export function getActionDateTime(actionDate: string): string {
-    return moment().utcOffset(0, true).set({
+    return moment().utc().set({
         date: moment(actionDate).date(),
         month: moment(actionDate).month(),
         year: moment(actionDate).year(),
