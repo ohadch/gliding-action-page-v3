@@ -9,6 +9,7 @@ import eventsReducer from './events';
 import commentsReducer from './comments';
 import notificationsReducer from './notifications';
 
+// Create store instance
 export const store = configureStore({
     reducer: {
         actionDays: actionDaysReducer,
@@ -20,10 +21,12 @@ export const store = configureStore({
     },
 });
 
+// Infer types
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-export const useAppDispatch = () => useDispatch<AppDispatch>();
+// Use throughout your app instead of plain `useDispatch` and `useSelector`
+export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 // Re-export from feature slices

@@ -1,6 +1,6 @@
 import { useActionConfiguration } from "../../hooks/useActionConfiguration";
 import { useTranslation } from "react-i18next";
-import { Grid, FormControl, InputLabel, Select, MenuItem, Button } from "@mui/material";
+import { Grid, FormControl, InputLabel, Select, MenuItem, Button, Tooltip } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { getMemberDisplayValue } from "../../utils/display";
@@ -63,16 +63,18 @@ export function ActionConfigurationComponent({ onNewFlightClick }: ActionConfigu
         <Grid container spacing={2}>
             <Grid item xs={12} md={3}>
                 <FormControl fullWidth sx={SHARED_STYLES}>
-                    <Button
-                        variant="contained"
-                        onClick={onNewFlightClick}
-                        disabled={!action.field_responsible_id || !action.responsible_cfi_id || Boolean(action?.closed_at)}
-                        fullWidth
-                        sx={BUTTON_STYLES}
-                        startIcon={<AddIcon />}
-                    >
-                        {t("NEW_FLIGHT")}
-                    </Button>
+                    <Tooltip title={t("NEW_FLIGHT") + " (Shift + +)"}>
+                        <Button
+                            variant="contained"
+                            onClick={onNewFlightClick}
+                            disabled={!action.field_responsible_id || !action.responsible_cfi_id || Boolean(action?.closed_at)}
+                            fullWidth
+                            sx={BUTTON_STYLES}
+                            startIcon={<AddIcon />}
+                        >
+                            {t("NEW_FLIGHT")}
+                        </Button>
+                    </Tooltip>
                 </FormControl>
             </Grid>
 

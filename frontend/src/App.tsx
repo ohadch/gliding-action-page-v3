@@ -134,6 +134,7 @@ i18n
     });
 
 export default function App() {
+    const {t} = useTranslation();
     const dispatch = useAppDispatch();
     const [drawerOpen, setDrawerDrawerOpen] = React.useState(false);
     const [theme, setTheme] = React.useState(CacheService.get("CACHE_KEY_THEME") === "dark" ? darkTheme : lightTheme);
@@ -142,7 +143,6 @@ export default function App() {
     );
     const reviewMode = useSelector((state: RootState) => state.actionDays.currentDay.reviewMode);
     const [selectActionDialogOpen, setSelectActionDialogOpen] = React.useState(false);
-    const {t} = useTranslation()
     const {pathname} = useLocation();
 
     document.body.dir = i18n.dir();

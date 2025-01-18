@@ -53,6 +53,18 @@ export const getTowPilots = createSelector(
     }
 );
 
+export const getSoloStudents = createSelector(
+    [selectMembers, selectRoles],
+    (members, roles): MemberSchema[] => {
+        return members.filter(member => 
+            roles.some(role => 
+                role.member_id === member.id && 
+                role.role === "SoloStudent"
+            )
+        );
+    }
+);
+
 // Individual role checks (these don't need memoization as they return primitives)
 export const isInstructor = (state: RootState, memberId: number): boolean => {
     return hasRole(state, memberId, "CFI") || hasRole(state, memberId, "ResponsibleCFI");

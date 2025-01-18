@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, KeyboardEvent } from "react";
 import { 
     FlightCreateSchema, 
     FlightSchema, 
@@ -200,6 +200,19 @@ export default function DashboardPage() {
         }
         return null;
     }
+
+    // Add keyboard event listener for flight creation shortcut
+    useEffect(() => {
+        const handleKeyDown = (event: globalThis.KeyboardEvent) => {
+            if (event.shiftKey && event.key === "+") {
+                event.preventDefault();
+                setFlightCreationWizardDialogOpen(true);
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+    }, []);
 
     if (!action) {
         return null;
