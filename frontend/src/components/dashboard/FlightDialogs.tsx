@@ -1,14 +1,11 @@
-import { FlightSchema, FlightCreateSchema } from "../../lib/types";
+import { FlightSchema, FlightCreateSchema, FlightUpdateSchema } from "../../lib/types";
 import FlightCreationWizardDialog from "../flights/FlightCreationWizardDialog";
 import EditFlightDetailsDialog from "../flights/EditFlightDetailsDialog";
 import FlightStartTowDialog from "../flights/FlightStartTowDialog";
 import FlightEndTowDialog from "../flights/FlightEndTowDialog";
 import FlightSettlePaymentWizardDialog from "../flights/FlightSettlePaymentWizardDialog";
-import { useAppDispatch } from "../../store";
-import { createFlight, updateFlight } from "../../store/actions/action";
-import {createEvent} from "../../store/actions/event.ts";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store";
+import {useAppDispatch} from "../../store";
+import { createFlight, updateFlight } from "../../store";
 
 interface FlightDialogsProps {
     flightCreationWizardDialogOpen: boolean;
@@ -17,7 +14,7 @@ interface FlightDialogsProps {
     setEditFlightDetailsDialogOpen: (open: boolean) => void;
     editedFlightId: number | null;
     setEditedFlightId: (id: number | null) => void;
-    editedFlightData: FlightCreateSchema | null;
+    editedFlightData: FlightSchema | null;
     setEditedFlightData: (data: FlightCreateSchema | null) => void;
     startTowDialogFlight: FlightSchema | null;
     setStartTowDialogFlight: (flight: FlightSchema | null) => void;
@@ -26,6 +23,8 @@ interface FlightDialogsProps {
     settlePaymentDialogFlight: FlightSchema | null;
     setSettlePaymentDialogFlight: (flight: FlightSchema | null) => void;
     actionId: number;
+    onStartTowSubmit: (flight: FlightUpdateSchema) => void;
+    onEndTowSubmit: (flight: FlightUpdateSchema) => void;
 }
 
 export function FlightDialogs({
@@ -43,12 +42,10 @@ export function FlightDialogs({
     setEndTowDialogFlight,
     settlePaymentDialogFlight,
     setSettlePaymentDialogFlight,
-    actionId
+    onStartTowSubmit,
+    onEndTowSubmit
 }: FlightDialogsProps) {
     const dispatch = useAppDispatch();
-    const action = useSelector((state: RootState) => 
-        state.actions.actions?.find((action) => action.id === actionId)
-    );
 
     return (
         <>
@@ -96,59 +93,21 @@ export function FlightDialogs({
                 />
             )}
 
-            {startTowDialogFlight?.id && (
+            {startTowDialogFlight && (
                 <FlightStartTowDialog
                     open={Boolean(startTowDialogFlight)}
                     flight={startTowDialogFlight}
                     onCancel={() => setStartTowDialogFlight(null)}
-                    onSubmit={(flight) => {
-                        dispatch(updateFlight({
-                            flightId: startTowDialogFlight.id,
-                            updatePayload: flight,
-                        }));
-
-                        if (actionId) {
-                            dispatch(createEvent({
-                                action_id: actionId,
-                                type: "flight_took_off",
-                                payload: {
-                                    flight_id: startTowDialogFlight.id,
-                                    field_responsible_id: action?.field_responsible_id,
-                                }
-                            }));
-                        }
-
-                        setStartTowDialogFlight(null);
-                    }}
-                    fieldResponsibleId={action?.field_responsible_id}
+                    onSubmit={onStartTowSubmit}
                 />
             )}
 
-            {endTowDialogFlight?.id && (
+            {endTowDialogFlight && (
                 <FlightEndTowDialog
                     open={Boolean(endTowDialogFlight)}
                     flight={endTowDialogFlight}
                     onCancel={() => setEndTowDialogFlight(null)}
-                    onSubmit={(flight) => {
-                        dispatch(updateFlight({
-                            flightId: endTowDialogFlight.id,
-                            updatePayload: flight,
-                        }));
-
-                        if (actionId) {
-                            dispatch(createEvent({
-                                action_id: actionId,
-                                type: "flight_tow_released",
-                                payload: {
-                                    flight_id: endTowDialogFlight.id,
-                                    field_responsible_id: action?.field_responsible_id,
-                                }
-                            }));
-                        }
-
-                        setEndTowDialogFlight(null);
-                    }}
-                    fieldResponsibleId={action?.field_responsible_id}
+                    onSubmit={onEndTowSubmit}
                 />
             )}
 

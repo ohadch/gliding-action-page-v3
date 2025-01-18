@@ -9,7 +9,7 @@ export const CACHE_KEY_ACTION_PAGE_SIZE = 'actions_page_size';
 export const CACHE_KEY_THEME = 'theme';
 export const CACHE_KEY_REVIEW_MODE = 'review_mode';
 
-export const TEXTS_HEBREW = {
+export const TEXTS = {
     APP_NAME: "ניהול פעולת הדאיה",
     DASHBOARD: "לוח הטיסות",
     TOGGLE_THEME: "שנה צבע",
@@ -218,8 +218,13 @@ export const TEXTS_HEBREW = {
     Contact: "איש קשר",
     Tester: "בוחן",
     NotCertifiedForSoloPayingStudent: "חניך לא מורשה סולו משלם",
-    FLIGHTS_BOARD: "לוח טיסות"
-}
+    FLIGHTS_BOARD: "לוח טיסות",
+    TOW_AIRPLANES: "מטוסים גוררים",
+    SELECT_TOW_PILOT: "בחר טייס גורר",
+    NONE: "ללא",
+    ACTION_NOT_CONFIGURED_MESSAGE: "יש להגדיר אחראי שדה ומדריך אחראי לפני תחילת הפעילות",
+    START_TOW: "התחל גרירה",
+};
 
 
 export const SUPPORTED_FLIGHT_TYPES : FlightType[] = [

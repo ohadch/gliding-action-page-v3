@@ -1,18 +1,16 @@
 import {configureStore} from '@reduxjs/toolkit'
 import {useDispatch} from "react-redux";
-import {actionsSlice} from "./reducers/actionSlice.ts";
-import {membersSlice} from "./reducers/memberSlice.ts";
-import {glidersSlice} from "./reducers/gliderSlice.ts";
-import {towAirplanesSlice} from "./reducers/towAirplaneSlice.ts";
-import {eventsSlice} from "./reducers/eventSlice.ts";
+import actionDaysSlice from "./actionDays";
+import membersSlice from "./members";
+import aircraftSlice from "./aircraft";
+import eventsSlice from "./events";
 
 export const store = configureStore({
     reducer: {
-        actions: actionsSlice.reducer,
-        members: membersSlice.reducer,
-        gliders: glidersSlice.reducer,
-        towAirplanes: towAirplanesSlice.reducer,
-        events: eventsSlice.reducer,
+        actionDays: actionDaysSlice,
+        members: membersSlice,
+        aircraft: aircraftSlice,
+        events: eventsSlice,
     },
 })
 

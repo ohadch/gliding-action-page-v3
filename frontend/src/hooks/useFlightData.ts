@@ -1,52 +1,55 @@
 import { useEffect } from 'react';
 import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../store";
-import { fetchFlights, fetchComments } from "../store/actions/action";
-import { fetchGliders, fetchGliderOwners } from "../store/actions/glider";
-import { fetchMembers, fetchMembersRoles } from "../store/actions/member";
-import { fetchTowAirplanes } from "../store/actions/towAirplane";
+import { RootState, useAppDispatch, fetchGliders, fetchTowAirplanes, fetchGliderOwners, fetchFlights, fetchMembers, fetchMembersRoles } from "../store";
 
 export function useFlightData() {
     const dispatch = useAppDispatch();
     const action = useSelector((state: RootState) => 
-        state.actions.actions?.find((action) => action.id === state.actions.actionId)
+        state.actionDays.list.actions?.find(
+            (action) => action.id === state.actionDays.currentDay.currentActionId
+        )
     );
-    const { flights, fetchingFlightsInProgress } = useSelector((state: RootState) => state.actions);
-    const membersStoreState = useSelector((state: RootState) => state.members);
-    const glidersStoreState = useSelector((state: RootState) => state.gliders);
-    const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes);
+    const currentDay = useSelector((state: RootState) => state.actionDays.currentDay);
+    const { flights } = useSelector((state: RootState) => state.actionDays.currentDay);
+    const membersState = useSelector((state: RootState) => state.members);
+    const aircraftState = useSelector((state: RootState) => state.aircraft);
 
+    // Initial data fetch - only once
     useEffect(() => {
-        if (!membersStoreState.members && !membersStoreState.fetchInProgress) {
+        if (!membersState.members.length && !membersState.loading) {
             dispatch(fetchMembers());
             dispatch(fetchMembersRoles());
         }
+    }, [dispatch, membersState.members.length, membersState.loading]);
 
-        if (!glidersStoreState.gliders && !glidersStoreState.fetchInProgress) {
+    // Fetch aircraft data - only when needed
+    useEffect(() => {
+        if (!aircraftState.gliders.length && !aircraftState.loading) {
             dispatch(fetchGliders());
         }
 
-        if (!towAirplanesStoreState.towAirplanes && !towAirplanesStoreState.fetchInProgress) {
+        if (!aircraftState.towAirplanes.length && !aircraftState.loading) {
             dispatch(fetchTowAirplanes());
         }
-    }, [dispatch, glidersStoreState.fetchInProgress, glidersStoreState.gliders, 
-        membersStoreState.fetchInProgress, membersStoreState.members, 
-        towAirplanesStoreState.fetchInProgress, towAirplanesStoreState.towAirplanes]);
+    }, [
+        dispatch, 
+        aircraftState.loading, 
+        aircraftState.gliders.length,
+        aircraftState.towAirplanes.length
+    ]);
 
+    // Fetch flights only when action changes
     useEffect(() => {
-        if (!flights && !fetchingFlightsInProgress && action) {
+        if (action?.id && !flights && !currentDay.loading) {
             dispatch(fetchFlights(action.id));
-            dispatch(fetchComments({actionId: action.id}));
-            dispatch(fetchGliders());
             dispatch(fetchGliderOwners());
         }
-    }, [action, dispatch, fetchingFlightsInProgress, flights]);
+    }, [action?.id]); // Only depend on action.id
 
     return {
         action,
         flights,
-        membersStoreState,
-        glidersStoreState,
-        towAirplanesStoreState
+        membersState,
+        aircraftState
     };
 } 

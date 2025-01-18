@@ -1,7 +1,8 @@
 import {
     Autocomplete,
     Button,
-    Dialog, DialogActions,
+    Dialog,
+    DialogActions,
     DialogContent,
     DialogTitle,
     FormControl,
@@ -9,22 +10,13 @@ import {
     Grid,
     TextField,
 } from "@mui/material";
-import {useCallback, useEffect, useState} from "react";
-import {
-    FlightSchema,
-    FlightUpdateSchema,
-} from "../../lib/types.ts";
-import {useTranslation} from "react-i18next";
-import {useSelector} from "react-redux";
-import {RootState, useAppDispatch} from "../../store";
-import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
-import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
-import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
-import {
-    getMemberDisplayValue,
-    getPaymentMethodDisplayValue
-} from "../../utils/display.ts";
-import {SUPPORTED_PAYMENT_METHODS} from "../../utils/consts.ts";
+import { useCallback, useState } from "react";
+import { FlightSchema, FlightUpdateSchema } from "../../lib/types";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { getMemberDisplayValue, getPaymentMethodDisplayValue } from "../../utils/display";
+import { SUPPORTED_PAYMENT_METHODS } from "../../utils/consts";
 
 enum RenderedInputName {
     PAYMENT_RECEIVER = "PAYMENT_RECEIVER",
@@ -33,56 +25,36 @@ enum RenderedInputName {
 }
 
 export interface FlightSettlePaymentWizardDialogProps {
-    flight: FlightSchema
-    open: boolean
-    onClose: () => void
-    onSubmit: (flight: FlightUpdateSchema) => void
+    flight: FlightSchema;
+    open: boolean;
+    onClose: () => void;
+    onSubmit: (flight: FlightUpdateSchema) => void;
 }
 
 export default function FlightSettlePaymentWizardDialog({
-                                                            flight,
-                                                            open,
-                                                            onClose,
-                                                            onSubmit,
-                                                        }: FlightSettlePaymentWizardDialogProps) {
-    const dispatch = useAppDispatch();
-    const membersStoreState = useSelector((state: RootState) => state.members)
-    const glidersStoreState = useSelector((state: RootState) => state.gliders)
-    const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
-    const [paymentIsByClubMember, setPaymentIsByClubMember] = useState<boolean>(false)
+    flight,
+    open,
+    onClose,
+    onSubmit,
+}: FlightSettlePaymentWizardDialogProps) {
+    const { t } = useTranslation();
+    const membersState = useSelector((state: RootState) => state.members);
+    const action = useSelector((state: RootState) => 
+        state.actionDays.list.actions?.find(
+            (action) => action.id === state.actionDays.currentDay.currentActionId
+        )
+    );
 
-    const {
-        t
-    } = useTranslation()
-
-    const getMemberById = useCallback((id: number) => membersStoreState.members?.find((member) => member.id === id), [membersStoreState.members]);
-
-    const [paymentReceiverId, setPaymentReceiverId] = useState<number | null | undefined>();
-    const [payingMemberId, setPayingMemberId] = useState<number | null | undefined>();
-    const [paymentMethod, setPaymentMethod] = useState<string | null | undefined>();
-
-    useEffect(() => {
-        if (!membersStoreState.members && !membersStoreState.fetchInProgress) {
-            dispatch(fetchMembers());
-            dispatch(fetchMembersRoles());
-        }
-    });
-
-    useEffect(() => {
-        if (!glidersStoreState.gliders && !glidersStoreState.fetchInProgress) {
-            dispatch(fetchGliders());
-            dispatch(fetchGliderOwners());
-        }
-    });
-
-    useEffect(() => {
-        if (!towAirplanesStoreState.towAirplanes && !towAirplanesStoreState.fetchInProgress) {
-            dispatch(fetchTowAirplanes());
-        }
-    });
-
+    const [paymentIsByClubMember, setPaymentIsByClubMember] = useState<boolean>(false);
+    const [paymentReceiverId, setPaymentReceiverId] = useState<number | null>(null);
+    const [payingMemberId, setPayingMemberId] = useState<number | null>(null);
+    const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
     const [autocompleteOpen, setAutocompleteOpen] = useState(true);
+
+    const getMemberById = useCallback(
+        (id: number) => membersState.members?.find((member) => member.id === id),
+        [membersState.members]
+    );
 
     function getInputToRender() {
         if (paymentIsByClubMember) {
@@ -98,123 +70,98 @@ export default function FlightSettlePaymentWizardDialog({
                 return RenderedInputName.PAYMENT_METHOD;
             }
         }
+        return null;
     }
 
     const displayMember = (id: number) => {
         const member = getMemberById(id);
-        return member ? getMemberDisplayValue(
-            member,
-        ) : "";
-    }
+        return member ? getMemberDisplayValue(member) : "";
+    };
 
     function renderInput(inputName: RenderedInputName) {
-        let input = null
         switch (inputName) {
             case RenderedInputName.PAYMENT_RECEIVER:
-                input = (
-                            <Grid container>
-                                <Grid item xs={8} spacing={1}>
-                                    <Autocomplete
-                                        id="paymentReceiver"
-                                        options={membersStoreState.members || []}
-                                        value={paymentReceiverId ? getMemberById(paymentReceiverId) : null}
-                                        onChange={(_, newValue) => setPaymentReceiverId(newValue?.id)}
-                                        getOptionLabel={(option) => getMemberDisplayValue(
-                                            option,
-                                        )}
-                                        open={autocompleteOpen}
-                                        onOpen={() => setAutocompleteOpen(true)}
-                                        renderInput={(params) => {
-                                            return (
-                                                <TextField
-                                                    {...params}
-                                                    label={t("PAYMENT_RECEIVER")}
-                                                />
-                                            )
-                                        }}
+                return (
+                    <Grid container>
+                        <Grid item xs={8} spacing={1}>
+                            <Autocomplete
+                                id="paymentReceiver"
+                                options={membersState.members || []}
+                                value={paymentReceiverId ? getMemberById(paymentReceiverId) : null}
+                                onChange={(_, newValue) => setPaymentReceiverId(newValue?.id || null)}
+                                getOptionLabel={(option) => getMemberDisplayValue(option)}
+                                open={autocompleteOpen}
+                                onOpen={() => setAutocompleteOpen(true)}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label={t("PAYMENT_RECEIVER")}
                                     />
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <Button
-                                        variant={"outlined"}
-                                        color={"warning"}
-                                        onClick={() => setPaymentIsByClubMember(true)}
-                                        sx={{
-                                            fontSize: "1.4rem",
-                                            fontWeight: "bold",
-                                            marginRight: 2
-                                        }}
-                                    >
-                                        {t("PAYMENT_BY_CLUB_MEMBER")}
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                )
-                break;
-            case RenderedInputName.PAYMENT_METHOD:
-                input = (
-                            <Autocomplete
-                                id="paymentMethod"
-                                options={SUPPORTED_PAYMENT_METHODS}
-                                value={paymentMethod}
-                                onChange={(_, newValue) => setPaymentMethod(newValue)}
-                                getOptionLabel={(option) => getPaymentMethodDisplayValue(option as never)}
-                                open={autocompleteOpen}
-                                onOpen={() => setAutocompleteOpen(true)}
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            label={t("PAYMENT_METHOD")}
-                                        />
-                                    )
-                                }}
-                            />
-                )
-                break;
-            case RenderedInputName.PAYING_MEMBER:
-                input = (
-                            <Autocomplete
-                                id="payingMember"
-                                options={membersStoreState.members || []}
-                                value={payingMemberId ? getMemberById(payingMemberId) : null}
-                                onChange={(_, newValue) => setPayingMemberId(newValue?.id)}
-                                getOptionLabel={(option) => getMemberDisplayValue(
-                                    option,
                                 )}
-                                open={autocompleteOpen}
-                                onOpen={() => setAutocompleteOpen(true)}
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            label={t("PAYING_MEMBER")}
-                                        />
-                                    )
-                                }}
                             />
-                )
-                break;
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Button
+                                variant="outlined"
+                                color="warning"
+                                onClick={() => setPaymentIsByClubMember(true)}
+                                sx={{
+                                    fontSize: "1.4rem",
+                                    fontWeight: "bold",
+                                    marginRight: 2
+                                }}
+                            >
+                                {t("PAYMENT_BY_CLUB_MEMBER")}
+                            </Button>
+                        </Grid>
+                    </Grid>
+                );
+            case RenderedInputName.PAYMENT_METHOD:
+                return (
+                    <Autocomplete
+                        id="paymentMethod"
+                        options={SUPPORTED_PAYMENT_METHODS}
+                        value={paymentMethod}
+                        onChange={(_, newValue) => setPaymentMethod(newValue)}
+                        getOptionLabel={(option) => getPaymentMethodDisplayValue(option)}
+                        open={autocompleteOpen}
+                        onOpen={() => setAutocompleteOpen(true)}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label={t("PAYMENT_METHOD")}
+                            />
+                        )}
+                    />
+                );
+            case RenderedInputName.PAYING_MEMBER:
+                return (
+                    <Autocomplete
+                        id="payingMember"
+                        options={membersState.members || []}
+                        value={payingMemberId ? getMemberById(payingMemberId) : null}
+                        onChange={(_, newValue) => setPayingMemberId(newValue?.id || null)}
+                        getOptionLabel={(option) => getMemberDisplayValue(option)}
+                        open={autocompleteOpen}
+                        onOpen={() => setAutocompleteOpen(true)}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label={t("PAYING_MEMBER")}
+                            />
+                        )}
+                    />
+                );
             default:
-                input = null;
+                return null;
         }
-
-        return (
-            <FormGroup>
-                <FormControl>
-                    {input}
-                </FormControl>
-            </FormGroup>
-        )
     }
 
     const renderedInputName = getInputToRender();
 
     function renderPaymentPreview() {
         return (
-            <Grid sx={{
-                fontSize: "1.4rem",
-            }}>
+            <Grid sx={{ fontSize: "1.4rem" }}>
                 {paymentReceiverId && (
                     <Grid>
                         <strong>{t("PAYMENT_RECEIVER")}</strong>: {displayMember(paymentReceiverId)}
@@ -222,7 +169,7 @@ export default function FlightSettlePaymentWizardDialog({
                 )}
                 {paymentMethod && (
                     <Grid>
-                        <strong>{t("PAYMENT_METHOD")}</strong>: {getPaymentMethodDisplayValue(paymentMethod as never)}
+                        <strong>{t("PAYMENT_METHOD")}</strong>: {getPaymentMethodDisplayValue(paymentMethod)}
                     </Grid>
                 )}
                 {payingMemberId && (
@@ -231,20 +178,18 @@ export default function FlightSettlePaymentWizardDialog({
                     </Grid>
                 )}
             </Grid>
-        )
+        );
     }
 
     const isSubmitEnabled = () => {
-        return Boolean((paymentMethod && paymentReceiverId) || payingMemberId)
-    }
+        return Boolean((paymentMethod && paymentReceiverId) || payingMemberId);
+    };
 
     if (!action) {
         return null;
     }
 
     return (
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         <Dialog open={open} maxWidth="xl">
             <DialogTitle sx={{
                 fontSize: "2rem",
@@ -264,9 +209,7 @@ export default function FlightSettlePaymentWizardDialog({
                         gap: 1,
                     }}>
                         {renderedInputName && (
-                            <Grid container sx={{
-                                fontSize: "1.4rem",
-                            }}>
+                            <Grid container sx={{ fontSize: "1.4rem" }}>
                                 <Grid item xs={3}>
                                     <strong>{t(renderedInputName)}: </strong>
                                 </Grid>
@@ -276,50 +219,48 @@ export default function FlightSettlePaymentWizardDialog({
                             </Grid>
                         )}
                     </Grid>
-                    <Grid xs={4}></Grid>
+                    <Grid xs={4} />
                 </Grid>
             </DialogContent>
             <DialogActions>
                 <Grid container>
-                    <Grid xs={9}></Grid>
+                    <Grid xs={9} />
                     <Grid xs={3}>
-                        <div style={{
-                            display: "flex",
-                            gap: 4,
-                        }}>
+                        <div style={{ display: "flex", gap: 4 }}>
                             <Button
-                                color={"error"}
-                                variant={"contained"}
-                                size={"large"}
+                                color="error"
+                                variant="contained"
+                                size="large"
                                 sx={{
                                     fontWeight: "bold",
                                     fontSize: "1.25rem",
                                 }}
-                                onClick={onClose}>
+                                onClick={onClose}
+                            >
                                 {t("CANCEL")}
                             </Button>
                             <Button
-                                variant={"contained"}
-                                size={"large"}
+                                variant="contained"
+                                size="large"
                                 sx={{
                                     fontWeight: "bold",
                                     fontSize: "1.25rem",
                                 }}
                                 onClick={() => {
                                     if (!confirm(t("CLEAR_CONFIRMATION"))) {
-                                        return
+                                        return;
                                     }
-
                                     setPaymentReceiverId(null);
                                     setPaymentMethod(null);
                                     setPayingMemberId(null);
-                                }}>
+                                }}
+                            >
                                 {t("CLEAR")}
                             </Button>
                             <Button
-                                color={"primary"}
-                                variant={"contained"}
-                                size={"large"}
+                                color="primary"
+                                variant="contained"
+                                size="large"
                                 sx={{
                                     fontWeight: "bold",
                                     fontSize: "1.25rem",
@@ -330,7 +271,8 @@ export default function FlightSettlePaymentWizardDialog({
                                     payment_method: paymentMethod as never,
                                     payment_receiver_id: paymentReceiverId,
                                     paying_member_id: payingMemberId,
-                                })}>
+                                })}
+                            >
                                 {t("CONFIRM")}
                             </Button>
                         </div>
@@ -338,5 +280,5 @@ export default function FlightSettlePaymentWizardDialog({
                 </Grid>
             </DialogActions>
         </Dialog>
-    )
+    );
 }

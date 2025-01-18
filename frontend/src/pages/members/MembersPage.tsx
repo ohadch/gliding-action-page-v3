@@ -3,8 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../store";
 import { getMemberDisplayValue } from "../../utils/display";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
-import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
+import { fetchMembers, fetchMembersRoles } from "../../store/members";
 
 export default function MembersPage() {
     const { t } = useTranslation();

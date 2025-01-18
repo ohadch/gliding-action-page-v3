@@ -9,22 +9,13 @@ import {
     Grid,
     TextField,
 } from "@mui/material";
-import {useCallback, useEffect, useState} from "react";
-import {FlightCreateSchema, FlightType, GliderSchema, PayersType,} from "../../lib/types.ts";
-import {useTranslation} from "react-i18next";
-import {useSelector} from "react-redux";
-import {RootState, useAppDispatch} from "../../store";
-import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
-import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
-import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
-import {
-    getFlightTypeDisplayValue,
-    getGliderDisplayValue,
-    getMemberDisplayValue,
-    getPayersTypeDisplayValue
-} from "../../utils/display.ts";
-import {hasPrivateGliderPilotLicense, hasRole, isCertifiedForSinglePilotOperation, isCfi} from "../../utils/members.ts";
-import {SUPPORTED_FLIGHT_TYPES} from "../../utils/consts.ts";
+import { useCallback, useState } from "react";
+import { FlightCreateSchema, FlightType, GliderSchema, MemberSchema } from "../../lib/types";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { getFlightTypeDisplayValue, getMemberDisplayValue } from "../../utils/display";
+import { SUPPORTED_FLIGHT_TYPES } from "../../utils/consts";
 
 enum RenderedInputName {
     GLIDER = "GLIDER",
@@ -34,286 +25,79 @@ enum RenderedInputName {
 }
 
 export interface FlightCreationWizardDialogProps {
-    open: boolean
-    onCancel: () => void
-    onSubmit: (flight: FlightCreateSchema) => void
-    onAdvancedEdit: (flight: FlightCreateSchema) => void
+    open: boolean;
+    onCancel: () => void;
+    onSubmit: (flight: FlightCreateSchema) => void;
+    onAdvancedEdit: (flight: FlightCreateSchema) => void;
 }
 
 export default function FlightCreationWizardDialog({
-                                                       open,
-                                                       onCancel,
-                                                       onSubmit,
-                                                       onAdvancedEdit
-                                                   }: FlightCreationWizardDialogProps) {
-    const dispatch = useAppDispatch();
-    const membersStoreState = useSelector((state: RootState) => state.members)
-    const glidersStoreState = useSelector((state: RootState) => state.gliders)
-    const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
+    open,
+    onCancel,
+    onSubmit,
+    onAdvancedEdit,
+}: FlightCreationWizardDialogProps) {
+    const { t } = useTranslation();
+    const membersState = useSelector((state: RootState) => state.members);
+    const aircraftState = useSelector((state: RootState) => state.aircraft);
+    const action = useSelector((state: RootState) => 
+        state.actionDays.list.actions?.find(
+            (action) => action.id === state.actionDays.currentDay.currentActionId
+        )
+    );
 
-    const {
-        t
-    } = useTranslation()
+    const [gliderId, setGliderId] = useState<number | null>(null);
+    const [pilot1Id, setPilot1Id] = useState<number | null>(null);
+    const [pilot2Id, setPilot2Id] = useState<number | null>(null);
+    const [flightType, setFlightType] = useState<FlightType | null>(null);
+    const [autocompleteOpen, setAutocompleteOpen] = useState(true);
 
-    const getMemberById = useCallback((id: number) => membersStoreState.members?.find((member) => member.id === id), [membersStoreState.members]);
-    const getGliderById = useCallback((id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id), [glidersStoreState.gliders]);
-    const getGliderOwnersById = useCallback((id: number) => glidersStoreState.ownerships?.filter((ownership) => ownership.glider_id === id) || [], [glidersStoreState.ownerships]);
-    const isGliderPrivate = useCallback((id: number) => getGliderOwnersById(id).length > 0, [getGliderOwnersById]);
-
-    const displayGlider = (id: number) => {
-        const glider = getGliderById(id);
-        return glider ? getGliderDisplayValue(
-            glider,
-            glidersStoreState.ownerships?.filter((ownership) => ownership.glider_id === id) || [],
-            true
-        ) : "";
-    }
+    const getMemberById = useCallback(
+        (id: number) => membersState.members?.find((member) => member.id === id),
+        [membersState.members]
+    );
 
     const displayMember = (id: number) => {
         const member = getMemberById(id);
-        return member ? getMemberDisplayValue(
-            member,
-            membersStoreState.membersRoles?.filter((role) => role.member_id === member.id) || [],
-        ) : "";
-    }
+        return member ? getMemberDisplayValue(member) : "";
+    };
 
-    const displayTowAirplane = (id: number) => {
-        const towAirplane = getTowAirplaneById(id);
-        return towAirplane ? towAirplane.call_sign : "";
-    }
+    const displayGlider = (id: number) => {
+        const glider = getGliderById(id);
+        return glider ? glider.call_sign : "";
+    };
 
-    const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
-
-    const [gliderId, setGliderId] = useState<number | null | undefined>();
-    const [pilot1Id, setPilot1Id] = useState<number | null | undefined>();
-    const [pilot2Id, setPilot2Id] = useState<number | null | undefined>();
-    const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>();
-    const [towPilotId, setTowPilotId] = useState<number | null | undefined>();
-    const [flightType, setFlightType] = useState<FlightType | null | undefined>();
-    const [payersType, setPayersType] = useState<PayersType | null | undefined>()
-    const [isSoloFlightOfPrivatePilot, setIsSoloFlightOfPrivatePilot] = useState<boolean>(false)
-
-    const isMemberBusy = (memberId: number) => {
-        const activePilots = [
-            towPilotId,
-            pilot1Id,
-            pilot2Id,
-        ].filter(Boolean) as number[];
-
-        return activePilots.includes(memberId);
-    }
-
-    useEffect(() => {
-        if (!membersStoreState.members && !membersStoreState.fetchInProgress) {
-            dispatch(fetchMembers());
-            dispatch(fetchMembersRoles());
-        }
-    });
-
-    useEffect(() => {
-        if (!glidersStoreState.gliders && !glidersStoreState.fetchInProgress) {
-            dispatch(fetchGliders());
-            dispatch(fetchGliderOwners());
-        }
-    });
-
-    useEffect(() => {
-        if (!towAirplanesStoreState.towAirplanes && !towAirplanesStoreState.fetchInProgress) {
-            dispatch(fetchTowAirplanes());
-        }
-    });
-
-    // This effect is responsible for setting default values for flight creation wizard
-    useEffect(() => {
-        if (!membersStoreState.membersRoles) {
-            return
-        }
-
-        if (!gliderId) {
-            return
-        }
-
-        const glider = getGliderById(gliderId);
-
-        if (!glider) {
-            return;
-        }
-
-        if (glider.num_seats === 1 || (flightType && flightType === "Solo") || isSoloFlightOfPrivatePilot) {
-            if (!payersType) {
-                return setPayersType("FirstPilot")
-            }
-        }
-
-
-        if (isGliderPrivate(gliderId)) {
-            if (!flightType) {
-                return setFlightType("Members")
-            }
-
-            if (glider.num_seats === 2) {
-                if (pilot1Id && pilot2Id) {
-                    return setPayersType("BothPilots")
-                }
-            }
-        } else {
-            if (glider.num_seats === 1) {
-                if (!pilot1Id) {
-                    return
-                }
-
-                const pilot1 = getMemberById(pilot1Id);
-
-                if (!pilot1) {
-                    return
-                }
-
-                if (hasRole(pilot1, membersStoreState.membersRoles, "SoloStudent")) {
-                    if (!flightType) {
-                        return setFlightType("Solo")
-                    }
-                }
-
-                if (!flightType) {
-                    return setFlightType("Members")
-                }
-            } else if (glider.num_seats === 2) {
-                if (flightType === "Members" && pilot1Id && pilot2Id) {
-                    if (!payersType) {
-                        return setPayersType("BothPilots")
-                    }
-                } else if (flightType === "ClubGuest") {
-                    if (!payersType) {
-                        return setPayersType("Guest")
-                    }
-                } else if (flightType === "MembersGuest") {
-                    if (!payersType) {
-                        return setPayersType("SecondPilot")
-                    }
-                } else if (flightType === "Instruction") {
-                    if (!payersType) {
-                        return setPayersType("FirstPilot")
-                    }
-                }
-            }
-        }
-    }, [
-        pilot1Id,
-        pilot2Id,
-        gliderId,
-        flightType,
-        payersType,
-        isGliderPrivate,
-        getGliderById,
-        getMemberById,
-        membersStoreState.membersRoles,
-        isSoloFlightOfPrivatePilot,
-    ]);
-
-
-    const [autocompleteOpen, setAutocompleteOpen] = useState(true);
+    const getGliderById = (id: number) => 
+        aircraftState.gliders?.find((glider) => glider.id === id);
 
     function getInputToRender() {
         if (!gliderId) {
             return RenderedInputName.GLIDER;
         }
-
-        const glider = getGliderById(gliderId);
-
-        if (!glider) {
-            throw new Error("Glider not found");
+        if (!pilot1Id) {
+            return RenderedInputName.PILOT_1;
         }
-
-        if (glider.num_seats === 1) {
-            if (!pilot1Id) {
-                return RenderedInputName.PILOT_1;
-            }
+        if (!pilot2Id) {
+            return RenderedInputName.PILOT_2;
         }
-        if (glider.num_seats === 2) {
-            if (!flightType) {
-                return RenderedInputName.FLIGHT_TYPE;
-            }
-
-            if (flightType !== "ClubGuest" && flightType !== "MembersGuest" && !pilot1Id) {
-                return RenderedInputName.PILOT_1;
-            }
-
-            if (flightType !== "Solo" && !pilot2Id && !isSoloFlightOfPrivatePilot) {
-                return RenderedInputName.PILOT_2;
-            }
+        if (!flightType) {
+            return RenderedInputName.FLIGHT_TYPE;
         }
-
         return null;
     }
 
-    const getPilot1Options = () => {
-        const initialOptions = membersStoreState.members || [];
-
-        if (!gliderId) {
-            return initialOptions;
-        }
-
-        const glider = getGliderById(gliderId);
-
-        if (!glider) {
-            return initialOptions;
-        }
-
-        if (isGliderPrivate(glider.id)) {
-            const gliderOwners = getGliderOwnersById(glider.id);
-            return initialOptions.filter((member) => gliderOwners.some((ownership) => ownership.member_id === member.id));
-        }
-
-        if ((glider.num_seats === 1) || (flightType && flightType === "Solo")) {
-            return initialOptions.filter((member) => isCertifiedForSinglePilotOperation(member, membersStoreState.membersRoles || []));
-        } else if (flightType && flightType === "Members") {
-            return initialOptions.filter((member) => hasPrivateGliderPilotLicense(member, membersStoreState.membersRoles || []));
-        }
-
-        return initialOptions;
+    function getPilot1Options() {
+        const initialOptions = membersState.members || [];
+        return initialOptions.filter((member) => ![
+            pilot2Id
+        ].filter(Boolean).includes(member.id));
     }
 
-    const getPilot2Options = () => {
-        const initialOptions = membersStoreState.members || [];
-
-        if (!gliderId) {
-            return initialOptions;
-        }
-
-        const glider = getGliderById(gliderId);
-
-        if (!glider) {
-            return initialOptions;
-        }
-
-        if (isGliderPrivate(glider.id)) {
-            const gliderOwners = getGliderOwnersById(glider.id);
-            return initialOptions.filter((member) => gliderOwners.some((ownership) => ownership.member_id === member.id));
-        }
-
-        if ((glider.num_seats === 1) || (flightType && flightType === "Solo")) {
-            return [];
-        }
-
-        if (flightType && flightType === "Instruction") {
-            return initialOptions.filter((member) => isCfi(member, membersStoreState.membersRoles || []));
-        } else if (flightType && flightType === "Members") {
-            return initialOptions.filter((member) => hasPrivateGliderPilotLicense(member, membersStoreState.membersRoles || []));
-        }
-
-        return initialOptions;
-    }
-
-    function isSoloFlightButtonVisible() {
-        return (
+    function getPilot2Options() {
+        const initialOptions = membersState.members || [];
+        return initialOptions.filter((member) => ![
             pilot1Id
-            && !pilot2Id
-            && !isSoloFlightOfPrivatePilot
-            && flightType !== "MembersGuest"
-            && flightType !== "ClubGuest"
-            && flightType !== "Instruction"
-        )
+        ].filter(Boolean).includes(member.id));
     }
 
     function renderInput(inputName: RenderedInputName) {
@@ -324,119 +108,66 @@ export default function FlightCreationWizardDialog({
                         <FormControl>
                             <Autocomplete
                                 id="glider"
-                                options={glidersStoreState.gliders || []}
+                                options={aircraftState.gliders || []}
                                 value={gliderId ? getGliderById(gliderId) : null}
-                                onChange={(_, newValue) => setGliderId(newValue?.id)}
-                                getOptionLabel={(option: GliderSchema) => getGliderDisplayValue(
-                                    option,
-                                    glidersStoreState.ownerships?.filter((ownership) => ownership.glider_id === option.id) || [],
-                                    true
-                                )}
+                                onChange={(_, newValue) => setGliderId(newValue?.id || null)}
+                                getOptionLabel={(option: GliderSchema) => option.call_sign}
                                 open={autocompleteOpen}
                                 onOpen={() => setAutocompleteOpen(true)}
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            label={t("GLIDER")}
-                                        />
-                                    )
-                                }}
-                                ListboxProps={{
-                                    style: {
-                                        maxHeight: 300,
-                                    }
-                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label={t("GLIDER")}
+                                    />
+                                )}
                             />
                         </FormControl>
                     </FormGroup>
-                )
+                );
             case RenderedInputName.PILOT_1:
                 return (
                     <FormGroup>
                         <FormControl>
                             <Autocomplete
                                 id="pilot1"
-                                options={getPilot1Options().filter((member) => !isMemberBusy(member.id))}
+                                options={getPilot1Options()}
                                 value={pilot1Id ? getMemberById(pilot1Id) : null}
-                                onChange={(_, newValue) => setPilot1Id(newValue?.id)}
-                                getOptionLabel={(option) => getMemberDisplayValue(
-                                    option,
-                                    membersStoreState.membersRoles?.filter((role) => role.member_id === option.id) || [],
-                                )}
+                                onChange={(_, newValue) => setPilot1Id(newValue?.id || null)}
+                                getOptionLabel={(option: MemberSchema) => getMemberDisplayValue(option)}
                                 open={autocompleteOpen}
                                 onOpen={() => setAutocompleteOpen(true)}
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            label={t("PILOT_1")}
-                                        />
-                                    )
-                                }}
-                                ListboxProps={{
-                                    style: {
-                                        maxHeight: 300,
-                                    }
-                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label={t("PILOT_1")}
+                                    />
+                                )}
                             />
                         </FormControl>
                     </FormGroup>
-                )
+                );
             case RenderedInputName.PILOT_2:
                 return (
                     <FormGroup>
                         <FormControl>
-                            <Grid container>
-                                <Grid item>
-                                    <Autocomplete
-                                        id="pilot2"
-                                        options={getPilot2Options().filter((member) => !isMemberBusy(member.id))}
-                                        value={pilot2Id ? getMemberById(pilot2Id) : null}
-                                        onChange={(_, newValue) => setPilot2Id(newValue?.id)}
-                                        getOptionLabel={(option) => getMemberDisplayValue(
-                                            option,
-                                            membersStoreState.membersRoles?.filter((role) => role.member_id === option.id) || [],
-                                        )}
-                                        open={autocompleteOpen}
-                                        onOpen={() => setAutocompleteOpen(true)}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                label={t("PILOT_2")}
-                                            />
-                                        )}
-                                        sx={{
-                                            minWidth: 300,
-                                            marginLeft: 1,
-                                        }}
-                                        ListboxProps={{
-                                            style: {
-                                                maxHeight: 300,
-                                            }
-                                        }}
+                            <Autocomplete
+                                id="pilot2"
+                                options={getPilot2Options()}
+                                value={pilot2Id ? getMemberById(pilot2Id) : null}
+                                onChange={(_, newValue) => setPilot2Id(newValue?.id || null)}
+                                getOptionLabel={(option: MemberSchema) => getMemberDisplayValue(option)}
+                                open={autocompleteOpen}
+                                onOpen={() => setAutocompleteOpen(true)}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label={t("PILOT_2")}
                                     />
-                                </Grid>
-                                {isSoloFlightButtonVisible() && (
-                                    <Grid item>
-                                        <Button
-                                            sx={{
-                                                fontSize: "1.4rem",
-                                                fontWeight: "bold",
-                                            }}
-                                            color={"warning"}
-                                            variant={"outlined"}
-                                            onClick={() => setIsSoloFlightOfPrivatePilot(!isSoloFlightOfPrivatePilot)}
-                                            fullWidth
-                                        >
-                                            {t("CLICK_HERE_IF_NO_SECOND_PILOT")}
-                                        </Button>
-                                    </Grid>
                                 )}
-                            </Grid>
+                            />
                         </FormControl>
                     </FormGroup>
-                )
+                );
             case RenderedInputName.FLIGHT_TYPE:
                 return (
                     <FormGroup>
@@ -449,23 +180,16 @@ export default function FlightCreationWizardDialog({
                                 getOptionLabel={(option) => getFlightTypeDisplayValue(option)}
                                 open={autocompleteOpen}
                                 onOpen={() => setAutocompleteOpen(true)}
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            label={t("FLIGHT_TYPE")}
-                                        />
-                                    )
-                                }}
-                                ListboxProps={{
-                                    style: {
-                                        maxHeight: 300,
-                                    }
-                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label={t("FLIGHT_TYPE")}
+                                    />
+                                )}
                             />
                         </FormControl>
                     </FormGroup>
-                )
+                );
             default:
                 return null;
         }
@@ -475,14 +199,7 @@ export default function FlightCreationWizardDialog({
 
     function renderFlightPreview() {
         return (
-            <Grid sx={{
-                fontSize: "1.4rem",
-            }}>
-                {flightType && (
-                    <Grid>
-                        <strong>{t("FLIGHT_TYPE")}</strong>: {getFlightTypeDisplayValue(flightType)}
-                    </Grid>
-                )}
+            <Grid sx={{ fontSize: "1.4rem" }}>
                 {gliderId && (
                     <Grid>
                         <strong>{t("GLIDER")}</strong>: {displayGlider(gliderId)}
@@ -498,159 +215,87 @@ export default function FlightCreationWizardDialog({
                         <strong>{t("PILOT_2")}</strong>: {displayMember(pilot2Id)}
                     </Grid>
                 )}
-                {towAirplaneId && (
+                {flightType && (
                     <Grid>
-                        <strong>{t("TOW_AIRPLANE")}</strong>: {displayTowAirplane(towAirplaneId)}
-                    </Grid>
-                )}
-                {towPilotId && (
-                    <Grid>
-                        <strong>{t("TOW_PILOT")}</strong>: {displayMember(towPilotId)}
-                    </Grid>
-                )}
-                {payersType && (
-                    <Grid>
-                        <strong>{t("PAYERS_TYPE")}</strong>: {getPayersTypeDisplayValue(payersType)}
+                        <strong>{t("FLIGHT_TYPE")}</strong>: {getFlightTypeDisplayValue(flightType)}
                     </Grid>
                 )}
             </Grid>
-        )
+        );
     }
 
     const isSubmitEnabled = () => {
-        const conditions: boolean[] = [
-            Boolean(gliderId),
-            Boolean(flightType),
-            Boolean(payersType),
-        ]
-
-        if ((flightType !== "MembersGuest") && (flightType !== "ClubGuest")) {
-            conditions.push(Boolean(pilot1Id))
-        }
-
-        if (flightType === "Instruction") {
-            conditions.push(Boolean(pilot2Id))
-        }
-
-        return conditions.every(Boolean)
-    }
-
-    // Reset state when dialog opens/closes
-    useEffect(() => {
-        if (!open) {
-            setGliderId(null);
-            setPilot1Id(null);
-            setPilot2Id(null);
-            setTowAirplaneId(null);
-            setTowPilotId(null);
-            setFlightType(null);
-            setPayersType(null);
-            setIsSoloFlightOfPrivatePilot(false);
-        }
-    }, [open]);
+        return Boolean(gliderId && pilot1Id && pilot2Id && flightType);
+    };
 
     if (!action) {
         return null;
     }
 
+    const createFlightPayload = (): FlightCreateSchema => ({
+        action_id: action.id,
+        state: "Draft",
+        glider_id: gliderId,
+        pilot_1_id: pilot1Id,
+        pilot_2_id: pilot2Id,
+        flight_type: flightType,
+        take_off_at: null,
+        landing_at: null,
+        tow_airplane_id: null,
+        tow_pilot_id: null,
+        tow_release_at: null,
+        tow_type: null,
+        payers_type: null,
+        payment_method: null,
+        payment_receiver_id: null,
+        paying_member_id: null,
+    });
+
     return (
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         <Dialog open={open} maxWidth="xl">
             <DialogTitle sx={{
                 fontSize: "2rem",
                 fontWeight: "bold",
                 display: "flex",
+                justifyContent: "space-between",
                 gap: 10
             }}>
                 <div>{t("CREATE_FLIGHT")}</div>
-
-                <div style={{
-                    display: "flex",
-                    gap: 4,
-                }}>
+                <div style={{ display: "flex", gap: 4 }}>
                     <Button
-                        color={"error"}
-                        variant={"contained"}
-                        size={"large"}
+                        color="error"
+                        variant="contained"
+                        size="large"
                         sx={{
                             fontWeight: "bold",
                             fontSize: "1.25rem",
                         }}
-                        onClick={onCancel}>
+                        onClick={onCancel}
+                    >
                         {t("CANCEL")}
                     </Button>
                     <Button
-                        variant={"contained"}
-                        size={"large"}
-                        color={"warning"}
+                        variant="contained"
+                        size="large"
                         sx={{
                             fontWeight: "bold",
                             fontSize: "1.25rem",
                         }}
-                        onClick={() => {
-                            if (!confirm(t("CLEAR_CONFIRMATION"))) {
-                                return
-                            }
-
-                            setFlightType(null);
-                            setGliderId(null);
-                            setPilot1Id(null);
-                            setPilot2Id(null);
-                            setTowAirplaneId(null);
-                            setTowPilotId(null);
-                            setPayersType(null);
-                            setIsSoloFlightOfPrivatePilot(false);
-                        }}>
-                        {t("CLEAR")}
-                    </Button>
-                    <Button
-                        color={"info"}
-                        variant={"contained"}
-                        size={"large"}
-                        sx={{
-                            fontWeight: "bold",
-                            fontSize: "1.25rem",
-                        }}
-                        onClick={() => onAdvancedEdit({
-                            action_id: action.id,
-                            state: "Draft",
-                            flight_type: flightType,
-                            glider_id: gliderId,
-                            pilot_1_id: pilot1Id,
-                            pilot_2_id: pilot2Id,
-                            tow_airplane_id: towAirplaneId,
-                            tow_pilot_id: towPilotId,
-                            payment_receiver_id: null,
-                            tow_type: null,
-                            payers_type: payersType,
-                            payment_method: null,
-                        })}>
+                        onClick={() => onAdvancedEdit(createFlightPayload())}
+                    >
                         {t("ADVANCED_EDIT")}
                     </Button>
                     <Button
-                        color={"primary"}
-                        variant={"contained"}
-                        size={"large"}
+                        color="primary"
+                        variant="contained"
+                        size="large"
                         sx={{
                             fontWeight: "bold",
                             fontSize: "1.25rem",
                         }}
                         disabled={!isSubmitEnabled()}
-                        onClick={() => onSubmit({
-                            action_id: action.id,
-                            state: "Draft",
-                            flight_type: flightType,
-                            glider_id: gliderId,
-                            pilot_1_id: pilot1Id,
-                            pilot_2_id: pilot2Id,
-                            tow_airplane_id: towAirplaneId,
-                            tow_pilot_id: towPilotId,
-                            payment_receiver_id: null,
-                            tow_type: null,
-                            payers_type: payersType,
-                            payment_method: null,
-                        })}>
+                        onClick={() => onSubmit(createFlightPayload())}
+                    >
                         {t("CONFIRM")}
                     </Button>
                 </div>
@@ -681,5 +326,5 @@ export default function FlightCreationWizardDialog({
                 </Grid>
             </DialogContent>
         </Dialog>
-    )
+    );
 }

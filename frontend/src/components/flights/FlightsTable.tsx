@@ -19,7 +19,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {deleteFlight} from "../../store/actions/action.ts";
+import {deleteFlight} from "../../store/actionDays";
 import {FlightCreateSchema, FlightSchema, FlightState, FlightUpdateSchema} from "../../lib/types.ts";
 import FlightStateController from "./FlightStateController.tsx";
 import FlightDuration from "./FlightDuration.tsx";
@@ -46,10 +46,9 @@ export default function FlightsTable(props: FlightsTableProps) {
     const dispatch = useAppDispatch();
     const theme = useTheme()
 
-    const membersStoreState = useSelector((state: RootState) => state.members)
-    const glidersStoreState = useSelector((state: RootState) => state.gliders)
-    const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const currentActionStoreState = useSelector((state: RootState) => state.actions)
+    const membersState = useSelector((state: RootState) => state.members)
+    const aircraftState = useSelector((state: RootState) => state.aircraft)
+    const {currentDay} = useSelector((state: RootState) => state.actionDays)
 
     const shownAndSortedFlights = useCallback(() => {
         if (!flights) {
@@ -66,9 +65,9 @@ export default function FlightsTable(props: FlightsTableProps) {
             })
     }, [flights])
 
-    const getMemberById = (id: number) => membersStoreState.members?.find((member) => member.id === id);
-    const getGliderById = (id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id);
-    const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
+    const getMemberById = (id: number) => membersState.members?.find((member) => member.id === id);
+    const getGliderById = (id: number) => aircraftState.gliders?.find((glider) => glider.id === id);
+    const getTowAirplaneById = (id: number) => aircraftState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
 
     const displayGlider = (id: number) => {
         const glider = getGliderById(id);
@@ -124,7 +123,7 @@ export default function FlightsTable(props: FlightsTableProps) {
     }
 
     function renderEditFlightButton(flight: FlightSchema) {
-        const flightComments = currentActionStoreState.comments?.filter((comment) => comment.flight_id === flight.id);
+        const flightComments = currentDay.comments?.filter((comment) => comment.flight_id === flight.id);
 
         function renderButton() {
             if (!setEditedFlight) {

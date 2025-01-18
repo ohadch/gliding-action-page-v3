@@ -49,14 +49,8 @@ export function ActiveTowAirplanesSelect({
 }: ActiveTowAirplanesSelectProps) {
     const { t } = useTranslation();
 
-    // Debug logs
-    console.log('Active Tow Airplanes:', activeTowAirplanes);
-    console.log('All Tow Airplanes:', towAirplanes);
-    console.log('Value:', value);
-
     // Get the actual active airplane IDs
     const activeAirplaneIds = activeTowAirplanes?.map(a => a.airplane_id) || [];
-    console.log('Active Airplane IDs:', activeAirplaneIds);
 
     const handleChange = (event: SelectChangeEvent<number[]>) => {
         const selectedIds = event.target.value as number[];

@@ -32,9 +32,6 @@ export function TowAirplanesSection({
     MenuProps,
     actionId
 }: TowAirplanesSectionProps) {
-    // Debug logs
-    console.log('Section Active Tow Airplanes:', activeTowAirplanes);
-
     return (
         <>
             {editedActiveTowAirplaneId && (

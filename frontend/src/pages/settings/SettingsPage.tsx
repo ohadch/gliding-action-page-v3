@@ -17,10 +17,10 @@ import {setReviewMode} from "../../store/reducers/actionSlice.ts";
 
 export default function SettingsPage() {
     const {t} = useTranslation();
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
-    const reviewMode = useSelector((state: RootState) => state.actions.reviewMode);
+    const action = useSelector((state: RootState) => state.actionDays.actions?.find((action) => action.id === state.actionDays.actionId))
+    const reviewMode = useSelector((state: RootState) => state.actionDays.reviewMode);
     const dispatch = useAppDispatch();
-    const {events, fetchInProgress} = useSelector((state: RootState) => state.actions) || [];
+    const {events, fetchInProgress} = useSelector((state: RootState) => state.actionDays) || [];
 
     useEffect(() => {
         if (!events && !fetchInProgress && action) {

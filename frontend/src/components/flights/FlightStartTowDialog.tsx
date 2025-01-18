@@ -9,28 +9,16 @@ import {
     Grid,
     TextField,
 } from "@mui/material";
-import {useCallback, useEffect, useState} from "react";
-import {
-    FlightSchema,
-    FlightUpdateSchema,
-} from "../../lib/types.ts";
-import {useTranslation} from "react-i18next";
-import {useSelector} from "react-redux";
-import {RootState, useAppDispatch} from "../../store";
-import {fetchMembers, fetchMembersRoles} from "../../store/actions/member.ts";
-import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
-import {
-    getMemberDisplayValue,
-} from "../../utils/display.ts";
-import moment from "moment";
+import { useCallback, useState } from "react";
+import { FlightSchema, FlightUpdateSchema } from "../../lib/types";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { getMemberDisplayValue } from "../../utils/display";
 
 enum RenderedInputName {
-    GLIDER = "GLIDER",
     TOW_AIRPLANE = "TOW_AIRPLANE",
-    PILOT_1 = "PILOT_1",
-    PILOT_2 = "PILOT_2",
     TOW_PILOT = "TOW_PILOT",
-    FLIGHT_TYPE = "FLIGHT_TYPE",
 }
 
 export interface FlightStartTowDialogProps {
@@ -42,69 +30,60 @@ export interface FlightStartTowDialogProps {
 }
 
 export default function FlightStartTowDialog({
-    flight, 
-    open, 
-    onCancel, 
+    flight,
+    open,
+    onCancel,
     onSubmit,
-    fieldResponsibleId
 }: FlightStartTowDialogProps) {
-    const dispatch = useAppDispatch();
-    const membersStoreState = useSelector((state: RootState) => state.members);
-    const glidersStoreState = useSelector((state: RootState) => state.gliders);
-    const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes);
-    const { activeTowAirplanes, flights } = useSelector((state: RootState) => state.actions);
-    const action = useSelector((state: RootState) => 
-        state.actions.actions?.find((action) => action.id === state.actions.actionId)
+    const { t } = useTranslation();
+    const membersState = useSelector((state: RootState) => state.members);
+    const aircraftState = useSelector((state: RootState) => state.aircraft);
+    const { currentDay } = useSelector((state: RootState) => state.actionDays);
+
+    const [towAirplaneId, setTowAirplaneId] = useState<number | null>(flight.tow_airplane_id || null);
+    const [towPilotId, setTowPilotId] = useState<number | null>(flight.tow_pilot_id || null);
+    const [autocompleteOpen, setAutocompleteOpen] = useState(true);
+
+    const getMemberById = useCallback(
+        (id: number) => membersState.members?.find((member) => member.id === id),
+        [membersState.members]
     );
-
-    const {
-        t
-    } = useTranslation()
-
-    const getMemberById = useCallback((id: number) => membersStoreState.members?.find((member) => member.id === id), [membersStoreState.members]);
-    const getGliderById = useCallback((id: number) => glidersStoreState.gliders?.find((glider) => glider.id === id), [glidersStoreState.gliders]);
 
     const displayMember = (id: number) => {
         const member = getMemberById(id);
-        return member ? getMemberDisplayValue(
-            member,
-        ) : "";
-    }
+        return member ? getMemberDisplayValue(member) : "";
+    };
 
     const displayTowAirplane = (id: number) => {
         const towAirplane = getTowAirplaneById(id);
         return towAirplane ? towAirplane.call_sign : "";
-    }
+    };
 
-    const getTowAirplaneById = (id: number) => towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
+    const getTowAirplaneById = (id: number) => 
+        aircraftState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
 
     const getTowPilotByAirplaneId = (airplaneId: number) => {
-        const activeTowAirplane = activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === airplaneId);
+        const activeTowAirplane = currentDay.activeTowAirplanes?.find(
+            (activeTowAirplane) => activeTowAirplane.airplane_id === airplaneId
+        );
         return activeTowAirplane?.tow_pilot_id || null;
-    }
+    };
 
+    const busyTowAirplaneIds = currentDay.flights?.filter(
+        (flight) => flight.state === "Tow"
+    ).map((flight) => flight.tow_airplane_id) || [];
 
-    const busyTowAirplaneIds = flights?.filter((flight) => flight.state === "Tow")
-        .map((flight) => flight.tow_airplane_id) || [];
-
-    // Let's log the filtering steps
-    console.log('All tow airplanes:', towAirplanesStoreState.towAirplanes);
-    console.log('Active tow airplanes:', activeTowAirplanes);
-    console.log('Busy tow airplane IDs:', busyTowAirplaneIds);
-
-    const availableTowAirplanes = towAirplanesStoreState.towAirplanes?.filter((towAirplane) => {
+    const availableTowAirplanes = aircraftState.towAirplanes?.filter((towAirplane) => {
         // Check if airplane is busy
         if (busyTowAirplaneIds.includes(towAirplane.id)) {
-            console.log(`${towAirplane.call_sign} is busy`);
             return false;
         }
 
         // Check if airplane is active
-        const isActive = activeTowAirplanes?.some(
+        const isActive = currentDay.activeTowAirplanes?.some(
             (activeTowAirplane) => activeTowAirplane.airplane_id === towAirplane.id
         );
         if (!isActive) {
-            console.log(`${towAirplane.call_sign} is not active`);
             return false;
         }
 
@@ -114,40 +93,8 @@ export default function FlightStartTowDialog({
             .filter(Boolean)
             .includes(towPilotId);
         
-        if (!cannotTowThemselves) {
-            console.log(`${towAirplane.call_sign}'s pilot cannot tow themselves`);
-        }
         return cannotTowThemselves;
     }) || [];
-
-    console.log('Available tow airplanes:', availableTowAirplanes);
-
-    const [towAirplaneId, setTowAirplaneId] = useState<number | null | undefined>(
-        availableTowAirplanes.length === 1 ? availableTowAirplanes[0].id : null
-    );
-    const towPilotId = useCallback(() => {
-        if (!towAirplaneId) {
-            return null;
-        }
-
-        const activeTowAirplane = activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === towAirplaneId);
-        return activeTowAirplane?.tow_pilot_id || null;
-    }, [towAirplaneId, activeTowAirplanes])();
-
-    const [selfLaunch, setSelfLaunch] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (!membersStoreState.members && !membersStoreState.fetchInProgress) {
-            dispatch(fetchMembers());
-            dispatch(fetchMembersRoles());
-        }
-    });
-
-    useEffect(() => {
-        if (!towAirplanesStoreState.towAirplanes && !towAirplanesStoreState.fetchInProgress) {
-            dispatch(fetchTowAirplanes());
-        }
-    });
 
     function getInputToRender() {
         if (!towAirplaneId) {
@@ -172,21 +119,24 @@ export default function FlightStartTowDialog({
                                 options={availableTowAirplanes}
                                 disabled={availableTowAirplanes.length === 0}
                                 value={towAirplaneId ? getTowAirplaneById(towAirplaneId) : null}
-                                onChange={(_, newValue) => setTowAirplaneId(newValue?.id)}
-                                getOptionLabel={(option) => option.call_sign}
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            label={t("TOW_AIRPLANE")}
-                                            helperText={availableTowAirplanes.length === 0 ? t("NO_TOW_AIRPLANES_AVAILABLE") : undefined}
-                                        />
-                                    )
+                                onChange={(_, newValue) => {
+                                    setTowAirplaneId(newValue?.id || null);
+                                    setTowPilotId(newValue ? getTowPilotByAirplaneId(newValue.id) : null);
                                 }}
+                                getOptionLabel={(option) => option.call_sign}
+                                open={autocompleteOpen}
+                                onOpen={() => setAutocompleteOpen(true)}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label={t("TOW_AIRPLANE")}
+                                        helperText={availableTowAirplanes.length === 0 ? t("NO_TOW_AIRPLANES_AVAILABLE") : undefined}
+                                    />
+                                )}
                             />
                         </FormControl>
                     </FormGroup>
-                )
+                );
             default:
                 return null;
         }
@@ -195,23 +145,8 @@ export default function FlightStartTowDialog({
     const renderedInputName = getInputToRender();
 
     function renderFlightPreview() {
-        if (selfLaunch) {
-            return (
-                <Grid sx={{
-                    fontSize: "1.4rem",
-                    fontWeight: "bold",
-                }}>
-                    <strong>{t("SELF_LAUNCH")}</strong>
-                </Grid>
-            )
-        }
-
         return (
-            <Grid
-                sx={{
-                    fontSize: "1.4rem"
-                }}
-            >
+            <Grid sx={{ fontSize: "1.4rem" }}>
                 {towAirplaneId && (
                     <Grid>
                         <strong>{t("TOW_AIRPLANE")}</strong>: {displayTowAirplane(towAirplaneId)}
@@ -223,32 +158,14 @@ export default function FlightStartTowDialog({
                     </Grid>
                 )}
             </Grid>
-        )
+        );
     }
 
     const isSubmitEnabled = () => {
-        if (selfLaunch) {
-            return true;
-        }
-
-        const conditions: boolean[] = [
-            Boolean(towAirplaneId),
-            Boolean(towPilotId),
-        ]
-
-        return conditions.every(Boolean)
-    }
-
-    if (!action) {
-        return null;
-    }
-
-    const isSelfLaunchCapable = flight.glider_id ? getGliderById(flight.glider_id)?.type === "self_launch" : false;
-
+        return Boolean(towAirplaneId) && Boolean(towPilotId);
+    };
 
     return (
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         <Dialog open={open} maxWidth="xl">
             <DialogTitle sx={{
                 fontSize: "2rem",
@@ -257,132 +174,66 @@ export default function FlightStartTowDialog({
                 justifyContent: "space-between",
                 gap: 10
             }}>
-                <div>{t("DISPATCH_FLIGHT")}</div>
-                <div style={{
-                    display: "flex",
-                    gap: 4,
-                }}>
+                <div>{t("START_TOW")}</div>
+                <div style={{ display: "flex", gap: 4 }}>
                     <Button
-                        onClick={onCancel}
-                        color={"error"}
-                        variant={"contained"}
-                        size={"large"}
+                        color="error"
+                        variant="contained"
+                        size="large"
                         sx={{
                             fontWeight: "bold",
                             fontSize: "1.25rem",
                         }}
+                        onClick={onCancel}
                     >
                         {t("CANCEL")}
                     </Button>
                     <Button
-                        variant={"contained"}
-                        size={"large"}
-                        sx={{
-                            fontWeight: "bold",
-                            fontSize: "1.25rem",
-                        }}
-                        onClick={() => {
-                            if (!confirm(t("CLEAR_CONFIRMATION"))) {
-                                return
-                            }
-
-                            setTowAirplaneId(null);
-                            setSelfLaunch(false);
-                        }}>
-                        {t("CLEAR")}
-                    </Button>
-                    <Button
-                        color={"success"}
-                        variant={"contained"}
-                        size={"large"}
+                        color="primary"
+                        variant="contained"
+                        size="large"
                         sx={{
                             fontWeight: "bold",
                             fontSize: "1.25rem",
                         }}
                         disabled={!isSubmitEnabled()}
-                        onClick={() => {
-                            if (selfLaunch) {
-                                return onSubmit({
-                                    ...flight,
-                                    state: "Inflight",
-                                    tow_airplane_id: null,
-                                    tow_pilot_id: null,
-                                    take_off_at: flight.take_off_at || moment().utcOffset(0, true).set({
-                                        date: moment(action?.date).date(),
-                                        month: moment(action?.date).month(),
-                                        year: moment(action?.date).year(),
-                                    }).toISOString(),
-                                    tow_type: null
-                                })
-                            }
-
-                            return onSubmit({
-                                ...flight,
-                                state: "Tow",
-                                tow_airplane_id: towAirplaneId,
-                                tow_pilot_id: towPilotId,
-                                take_off_at: flight.take_off_at || moment().utcOffset(0, true).set({
-                                    date: moment(action?.date).date(),
-                                    month: moment(action?.date).month(),
-                                    year: moment(action?.date).year(),
-                                }).toISOString(),
-                                tow_type: null
-                            })
-                        }}>
+                        onClick={() => onSubmit({
+                            ...flight,
+                            tow_airplane_id: towAirplaneId,
+                            tow_pilot_id: towPilotId,
+                            take_off_at: new Date().toISOString(),
+                            state: "Tow",
+                        })}
+                    >
                         {t("CONFIRM")}
                     </Button>
                 </div>
             </DialogTitle>
             <DialogContent>
                 {renderFlightPreview()}
-                {!selfLaunch && (
-                    <Grid sx={{
-                        mt: 2,
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 1,
-                    }}>
-                        <Grid container alignItems={"center"}>
-                            <Grid item xs={
-                                isSelfLaunchCapable ? 7 : 12
-                            } ml={1}>
-                                {renderedInputName && (
-                                    <Grid sx={{
-                                        fontSize: "1.4rem",
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        gap: 1,
-                                    }}>
-                                        <Grid>
-                                            <strong>{t(renderedInputName)}: </strong>
-                                        </Grid>
-                                        <Grid minWidth={400}>
-                                            {renderInput(renderedInputName)}
-                                        </Grid>
-                                    </Grid>
-                                )}
+                <Grid sx={{
+                    mt: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                }}>
+                    {renderedInputName && (
+                        <Grid sx={{
+                            fontSize: "1.4rem",
+                            display: "flex",
+                            flexDirection: "row",
+                            gap: 1,
+                        }}>
+                            <Grid>
+                                <strong>{t(renderedInputName)}: </strong>
                             </Grid>
-
-                            {isSelfLaunchCapable && (
-                                <Grid item xs={4}>
-                                    <Button
-                                        sx={{
-                                            fontSize: "1.4rem",
-                                            fontWeight: "bold",
-                                        }}
-                                        color={"warning"}
-                                        variant={"outlined"}
-                                        onClick={() => setSelfLaunch(true)}
-                                        fullWidth
-                                    >
-                                        {t("CLICK_HERE_IF_SELF_LAUNCH")}
-                                    </Button>
-                                </Grid>
-                            )}
+                            <Grid minWidth={400}>
+                                {renderInput(renderedInputName)}
+                            </Grid>
                         </Grid>
-                    </Grid>
-                )}
+                    )}
+                </Grid>
             </DialogContent>
         </Dialog>
-    )
+    );
 }

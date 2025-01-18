@@ -5,6 +5,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { DISABLE_CLOSING_ACTION } from "../../utils/consts";
 import { FlightSchema } from "../../lib/types";
+import { 
+    createFlight, 
+    updateFlight 
+} from "../../store/actionDays";
 
 interface QuickActionsProps {
     onGenerateSummary: () => void;
@@ -13,9 +17,9 @@ interface QuickActionsProps {
 
 export function QuickActions({ onGenerateSummary, onCloseAction }: QuickActionsProps) {
     const { t } = useTranslation();
-    const { flights } = useSelector((state: RootState) => state.actions);
+    const { flights } = useSelector((state: RootState) => state.actionDays.currentDay);
     const action = useSelector((state: RootState) => 
-        state.actions.actions?.find((action) => action.id === state.actions.actionId)
+        state.actionDays.list.actions?.find((action) => action.id === state.actionDays.currentDay.currentActionId)
     );
 
     const activeFlightsExist = flights?.some(
