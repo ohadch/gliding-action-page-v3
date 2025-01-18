@@ -4,11 +4,13 @@ import { RootState, useAppDispatch } from "../../store";
 import { getMemberDisplayValue } from "../../utils/display";
 import { useTranslation } from "react-i18next";
 import { fetchMembers, fetchMembersRoles } from "../../store/members";
+import { useEffect } from "react";
+import { MemberRoleSchema } from "../../lib/types";
 
 export default function MembersPage() {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
-    const { members, membersRoles } = useSelector((state: RootState) => state.members);
+    const { members, roles } = useSelector((state: RootState) => state.members);
 
     useEffect(() => {
         dispatch(fetchMembers());
@@ -16,9 +18,9 @@ export default function MembersPage() {
     }, [dispatch]);
 
     const getMemberRoles = (memberId: number) => {
-        return membersRoles
-            ?.filter(role => role.member_id === memberId)
-            .map(role => t(role.role))
+        return roles
+            ?.filter((role: MemberRoleSchema) => role.member_id === memberId)
+            .map((role: MemberRoleSchema) => t(role.role))
             .join(", ");
     };
 
