@@ -45,6 +45,8 @@ export function FlightDialogs({
     onStartTowSubmit,
     onEndTowSubmit
 }: FlightDialogsProps) {
+    console.log('FlightDialogs render:', { endTowDialogFlight });
+
     const dispatch = useAppDispatch();
 
     return (

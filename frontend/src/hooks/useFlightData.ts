@@ -21,11 +21,9 @@ export function useFlightData() {
         const isTowing = flights?.some(f => 
             f.state === "Tow" && f.tow_airplane_id === ata.airplane_id
         );
-        console.log('Is airplane towing?', isTowing);
 
         // Make sure the airplane is active and has a pilot assigned
         const isValid = Boolean(ata.airplane_id && ata.tow_pilot_id);
-        console.log('Is airplane valid?', isValid);
 
         return !isTowing && isValid;
     }) || [];

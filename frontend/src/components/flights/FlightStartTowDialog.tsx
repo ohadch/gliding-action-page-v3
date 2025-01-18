@@ -54,13 +54,13 @@ export default function FlightStartTowDialog({
         return member ? getMemberDisplayValue(member) : "";
     };
 
-    const displayTowAirplane = (id: number) => {
-        const towAirplane = getTowAirplaneById(id);
-        return towAirplane ? towAirplane.call_sign : "";
-    };
-
     const getTowAirplaneById = (id: number) => 
         aircraftState.towAirplanes?.find((towAirplane) => towAirplane.id === id);
+
+    const displayTowAirplane = (activeTowAirplane: { airplane_id: number }) => {
+        const towAirplane = getTowAirplaneById(activeTowAirplane.airplane_id);
+        return towAirplane ? towAirplane.call_sign : "";
+    };
 
     const getTowPilotByAirplaneId = (airplaneId: number) => {
         const activeTowAirplane = currentDay.activeTowAirplanes?.find(
@@ -73,27 +73,13 @@ export default function FlightStartTowDialog({
         (flight) => flight.state === "Tow"
     ).map((flight) => flight.tow_airplane_id) || [];
 
-    const availableTowAirplanes = aircraftState.towAirplanes?.filter((towAirplane) => {
-        // Check if airplane is busy
-        if (busyTowAirplaneIds.includes(towAirplane.id)) {
-            return false;
-        }
-
-        // Check if airplane is active
-        const isActive = currentDay.activeTowAirplanes?.some(
-            (activeTowAirplane) => activeTowAirplane.airplane_id === towAirplane.id
+    const availableTowAirplanes = currentDay.activeTowAirplanes?.filter(ata => {
+        const isTowing = currentDay.flights?.some(f => 
+            f.state === "Tow" && 
+            f.tow_airplane_id === ata.airplane_id &&
+            f.id !== flight.id  // Don't exclude the current flight's airplane
         );
-        if (!isActive) {
-            return false;
-        }
-
-        // Check if tow pilot can't tow themselves
-        const towPilotId = getTowPilotByAirplaneId(towAirplane.id);
-        const cannotTowThemselves = ![flight.pilot_1_id, flight.pilot_2_id]
-            .filter(Boolean)
-            .includes(towPilotId);
-        
-        return cannotTowThemselves;
+        return !isTowing;
     }) || [];
 
     function getInputToRender() {
@@ -115,22 +101,20 @@ export default function FlightStartTowDialog({
                     <FormGroup>
                         <FormControl>
                             <Autocomplete
-                                id="towAirplane"
+                                id="tow-airplane"
                                 options={availableTowAirplanes}
-                                disabled={availableTowAirplanes.length === 0}
-                                value={towAirplaneId ? getTowAirplaneById(towAirplaneId) : null}
-                                onChange={(_, newValue) => {
-                                    setTowAirplaneId(newValue?.id || null);
-                                    setTowPilotId(newValue ? getTowPilotByAirplaneId(newValue.id) : null);
-                                }}
-                                getOptionLabel={(option) => option.call_sign}
+                                value={availableTowAirplanes.find(ata => ata.airplane_id === towAirplaneId) || null}
+                                getOptionLabel={(option) => displayTowAirplane(option)}
                                 open={autocompleteOpen}
                                 onOpen={() => setAutocompleteOpen(true)}
+                                onChange={(_, newValue) => {
+                                    setTowAirplaneId(newValue?.airplane_id || null);
+                                    setTowPilotId(newValue?.tow_pilot_id || null);
+                                }}
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
                                         label={t("TOW_AIRPLANE")}
-                                        helperText={availableTowAirplanes.length === 0 ? t("NO_TOW_AIRPLANES_AVAILABLE") : undefined}
                                     />
                                 )}
                             />

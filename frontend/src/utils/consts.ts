@@ -189,7 +189,7 @@ export const TEXTS = {
     REVIEW_MODE_TITLE: "אזהרה! מצב ביקורת פעיל!",
     REVIEW_MODE_MESSAGE: "יום הפעולה עשוי להיות שונה מהנכון, וכן מיילים על טיסות שנחתו לא יישלחו!",
     MOVE_TO_DRAFT_CONFIRMATION: "האם אתה בטוח שברצונך להעביר את הטיסה למצב הכנה?",
-    START_TOW_CONFIRMATION: "האם אתה בטוח שברצונך להתחיל את הגרירה?",
+    START_TOW_CONFIRMATION: "האם אתה בטוח שברצונך להתחיל גרירה?",
     RETURN_TO_TOW_CONFIRMATION: "האם אתה בטוח שברצונך להחזיר את הטיסה למצב גרירה?",
     START_FLIGHT_CONFIRMATION: "האם אתה בטוח שברצונך להתחיל את הטיסה?",
     LAND_FLIGHT_CONFIRMATION: "האם אתה בטוח שברצונך לנחות את הטיסה?",
@@ -220,10 +220,11 @@ export const TEXTS = {
     NotCertifiedForSoloPayingStudent: "חניך לא מורשה סולו משלם",
     FLIGHTS_BOARD: "לוח טיסות",
     TOW_AIRPLANES: "מטוסים גוררים",
-    SELECT_TOW_PILOT: "בחר טייס גורר",
     NONE: "ללא",
     ACTION_NOT_CONFIGURED_MESSAGE: "יש להגדיר אחראי שדה ומדריך אחראי לפני תחילת הפעילות",
     START_TOW: "התחל גרירה",
+    RETURN_TO_DRAFT_CONFIRMATION: "האם אתה בטוח שברצונך להחזיר את הטיסה למצב טיוטה?",
+    RETURN_TO_INFLIGHT_CONFIRMATION: "האם אתה בטוח שברצונך להחזיר את הטיסה למצב באוויר?",
 };
 
 

@@ -3,7 +3,6 @@ import {
     FlightCreateSchema, 
     FlightSchema, 
     FlightState, 
-    FlightUpdateSchema,
     GliderSchema,
     TowAirplaneSchema,
 } from "../../lib/types";
@@ -18,7 +17,8 @@ import { useTranslation } from "react-i18next";
 import moment from "moment";
 import { Grid, Alert, Card } from "@mui/material";
 import { useSelector } from "react-redux";
-import { getMemberDisplayValue, getTowAirplaneDisplayValue } from "../../utils/display";
+import { getMemberDisplayValue } from "../../utils/display";
+import { handleFlightStateUpdate } from "../../utils/flightStateManager";
 
 export default function DashboardPage() {
     const { t } = useTranslation();
@@ -78,180 +78,67 @@ export default function DashboardPage() {
 
     // Flight state update function
     function onFlightStateUpdated(flightId: number, state: FlightState) {
+        console.log('onFlightStateUpdated called:', { flightId, state });
+        
         const flight = flights?.find((flight) => flight.id === flightId);
-        if (!flight) {
-            return;
-        }
+        if (!flight) return;
 
         const glider = flight.glider_id ? getGliderById(flight.glider_id) : null;
+        console.log('Found flight and glider:', { flight, glider });
 
-        if (flight.state === state) {
+        const result = handleFlightStateUpdate({
+            flight,
+            newState: state,
+            glider,
+            availableTowAirplanes,
+            flights: flights || [],
+            members: membersStoreState.members || [],
+            getTowAirplaneById,
+            t,
+            actionDate: action?.date || "",
+            actionId: action?.id || 0,
+            fieldResponsibleId: action?.field_responsible_id
+        });
+
+        console.log('handleFlightStateUpdate result:', result);
+
+        if (result?.shouldReturn) {
+            console.log('Should return with:', result);
+            if (result.showEndTowDialog) {
+                console.log('Setting endTowDialogFlight:', flight);
+                setEndTowDialogFlight(flight);
+            }
+            if (result.alertMessage) {
+                alert(result.alertMessage);
+            }
+            if (result.showStartTowDialog) {
+                setStartTowDialogFlight(flight);
+            }
             return;
         }
 
-        const updatePayload: FlightUpdateSchema = {
-            ...flight,
-            state
-        };
+        if (result.updatePayload) {
+            const promises = [];
 
-        // The time is now's time, but the date is the action's date
-        const now = moment().utcOffset(0, true).set({
-            date: moment(action?.date).date(),
-            month: moment(action?.date).month(),
-            year: moment(action?.date).year(),
-        }).toISOString();
-
-        const promises = [];
-
-        switch (state) {
-            case "Draft":
-                updatePayload.take_off_at = null;
-                updatePayload.landing_at = null;
-                updatePayload.tow_type = null;
-                updatePayload.tow_airplane_id = null;
-                updatePayload.tow_pilot_id = null;
-                break;
-
-            case "Tow":
-                // Add debug logs
-                console.log('Flight:', flight);
-                console.log('Glider:', glider);
-                console.log('Available tow airplanes:', availableTowAirplanes);
-                console.log('Active tow airplanes:', action?.activeTowAirplanes);
-                console.log('Current flights:', flights);
-
-                // First check if it's a touring glider
-                if (
-                    (flight.state === "Draft")
-                    && (glider?.type === "touring")
-                ) {
-                    return onFlightStateUpdated(flightId, "Inflight");
-                }
-
-                // For regular gliders, always show the dialog first unless returning from Inflight
-                if (flight.state === "Draft" && glider?.type === "regular") {
-                    // Check if there are any available tow airplanes
-                    if (availableTowAirplanes.length === 0) {
-                        alert(t("NO_TOW_AIRPLANES_AVAILABLE"));
-                        return;
-                    }
-
-                    // Show the dialog to select tow airplane and pilot
-                    setStartTowDialogFlight(flight);
-                    return;
-                }
-
-                // Handle return from Inflight to Tow
-                if (
-                    (flight.state === "Inflight")
-                    && (flight.tow_airplane_id)
-                    && (!isTowAirplaneAvailable(flight.tow_airplane_id))
-                    && (glider?.type === "regular")
-                ) {
-                    const towAirplane = getTowAirplaneById(flight.tow_airplane_id);
-
-                    if (towAirplane) {
-                        alert(`${t("TOW_AIRPLANE_NOT_AVAILABLE")}: ${getTowAirplaneDisplayValue(towAirplane)}`);
-                        return;
-                    }
-                }
-
-                // Check for busy entities
-                if (getBusyEntitiesFromFlight(flight)) {
-                    const busyEntities = getBusyEntitiesFromFlight(flight);
-                    const hasBusyEntities = Object.values(busyEntities).some((entities) => entities.length > 0);
-
-                    if (hasBusyEntities) {
-                        const busyEntitiesString = Object.values(busyEntities).flat().join(", ");
-                        alert(`${t("FLIGHT_HAS_BUSY_ENTITIES_ALERT")}: ${busyEntitiesString}`);
-                        return;
-                    }
-                }
-
-                // Update flight if all checks pass
-                if (!flight.take_off_at) {
-                    updatePayload.take_off_at = now;
-                }
-                updatePayload.tow_type = null;
-                updatePayload.tow_release_at = null;
-
-                if (action?.id) {
+            if (result.events) {
+                result.events.forEach(event => {
                     promises.push(new Promise(() => dispatch(createEvent({
-                        action_id: action.id,
-                        type: "flight_took_off",
-                        payload: {
-                            flight_id: flightId,
-                            field_responsible_id: action?.field_responsible_id,
-                        }
+                        action_id: action?.id || 0,
+                        type: event.type,
+                        payload: event.payload
                     }))));
-                }
-                break;
+                });
+            }
 
-            case "Inflight":
-                if (getBusyEntitiesFromFlight(flight, false)) {
-                    const busyEntities = getBusyEntitiesFromFlight(flight);
-                    const hasBusyEntities = Object.values(busyEntities).some((entities) => entities.length > 0);
-
-                    if (hasBusyEntities) {
-                        const busyEntitiesString = Object.values(busyEntities).flat().join(", ");
-                        alert(`${t("FLIGHT_HAS_BUSY_ENTITIES_ALERT")}: ${busyEntitiesString}`);
-                        return;
-                    }
-                }
-
-                if (!flight.tow_type && ((glider?.type === "regular") || (glider?.type === "self_launch" && flight.tow_type))) {
-                    setEndTowDialogFlight(flight);
-                    return;
-                }
-                if (!flight.take_off_at) {
-                    updatePayload.take_off_at = now;
-                }
-
-                updatePayload.landing_at = null;
-
-                if (!flight.tow_release_at && (glider?.type !== "touring")) {
-                    updatePayload.tow_release_at = now;
-                }
-
-                if (action?.id) {
-                    promises.push(new Promise(() => dispatch(createEvent({
-                        action_id: action.id,
-                        type: "flight_tow_released",
-                        payload: {
-                            flight_id: flightId,
-                            field_responsible_id: action?.field_responsible_id,
-                        }
-                    }))));
-                }
-                break;
-
-            case "Landed":
-                updatePayload.landing_at = now;
-
-                if (action?.id) {
-                    promises.push(new Promise(() => dispatch(createEvent({
-                        action_id: action.id,
-                        type: "flight_landed",
-                        payload: {
-                            flight_id: flightId,
-                            field_responsible_id: action?.field_responsible_id,
-                        }
-                    }))));
-                }
-                break;
-
-            default:
-                throw new Error(`Unknown flight state: ${state}`);
-        }
-
-        promises.push(new Promise(() => {
-            dispatch(updateFlight({
-                flightId,
-                updatePayload,
+            promises.push(new Promise(() => {
+                dispatch(updateFlight({
+                    flightId,
+                    updatePayload: result.updatePayload!
+                }));
             }));
-        }));
 
-        Promise.all(promises).then();
+            Promise.all(promises).then();
+        }
     }
 
     // Dialog states
