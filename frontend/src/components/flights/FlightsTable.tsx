@@ -149,6 +149,19 @@ export default function FlightsTable(props: FlightsTableProps) {
         )
     }
 
+    const hasAnyValues = useCallback((selector: (flight: FlightSchema) => any) => {
+        return flights.some(flight => Boolean(selector(flight)));
+    }, [flights]);
+
+    // Check which columns should be visible
+    const showTowAirplane = hasAnyValues(flight => flight.tow_airplane_id);
+    const showTowType = hasAnyValues(flight => flight.tow_type);
+    const showCrew = hasAnyValues(flight => flight.pilot_1_id || flight.pilot_2_id);
+    const showFlightType = hasAnyValues(flight => flight.flight_type);
+    const showTakeOffTime = hasAnyValues(flight => flight.take_off_at);
+    const showLandingTime = hasAnyValues(flight => flight.landing_at);
+    const showDuration = hasAnyValues(flight => flight.state !== "Draft");
+
     return (
         <>
             <TableContainer component={Paper}>
@@ -157,17 +170,27 @@ export default function FlightsTable(props: FlightsTableProps) {
                         <TableRow>
                             <TableCell align="right" style={textCellStyle}></TableCell>
                             <TableCell align="right" style={textCellStyle}><strong>{t("GLIDER")}</strong></TableCell>
-                            <TableCell align="right"
-                                       style={textCellStyle}><strong>{t("FLIGHT_TYPE")}</strong></TableCell>
-                            <TableCell align="right" style={textCellStyle}><strong>{t("CREW")}</strong></TableCell>
-                            <TableCell align="right"
-                                       style={textCellStyle}><strong>{t("TOW_AIRPLANE")}</strong></TableCell>
-                            <TableCell align="right" style={textCellStyle}><strong>{t("TOW_TYPE")}</strong></TableCell>
-                            <TableCell align="right"
-                                       style={textCellStyle}><strong>{t("TAKE_OFF_TIME")}</strong></TableCell>
-                            <TableCell align="right"
-                                       style={textCellStyle}><strong>{t("LANDING_TIME")}</strong></TableCell>
-                            <TableCell align="right" style={textCellStyle}><strong>{t("DURATION")}</strong></TableCell>
+                            {showFlightType && (
+                                <TableCell align="right" style={textCellStyle}><strong>{t("FLIGHT_TYPE")}</strong></TableCell>
+                            )}
+                            {showCrew && (
+                                <TableCell align="right" style={textCellStyle}><strong>{t("CREW")}</strong></TableCell>
+                            )}
+                            {showTowAirplane && (
+                                <TableCell align="right" style={textCellStyle}><strong>{t("TOW_AIRPLANE")}</strong></TableCell>
+                            )}
+                            {showTowType && (
+                                <TableCell align="right" style={textCellStyle}><strong>{t("TOW_TYPE")}</strong></TableCell>
+                            )}
+                            {showTakeOffTime && (
+                                <TableCell align="right" style={textCellStyle}><strong>{t("TAKE_OFF_TIME")}</strong></TableCell>
+                            )}
+                            {showLandingTime && (
+                                <TableCell align="right" style={textCellStyle}><strong>{t("LANDING_TIME")}</strong></TableCell>
+                            )}
+                            {showDuration && (
+                                <TableCell align="right" style={textCellStyle}><strong>{t("DURATION")}</strong></TableCell>
+                            )}
                             <TableCell align="right" style={textCellStyle}></TableCell>
                         </TableRow>
                     </TableHead>
@@ -196,29 +219,43 @@ export default function FlightsTable(props: FlightsTableProps) {
                                 }}>
                                     {flight.glider_id && displayGlider(flight.glider_id)}
                                 </TableCell>
-                                <TableCell align="right" style={textCellStyle}>
-                                    {flight.flight_type && getFlightTypeDisplayValue(flight.flight_type)}
-                                </TableCell>
-                                <TableCell align="right" style={textCellStyle}>
-                                    {renderCrew(flight)}
-                                </TableCell>
-                                <TableCell align="right" style={textCellStyle}>
-                                    {renderTowAirplane(flight)}
-                                </TableCell>
-                                <TableCell align="right" style={textCellStyle}>
-                                    {flight.tow_type && getTowTypeDisplayValue(flight.tow_type)}
-                                </TableCell>
-                                <TableCell align="right" style={textCellStyle}>
-                                    {flight.take_off_at && displayTime(flight.take_off_at)}
-                                </TableCell>
-                                <TableCell align="right" style={textCellStyle}>
-                                    {flight.landing_at && displayTime(flight.landing_at)}
-                                </TableCell>
-                                <TableCell align="right" style={textCellStyle}>
-                                    {(flight.state !== "Draft") && (
-                                        <FlightDuration flight={flight}/>
-                                    )}
-                                </TableCell>
+                                {showFlightType && (
+                                    <TableCell align="right" style={textCellStyle}>
+                                        {flight.flight_type && getFlightTypeDisplayValue(flight.flight_type)}
+                                    </TableCell>
+                                )}
+                                {showCrew && (
+                                    <TableCell align="right" style={textCellStyle}>
+                                        {renderCrew(flight)}
+                                    </TableCell>
+                                )}
+                                {showTowAirplane && (
+                                    <TableCell align="right" style={textCellStyle}>
+                                        {renderTowAirplane(flight)}
+                                    </TableCell>
+                                )}
+                                {showTowType && (
+                                    <TableCell align="right" style={textCellStyle}>
+                                        {flight.tow_type && getTowTypeDisplayValue(flight.tow_type)}
+                                    </TableCell>
+                                )}
+                                {showTakeOffTime && (
+                                    <TableCell align="right" style={textCellStyle}>
+                                        {flight.take_off_at && displayTime(flight.take_off_at)}
+                                    </TableCell>
+                                )}
+                                {showLandingTime && (
+                                    <TableCell align="right" style={textCellStyle}>
+                                        {flight.landing_at && displayTime(flight.landing_at)}
+                                    </TableCell>
+                                )}
+                                {showDuration && (
+                                    <TableCell align="right" style={textCellStyle}>
+                                        {(flight.state !== "Draft") && (
+                                            <FlightDuration flight={flight}/>
+                                        )}
+                                    </TableCell>
+                                )}
                                 <TableCell align="right" style={textCellStyle}>
                                     {setEditedFlight && renderEditFlightButton(flight)}
                                     {setEditedFlight && (
