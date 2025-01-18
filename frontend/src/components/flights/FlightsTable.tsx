@@ -15,12 +15,11 @@ import {
     getMemberDisplayValue, getTowTypeDisplayValue
 } from "../../utils/display.ts";
 import {Badge, Tooltip, useTheme} from "@mui/material";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {deleteFlight} from "../../store/actionDays";
-import {FlightCreateSchema, FlightSchema, FlightState, FlightUpdateSchema} from "../../lib/types.ts";
+import {deleteFlight} from "../../store";
+import {FlightSchema, FlightState, FlightUpdateSchema} from "../../lib/types.ts";
 import FlightStateController from "./FlightStateController.tsx";
 import FlightDuration from "./FlightDuration.tsx";
 import {Payment} from "@mui/icons-material";
@@ -28,7 +27,6 @@ import {Payment} from "@mui/icons-material";
 export interface FlightsTableProps {
     flights: FlightSchema[];
     setEditedFlight?: (flightId: number, flight: FlightUpdateSchema) => void;
-    setDuplicateFlight?: (flight: FlightCreateSchema) => void;
     onFlightStateUpdated?: (flightId: number, state: FlightState) => void;
     shownFlightStates?: FlightState[];
     onSettlePayment?: (flight: FlightSchema) => void;
@@ -36,10 +34,10 @@ export interface FlightsTableProps {
 
 
 export default function FlightsTable(props: FlightsTableProps) {
-    const {flights, onSettlePayment, setEditedFlight, setDuplicateFlight, onFlightStateUpdated} = props;
+    const {flights, onSettlePayment, setEditedFlight, onFlightStateUpdated} = props;
 
     const textCellStyle = {
-        fontSize: setEditedFlight && setDuplicateFlight ? "1.1rem" : "1rem",
+        fontSize: setEditedFlight ? "1.1rem" : "1rem",
     }
 
     const {t} = useTranslation();
@@ -223,23 +221,7 @@ export default function FlightsTable(props: FlightsTableProps) {
                                 </TableCell>
                                 <TableCell align="right" style={textCellStyle}>
                                     {setEditedFlight && renderEditFlightButton(flight)}
-                                    {setDuplicateFlight && (<Tooltip title={t("DUPLICATE_FLIGHT")}>
-                                        <IconButton aria-label="duplicate" onClick={() => setDuplicateFlight({
-                                            action_id: flight.action_id,
-                                            state: "Draft",
-                                            glider_id: flight.glider_id,
-                                            pilot_1_id: flight.pilot_1_id,
-                                            pilot_2_id: flight.pilot_2_id,
-                                            payers_type: flight.payers_type,
-                                            payment_method: flight.payment_method,
-                                            payment_receiver_id: flight.payment_receiver_id,
-                                            flight_type: flight.flight_type,
-                                            paying_member_id: flight.paying_member_id,
-                                        })}>
-                                            <ContentCopyIcon/>
-                                        </IconButton>
-                                    </Tooltip>)}
-                                    {setEditedFlight && setDuplicateFlight && (
+                                    {setEditedFlight && (
                                         <Tooltip title={t("DELETE_FLIGHT")} onClick={() => onFlightDelete(flight.id)}>
                                             <IconButton aria-label="delete">
                                                 <DeleteIcon/>

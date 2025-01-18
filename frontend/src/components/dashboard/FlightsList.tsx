@@ -50,7 +50,7 @@ export function FlightsList({
                             setDuplicateFlight={onDuplicateFlight}
                             onFlightStateUpdated={onFlightStateUpdated}
                             onSettlePayment={onSettlePayment}
-                            disabled={Boolean(action.closed_at)}
+                            disabled={Boolean(action?.closed_at)}
                         />
                     )}
                 </Grid>

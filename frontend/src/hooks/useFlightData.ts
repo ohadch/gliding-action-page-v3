@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch, fetchGliders, fetchTowAirplanes, fetchGliderOwners, fetchFlights, fetchMembers, fetchMembersRoles } from "../store";
+import { ActiveTowAirplaneSchema } from '../lib/types';
 
 export function useFlightData() {
     const dispatch = useAppDispatch();
@@ -13,6 +14,21 @@ export function useFlightData() {
     const { flights } = useSelector((state: RootState) => state.actionDays.currentDay);
     const membersState = useSelector((state: RootState) => state.members);
     const aircraftState = useSelector((state: RootState) => state.aircraft);
+
+    // Calculate available tow airplanes - check both active and not in use
+    const availableTowAirplanes: ActiveTowAirplaneSchema[] = currentDay.activeTowAirplanes.filter(ata => {
+        // Check if airplane is not currently towing
+        const isTowing = flights?.some(f => 
+            f.state === "Tow" && f.tow_airplane_id === ata.airplane_id
+        );
+        console.log('Is airplane towing?', isTowing);
+
+        // Make sure the airplane is active and has a pilot assigned
+        const isValid = Boolean(ata.airplane_id && ata.tow_pilot_id);
+        console.log('Is airplane valid?', isValid);
+
+        return !isTowing && isValid;
+    }) || [];
 
     // Initial data fetch - only once
     useEffect(() => {
@@ -50,6 +66,7 @@ export function useFlightData() {
         action,
         flights,
         membersState,
-        aircraftState
+        aircraftState,
+        availableTowAirplanes
     };
 } 

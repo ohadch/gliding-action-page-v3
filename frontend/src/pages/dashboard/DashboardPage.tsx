@@ -5,9 +5,7 @@ import {
     FlightState, 
     FlightUpdateSchema,
     GliderSchema,
-    MemberSchema,
     TowAirplaneSchema,
-    ActiveTowAirplaneSchema
 } from "../../lib/types";
 import { ActionConfiguration } from "../../components/dashboard/ActionConfiguration";
 import { FlightsList } from "../../components/dashboard/FlightsList";
@@ -15,7 +13,7 @@ import { QuickActions } from "../../components/dashboard/QuickActions";
 import { FlightDialogs } from "../../components/dashboard/FlightDialogs";
 import { useFlightData } from "../../hooks/useFlightData";
 import { createEvent, useAppDispatch, RootState } from "../../store";
-import { updateAction, deleteFlight, updateFlight } from "../../store/actionDays";
+import { updateAction, deleteFlight, updateFlight } from "../../store";
 import { useTranslation } from "react-i18next";
 import moment from "moment";
 import { Grid, Alert, Card } from "@mui/material";
@@ -25,7 +23,7 @@ import { getMemberDisplayValue, getTowAirplaneDisplayValue } from "../../utils/d
 export default function DashboardPage() {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
-    const { action, flights } = useFlightData();
+    const { action, flights, availableTowAirplanes } = useFlightData();
     const membersStoreState = useSelector((state: RootState) => state.members);
     const aircraftState = useSelector((state: RootState) => state.aircraft);
 
@@ -49,17 +47,35 @@ export default function DashboardPage() {
             towAirplanes: [] as string[]
         };
 
-        // Add your busy entities check logic here
-        // This should check for pilots, gliders, and tow airplanes that are already in use
+        const busyFlights = flights?.filter(f => 
+            (f.id !== flight.id) && 
+            (f.state === "Tow" || f.state === "Inflight")
+        ) || [];
+
+        busyFlights.forEach(busyFlight => {
+            // Check pilots
+            const pilot1 = membersStoreState.members?.find(m => m.id === busyFlight.pilot_1_id);
+            const pilot2 = membersStoreState.members?.find(m => m.id === busyFlight.pilot_2_id);
+            const towPilot = membersStoreState.members?.find(m => m.id === busyFlight.tow_pilot_id);
+
+            if (pilot1) busyEntities.pilots.push(getMemberDisplayValue(pilot1));
+            if (pilot2) busyEntities.pilots.push(getMemberDisplayValue(pilot2));
+            if (includeTowAirplane && towPilot) busyEntities.pilots.push(getMemberDisplayValue(towPilot));
+
+            // Check gliders
+            const glider = getGliderById(busyFlight.glider_id);
+            if (glider) busyEntities.gliders.push(glider.call_sign);
+
+            // Check tow airplanes
+            if (includeTowAirplane && busyFlight.tow_airplane_id) {
+                const towAirplane = getTowAirplaneById(busyFlight.tow_airplane_id);
+                if (towAirplane) busyEntities.towAirplanes.push(towAirplane.call_sign);
+            }
+        });
 
         return busyEntities;
     };
 
-    const availableTowAirplanes = action?.activeTowAirplanes?.filter(ata => 
-        !flights?.some(f => f.state === "Tow" && f.tow_airplane_id === ata.airplane_id)
-    ) || [];
-
-    // Flight state update function
     // Flight state update function
     function onFlightStateUpdated(flightId: number, state: FlightState) {
         const flight = flights?.find((flight) => flight.id === flightId);
@@ -97,6 +113,35 @@ export default function DashboardPage() {
                 break;
 
             case "Tow":
+                // Add debug logs
+                console.log('Flight:', flight);
+                console.log('Glider:', glider);
+                console.log('Available tow airplanes:', availableTowAirplanes);
+                console.log('Active tow airplanes:', action?.activeTowAirplanes);
+                console.log('Current flights:', flights);
+
+                // First check if it's a touring glider
+                if (
+                    (flight.state === "Draft")
+                    && (glider?.type === "touring")
+                ) {
+                    return onFlightStateUpdated(flightId, "Inflight");
+                }
+
+                // For regular gliders, always show the dialog first unless returning from Inflight
+                if (flight.state === "Draft" && glider?.type === "regular") {
+                    // Check if there are any available tow airplanes
+                    if (availableTowAirplanes.length === 0) {
+                        alert(t("NO_TOW_AIRPLANES_AVAILABLE"));
+                        return;
+                    }
+
+                    // Show the dialog to select tow airplane and pilot
+                    setStartTowDialogFlight(flight);
+                    return;
+                }
+
+                // Handle return from Inflight to Tow
                 if (
                     (flight.state === "Inflight")
                     && (flight.tow_airplane_id)
@@ -111,31 +156,7 @@ export default function DashboardPage() {
                     }
                 }
 
-                if (
-                    (flight.state === "Draft")
-                    && (availableTowAirplanes.length === 0)
-                    && (glider?.type === "regular")
-                ) {
-                    alert(t("NO_TOW_AIRPLANES_AVAILABLE"));
-                    return;
-                }
-
-                if (
-                    (flight.state === "Draft")
-                    && (glider?.type === "touring")
-                ) {
-                    return onFlightStateUpdated(flightId, "Inflight");
-                }
-
-                if (
-                    (flight.state === "Inflight")
-                    && (
-                        (glider?.type === "touring") || (glider?.type === "self_launch" && !flight.tow_type)
-                    )
-                ) {
-                    return onFlightStateUpdated(flightId, "Draft");
-                }
-
+                // Check for busy entities
                 if (getBusyEntitiesFromFlight(flight)) {
                     const busyEntities = getBusyEntitiesFromFlight(flight);
                     const hasBusyEntities = Object.values(busyEntities).some((entities) => entities.length > 0);
@@ -147,27 +168,23 @@ export default function DashboardPage() {
                     }
                 }
 
-                if ((!flight.tow_airplane_id || !flight.tow_pilot_id) && (glider?.type !== "touring")) {
-                    if (glider?.type === "regular") {
-                        if (availableTowAirplanes.length === 1) {
-                            const towPilotId = availableTowAirplanes[0].tow_pilot_id;
-                            if ([flight.pilot_1_id, flight.pilot_2_id].filter(Boolean).includes(towPilotId)) {
-                                const towPilot = membersStoreState.members?.find((member) => member.id === availableTowAirplanes[0].tow_pilot_id);
-                                alert(`${t("TOW_PILOT_CANNOT_TOW_HIMSELF")}: ${towPilot && getMemberDisplayValue(towPilot)}`);
-                                return;
-                            }
-                        }
-                    }
-
-                    setStartTowDialogFlight(flight);
-                    return;
-                }
-
+                // Update flight if all checks pass
                 if (!flight.take_off_at) {
                     updatePayload.take_off_at = now;
                 }
                 updatePayload.tow_type = null;
                 updatePayload.tow_release_at = null;
+
+                if (action?.id) {
+                    promises.push(new Promise(() => dispatch(createEvent({
+                        action_id: action.id,
+                        type: "flight_took_off",
+                        payload: {
+                            flight_id: flightId,
+                            field_responsible_id: action?.field_responsible_id,
+                        }
+                    }))));
+                }
                 break;
 
             case "Inflight":
@@ -194,6 +211,17 @@ export default function DashboardPage() {
 
                 if (!flight.tow_release_at && (glider?.type !== "touring")) {
                     updatePayload.tow_release_at = now;
+                }
+
+                if (action?.id) {
+                    promises.push(new Promise(() => dispatch(createEvent({
+                        action_id: action.id,
+                        type: "flight_tow_released",
+                        payload: {
+                            flight_id: flightId,
+                            field_responsible_id: action?.field_responsible_id,
+                        }
+                    }))));
                 }
                 break;
 
