@@ -240,7 +240,6 @@ export const TEXTS = {
     CLUBGUEST: "אורח מועדון",
     MEMBERSGUEST: "אורח חבר",
     INSPECTION: "ביקור",
-    MEMBERS: "חברים",
     INSTRUCTORSCOURSE: "קורס מדריכים",
     SOLO: "סולו",
     FIELDRESPONSIBLE: "אחראי שדה",

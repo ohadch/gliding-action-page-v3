@@ -149,6 +149,7 @@ export default function FlightCreationWizardDialog({
                             pilot1Id={pilot1Id}
                             pilot2Id={pilot2Id}
                             flightType={flightType}
+                            payersType={payersType}
                         />
                     </Grid>
                 </Grid>

@@ -6,7 +6,7 @@ import { FlightType, PayersType, GliderSchema, MemberSchema } from '../../../lib
 import { RootState } from '../../../store';
 import { getSoloStudents } from '../../../store/members/selectors';
 import { getMemberDisplayValue } from '../../../utils/display';
-import { TEXTS } from '../../../utils/consts';
+import { TEXTS, SUPPORTED_FLIGHT_TYPES } from '../../../utils/consts';
 
 interface FlightFormProps {
     gliderId: number | null;
@@ -79,16 +79,7 @@ export function FlightForm({
     };
 
     const getFlightTypeDisplayValue = (type: FlightType) => {
-        switch (type) {
-            case "Instruction":
-                return t(TEXTS.TRAINING_FLIGHT);
-            case "Members":
-                return t(TEXTS.MEMBERS);
-            case "Solo":
-                return t(TEXTS.SOLO_FLIGHT);
-            default:
-                return type;
-        }
+        return t(TEXTS[type.toUpperCase()]);
     };
 
     return (
@@ -117,7 +108,7 @@ export function FlightForm({
                                 {glider.call_sign}
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
-                                {t(TEXTS[glider.type])} • {glider.num_seats} {t(TEXTS.SEATS)}
+                                {t(TEXTS[glider.type.toUpperCase()])} • {glider.num_seats} {t(TEXTS.SEATS)}
                             </Typography>
                         </Box>
                         <Chip
@@ -218,7 +209,7 @@ export function FlightForm({
             <Autocomplete
                 value={flightType}
                 onChange={(_, newValue) => onFlightTypeChange(newValue)}
-                options={["Instruction", "Members", "Solo"] as FlightType[]}
+                options={SUPPORTED_FLIGHT_TYPES}
                 getOptionLabel={getFlightTypeDisplayValue}
                 renderInput={(params) => (
                     <TextField

@@ -8,8 +8,9 @@ import {
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-import { FlightType } from "../../../lib/types";
-import { getFlightTypeDisplayValue, getMemberDisplayValue } from "../../../utils/display";
+import { FlightType, PayersType } from "../../../lib/types";
+import { getMemberDisplayValue } from "../../../utils/display";
+import { TEXTS } from "../../../utils/consts";
 import FlightIcon from '@mui/icons-material/Flight';
 import PersonIcon from '@mui/icons-material/Person';
 import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
@@ -20,6 +21,7 @@ interface FlightPreviewProps {
     pilot1Id: number | null;
     pilot2Id: number | null;
     flightType: FlightType | null;
+    payersType: PayersType | null;
 }
 
 export function FlightPreview({
@@ -27,6 +29,7 @@ export function FlightPreview({
     pilot1Id,
     pilot2Id,
     flightType,
+    payersType,
 }: FlightPreviewProps) {
     const { t } = useTranslation();
     const membersState = useSelector((state: RootState) => state.members);
@@ -85,7 +88,18 @@ export function FlightPreview({
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <FlightIcon sx={{ mr: 1 }} />
                             <Typography>
-                                <strong>{t("FLIGHT_TYPE")}:</strong> {getFlightTypeDisplayValue(flightType)}
+                                <strong>{t("FLIGHT_TYPE")}:</strong> {t(TEXTS[flightType.toUpperCase()])}
+                            </Typography>
+                        </Box>
+                    )}
+
+                    {payersType && (
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography variant="subtitle2" color="text.secondary">
+                                {t(TEXTS.PAYERS_TYPE)}
+                            </Typography>
+                            <Typography>
+                                {t(TEXTS[payersType.toUpperCase()])}
                             </Typography>
                         </Box>
                     )}

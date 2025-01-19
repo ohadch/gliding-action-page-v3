@@ -4,6 +4,7 @@ import { RootState } from "../../../store";
 import { FlightType } from "../../../lib/types";
 import SchoolIcon from '@mui/icons-material/School';
 import PersonIcon from '@mui/icons-material/Person';
+import GroupIcon from '@mui/icons-material/Group';
 
 interface FlightTemplate {
     id: string;
@@ -66,6 +67,15 @@ const FLIGHT_TEMPLATES: FlightTemplate[] = [
         icon: <PersonIcon />,
         getDefaults: () => ({
             flight_type: "Solo"
+        })
+    },
+    {
+        id: "MEMBERS_FLIGHT",
+        label: "MEMBERS",
+        description: "MEMBERS_FLIGHT_DESCRIPTION",
+        icon: <GroupIcon />,
+        getDefaults: () => ({
+            flight_type: "Members"
         })
     }
 ];
