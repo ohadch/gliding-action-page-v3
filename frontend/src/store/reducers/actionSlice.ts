@@ -22,6 +22,7 @@ import {updateNotification} from "../actions/notification.ts";
 import {createComment, deleteComment, updateComment} from "../actions/comment.ts";
 
 const initialState: ActionsStoreState = {
+    actionId: CacheService.getNumber(CACHE_KEY_ACTION) || 0,
     page: CacheService.getNumber(CACHE_KEY_ACTION_PAGE) || 1,
     pageSize: CacheService.getNumber(CACHE_KEY_ACTION_PAGE_SIZE) || 10,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -37,7 +38,6 @@ export const actionsSlice = createSlice({
     name: 'actions',
     initialState,
     reducers: {
-
         setCurrentActionId: (state, action) => {
             state.actionId = action.payload
             action.payload ? CacheService.set(CACHE_KEY_ACTION, action.payload) : CacheService.remove(CACHE_KEY_ACTION)
