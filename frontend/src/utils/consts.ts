@@ -1,13 +1,13 @@
 import {FlightState, FlightType, PayersType, PaymentMethod, TowType} from "../lib/types.ts";
 
 export const API_HOST = import.meta.env.VITE_API_HOST || 'http://localhost:9001';
-export const DISABLE_CLOSING_ACTION = import.meta.env.VITE_DISABLE_CLOSING_ACTION == 'true';
+export const DISABLE_CLOSING_ACTION = import.meta.env.VITE_DISABLE_CLOSING_ACTION == 'false';
 
 export const CACHE_KEY_ACTION = 'action';
 export const CACHE_KEY_ACTION_PAGE = 'actions_page';
 export const CACHE_KEY_ACTION_PAGE_SIZE = 'actions_page_size';
 export const CACHE_KEY_THEME = 'theme';
-
+export const CACHE_KEY_REVIEW_MODE = 'review_mode';
 
 export const TEXTS_HEBREW = {
     APP_NAME: "ניהול פעולת הדאיה",
@@ -59,7 +59,6 @@ export const TEXTS_HEBREW = {
     TOW_RELEASE_TIME: "שעת סיום הגרירה",
     ACTION_NOT_SELECTED_MESSAGE: "יש לבחור פעולה על מנת להתחיל.",
     ACTION_NOT_SELECTED_TITLE: "לא נבחרה פעולה",
-    QUIT_ACTION: "צא מהפעולה",
     ACTIVE_TOW_AIRPLANES: "מטוסים גוררים פעילים",
     SELECT_TOW_PILOT: "בחר טייס גורר",
     ACTION_NOT_FULLY_CONFIGURED_TITLE: "נא להגדיר את הפעולה",
@@ -144,10 +143,12 @@ export const TEXTS_HEBREW = {
     REOPEN_ACTION: 'פתיחה מחדש של הפעולה',
     REOPEN_ACTION_EVENT_CONFIRMATION: 'האם ברצונך ליצור אירוע פתיחה מחדש?',
     EXPORT_ACTION_DATA: 'ייצוא נתוני הפעולה',
+    IMPORT_REFERENCE_DATA: 'ייבוא נתונים',
     ACTION_DATA_EXPORTED_AT: 'נתוני הפעולה יוצאו בתאריך',
     ACTION_DATA_NOT_YET_EXPORTED: 'נתוני הפעולה טרם יוצאו',
     ACTION_REOPENED: 'הפעולה נפתחה מחדש',
     CONFIRM_ACTION_DATA_EXPORT: 'האם אתה בטוח שברצונך לבקש את ייצוא נתוני הפעולה?',
+    CONFIRM_IMPORT_REFERENCE_DATA: 'האם אתה בטוח שברצונך לבקש ייבוא נתונים?',
     SETTLE_PAYMENT: 'הסדר תשלום',
     PAYMENT_BY_CLUB_MEMBER: 'לחץ כאן אם חבר מועדון משלם על הטיסה',
     FLIGHTS_WITH_UNSETTLED_PAYMENTS_TITLE: 'קיימות טיסות עם תשלומים שלא הוסדרו',
@@ -159,7 +160,7 @@ export const TEXTS_HEBREW = {
     NO_FLIGHTS_IN_THIS_STATE: 'אין טיסות במצב זה',
     RESEND_NOTIFICATION: 'שלח מחדש',
     RESEND_NOTIFICATION_CONFIRMATION: 'האם אתה בטוח שברצונך לשלוח מחדש את ההודעה?',
-    DATA_EXPORT_REQUEST_EVENTS: 'בקשות ייצוא נתונים',
+    DATA_IMPORT_EXPORT_REQUEST_EVENTS: 'בקשות ייבוא וייצוא נתונים',
     NO_DATA_EXPORT_REQUEST_EVENTS_FOR_ACTION: 'אין בקשות ייצוא נתונים עבור הפעולה',
     ACTION_DATE: 'תאריך הפעולה',
     ACTION_EXPORTED_AT: 'נתוני הפעולה יוצאו בתאריך',
@@ -181,6 +182,12 @@ export const TEXTS_HEBREW = {
     DELETE_COMMENT: "מחק הערה",
     DELETE_COMMENT_CONFIRMATION: "האם אתה בטוח שברצונך למחוק את ההערה?",
     MOVE_FLIGHT_TO_STATE: "העבר טיסה לשלב",
+    ENTER_REVIEW_MODE: "הכנס למצב ביקורת",
+    EXIT_REVIEW_MODE: "צא ממצב ביקורת",
+    CONFIRM_ENTER_REVIEW_MODE: "האם אתה בטוח שברצונך להכנס למצב ביקורת?",
+    CONFIRM_EXIT_REVIEW_MODE: "האם אתה בטוח שברצונך לצאת ממצב ביקורת?",
+    REVIEW_MODE_TITLE: "אזהרה! מצב ביקורת פעיל!",
+    REVIEW_MODE_MESSAGE: "יום הפעולה עשוי להיות שונה מהנכון, וכן מיילים על טיסות שנחתו לא יישלחו!"
 }
 
 

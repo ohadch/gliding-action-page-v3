@@ -13,7 +13,7 @@ import TableRow from "@mui/material/TableRow";
 import TableContainer from "@mui/material/TableContainer";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import {fetchComments, fetchEvents, fetchFlights} from "../../store/actions/currentAction.ts";
+import {fetchComments, fetchEvents, fetchFlights} from "../../store/actions/action.ts";
 import {getMemberDisplayValue} from "../../utils/display.ts";
 import {fetchMembers} from "../../store/actions/member.ts";
 import {EventSchema, EventType} from "../../lib/types.ts";
@@ -26,7 +26,7 @@ import EventStateChip from "../common/EventStateChip.tsx";
 
 export default function EventsTable() {
     const dispatch = useAppDispatch();
-    const {flights, events, fetchInProgress, actionId} = useSelector((state: RootState) => state.currentAction)
+    const {flights, events, fetchInProgress, actionId} = useSelector((state: RootState) => state.actions)
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)

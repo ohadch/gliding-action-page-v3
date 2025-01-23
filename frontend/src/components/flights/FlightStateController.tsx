@@ -41,7 +41,7 @@ const STATE_BUTTON_CONFIGS: Record<FlightState, StateButtonConfig> = {
 export default function FlightStateController({flight, onStateUpdated}: FlightStateControllerProps) {
     const {t} = useTranslation();
     const {label, color} = STATE_BUTTON_CONFIGS[flight.state];
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
 
     function goToPreviousStateEnabled() {
         return ORDERED_FLIGHT_STATES.indexOf(flight.state) > 0;

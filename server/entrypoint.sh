@@ -4,19 +4,13 @@ set -e
 
 # If mode is server, then start the server
 if [ "$MODE" = "server" ]; then
-  # Migrate if MIGRATE_ON_STARTUP is set to true
-    if [ "$MIGRATE_ON_START" = true ]; then
-        echo "Migrating database..."
-        make migrate
-    fi
-
     echo "Starting server..."
-    make run
+    python main.py
 elif [ "$MODE" = "backup_cron" ]; then
-    echo "Starting backup cron..."
+    echo "Starting backup cron with schedule: $BACKUP_CRON_SCHEDULE"
 
     # Copy crontab file to cron.d directory
-    cp /app/crontab.txt /etc/cron.d/backup_cron
+    echo "$BACKUP_CRON_SCHEDULE /usr/bin/python /app/backup.py" > /etc/cron.d/backup_cron
 
     # Give execute permissions
     chmod 0644 /etc/cron.d/backup_cron

@@ -81,6 +81,7 @@ class EventType(enum.Enum):
     TOW_AIRPLANE_DEACTIVATED = "tow_airplane_deactivated"
     ACTION_DATA_EXPORT_REQUESTED = "action_data_export_requested"
     FLIGHTS_EMAIL_REPORT_REQUESTED = "flights_email_report_requested"
+    REFERENCE_DATA_IMPORT_REQUESTED = "reference_data_import_requested"
 
 
 class EventState(enum.Enum):

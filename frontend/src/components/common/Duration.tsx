@@ -12,7 +12,7 @@ export default function Duration({ durations }: DurationProps) {
 
   const action = useSelector(
     (state: RootState) =>
-      state.actions.actions?.find((action) => action.id === state.currentAction.actionId)
+      state.actions.actions?.find((action) => action.id === state.actions.actionId)
   );
 
   useEffect(() => {

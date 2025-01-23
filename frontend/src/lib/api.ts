@@ -5,6 +5,10 @@
 
 
 export interface paths {
+  "/health": {
+    /** Health */
+    get: operations["health_health_get"];
+  };
   "/actions/search": {
     /**
      * Search actions
@@ -52,6 +56,16 @@ export interface paths {
      * :param db: Database session
      */
     delete: operations["delete_actions__id___delete"];
+  };
+  "/actions/get-or-create-by-date": {
+    /**
+     * Get or create actions by date
+     * @description Get or create action by date
+     * :param data: Data
+     * :param db: Database session
+     * :return: Action
+     */
+    post: operations["get_or_create_by_date_actions_get_or_create_by_date_post"];
   };
   "/active_tow_airplanes/search": {
     /**
@@ -555,6 +569,11 @@ export interface components {
       /** Data Exported At */
       data_exported_at?: string | null;
     };
+    /** ActionGetOrCreateByDateSchema */
+    ActionGetOrCreateByDateSchema: {
+      /** Date */
+      date: string;
+    };
     /** ActionSchema */
     ActionSchema: {
       /** Id */
@@ -764,7 +783,7 @@ export interface components {
      * EventType
      * @enum {string}
      */
-    EventType: "flight_landed" | "flight_took_off" | "flight_tow_released" | "action_closed" | "action_reopened" | "responsible_cfi_assigned" | "responsible_cfi_unassigned" | "field_responsible_assigned" | "field_responsible_unassigned" | "tow_airplane_activated" | "tow_airplane_deactivated" | "action_data_export_requested" | "flights_email_report_requested";
+    EventType: "flight_landed" | "flight_took_off" | "flight_tow_released" | "action_closed" | "action_reopened" | "responsible_cfi_assigned" | "responsible_cfi_unassigned" | "field_responsible_assigned" | "field_responsible_unassigned" | "tow_airplane_activated" | "tow_airplane_deactivated" | "action_data_export_requested" | "flights_email_report_requested" | "reference_data_import_requested";
     /** EventUpdateSchema */
     EventUpdateSchema: {
       type?: components["schemas"]["EventType"] | null;
@@ -1222,6 +1241,17 @@ export type external = Record<string, never>;
 
 export interface operations {
 
+  /** Health */
+  health_health_get: {
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
   /**
    * Search actions
    * @description Search actions
@@ -1365,6 +1395,34 @@ export interface operations {
       200: {
         content: {
           "application/json": unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Get or create actions by date
+   * @description Get or create action by date
+   * :param data: Data
+   * :param db: Database session
+   * :return: Action
+   */
+  get_or_create_by_date_actions_get_or_create_by_date_post: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ActionGetOrCreateByDateSchema"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ActionSchema"];
         };
       };
       /** @description Validation Error */

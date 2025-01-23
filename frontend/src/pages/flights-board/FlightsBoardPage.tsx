@@ -8,7 +8,7 @@ import {RootState, useAppDispatch} from "../../store";
 import {
     fetchComments,
     fetchFlights,
-} from "../../store/actions/currentAction.ts";
+} from "../../store/actions/action.ts";
 import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
 import {FlightSchema} from "../../lib/types.ts";
 import moment from "moment/moment";
@@ -17,8 +17,8 @@ import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 
 
 export default function FlightsBoardPage() {
-    const {flights, fetchingFlightsInProgress} = useSelector((state: RootState) => state.currentAction);
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
+    const {flights, fetchingFlightsInProgress} = useSelector((state: RootState) => state.actions);
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
     const membersStoreState = useSelector((state: RootState) => state.members);
     const glidersStoreState = useSelector((state: RootState) => state.gliders);
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes);

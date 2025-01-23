@@ -17,12 +17,8 @@ export interface ActionsStoreState extends BaseInitialState {
     pageSize: number;
     actions: ActionSchema[] | undefined;
     initialState: boolean;
-}
-
-
-export interface CurrentActionStoreState extends BaseInitialState {
+    reviewMode: boolean;
     actionId?: number;
-    initialState: boolean;
     fetchingActiveTowAirplanesInProgress: boolean;
     fetchingFlightsInProgress: boolean;
     activeTowAirplanes?: ActiveTowAirplaneSchema[];
@@ -31,6 +27,7 @@ export interface CurrentActionStoreState extends BaseInitialState {
     notifications?: NotificationSchema[];
     comments?: CommentSchema[];
 }
+
 
 export interface MembersStoreState extends BaseInitialState {
     members: MemberSchema[] | undefined;

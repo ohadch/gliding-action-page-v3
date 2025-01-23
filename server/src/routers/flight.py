@@ -26,7 +26,7 @@ tags = [prefix]
     response_model=List[FlightSchema],
     summary=f"Search {prefix}",
 )
-async def search(
+def search(
     page: int = 1,
     page_size: Optional[int] = None,
     filters: Optional[FlightSearchSchema] = None,
@@ -42,7 +42,7 @@ async def search(
     :param settings: Settings
     :return: List of flights
     """
-    return await crud.search(
+    return crud.search(
         db=db,
         filters=filters,
         page=page,
@@ -56,13 +56,13 @@ async def search(
     response_model=FlightSchema,
     summary=f"Create {prefix}",
 )
-async def create(data: FlightCreateSchema, db: Session = Depends(get_db)):
+def create(data: FlightCreateSchema, db: Session = Depends(get_db)):
     """
     Create flight
     :param data: Data
     :param db: Database session
     """
-    return await crud.create(
+    return crud.create(
         db=db,
         data=data,
     )
@@ -74,14 +74,14 @@ async def create(data: FlightCreateSchema, db: Session = Depends(get_db)):
     response_model=FlightSchema,
     summary=f"Get {prefix} by ID",
 )
-async def get_by_id(id_: int, db: Session = Depends(get_db)):
+def get_by_id(id_: int, db: Session = Depends(get_db)):
     """
     Read flight by ID
     :param id_: Flight ID
     :param db: Database session
     :return: Flight
     """
-    flight = await crud.get_by_id(db=db, id_=id_)
+    flight = crud.get_by_id(db=db, id_=id_)
     if not flight:
         raise HTTPException(status_code=404, detail=f"{prefix.title()} not found")
     return flight
@@ -93,7 +93,7 @@ async def get_by_id(id_: int, db: Session = Depends(get_db)):
     response_model=FlightSchema,
     summary=f"Update {prefix}",
 )
-async def update(
+def update(
     id_: int,
     data: FlightUpdateSchema,
     db: Session = Depends(get_db),
@@ -117,7 +117,7 @@ async def update(
     tags=tags,
     summary=f"Delete {prefix}",
 )
-async def delete(id_: int, db: Session = Depends(get_db)):
+def delete(id_: int, db: Session = Depends(get_db)):
     """
     Delete flight
     :param id_: Flight ID

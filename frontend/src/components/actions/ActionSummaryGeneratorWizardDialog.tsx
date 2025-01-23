@@ -53,8 +53,8 @@ export default function ActionSummaryGeneratorWizardDialog({
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
-    const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
+    const currentActionStoreState = useSelector((state: RootState) => state.actions)
     const [reportType, setReportType] = useState<ReportType | null>(null);
     const [sendEmailDialogOpen, setSendEmailDialogOpen] = useState(false);
 

@@ -40,8 +40,8 @@ export default function EditActiveTowAirplaneDialog({towAirplaneId, open, onSubm
     const dispatch = useAppDispatch();
     const membersStoreState = useSelector((state: RootState) => state.members)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
+    const currentActionStoreState = useSelector((state: RootState) => state.actions)
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
     const [newTowAirplaneId, setNewTowAirplaneId] = useState<number | null | undefined>(towAirplaneId);
     const activeTowAirplane = currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.id === newTowAirplaneId);
     const [towPilotId, setTowPilotId] = useState<number | null | undefined>(activeTowAirplane?.tow_pilot_id);

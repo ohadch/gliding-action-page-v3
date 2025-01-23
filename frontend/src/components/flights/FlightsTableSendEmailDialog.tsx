@@ -26,7 +26,7 @@ export interface FlightsTableSendEmailDialogProps {
 export default function FlightsTableSendEmailDialog(props: FlightsTableSendEmailDialogProps) {
     const {flights, open, onClose} = props;
     const membersStoreState = useSelector((state: RootState) => state.members)
-    const currentActionState = useSelector((state: RootState) => state.currentAction)
+    const currentActionState = useSelector((state: RootState) => state.actions)
     const [memberId, setMemberId] = useState<number | null>(null);
     const dispatch = useAppDispatch();
 

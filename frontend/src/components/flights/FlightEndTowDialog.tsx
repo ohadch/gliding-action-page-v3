@@ -35,7 +35,7 @@ export interface FlightEndTowDialogProps {
 }
 
 export default function FlightEndTowDialog({flight, open, onCancel, onSubmit}: FlightEndTowDialogProps) {
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
 
     const {
         t

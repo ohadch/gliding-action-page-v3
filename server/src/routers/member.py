@@ -26,7 +26,7 @@ tags = [prefix]
     response_model=List[MemberSchema],
     summary=f"Search {prefix}",
 )
-async def search(
+def search(
     page: int = 1,
     page_size: Optional[int] = None,
     filters: Optional[MemberSearchSchema] = None,
@@ -42,7 +42,7 @@ async def search(
     :param settings: Settings
     :return: List of members
     """
-    return await crud.search(
+    return crud.search(
         db=db,
         filters=filters,
         page=page,
@@ -56,13 +56,13 @@ async def search(
     response_model=MemberSchema,
     summary=f"Create {prefix}",
 )
-async def create(data: MemberCreateSchema, db: Session = Depends(get_db)):
+def create(data: MemberCreateSchema, db: Session = Depends(get_db)):
     """
     Create member
     :param data: Data
     :param db: Database session
     """
-    return await crud.create(
+    return crud.create(
         db=db,
         data=data,
     )
@@ -74,14 +74,14 @@ async def create(data: MemberCreateSchema, db: Session = Depends(get_db)):
     response_model=MemberSchema,
     summary=f"Get {prefix} by ID",
 )
-async def get_by_id(id_: int, db: Session = Depends(get_db)):
+def get_by_id(id_: int, db: Session = Depends(get_db)):
     """
     Read member by ID
     :param id_: Member ID
     :param db: Database session
     :return: Member
     """
-    member = await crud.get_by_id(db=db, id_=id_)
+    member = crud.get_by_id(db=db, id_=id_)
     if not member:
         raise HTTPException(status_code=404, detail=f"{prefix.title()} not found")
     return member
@@ -93,7 +93,7 @@ async def get_by_id(id_: int, db: Session = Depends(get_db)):
     response_model=MemberSchema,
     summary=f"Update {prefix}",
 )
-async def update(
+def update(
     id_: int,
     data: MemberUpdateSchema,
     db: Session = Depends(get_db),
@@ -117,7 +117,7 @@ async def update(
     tags=tags,
     summary=f"Delete {prefix}",
 )
-async def delete(id_: int, db: Session = Depends(get_db)):
+def delete(id_: int, db: Session = Depends(get_db)):
     """
     Delete member
     :param id_: Member ID

@@ -308,7 +308,6 @@ class SeedDataGenerator:
             call_sign="4X-CAB",
         )
 
-        # Action
-        self._create_action(date=datetime.date(2021, 1, 1))
-
-        self._create_action(date=datetime.date(2021, 1, 2))
+        # Create an action for every day in January 2021
+        for i in range(1, 32):
+            self._create_action(date=datetime.date(2021, 1, i))

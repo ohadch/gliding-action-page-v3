@@ -13,7 +13,7 @@ import TableRow from "@mui/material/TableRow";
 import TableContainer from "@mui/material/TableContainer";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
-import {fetchNotifications, fetchFlights, fetchComments} from "../../store/actions/currentAction.ts";
+import {fetchNotifications, fetchFlights, fetchComments} from "../../store/actions/action.ts";
 import {getMemberDisplayValue} from "../../utils/display.ts";
 import {fetchMembers} from "../../store/actions/member.ts";
 import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
@@ -25,7 +25,7 @@ import NotificationStateChip from "../common/NotificationStateChip.tsx";
 
 export default function NotificationsTable() {
     const dispatch = useAppDispatch();
-    const {flights, notifications, fetchInProgress, actionId} = useSelector((state: RootState) => state.currentAction)
+    const {flights, notifications, fetchInProgress, actionId} = useSelector((state: RootState) => state.actions)
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)

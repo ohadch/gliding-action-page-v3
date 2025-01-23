@@ -11,14 +11,16 @@ import TableCell from "@mui/material/TableCell";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import {useEffect} from "react";
-import {fetchEvents} from "../../store/actions/currentAction.ts";
+import {fetchEvents} from "../../store/actions/action.ts";
 import EventStateChip from "../../components/common/EventStateChip.tsx";
+import {setReviewMode} from "../../store/reducers/actionSlice.ts";
 
 export default function SettingsPage() {
     const {t} = useTranslation();
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
+    const reviewMode = useSelector((state: RootState) => state.actions.reviewMode);
     const dispatch = useAppDispatch();
-    const {events, fetchInProgress} = useSelector((state: RootState) => state.currentAction) || [];
+    const {events, fetchInProgress} = useSelector((state: RootState) => state.actions) || [];
 
     useEffect(() => {
         if (!events && !fetchInProgress && action) {
@@ -68,6 +70,26 @@ export default function SettingsPage() {
         )
     }
 
+    function renderToggleReviewModeButton() {
+        return (
+            <Button variant="contained" color="primary"
+                onClick={() => {
+                    if (!confirm(
+                        reviewMode ? t("CONFIRM_EXIT_REVIEW_MODE") : t("CONFIRM_ENTER_REVIEW_MODE")
+                    )) {
+                        return;
+                    }
+
+                    dispatch(
+                        setReviewMode(!reviewMode)
+                    )
+                }}
+            >
+                {reviewMode ? t("EXIT_REVIEW_MODE") : t("ENTER_REVIEW_MODE")}
+            </Button>
+        )
+    }
+
     function exportActionData(action: ActionSchema) {
         if (!confirm(`${t("CONFIRM_ACTION_DATA_EXPORT")} (${t("ACTION_DATE")}: ${new Date(action.date).toLocaleDateString()})`)) {
             return;
@@ -89,11 +111,11 @@ export default function SettingsPage() {
         );
     }
 
-    const actionDataExportRequestedEvents = events?.filter((event) => (
-        event.type === "action_data_export_requested" && event.action_id === action?.id
+    const actionDataImportExportRequestedEvents = events?.filter((event) => (
+        (event.type === "action_data_export_requested" || event.type === "reference_data_import_requested") && event.action_id === action?.id
     )) || [];
 
-    function renderActionDataExportRequestEventsTable() {
+    function renderActionDataImportExportRequestEventsTable() {
         return (
             <Table>
                     <TableHead>
@@ -106,7 +128,7 @@ export default function SettingsPage() {
                         </TableRow>
                     </TableHead>
                 <TableBody>
-                    {actionDataExportRequestedEvents.map((event) => (
+                    {actionDataImportExportRequestedEvents.map((event) => (
                         <TableRow key={event.id}>
                             <TableCell align="right">
                                 <EventStateChip state={event.state}/>
@@ -133,6 +155,27 @@ export default function SettingsPage() {
         )
     }
 
+    function renderImportReferenceDataButton(action: ActionSchema) {
+        return (
+            <Button variant="contained" color="primary"
+                    onClick={() => {
+                        if (!confirm(t("CONFIRM_IMPORT_REFERENCE_DATA"))) {
+                            return;
+                        }
+                        dispatch(
+                            createEvent({
+                                action_id: action.id,
+                                type: "reference_data_import_requested",
+                                payload: {}
+                            })
+                        )
+                    }}
+            >
+                {t("IMPORT_REFERENCE_DATA")}
+            </Button>
+        )
+    }
+
     return (
         <Grid>
             <Grid item xs={12}>
@@ -141,12 +184,18 @@ export default function SettingsPage() {
             <Grid item xs={12}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
+                        {action && renderToggleReviewModeButton()}
+                    </Grid>
+                    <Grid item xs={12}>
                         {action && renderReopenActionButton(action)}
                     </Grid>
                     <Grid item sx={{
                         display: "flex",
                         flexDirection: "column",
                     }}>
+                        <Grid mb={2}>
+                            {action && renderImportReferenceDataButton(action)}
+                        </Grid>
                         <Grid>
                             {action && renderExportActionDataButton(action)}
                         </Grid>
@@ -162,11 +211,11 @@ export default function SettingsPage() {
 
                                 </Grid>
                                 <Grid item xs={12}>
-                        <h2>{t("DATA_EXPORT_REQUEST_EVENTS")}</h2>
+                        <h2>{t("DATA_IMPORT_EXPORT_REQUEST_EVENTS")}</h2>
                         {
-                            actionDataExportRequestedEvents.length === 0 ? (
+                            actionDataImportExportRequestedEvents.length === 0 ? (
                                 <p>{t("NO_DATA_EXPORT_REQUEST_EVENTS_FOR_ACTION")}.</p>
-                            ) : renderActionDataExportRequestEventsTable()
+                            ) : renderActionDataImportExportRequestEventsTable()
                         }
                     </Grid>
                 </Grid>

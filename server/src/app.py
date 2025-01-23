@@ -4,9 +4,8 @@ from starlette.middleware.cors import CORSMiddleware
 load_dotenv()
 
 import logging
-import time
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi_route_logger_middleware import RouteLoggerMiddleware
@@ -42,29 +41,20 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(RouteLoggerMiddleware)
 
 
-@app.middleware("http")
-async def add_process_time_header(request: Request, call_next):
-    start_time = time.time()
-    response = await call_next(request)
-    process_time = time.time() - start_time
-    response.headers["X-Process-Time"] = str(process_time)
-    return response
-
-
 @app.on_event("startup")
-async def startup():
+def startup():
     # hook startup event to connect to database for example
-    # await database.connect()
+    # database.connect()
     logger.debug("Application startup", extra={})
 
 
 @app.on_event("shutdown")
-async def shutdown():
+def shutdown():
     # hook startup event to disconnect from database for example
-    # await database.disconnect()
+    # database.disconnect()
     logger.debug("Application shutdown", extra={})
 
 
 @app.get("/health")
-async def health():
+def health():
     return {"status": "ok"}

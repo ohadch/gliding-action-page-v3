@@ -29,23 +29,20 @@ import {initReactI18next, useTranslation} from "react-i18next";
 import SelectActionDialog from "./components/actions/SelectActionDialog.tsx";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "./store";
-import {CACHE_KEY_ACTION, TEXTS_HEBREW} from "./utils/consts.ts";
+import {TEXTS_HEBREW} from "./utils/consts.ts";
 import {CacheService} from "./utils/cache.ts";
-import {
-    setActiveTowAirplanes,
-    setCurrentActionId,
-    setFlights
-} from "./store/reducers/currentActionSlice.ts";
 import {
     fetchActiveTowAirplanes,
     fetchComments,
     fetchEvents,
     fetchFlights,
-    fetchNotifications
-} from "./store/actions/currentAction.ts";
+    fetchNotifications, setActionAsToday,
+} from "./store/actions/action.ts";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
 import {ConnectingAirports, Email, LegendToggle, Settings, Dashboard} from "@mui/icons-material";
+import {useEffect} from "react";
+import {setCurrentActionId} from "./store/reducers/actionSlice.ts";
 
 const DRAWER_WIDTH = 240;
 
@@ -132,11 +129,27 @@ export default function App() {
     const dispatch = useAppDispatch();
     const [drawerOpen, setDrawerDrawerOpen] = React.useState(false);
     const [theme, setTheme] = React.useState(CacheService.get("CACHE_KEY_THEME") === "dark" ? darkTheme : lightTheme);
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
+    const reviewMode = useSelector((state: RootState) => state.actions.reviewMode);
     const [selectActionDialogOpen, setSelectActionDialogOpen] = React.useState(false);
     const {t} = useTranslation()
     const {pathname} = useLocation();
     document.body.dir = i18n.dir();
+
+    // If review mode, surround the app with the reviewModeStyle which is an orange border
+    const reviewModeStyle = reviewMode ? {
+        border: "10px solid orange",
+    } : {};
+
+    useEffect(() => {
+        if (!reviewMode && !action) {
+            dispatch(
+                setActionAsToday({
+                    date: new Date().toISOString().split("T")[0]
+                })
+            )
+        }
+    }, [action, dispatch, reviewMode]);
 
     const toggleDrawer = () => {
         setDrawerDrawerOpen(!drawerOpen);
@@ -190,6 +203,23 @@ export default function App() {
                             onClick={() => setSelectActionDialogOpen(true)}>
                             {t("SELECT_ACTION")}
                         </Button>
+                    </Alert>
+                </Card>
+            </Typography>
+        )
+    }
+
+    function renderReviewModeAlertMessage() {
+        return (
+            <Typography variant="h4" component="h4" mb={2}>
+                <Card>
+                    <Alert severity="warning" sx={{
+                        height: "100%",
+                    }}>
+                        <AlertTitle>
+                            <strong>{t("REVIEW_MODE_TITLE")}</strong>
+                        </AlertTitle>
+                        {t("REVIEW_MODE_MESSAGE")}
                     </Alert>
                 </Card>
             </Typography>
@@ -273,14 +303,21 @@ export default function App() {
             )
         }
         return (
-            <Button color="inherit" onClick={() => setSelectActionDialogOpen(true)}>
+            <Button
+                color="inherit"
+                onClick={() => setSelectActionDialogOpen(true)}
+                disabled={!reviewMode}
+                sx={{
+                    color: "white !important",
+                }}
+            >
                 {t("CURRENT_ACTION")}: {" "}
                 {action?.date.split("T")[0]}
             </Button>
         )
     }
 
-    const flightsWithUnsettlePayments = useSelector((state: RootState) => state.currentAction.flights?.filter((flight) => {
+    const flightsWithUnsettlePayments = useSelector((state: RootState) => state.actions.flights?.filter((flight) => {
         // Only ClubGuest flights require payment settlement
         if (flight.flight_type !== "ClubGuest") {
             return false
@@ -295,13 +332,6 @@ export default function App() {
                 <SelectActionDialog
                     open={selectActionDialogOpen}
                     onClose={() => setSelectActionDialogOpen(false)}
-                    onQuitAction={() => {
-                        dispatch(setCurrentActionId(null))
-                        dispatch(setActiveTowAirplanes(undefined))
-                        dispatch(setFlights(undefined))
-                        setSelectActionDialogOpen(false)
-                        CacheService.remove(CACHE_KEY_ACTION)
-                    }}
                     onActionSelected={(actionId) => {
                         dispatch(setCurrentActionId(actionId))
                         dispatch(fetchActiveTowAirplanes(actionId))
@@ -313,7 +343,7 @@ export default function App() {
                 />
                 <Box sx={{display: 'flex'}}>
                     <CssBaseline/>
-                    <AppBar position="absolute" open={drawerOpen}>
+                    <AppBar position="absolute" open={drawerOpen} color={reviewMode ? "warning" : "primary" as any}>
                         <Toolbar
                             sx={{
                                 pl: '24px', // keep padding when drawer closed
@@ -402,9 +432,11 @@ export default function App() {
                             height: '100vh',
                             overflow: 'auto',
                         }}
+                        style={reviewModeStyle}
                     >
                         <Toolbar/>
                         <Container maxWidth="xl" sx={{mt: 4, mb: 4}}>
+                            {reviewMode && renderReviewModeAlertMessage()}
 
                             {
                                 action?.closed_at && (

@@ -14,7 +14,7 @@ import {
     fetchComments,
     fetchFlights,
     updateFlight
-} from "../../store/actions/currentAction.ts";
+} from "../../store/actions/action.ts";
 import FlightCreationWizardDialog from "../../components/flights/FlightCreationWizardDialog.tsx";
 import {fetchGliderOwners, fetchGliders} from "../../store/actions/glider.ts";
 import EditFlightDetailsDialog from "../../components/flights/EditFlightDetailsDialog.tsx";
@@ -41,8 +41,8 @@ export default function DashboardPage() {
     const [flightCreationWizardDialogOpen, setFlightCreationWizardDialogOpen] = useState<boolean>(false);
     const [summaryGeneratorWizardDialogOpen, setSummaryGeneratorWizardDialogOpen] = useState<boolean>(false);
     const {t} = useTranslation();
-    const {flights, fetchingFlightsInProgress} = useSelector((state: RootState) => state.currentAction);
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.currentAction.actionId))
+    const {flights, fetchingFlightsInProgress} = useSelector((state: RootState) => state.actions);
+    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
     const membersStoreState = useSelector((state: RootState) => state.members);
     const glidersStoreState = useSelector((state: RootState) => state.gliders);
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes);
@@ -54,7 +54,8 @@ export default function DashboardPage() {
     const [endTowDialogFlight, setEndTowDialogFlight] = useState<FlightSchema | null>(null);
     const [settlePaymentDialogFlight, setSettlePaymentDialogFlight] = useState<FlightSchema | null>(null);
     const shownFlightStates = action?.closed_at ? ["Landed"] : ORDERED_FLIGHT_STATES;
-    const currentActionStoreState = useSelector((state: RootState) => state.currentAction)
+    const currentActionStoreState = useSelector((state: RootState) => state.actions)
+    const reviewMode = currentActionStoreState.reviewMode;
 
 
     useEffect(() => {
@@ -196,6 +197,8 @@ export default function DashboardPage() {
 
         const promises = [];
 
+        const shouldCreateEvent = !reviewMode;
+
         switch (state) {
             case "Draft":
                 updatePayload.take_off_at = null;
@@ -309,7 +312,7 @@ export default function DashboardPage() {
             case "Landed":
                 updatePayload.landing_at = now;
 
-                if (action?.id) {
+                if (action?.id && shouldCreateEvent) {
                     promises.push(new Promise(() => dispatch(createEvent({
                         action_id: action.id,
                         type: "flight_landed",

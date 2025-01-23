@@ -28,20 +28,20 @@ export interface SelectActionDialogProps {
     open: boolean
     onClose: () => void
     onActionSelected: (actionId: number) => void
-    onQuitAction: () => void
 }
 
-export default function SelectActionDialog({open, onQuitAction, onClose, onActionSelected}: SelectActionDialogProps) {
+export default function SelectActionDialog({open, onClose, onActionSelected}: SelectActionDialogProps) {
     const dispatch = useAppDispatch();
     const {fetchInProgress, actions, page, pageSize} = useSelector((state: RootState) => state.actions)
-    const {actionId: currentActionId} = useSelector((state: RootState) => state.currentAction)
+    const {actionId: currentActionId} = useSelector((state: RootState) => state.actions)
+    const reviewMode = useSelector((state: RootState) => state.actions.reviewMode)
 
     const {
         t
     } = useTranslation()
 
     useEffect(() => {
-        if (!actions && !fetchInProgress) {
+        if ((actions?.length || 0) < 2 && !fetchInProgress && reviewMode) {
             dispatch(fetchActions({
                 page,
                 pageSize,
@@ -163,9 +163,6 @@ export default function SelectActionDialog({open, onQuitAction, onClose, onActio
             <DialogActions>
                 <Button onClick={onClose}>
                     {t("CANCEL")}
-                </Button>
-                <Button onClick={onQuitAction}>
-                    {t("QUIT_ACTION")}
                 </Button>
             </DialogActions>
         </Dialog>
