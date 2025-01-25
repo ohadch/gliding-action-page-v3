@@ -12,7 +12,7 @@ export default function Duration({ durations }: DurationProps) {
 
   const action = useSelector(
     (state: RootState) =>
-      state.actions.actions?.find((action) => action.id === state.actions.actionId)
+      state.actionDays.actions?.find((action) => action.id === state.actionDays.actionId)
   );
 
   useEffect(() => {
@@ -22,15 +22,16 @@ export default function Duration({ durations }: DurationProps) {
 
     const intervalId = setInterval(() => {
       const totalDurationInMillis = durations.reduce((accumulator, currentDuration) => {
-        const start = moment(currentDuration.startTime);
+        const start = moment(currentDuration.startTime + 'Z');
         const end = currentDuration.endTime
-          ? moment(currentDuration.endTime)
+          ? moment(currentDuration.endTime + 'Z')
           : moment()
               .set({
                 year: moment(action?.date).year(),
                 month: moment(action?.date).month(),
                 date: moment(action?.date).date(),
               })
+              .utc();
 
         return accumulator + end.diff(start);
       }, 0);

@@ -1,373 +1,144 @@
-import {
-    Autocomplete, Checkbox,
-    Chip,
-    FormControl,
-    FormGroup,
-    Grid, InputLabel, ListItemText,
-    MenuItem, OutlinedInput,
-    Select, SelectChangeEvent,
-    TextField,
-} from "@mui/material";
-import {useTranslation} from "react-i18next";
-import {getMemberDisplayValue, getTowAirplaneDisplayValue} from "../../utils/display.ts";
-import {useCallback, useEffect, useState} from "react";
-import {useSelector} from "react-redux";
-import {RootState, useAppDispatch} from "../../store";
-import {updateAction} from "../../store/actions/action.ts";
-import {isCfi} from "../../utils/members.ts";
-import Box from "@mui/material/Box";
-import EditActiveTowAirplanesDialog from "./EditActiveTowAirplanesDialog.tsx";
-import {
-    addActiveTowAirplane,
-    deleteActiveTowAirplane,
-    fetchActiveTowAirplanes
-} from "../../store/actions/action.ts";
-import {createEvent} from "../../store/actions/event.ts";
-import {MemberSchema} from "../../lib/types.ts";
+import { useActionConfiguration } from "../../hooks/useActionConfiguration";
+import { useTranslation } from "react-i18next";
+import { Grid, FormControl, InputLabel, Select, MenuItem, Button, Tooltip } from "@mui/material";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { getMemberDisplayValue } from "../../utils/display";
+import { getFieldResponsibles, getInstructors } from "../../store/members";
+import { TowAirplanesSelect } from "./TowAirplanesSelect";
+import AddIcon from '@mui/icons-material/Add';
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-        },
+interface ActionConfigurationComponentProps {
+    onNewFlightClick: () => void;
+}
+
+// Define consistent heights - use a smaller height that works for all components
+const FORM_CONTROL_HEIGHT = '56px';
+
+const SHARED_STYLES = {
+    height: FORM_CONTROL_HEIGHT,
+    '& .MuiSelect-select, & .MuiButtonBase-root': {
+        height: '100% !important',
+        display: 'flex',
+        alignItems: 'center',
+        fontSize: '1.1rem'  // Larger text for all inputs
     },
+    '& .MuiInputLabel-root': {
+        fontSize: '1.1rem'  // Larger label text
+    },
+    '& .MuiMenuItem-root': {
+        fontSize: '1.1rem'  // Larger menu item text
+    }
 };
 
-export default function ActionConfigurationComponent() {
-    const {t} = useTranslation();
-    const membersStoreState = useSelector((state: RootState) => state.members)
-    const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
-    const currentActionStoreState = useSelector((state: RootState) => state.actions)
-    const getMemberById = useCallback((id: number) => membersStoreState.members?.find((member) => member.id === id), [membersStoreState.members]);
-    const dispatch = useAppDispatch();
-    const [editedActiveTowAirplaneId, setEditedActiveTowAirplaneId] = useState<number | null>(null);
+const BUTTON_STYLES = {
+    height: '100%',
+    fontSize: '1.1rem',
+    gap: 1,  // Space between icon and text
+    '& .MuiSvgIcon-root': {
+        fontSize: '1.3rem'  // Slightly larger icon
+    }
+};
 
-    useEffect(() => {
-        if (!action) {
-            return
-        }
+export function ActionConfigurationComponent({ onNewFlightClick }: ActionConfigurationComponentProps) {
+    const { t } = useTranslation();
+    const { 
+        action,
+        activeTowAirplanes,
+        handleActionUpdate,
+        handleActiveTowAirplaneAdd,
+        handleActiveTowAirplaneRemove 
+    } = useActionConfiguration();
 
-        if (!currentActionStoreState.activeTowAirplanes) {
-            dispatch(
-                fetchActiveTowAirplanes(action?.id)
-            )
-        }
-    }, [
-        currentActionStoreState.activeTowAirplanes,
-        dispatch,
-        action
-    ]);
+    const fieldResponsibles = useSelector(getFieldResponsibles);
+    const instructors = useSelector(getInstructors);
+    const aircraftState = useSelector((state: RootState) => state.aircraft);
+    const membersState = useSelector((state: RootState) => state.members);
 
     if (!action) {
         return null;
     }
 
-    const {field_responsible_id, responsible_cfi_id} = action;
-
-    function handleActiveTowAirplaneChange(event: SelectChangeEvent<number[]>) {
-        const {
-            target: {value},
-        } = event;
-
-        const towAirplaneIdsAfterChange: number[] = typeof value === 'string' ? value.split(',').map(val => parseFloat(val)) : value
-        const activeTowAirplanes = currentActionStoreState?.activeTowAirplanes?.map((activeTowAirplane) => activeTowAirplane.airplane_id) || []
-        const addedTowAirplaneId = towAirplaneIdsAfterChange.find(towAirplaneId => !activeTowAirplanes.includes(towAirplaneId))
-        const removedTowAirplaneId = activeTowAirplanes.find(towAirplaneId => !towAirplaneIdsAfterChange.includes(towAirplaneId))
-
-        if (addedTowAirplaneId) {
-            setEditedActiveTowAirplaneId(addedTowAirplaneId)
-        } else if (removedTowAirplaneId) {
-            const towAirplaneInTowFlight = currentActionStoreState?.flights?.find((flight) => flight.tow_airplane_id === removedTowAirplaneId && flight.state === "Tow")
-
-            if (towAirplaneInTowFlight) {
-                const towAirplane = towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === removedTowAirplaneId)
-
-                if (!towAirplane) {
-                    return
-                }
-
-                alert(`${t("CANNOT_DEACTIVATE_TOW_AIRPLANE_DURING_TOW")}: ${getTowAirplaneDisplayValue(towAirplane)}`)
-                return
-            }
-
-            const activationId = currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === removedTowAirplaneId)?.id
-            if (action?.id && activationId) {
-                const removedTowAirplane = towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === removedTowAirplaneId)
-                const removedTowPilot = getMemberById(currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === removedTowAirplaneId)?.tow_pilot_id || 0)
-
-                if (removedTowAirplane && removedTowPilot) {
-                    if (!confirm(`${t("DEACTIVATE_TOW_AIRPLANE_CONFIRMATION")} ${getTowAirplaneDisplayValue(removedTowAirplane)} (${getMemberDisplayValue(removedTowPilot)})`)) {
-                        return
-                    }
-                }
-
-                dispatch(
-                    createEvent({
-                        action_id: action.id,
-                        type: "tow_airplane_deactivated",
-                        payload: {
-                            tow_airplane_id: removedTowAirplaneId,
-                            tow_pilot_id: currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === removedTowAirplaneId)?.tow_pilot_id,
-                            field_responsible_id: action?.field_responsible_id,
-                        }
-                    })
-                )
-
-                dispatch(
-                    deleteActiveTowAirplane(activationId)
-                )
-            }
-        }
-    }
-
-    function renderTowAirplane(towAirplaneId: number) {
-        const activeTowAirplane = currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === towAirplaneId);
-        const towAirplane = towAirplanesStoreState.towAirplanes?.find((towAirplane) => towAirplane.id === towAirplaneId);
-        const towPilot = activeTowAirplane?.tow_pilot_id ? getMemberById(activeTowAirplane.tow_pilot_id) : null;
-
-
-        const towAirplaneLabel = towAirplane ? getTowAirplaneDisplayValue(towAirplane) : null;
-        const towPilotLabel = towPilot ? `(${getMemberDisplayValue(towPilot)})` : null;
-        const label = [towAirplaneLabel, towPilotLabel].filter((label) => label).join(" ");
-
-        return (
-            <Chip key={towAirplaneId} label={label}/>
-        )
-
-    }
-
-    const activeTowPilotIds = currentActionStoreState?.activeTowAirplanes?.map((activeTowAirplane) => activeTowAirplane.tow_pilot_id) || []
-
-    function getFieldResponsibleOptions() {
-        const initialOptions = membersStoreState.members || []
-
-        return initialOptions.filter(member => ![
-            ...activeTowPilotIds,
-            responsible_cfi_id
-        ].includes(member.id))
-    }
-
-    function getResponsibleCfiOptions() {
-        const initialOptions = membersStoreState.members || []
-
-        return initialOptions.filter(member => ![
-            ...activeTowPilotIds,
-            field_responsible_id
-        ].includes(member.id) && isCfi(member, membersStoreState.membersRoles || []))
-    }
-
-    function displayTowPilotByAirplaneId(airplaneId: number) {
-        const activeTowAirplane = currentActionStoreState.activeTowAirplanes?.find((activeTowAirplane) => activeTowAirplane.airplane_id === airplaneId);
-        const towPilot = activeTowAirplane?.tow_pilot_id ? getMemberById(activeTowAirplane.tow_pilot_id) : null;
-        return towPilot ? getMemberDisplayValue(towPilot) : "";
-    }
-
-    function onFieldResponsibleChanged(newValue: MemberSchema | null) {
-        if (!confirm(t("UPDATE_FIELD_RESPONSIBLE_CONFIRMATION"))) {
-            return
-        }
-
-        if (!action) {
-            return
-        }
-
-        if (newValue?.id === field_responsible_id) {
-            return
-        }
-
-        if (field_responsible_id) {
-            dispatch(createEvent({
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                action_id: action.id,
-                type: "field_responsible_unassigned",
-                payload: {
-                    field_responsible_id
-                }
-            }))
-        }
-
-        dispatch(
-            updateAction({
-                actionId: action.id,
-                updatePayload: {
-                    ...action,
-                    field_responsible_id: newValue?.id
-                }
-            })
-        )
-
-        if (newValue?.id) {
-            dispatch(createEvent({
-                action_id: action.id,
-                type: "field_responsible_assigned",
-                payload: {
-                    field_responsible_id: newValue?.id,
-                }
-            }))
-        }
-    }
-
-    function onResponsibleCfiChanged(newValue: MemberSchema | null) {
-        if (!confirm(t("UPDATE_RESPONSIBLE_CFI_CONFIRMATION"))) {
-            return
-        }
-
-        if (!action) {
-            return
-        }
-
-        if (newValue?.id === responsible_cfi_id) {
-            return
-        }
-
-        if (responsible_cfi_id) {
-            dispatch(createEvent({
-                action_id: action.id,
-                type: "responsible_cfi_unassigned",
-                payload: {
-                    responsible_cfi_id,
-                    field_responsible_id: action?.field_responsible_id,
-                }
-            }))
-        }
-
-        dispatch(
-            updateAction({
-                actionId: action.id,
-                updatePayload: {
-                    ...action,
-                    responsible_cfi_id: newValue?.id
-                }
-            })
-        )
-
-        if (newValue?.id) {
-            dispatch(createEvent({
-                action_id: action.id,
-                type: "responsible_cfi_assigned",
-                payload: {
-                    responsible_cfi_id: newValue?.id,
-                    field_responsible_id: action?.field_responsible_id,
-                }
-            }))
-        }
-    }
-
     return (
-        <>
-            {editedActiveTowAirplaneId && <EditActiveTowAirplanesDialog
-                towAirplaneId={editedActiveTowAirplaneId}
-                open={Boolean(editedActiveTowAirplaneId)}
-                onCancel={() => setEditedActiveTowAirplaneId(null)}
-                onSubmit={(towPilotId) => {
-                    dispatch(
-                        createEvent({
-                            action_id: action.id,
-                            type: "tow_airplane_activated",
-                            payload: {
-                                tow_airplane_id: editedActiveTowAirplaneId,
-                                tow_pilot_id: towPilotId,
-                                field_responsible_id: action?.field_responsible_id,
-                            }
-                        })
-                    )
+        <Grid container spacing={2}>
+            <Grid item xs={12} md={3}>
+                <FormControl fullWidth sx={SHARED_STYLES}>
+                    <Tooltip title={t("NEW_FLIGHT") + " (Shift + +)"}>
+                        <Button
+                            variant="contained"
+                            onClick={onNewFlightClick}
+                            disabled={!action.field_responsible_id || !action.responsible_cfi_id || Boolean(action?.closed_at)}
+                            fullWidth
+                            sx={BUTTON_STYLES}
+                            startIcon={<AddIcon />}
+                        >
+                            {t("NEW_FLIGHT")}
+                        </Button>
+                    </Tooltip>
+                </FormControl>
+            </Grid>
 
-                    dispatch(
-                        addActiveTowAirplane({
-                            action_id: action.id,
-                            airplane_id: editedActiveTowAirplaneId,
-                            tow_pilot_id: towPilotId,
-                        })
-                    )
-                    setEditedActiveTowAirplaneId(null)
-                }}
-            />}
-            <Grid container spacing={2}>
-                <Grid item xs={3}>
-                    <FormGroup>
-                        <FormControl>
-                            <Autocomplete
-                                id="field-responsible"
-                                disabled={Boolean(action?.closed_at)}
-                                options={getFieldResponsibleOptions()}
-                                value={(field_responsible_id ? getMemberById(field_responsible_id) : null) || null}
-                                onChange={(_, newValue) => onFieldResponsibleChanged(newValue)}
-                                getOptionLabel={(option) => getMemberDisplayValue(
-                                    option,
-                                )}
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            label={t("FIELD_RESPONSIBLE")}
-                                        />
-                                    )
-                                }}
-                            />
-                        </FormControl>
-                    </FormGroup>
-                </Grid>
-                <Grid item xs={3}>
-                    <FormGroup>
-                        <FormControl>
-                            <Autocomplete
-                                id="responsible-cfi"
-                                disabled={Boolean(action?.closed_at)}
-                                options={getResponsibleCfiOptions()}
-                                value={(responsible_cfi_id ? getMemberById(responsible_cfi_id) : null) || null}
-                                onChange={(_, newValue) => onResponsibleCfiChanged(newValue)}
-                                getOptionLabel={(option) => getMemberDisplayValue(
-                                    option,
-                                )}
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            label={t("RESPONSIBLE_CFI")}
-                                        />
-                                    )
-                                }}
-                            />
-                        </FormControl>
-                    </FormGroup>
-                </Grid>
-                <Grid item xs={6}>
-                    <FormGroup>
-                        <FormControl>
-                            <InputLabel id="active-tow-airplanes-label">{t("ACTIVE_TOW_AIRPLANES")}</InputLabel>
+            <Grid item xs={12} md={9}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth sx={SHARED_STYLES}>
+                            <InputLabel id="field-responsible-label">
+                                {t("FIELD_RESPONSIBLE")}
+                            </InputLabel>
                             <Select
+                                labelId="field-responsible-label"
+                                value={action.field_responsible_id || ''}
+                                label={t("FIELD_RESPONSIBLE")}
+                                onChange={(e) => handleActionUpdate({
+                                    field_responsible_id: Number(e.target.value)
+                                })}
                                 disabled={Boolean(action?.closed_at)}
-                                labelId="active-tow-airplanes-label"
-                                id="active-tow-airplanes"
-                                multiple
-                                value={currentActionStoreState?.activeTowAirplanes?.map((activeTowAirplane) => activeTowAirplane.airplane_id) || []}
-                                onChange={(event) => handleActiveTowAirplaneChange(event)}
-                                input={<OutlinedInput label="Tag"/>}
-                                renderValue={(selected) => (
-                                    <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
-                                        {selected.map((value) => renderTowAirplane(value))}
-                                    </Box>
-                                )}
-                                MenuProps={MenuProps}
+                                sx={{ height: '100%' }}
                             >
-                                {(towAirplanesStoreState.towAirplanes || []).map((towAirplane) => (
-                                    <MenuItem key={towAirplane.id} value={towAirplane.id}>
-                                        <Checkbox
-                                            checked={(currentActionStoreState?.activeTowAirplanes?.map((activeTowAirplane) => activeTowAirplane.airplane_id) || []).indexOf(towAirplane.id) > -1}/>
-                                        <ListItemText primary={towAirplane.call_sign}
-                                                      secondary={displayTowPilotByAirplaneId(towAirplane.id)}/>
+                                {fieldResponsibles.map((member) => (
+                                    <MenuItem key={member.id} value={member.id}>
+                                        {getMemberDisplayValue(member)}
                                     </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
-                    </FormGroup>
+                    </Grid>
+
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth sx={SHARED_STYLES}>
+                            <InputLabel id="responsible-cfi-label">
+                                {t("RESPONSIBLE_CFI")}
+                            </InputLabel>
+                            <Select
+                                labelId="responsible-cfi-label"
+                                value={action.responsible_cfi_id || ''}
+                                label={t("RESPONSIBLE_CFI")}
+                                onChange={(e) => handleActionUpdate({
+                                    responsible_cfi_id: Number(e.target.value)
+                                })}
+                                disabled={Boolean(action?.closed_at)}
+                                sx={{ height: '100%' }}
+                            >
+                                {instructors.map((member) => (
+                                    <MenuItem key={member.id} value={member.id}>
+                                        {getMemberDisplayValue(member)}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item xs={12} md={4}>
+                        <TowAirplanesSelect
+                            activeTowAirplanes={activeTowAirplanes}
+                            disabled={Boolean(action?.closed_at)}
+                            onAdd={handleActiveTowAirplaneAdd}
+                            onRemove={handleActiveTowAirplaneRemove}
+                            sx={{ height: '100%' }}
+                        />
+                    </Grid>
                 </Grid>
             </Grid>
-        </>
-    )
+        </Grid>
+    );
 }

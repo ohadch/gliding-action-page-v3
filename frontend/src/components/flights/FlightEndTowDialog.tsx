@@ -34,17 +34,22 @@ export interface FlightEndTowDialogProps {
     onSubmit: (flight: FlightUpdateSchema) => void
 }
 
-export default function FlightEndTowDialog({flight, open, onCancel, onSubmit}: FlightEndTowDialogProps) {
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
-
-    const {
-        t
-    } = useTranslation()
-
+export default function FlightEndTowDialog({
+    flight,
+    open,
+    onCancel,
+    onSubmit
+}: FlightEndTowDialogProps) {
+    console.log('FlightEndTowDialog render:', { flight, open });
+    const { t } = useTranslation();
+    
+    const action = useSelector((state: RootState) => 
+        state.actionDays.list.actions?.find(
+            (action) => action.id === state.actionDays.currentDay.currentActionId
+        )
+    );
 
     const [towType, setTowType] = useState<TowType | null | undefined>(flight.tow_type);
-
-
     const [autocompleteOpen, setAutocompleteOpen] = useState(true);
 
     function getInputToRender() {
@@ -114,8 +119,6 @@ export default function FlightEndTowDialog({flight, open, onCancel, onSubmit}: F
     }
 
     return (
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         <Dialog open={open} maxWidth="xl">
             <DialogTitle sx={{
                 fontSize: "2rem",
@@ -131,37 +134,21 @@ export default function FlightEndTowDialog({flight, open, onCancel, onSubmit}: F
                     gap: 4
                 }}>
                     <Button
-                        color={"error"}
-                        variant={"contained"}
-                        size={"large"}
+                        color="error"
+                        variant="contained"
+                        size="large"
                         sx={{
                             fontWeight: "bold",
                             fontSize: "1.25rem",
                         }}
-                        onClick={onCancel}>
+                        onClick={onCancel}
+                    >
                         {t("CANCEL")}
                     </Button>
                     <Button
-                        color={"warning"}
-                        variant={"contained"}
-                        size={"large"}
-                        sx={{
-                            fontWeight: "bold",
-                            fontSize: "1.25rem",
-                        }}
-                        onClick={() => {
-                        if (!confirm(t("CLEAR_CONFIRMATION"))) {
-                            return
-                        }
-
-                        setTowType(null);
-                    }}>
-                        {t("CLEAR")}
-                    </Button>
-                    <Button
-                        color={"primary"}
-                        variant={"contained"}
-                        size={"large"}
+                        color="primary"
+                        variant="contained"
+                        size="large"
                         sx={{
                             fontWeight: "bold",
                             fontSize: "1.25rem",
@@ -171,12 +158,9 @@ export default function FlightEndTowDialog({flight, open, onCancel, onSubmit}: F
                             ...flight,
                             state: "Inflight",
                             tow_type: towType,
-                            tow_release_at: flight.tow_release_at || moment().utcOffset(0, true).set({
-                                date: moment(action?.date).date(),
-                                month: moment(action?.date).month(),
-                                year: moment(action?.date).year(),
-                            }).toISOString(),
-                        })}>
+                            tow_release_at: moment.utc().toISOString(),
+                        })}
+                    >
                         {t("CONFIRM")}
                     </Button>
                 </div>

@@ -26,7 +26,7 @@ import EventStateChip from "../common/EventStateChip.tsx";
 
 export default function EventsTable() {
     const dispatch = useAppDispatch();
-    const {flights, events, fetchInProgress, actionId} = useSelector((state: RootState) => state.actions)
+    const {flights, events, fetchInProgress, actionId} = useSelector((state: RootState) => state.actionDays)
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)

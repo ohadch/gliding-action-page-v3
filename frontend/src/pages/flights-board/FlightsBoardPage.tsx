@@ -17,8 +17,8 @@ import {fetchTowAirplanes} from "../../store/actions/towAirplane.ts";
 
 
 export default function FlightsBoardPage() {
-    const {flights, fetchingFlightsInProgress} = useSelector((state: RootState) => state.actions);
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
+    const {flights, fetchingFlightsInProgress} = useSelector((state: RootState) => state.actionDays);
+    const action = useSelector((state: RootState) => state.actionDays.actions?.find((action) => action.id === state.actionDays.actionId))
     const membersStoreState = useSelector((state: RootState) => state.members);
     const glidersStoreState = useSelector((state: RootState) => state.gliders);
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes);

@@ -16,33 +16,45 @@ import {
     Alert,
     AlertTitle,
     Button,
-    Card, Grid,
+    Card,
+    Grid,
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    Tooltip
+    Tooltip,
+    CircularProgress
 } from "@mui/material";
 import {Route, Routes, useLocation} from "react-router-dom";
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import i18n from "i18next";
 import {initReactI18next, useTranslation} from "react-i18next";
-import SelectActionDialog from "./components/actions/SelectActionDialog.tsx";
+import SelectActionDialog from "./components/actions/SelectActionDialog";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "./store";
-import {TEXTS_HEBREW} from "./utils/consts.ts";
-import {CacheService} from "./utils/cache.ts";
-import {
-    fetchActiveTowAirplanes,
-    fetchComments,
-    fetchEvents,
-    fetchFlights,
-    fetchNotifications, setActionAsToday,
-} from "./store/actions/action.ts";
+import {TEXTS} from "./utils/consts";
+import {CacheService} from "./utils/cache";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterMoment} from "@mui/x-date-pickers/AdapterMoment";
-import {ConnectingAirports, Email, LegendToggle, Settings, Dashboard} from "@mui/icons-material";
+import {
+    ConnectingAirports,
+    Email,
+    LegendToggle,
+    Settings,
+    Dashboard,
+    People
+} from "@mui/icons-material";
 import {useEffect} from "react";
-import {setCurrentActionId} from "./store/reducers/actionSlice.ts";
+import {
+    setActionAsToday,
+    setCurrentActionId,
+    fetchActiveTowAirplanes,
+    fetchFlights,
+    fetchEvents,
+    fetchComments,
+    fetchNotifications,
+    fetchGliders,
+    fetchTowAirplanes
+} from "./store";
 
 const DRAWER_WIDTH = 240;
 
@@ -107,33 +119,32 @@ const lightTheme = createTheme({
 })
 
 i18n
-    .use(initReactI18next) // passes i18n down to react-i18next
+    .use(initReactI18next)
     .init({
-        // the translations
-        // (tip move them in a JSON file and import them,
-        // or even better, manage them via a UI: https://react.i18next.com/guides/multiple-translation-files#manage-your-translations-with-a-management-gui)
         resources: {
             he: {
-                translation: TEXTS_HEBREW
+                translation: TEXTS
             }
         },
         lng: "he",
         fallbackLng: "he",
-
         interpolation: {
-            escapeValue: false // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
+            escapeValue: false
         }
     });
 
 export default function App() {
+    const {t} = useTranslation();
     const dispatch = useAppDispatch();
     const [drawerOpen, setDrawerDrawerOpen] = React.useState(false);
     const [theme, setTheme] = React.useState(CacheService.get("CACHE_KEY_THEME") === "dark" ? darkTheme : lightTheme);
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
-    const reviewMode = useSelector((state: RootState) => state.actions.reviewMode);
+    const action = useSelector((state: RootState) =>
+        state.actionDays.list.actions?.find((action) => action.id === state.actionDays.currentDay.currentActionId)
+    );
+    const reviewMode = useSelector((state: RootState) => state.actionDays.currentDay.reviewMode);
     const [selectActionDialogOpen, setSelectActionDialogOpen] = React.useState(false);
-    const {t} = useTranslation()
     const {pathname} = useLocation();
+
     document.body.dir = i18n.dir();
 
     // If review mode, surround the app with the reviewModeStyle which is an orange border
@@ -141,6 +152,13 @@ export default function App() {
         border: "10px solid orange",
     } : {};
 
+    // Fetch initial data only once when app loads
+    useEffect(() => {
+        dispatch(fetchGliders());
+        dispatch(fetchTowAirplanes());
+    }, []); // Empty dependency array means run once on mount
+
+    // Set today's action if needed
     useEffect(() => {
         if (!reviewMode && !action) {
             dispatch(
@@ -160,7 +178,7 @@ export default function App() {
             name: t("DASHBOARD"),
             path: "/",
             icon: <ConnectingAirports/>,
-            element: React.lazy(() => import('./pages/dashboard/DashboardPage.tsx')),
+            element: React.lazy(() => import('./pages/dashboard/DashboardPage')),
         },
         {
             name: t("FLIGHTS_BOARD"),
@@ -185,6 +203,12 @@ export default function App() {
             path: "/settings",
             icon: <Settings/>,
             element: React.lazy(() => import('./pages/settings/SettingsPage.tsx')),
+        },
+        {
+            name: t("MEMBERS"),
+            path: "/members",
+            icon: <People />,
+            element: React.lazy(() => import('./pages/members/MembersPage')),
         }
     ]
 
@@ -280,7 +304,11 @@ export default function App() {
                         key={route.path}
                         path={route.path}
                         element={
-                            <React.Suspense fallback={<div></div>}>
+                            <React.Suspense fallback={
+                                <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
+                                    <CircularProgress />
+                                </Box>
+                            }>
                                 <route.element/>
                             </React.Suspense>
                         }
@@ -317,7 +345,7 @@ export default function App() {
         )
     }
 
-    const flightsWithUnsettlePayments = useSelector((state: RootState) => state.actions.flights?.filter((flight) => {
+    const flightsWithUnsettlePayments = useSelector((state: RootState) => state.actionDays.currentDay.flights?.filter((flight) => {
         // Only ClubGuest flights require payment settlement
         if (flight.flight_type !== "ClubGuest") {
             return false
@@ -333,12 +361,12 @@ export default function App() {
                     open={selectActionDialogOpen}
                     onClose={() => setSelectActionDialogOpen(false)}
                     onActionSelected={(actionId) => {
-                        dispatch(setCurrentActionId(actionId))
-                        dispatch(fetchActiveTowAirplanes(actionId))
-                        dispatch(fetchFlights(actionId))
-                        dispatch(fetchEvents({actionId}))
-                        dispatch(fetchNotifications({actionId}))
-                        dispatch(fetchComments({actionId}));
+                        dispatch(setCurrentActionId(actionId));
+                        dispatch(fetchActiveTowAirplanes(actionId));
+                        dispatch(fetchFlights(actionId));
+                        dispatch(fetchEvents(actionId));
+                        dispatch(fetchNotifications(actionId));
+                        dispatch(fetchComments(actionId));
                     }}
                 />
                 <Box sx={{display: 'flex'}}>

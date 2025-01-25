@@ -4,13 +4,12 @@ import {
     DialogContent,
     DialogActions,
     Button, Grid, Tooltip,
-
 } from "@mui/material";
-import {useEffect} from "react";
-import {useTranslation} from "react-i18next";
-import {useSelector} from "react-redux";
-import {RootState, useAppDispatch} from "../../store";
-import {fetchActions} from "../../store/actions/action.ts";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../../store";
+import { fetchActions, setCurrentActionId } from "../../store/actionDays";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -25,39 +24,48 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Typography from "@mui/material/Typography";
 
 export interface SelectActionDialogProps {
-    open: boolean
-    onClose: () => void
-    onActionSelected: (actionId: number) => void
+    open: boolean;
+    onClose: () => void;
+    onActionSelected: (actionId: number) => void;
 }
 
-export default function SelectActionDialog({open, onClose, onActionSelected}: SelectActionDialogProps) {
+export default function SelectActionDialog({ open, onClose, onActionSelected }: SelectActionDialogProps) {
     const dispatch = useAppDispatch();
-    const {fetchInProgress, actions, page, pageSize} = useSelector((state: RootState) => state.actions)
-    const {actionId: currentActionId} = useSelector((state: RootState) => state.actions)
-    const reviewMode = useSelector((state: RootState) => state.actions.reviewMode)
-
-    const {
-        t
-    } = useTranslation()
+    const { loading, actions, page, pageSize } = useSelector((state: RootState) => state.actionDays.list);
+    const { currentActionId, reviewMode } = useSelector((state: RootState) => state.actionDays.currentDay);
+    const { t } = useTranslation();
 
     useEffect(() => {
-        if ((actions?.length || 0) < 2 && !fetchInProgress && reviewMode) {
+        if ((actions?.length || 0) < 2 && !loading && reviewMode) {
             dispatch(fetchActions({
                 page,
                 pageSize,
             }));
         }
-    });
+    }, [actions?.length, dispatch, loading, page, pageSize, reviewMode]);
+
+    const handleActionSelect = (actionId: number) => {
+        if (currentActionId !== actionId && 
+            !confirm(`${t("CONFIRM_ACTION_CHANGE")}: ${
+                actions?.find(a => a.id === actionId)?.date.split("T")[0]
+            }`)) {
+            return;
+        }
+
+        dispatch(setCurrentActionId(actionId));
+        onActionSelected(actionId);
+        onClose();
+    };
 
     return (
         <Dialog open={open}>
             <DialogTitle
                 sx={{
-                fontSize: "2rem",
-                fontWeight: "bold",
-                display: "flex",
-                justifyContent: "space-between",
-            }}
+                    fontSize: "2rem",
+                    fontWeight: "bold",
+                    display: "flex",
+                    justifyContent: "space-between",
+                }}
             >
                 {t("SELECT_ACTION")}
             </DialogTitle>
@@ -83,24 +91,20 @@ export default function SelectActionDialog({open, onClose, onActionSelected}: Se
                             {actions?.map((action) => (
                                 <TableRow
                                     key={action.id}
-                                    sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell align="right">{action.id}</TableCell>
                                     <TableCell align="right">{action.date.split("T")[0]}</TableCell>
-                                    <TableCell
-                                        align="right">{t(moment(action.date).format("dddd").toUpperCase())}</TableCell>
-                                    <TableCell align="right">{action.closed_at ? t("YES") : t("NO")}</TableCell>
+                                    <TableCell align="right">
+                                        {t(moment(action.date).format("dddd").toUpperCase())}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {action.closed_at ? t("YES") : t("NO")}
+                                    </TableCell>
                                     <TableCell align="right">
                                         <Button
                                             variant={currentActionId === action.id ? "contained" : "outlined"}
-                                            onClick={() => {
-                                                if (currentActionId !== action.id && !confirm(`${t("CONFIRM_ACTION_CHANGE")}: ${action.date.split("T")[0]}`)) {
-                                                    return;
-                                                }
-
-                                                onActionSelected(action.id)
-                                                onClose()
-                                            }}
+                                            onClick={() => handleActionSelect(action.id)}
                                         >
                                             {t("SELECT")}
                                         </Button>
@@ -117,7 +121,7 @@ export default function SelectActionDialog({open, onClose, onActionSelected}: Se
                         alignItems: "center",
                     }}
                 >
-                    <Grid item xs={2}/>
+                    <Grid item xs={2} />
                     <Grid item xs={2}>
                         <Tooltip title={t("GO_TO_PREVIOUS_PAGE")}>
                             <IconButton
@@ -129,7 +133,7 @@ export default function SelectActionDialog({open, onClose, onActionSelected}: Se
                                     }));
                                 }}
                             >
-                                <ArrowForwardIcon/>
+                                <ArrowForwardIcon />
                             </IconButton>
                         </Tooltip>
                     </Grid>
@@ -153,11 +157,11 @@ export default function SelectActionDialog({open, onClose, onActionSelected}: Se
                                     }));
                                 }}
                             >
-                                <ArrowBackIcon/>
+                                <ArrowBackIcon />
                             </IconButton>
                         </Tooltip>
                     </Grid>
-                    <Grid item xs={2}/>
+                    <Grid item xs={2} />
                 </Grid>
             </DialogContent>
             <DialogActions>
@@ -166,5 +170,5 @@ export default function SelectActionDialog({open, onClose, onActionSelected}: Se
                 </Button>
             </DialogActions>
         </Dialog>
-    )
+    );
 }

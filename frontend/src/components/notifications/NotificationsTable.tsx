@@ -25,7 +25,7 @@ import NotificationStateChip from "../common/NotificationStateChip.tsx";
 
 export default function NotificationsTable() {
     const dispatch = useAppDispatch();
-    const {flights, notifications, fetchInProgress, actionId} = useSelector((state: RootState) => state.actions)
+    const {flights, notifications, fetchInProgress, actionId} = useSelector((state: RootState) => state.actionDays)
     const membersStoreState = useSelector((state: RootState) => state.members)
     const glidersStoreState = useSelector((state: RootState) => state.gliders)
     const towAirplanesStoreState = useSelector((state: RootState) => state.towAirplanes)

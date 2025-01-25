@@ -9,13 +9,12 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import {useCallback, useState} from "react";
 import {useSelector} from "react-redux";
-import {getMemberDisplayValue} from "../../utils/display.ts";
+import {getMemberDisplayValue} from "../../utils/display";
 import {RootState, useAppDispatch} from "../../store";
-import CommentEditDialog from "./CommentEditDialog.tsx";
+import CommentEditDialog from "./CommentEditDialog";
 import {Button, Grid, Tooltip} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import {fetchComments} from "../../store/actions/action.ts";
-import {createComment, deleteComment, updateComment} from "../../store/actions/comment.ts";
+import {createComment, updateComment, deleteComment} from "../../store/comments";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -27,23 +26,31 @@ export interface CommentsTableProps {
 export default function CommentsTable(props: CommentsTableProps) {
     const {t} = useTranslation();
     const {comments, flightId} = props;
-    const membersStoreState = useSelector((state: RootState) => state.members)
+    const dispatch = useAppDispatch();
+
+    const membersState = useSelector((state: RootState) => state.members);
+    const action = useSelector((state: RootState) => 
+        state.actionDays.list.actions?.find(
+            (action) => action.id === state.actionDays.currentDay.currentActionId
+        )
+    );
+    const flight = useSelector((state: RootState) => 
+        state.actionDays.currentDay.flights?.find((f) => f.id === flightId)
+    );
+
     const [newCommentText, setNewCommentText] = useState<string | null>(null);
     const [editedComment, setEditedComment] = useState<CommentSchema | null>(null);
     const [editCommentDialogOpen, setEditCommentDialogOpen] = useState<boolean>(false);
-    const currentActionStoreState = useSelector((state: RootState) => state.actions);
-    const action = useSelector((state: RootState) => state.actions.actions?.find((action) => action.id === state.actions.actionId))
-    const fieldResponsibleId = action?.field_responsible_id;
-    const dispatch = useAppDispatch();
-    const flight = useSelector((state: RootState) => state.actions.flights?.find((flight) => flight.id === flightId));
 
-    const getMemberById = useCallback((id: number) => membersStoreState.members?.find((member) => member.id === id), [membersStoreState.members]);
+    const getMemberById = useCallback(
+        (id: number) => membersState.members?.find((member) => member.id === id),
+        [membersState.members]
+    );
+
     const displayMember = (id: number) => {
         const member = getMemberById(id);
-        return member ? getMemberDisplayValue(
-            member,
-        ) : "";
-    }
+        return member ? getMemberDisplayValue(member) : "";
+    };
 
     function onEditCommentDialogClose() {
         setEditCommentDialogOpen(false);
@@ -52,39 +59,25 @@ export default function CommentsTable(props: CommentsTableProps) {
     }
 
     function onEditedCommentSave(text: string) {
-        if (!fieldResponsibleId || !currentActionStoreState.actionId) {
+        if (!action?.field_responsible_id || !action.id) {
             return;
         }
 
         if (editedComment) {
-            dispatch(
-                updateComment({
-                    commentId: editedComment.id,
-                    updatePayload: {
-                        text,
-                    }
-                })
-            )
+            dispatch(updateComment({
+                commentId: editedComment.id,
+                updatePayload: {text}
+            }));
         } else {
-            dispatch(
-                createComment({
-                    text,
-                    action_id: currentActionStoreState.actionId,
-                    author_id: fieldResponsibleId,
-                    flight_id: flight?.id,
-                })
-            )
+            dispatch(createComment({
+                text,
+                action_id: action.id,
+                author_id: action.field_responsible_id,
+                flight_id: flight?.id,
+            }));
         }
 
-        dispatch(
-            fetchComments(
-                {
-                    actionId: currentActionStoreState.actionId,
-                }
-            )
-        )
-
-        onEditCommentDialogClose()
+        onEditCommentDialogClose();
     }
 
     function onCommentDelete(commentId: number) {
@@ -92,31 +85,18 @@ export default function CommentsTable(props: CommentsTableProps) {
             return;
         }
 
-        if (!currentActionStoreState.actionId) {
+        if (!action?.id) {
             return;
         }
 
-        dispatch(
-            deleteComment(commentId)
-        )
-
-        dispatch(
-            fetchComments(
-                {
-                    actionId: currentActionStoreState.actionId,
-                }
-            )
-        )
+        dispatch(deleteComment(commentId));
     }
 
     function renderCommentsTable() {
-
         if (comments.length === 0) {
             return (
-                <p>
-                    {t("NO_COMMENTS")}.
-                </p>
-            )
+                <p>{t("NO_COMMENTS")}.</p>
+            );
         }
 
         return (
@@ -144,17 +124,17 @@ export default function CommentsTable(props: CommentsTableProps) {
                                 <TableCell align="right">{comment.updated_at}</TableCell>
                                 <TableCell align="right">
                                     <Tooltip title={t("DELETE_COMMENT")} onClick={() => onCommentDelete(comment.id)}>
-                                            <IconButton aria-label="delete">
-                                                <DeleteIcon/>
-                                            </IconButton>
-                                        </Tooltip>
+                                        <IconButton aria-label="delete">
+                                            <DeleteIcon/>
+                                        </IconButton>
+                                    </Tooltip>
                                 </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-        )
+        );
     }
 
     return (
@@ -163,13 +143,8 @@ export default function CommentsTable(props: CommentsTableProps) {
                 <CommentEditDialog
                     open={editCommentDialogOpen}
                     initialText={editedComment ? editedComment.text : newCommentText}
-                    onCancel={() => {
-                        onEditCommentDialogClose();
-                    }}
-                    onSave={(text) => {
-                        onEditedCommentSave(text);
-                    }}
-
+                    onCancel={onEditCommentDialogClose}
+                    onSave={onEditedCommentSave}
                 />
             )}
             <Grid>
@@ -184,10 +159,13 @@ export default function CommentsTable(props: CommentsTableProps) {
                         </Typography>
                     </Grid>
                     <Grid>
-                        <Button variant="contained" onClick={() => {
-                            setNewCommentText("");
-                            setEditCommentDialogOpen(true);
-                        }}>
+                        <Button 
+                            variant="contained" 
+                            onClick={() => {
+                                setNewCommentText("");
+                                setEditCommentDialogOpen(true);
+                            }}
+                        >
                             {t("ADD_COMMENT")}
                         </Button>
                     </Grid>
@@ -195,9 +173,7 @@ export default function CommentsTable(props: CommentsTableProps) {
                 <Grid>
                     {renderCommentsTable()}
                 </Grid>
-
             </Grid>
         </>
     );
-
 }
