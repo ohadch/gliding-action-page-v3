@@ -82,6 +82,37 @@ export function FlightForm({
         return t(TEXTS[type.toUpperCase()]);
     };
 
+    const getPilot1Label = () => {
+        if (!flightType) return t(TEXTS.PILOT_1);
+        
+        switch (flightType) {
+            case "Instruction":
+            case "Solo":
+                return t("STUDENT");
+            case "ClubGuest":
+            case "MembersGuest":
+                return t("GUEST");
+            default:
+                return t("PILOT_1");
+        }
+    };
+
+    const getPilot2Label = () => {
+        if (!flightType) return t(TEXTS.PILOT_2);
+        
+        switch (flightType) {
+            case "Instruction":
+                return t("INSTRUCTOR");
+            case "Members":
+                return t("PILOT_2");
+            case "ClubGuest":
+            case "MembersGuest":
+                return t("ACCOMPANYING_PILOT");
+            default:
+                return t(TEXTS.PILOT_2);
+        }
+    };
+
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Autocomplete
@@ -160,7 +191,7 @@ export function FlightForm({
                 renderInput={(params) => (
                     <TextField
                         {...params}
-                        label={t(TEXTS.PILOT_1)}
+                        label={getPilot1Label()}
                         placeholder={t(TEXTS.SELECT_PILOT)}
                     />
                 )}
@@ -199,7 +230,7 @@ export function FlightForm({
                     renderInput={(params) => (
                         <TextField
                             {...params}
-                            label={t(TEXTS.PILOT_2)}
+                            label={getPilot2Label()}
                             placeholder={t(TEXTS.SELECT_PILOT)}
                         />
                     )}
