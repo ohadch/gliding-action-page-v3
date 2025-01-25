@@ -16,7 +16,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import CloseIcon from '@mui/icons-material/Close';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
-import { FlightTemplates } from './flightCreation/FlightTemplates';
 import { FlightForm } from './flightCreation/FlightForm';
 import { FlightPreview } from './flightCreation/FlightPreview';
 import { useFlightCreation } from './flightCreation/useFlightCreation';
@@ -124,8 +123,6 @@ export default function FlightCreationWizardDialog({
                 </Box>
             </DialogTitle>
             <DialogContent>
-                <FlightTemplates onTemplateSelect={handleTemplateSelect} />
-                
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={7}>
                         <FlightForm

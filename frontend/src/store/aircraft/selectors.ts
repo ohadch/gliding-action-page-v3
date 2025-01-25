@@ -36,4 +36,24 @@ export const getClubTwoSeaterGliders = createSelector(
             twoSeaterGliders.some(twoSeater => twoSeater.id === glider.id)
         );
     }
+);
+
+// Get single-seater gliders
+export const getSingleSeaterGliders = createSelector(
+    [selectGliders],
+    (gliders): GliderSchema[] => {
+        if (!gliders) return [];
+        
+        return gliders.filter(glider => glider.num_seats === 1);
+    }
+);
+
+// Get club single-seater gliders
+export const getClubSingleSeaterGliders = createSelector(
+    [getClubGliders, getSingleSeaterGliders],
+    (clubGliders, singleSeaterGliders): GliderSchema[] => {
+        return clubGliders.filter(glider => 
+            singleSeaterGliders.some(singleSeater => singleSeater.id === glider.id)
+        );
+    }
 ); 

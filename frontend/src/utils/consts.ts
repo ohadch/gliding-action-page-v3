@@ -256,6 +256,13 @@ export const TEXTS = {
     INSTRUCTOR: "מדריך",
     GUEST: "אורח",
     ACCOMPANYING_PILOT: "טייס מלווה",
+    INSTRUCTION_FLIGHT_DESCRIPTION: "טיסת הדרכה עם מדריך",
+    SOLO_FLIGHT_DESCRIPTION: "טיסת סולו לחניך מורשה",
+    MEMBERS_FLIGHT_DESCRIPTION: "טיסה של שני חברי מועדון",
+    CLUB_GUEST_FLIGHT_DESCRIPTION: "טיסה של אורח עם טייס מועדון",
+    MEMBERS_GUEST_FLIGHT_DESCRIPTION: "טיסה של אורח עם חבר מועדון",
+    INSTRUCTORS_COURSE_FLIGHT_DESCRIPTION: "טיסה במסגרת קורס מדריכים",
+    INSPECTION_FLIGHT_DESCRIPTION: "טיסת ביקורת",
 };
 
 
