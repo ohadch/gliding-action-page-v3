@@ -69,6 +69,11 @@ export function useFlightCreation() {
         if (defaults.pilot_1_id) setPilot1Id(defaults.pilot_1_id);
         if (defaults.pilot_2_id) setPilot2Id(defaults.pilot_2_id);
 
+        // Set payers type if provided
+        if (defaults.payers_type) {
+            setPayersType(defaults.payers_type as PayersType);
+        }
+
         // Set glider only if it's available in the filtered list
         if (defaults.glider_id) {
             // For instruction flights, verify the glider is a club-owned two-seater
