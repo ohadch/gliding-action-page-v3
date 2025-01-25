@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { FlightType, PayersType } from "../../../lib/types";
-import { getMemberDisplayValue } from "../../../utils/display";
+import { getMemberDisplayValue, getPayersTypeDisplayValue } from "../../../utils/display";
 import { TEXTS } from "../../../utils/consts";
 import FlightIcon from '@mui/icons-material/Flight';
 import PersonIcon from '@mui/icons-material/Person';
@@ -92,14 +92,12 @@ export function FlightPreview({
                             </Typography>
                         </Box>
                     )}
-
+                    
                     {payersType && (
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Typography variant="subtitle2" color="text.secondary">
-                                {t(TEXTS.PAYERS_TYPE)}
-                            </Typography>
+                            <FlightIcon sx={{ mr: 1 }} />
                             <Typography>
-                                {t(TEXTS[payersType.toUpperCase()])}
+                                <strong>{t("PAYERS_TYPE")}:</strong> {getPayersTypeDisplayValue(payersType)}
                             </Typography>
                         </Box>
                     )}
